@@ -3,6 +3,7 @@ package com.apas.PageObjects;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -18,7 +19,6 @@ import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
-import com.apas.config.testdata;
 import com.apas.config.users;
 
 public class CIOTransferPage extends ApasGenericPage  implements modules,users{
@@ -28,6 +28,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	WorkItemHomePage objWorkItemHomePage;
     ParcelsPage	objParcelsPage;
     SoftAssertion softAssert;
+    AppraisalActivityPage objAppraisalActivity;
    
 
 	public CIOTransferPage(RemoteWebDriver driver) {
@@ -39,7 +40,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
         objParcelsPage = new ParcelsPage(driver);
         softAssert = new SoftAssertion();
         objWorkItemHomePage= new WorkItemHomePage(driver);
-        
+        objAppraisalActivity= new AppraisalActivityPage(driver);
 	}
 
 	public String ApnLabel = "APN";
@@ -76,7 +77,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String ownerPercentage="Owner Percentage";
 	public final String DOC_DEED="DE";
 	public String firstNameLabel="First Name";
-	
+	public String nextButtonComponentsActionsModal = "Next";
 	public String transferCodeLabel = "Transfer Code";
 	public String transferDescriptionLabel = "Transfer Description";
 	public String transferStatusLabel = "CIO Transfer Status";
@@ -90,11 +91,14 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String ownershipPercentage ="Ownership Percentage";
 	public String auditTrailLabel ="Audit Trail";
 
-
 	public String approveButton ="Approve";
+	public String documentSummaryButton ="COS Document Summary";
+	public String transferStatus ="CIO Transfer Status";
+	public String componentActionsButtonText = "Component Actions";
+	public String workItemTypeDropDownComponentsActionsModal = "Work Item Type";
 
-	
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
+	public static final String CIO_EVENT_CODE_GLEASM="CIO-GLEASM";
 	public static final String CIO_EVENT_CODE_PART="CIO-PART";
 	public static final String CIO_EVENT_CODE_ElessThan5Percent="E<5%";
 	public static final String CIO_EVENT_CODE_CIOGOVT="CIO-GOVT";
@@ -103,7 +107,6 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public static final String CIO_RESPONSE_NoChangeRequired="No Edits required";
 	public static final String CIO_RESPONS_EventCodeChangeRequired="Event Code needs to be changed";
 	public static final String APPRAISAL_NORMAL_ENROLLMENT="Normal Enrollment";
-	
 	
 	public String eventIDLabel = "EventID";
 	public String situsLabel = "Situs";
@@ -127,6 +130,22 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String createdByLabel = "Created By";
 	public String lastModifiedByLabel = "Last Modified By";
 	public String transferSucessMessage="//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']//b | //div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b";
+	public String recordTypeDropdown = "Record Type";
+	public String group = "Group";
+	public String typeOfAuditTrailDropdown = "Type of Audit Trail Record?";
+	public String leopReceivedByBOE = "LEOP Received By BOE";
+	public String penaltyRequiredPerBOE = "Penalty Required Per BOE";
+	public String sourceDropdown = "Source";
+	public String dateOfEventInputTextBox = "Date of Event";
+	public String dateOfValueInputTextBox = "Date of Value";
+	public String dateOfRecordingInputTextBox = "Date of Recording";
+	public String descriptionInputTextBox = "Description";
+	public String saveAndNextButton = "Save and Next";
+	public String penaltyCodeLabel = "Penalty Code";
+	public String letterCodeLabel = "Letter Code";
+	public String calculatorSwitchLabel = "Calculator Switch";
+	public String activeLabel ="Active";
+	public String releaseIndicatorLabel = "Release Indicator";
 	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
@@ -250,13 +269,23 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='EventID']//following::a[@target='_blank']")
 	public WebElement eventIDOnTransferActivityLabel;
 	
+	@FindBy(xpath =commonXpath+"//span[@title='Recorded APNs']//ancestor::lst-list-view-manager-header//following-sibling::div[@class='slds-grid listDisplays']//table//a[contains(@class,'displayLabel')]")
+	public WebElement apnFromRecordedDocument;
+	
 	@FindBy(xpath = commonXpath + "//div[@class='slds-card__body slds-p-horizontal_small flowruntimeBody']//b")
 	public WebElement calculateOwnershipPageMessage;
+	
 	@FindBy(xpath= commonXpath+"//span[text()='Mailing State']")
 	public WebElement mailingStatefield;
 		
 	@FindBy(xpath ="//label[text()='APN']/..//button[@title='Clear Selection']")
 	public WebElement crossIconAPNEditField;
+	
+	@FindBy(xpath ="//h2[text()='COS Document Summary']")
+	public WebElement documentSummaryCaption;
+	
+	@FindBy(xpath = "//a[starts-with(@title,\"RD-APN\")][@class='tabHeader slds-context-bar__label-action '][@aria-selected='true']//span[@class='title slds-truncate']")
+	public WebElement recordedDocumentApnGenerated;
 	
 	
 	/*
@@ -355,7 +384,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	    	salesforceApi.update("recorded_document__c" , RecordedDocumentId, "Status__c","Pending");
 		ReportLogger.INFO("Marking "+RecordedDocumentId+"in Pending state");
 		salesforceApi.generateReminderWorkItems(SalesforceAPI.RECORDER_WORKITEM);
-		Thread.sleep(12000);
+		Thread.sleep(15000);
 		ReportLogger.INFO("-------------Generated Recorded WorkItems.------------"); 
 	    	
 	    	}
@@ -446,7 +475,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	     */
 		 public void editRecordedApnField(String labelName) throws Exception {
 		        ReportLogger.INFO("Edit the field : " + labelName);
-		        Thread.sleep(1000);
+		        Thread.sleep(2000);
 		        String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//span[text() = '" + labelName + "']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]";		        
 		        WebElement fieldLocator = locateElement(xpathStr, 30);
 		        Click(fieldLocator);
@@ -575,6 +604,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			 if (gridName.contains("CIO Transfer Mail To"))updateGridName = "CIO_Transfer_Mail_To";
 			 if (gridName.contains("Ownership for Parent Parcel"))updateGridName = "Property_Ownerships";
 			 
+			 Thread.sleep(1000);
 			 String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'" + updateGridName + "')]//span[text() = 'View All']";		        
 		 	 WebElement fieldLocator1 = locateElement(xpathStr, 30);
 		 	 scrollToElement(fieldLocator1);
@@ -673,7 +703,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			  * 
 			  * @Return : Returns a String array for all the related WI generated after approval for the given enrollment type
 			  * 			  
-			  * @param enrollementType : Enrollement Type -Direct or Normal enrollment type
+			  * @param enrollementType : Enrollment Type -Direct or Normal enrollment type
 			  * @param Transfer code : Event Code in RecordedAPNTransfer screen
 			  * @param hashMapOwnershipAndTransferMailToCreationData : Data to create mail to record
 			  * @param hashMapOwnershipAndTransferGranteeCreationData : Data to create Grantee records
@@ -895,6 +925,131 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					}
 					
-			 }
+			 }	
+			 
+		//This method will delete all the transfer activity records on the Parcel	 
+		public void deleteTransferActivityRecords(String apn) throws Exception
+			 {      	       
+				   HashMap<String, ArrayList<String>>HashMapTransferRecord =salesforceApi.select("SELECT Id, Name, Recorder_Doc_Number__c, CIO_Transfer_Status__c FROM Recorded_APN_Transfer__c where Parcel__c in (SELECT Id FROM Parcel__c where Name = '"+apn+"')");			      
+			        if(!HashMapTransferRecord.isEmpty()) {		    	  
+			        	HashMapTransferRecord.get("Id").stream().forEach(Id ->{
+			        		objSalesforceAPI.delete("Recorded_APN_Transfer__c", Id);
+			        		ReportLogger.INFO("!!Deleted Transfer Activity Record with id= "+Id + " and Transfer Activity Record Name "+HashMapTransferRecord.get("Name"));
+			          } );}	 
+			 } 	
+		
+		/* 
+		 * Description - This method will change the date format
+		 * Param - mm/dd/yyyy
+		 * Return - YYYY/MM/DD
+		 */
+		
+		public String updateDateFormat(String dateValue ) throws Exception {
+			System.out.println(dateValue);
+			String formattedDate = "";
+			
+			if (!dateValue.equals("")) {
+					String dateSplit[] = dateValue.split("/");
+					formattedDate = dateSplit[2];
+					
+					if (dateSplit[0].length()==1) {
+						formattedDate = formattedDate + "-0" + dateSplit[0].substring(0, 1);
+					}
+					else {
+						formattedDate = formattedDate + "-" + dateSplit[0].substring(0, 2);
+					}
+					
+					if (dateSplit[1].length()==1) {
+						formattedDate = formattedDate + "-0" + dateSplit[1].substring(0, 1);
+					}
+					else {
+						formattedDate = formattedDate + "-" + dateSplit[1].substring(0, 2);
+					}
+			}
+			return formattedDate;
+		}
+		
+
+				/**
+				 * @Description: This method will fill all the fields in Audit Trail record to
+				 *               create LEOP event
+				 * @param dataMap: A data map which contains data to create audit trail record
+				 * @throws Exception
+				 */
+				public String createLeopUnrecordedEvent(Map<String, String> dataMap) throws Exception {
+					ReportLogger.INFO("Create Leop Unrecorded Event Transfer");
+					String timeStamp = String.valueOf(System.currentTimeMillis());
+					String description = dataMap.get("Description") + "_" + timeStamp;
+
+					waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
+					Click(getButtonWithText(componentActionsButtonText));
+					waitForElementToBeClickable(objParcelsPage.selectOptionDropdown);
+					selectOptionFromDropDown(objParcelsPage.selectOptionDropdown, "Create Audit Trail Record");
+					Click(getButtonWithText(nextButtonComponentsActionsModal));
+					waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);
+					selectOptionFromDropDown(recordTypeDropdown, dataMap.get("Record Type"));
+					selectOptionFromDropDown(group, dataMap.get("Group"));
+
+					Thread.sleep(2000);
+					selectOptionFromDropDown(typeOfAuditTrailDropdown, dataMap.get("Type of Audit Trail Record?"));
+					selectOptionFromDropDown(leopReceivedByBOE, dataMap.get("LEOP Received By BOE"));
+					selectOptionFromDropDown(penaltyRequiredPerBOE, dataMap.get("Penalty Required Per BOE"));
+					if (dataMap.get("Source") != null) {
+						selectOptionFromDropDown(sourceDropdown, dataMap.get("Source"));
+					}
+					if (dataMap.get("Date of Event") != null) {
+						enter(dateOfEventInputTextBox, dataMap.get("Date of Event"));
+					}
+					if (dataMap.get("Date of Value") != null) {
+						enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));
+					}
+					enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
+					enter(descriptionInputTextBox, description);
+					Click(getButtonWithText(saveAndNextButton));
+					Thread.sleep(5000);
+					if (dataMap.get("Record Type").equalsIgnoreCase("Correspondence")) {
+						return null;
+					}
+
+					return getElementText(recordedDocumentApnGenerated);
+				}
+				/**
+				 * @Description: This method will fill all the fields in Calculate Penalty
+				 * @param dataMap: A data map which contains data to fill form
+				 * @throws Exception
+				 */
+				public String fillCalculatePenaltyForm(Map<String, String> dataMap) throws Exception {
+					String penaltyCode = dataMap.get("Penalty Code");
+					String letterCode = dataMap.get("Letter Code");
+					String calculatorSwitch = dataMap.get("Calculator Switch");
+					String activeLabelText= dataMap.get("Active");
+					String releaseIndicatorLabelText=dataMap.get("Release Indicator");
+					
+					String commonFirstPath = "//*[@class='slds-grid slds-col slds-is-editing slds-has-flexi-truncate mdp forcePageBlockItem forcePageBlockItemEdit']";
+					String activeXpath = commonFirstPath + "//*[text()='" + activeLabel + "']//following::a";
+					String releaseIndicatorXpath = commonFirstPath + "//*[text()='" + releaseIndicatorLabel + "']//following::a";
+					WebElement activeLabelXpath= driver.findElement(By.xpath(activeXpath));
+					WebElement releaseIndicatorLabelXpath = driver.findElement(By.xpath(releaseIndicatorXpath));
+
+
+					Click(activeLabelXpath);		
+					objMappingPage.waitForElementToBeVisible(driver.findElements(By.xpath("//a[@title='"+activeLabelText+"']")).get(0));
+					List<WebElement> active = driver.findElements(By.xpath("//a[@title='"+activeLabelText+"']"));
+					
+					Click(active.get(0));
+					Click(releaseIndicatorLabelXpath);
+					objMappingPage.waitForElementToBeVisible(driver.findElements(By.xpath("//a[@title='"+releaseIndicatorLabelText+"']")).get(1));
+					Click(driver.findElements(By.xpath("//a[@title='"+releaseIndicatorLabelText+"']")).get(1));
+					
+					objAppraisalActivity.selectDropDownValueForCalculatePenalty(penaltyCodeLabel, penaltyCode);
+					objAppraisalActivity.selectDropDownValueForCalculatePenalty(letterCodeLabel, letterCode);
+					objAppraisalActivity.selectDropDownValueForCalculatePenalty(calculatorSwitchLabel, calculatorSwitch);
+					Thread.sleep(50000);
+					Click(objAppraisalActivity.calculatePenaltySaveButton);
+					Thread.sleep(2000);
+					ReportLogger.INFO("Penalty Calculation form filled.");
+					return penaltyCode;
+				}
+
 }
 		 	

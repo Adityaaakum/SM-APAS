@@ -1,6 +1,5 @@
 package com.apas.Tests.OwnershipAndTransfer;
 
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.json.JSONObject;
 import org.openqa.selenium.By;
@@ -37,7 +37,7 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
-import com.google.gson.JsonObject;
+
 
 public class CIO_RecordedEvents_Test extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
@@ -1598,16 +1598,15 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objCioTransfer.logout();
 	}
-
+	
 	/*
 	 * Verify that User is able to perform CIO transfer for recorded APN and
 	 * validate all status
 	 */
 
-	@Test(description = "SMAB-T3525, SMAB-T3341, SMAB-T3881, SMAB-T3764,SMAB-T3631,SMAB-T3433:Verify that User is able to perform CIO transfer  for recorded APN and validate all status and values in Audit Trail record", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3525, SMAB-T3341, SMAB-T3881, SMAB-T3764, SMAB-T3631, SMAB-T3760:Verify that User is able to perform CIO transfer for recorded APN, validate all status and values in Audit Trail record and COS Document Summary detail", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
-	public void OwnershipAndTransfer_VerifyTransferActivityStatus_ReturnedAndCompleted(String loginUser)
-			throws Exception {
+	public void OwnershipAndTransfer_VerifyTransferActivityStatus_ReturnedAndCompleted(String loginUser) throws Exception {
 		
 		int i=1; int j=1;
 		String rollYear = "2022";
@@ -1631,12 +1630,20 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String recordedDocumentName = salesforceAPI.select(" SELECT Name from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1").get("Name").get(0);
 		objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
 
-		// STEP 1-login with SYS-ADMIN
+		// STEP 1-login with SYS-ADMIN, delete transfer activity records rom the APN and generated WI
 		objMappingPage.login(users.SYSTEM_ADMIN);
 		objMappingPage.searchModule(PARCELS);
+		
 		salesforceAPI.update("Work_Item__c",
 				"SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c",
 				"In Progress");
+		
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_Document__c/"+recordedDocumentID+"/view");
+		Thread.sleep(2000);
+		objCioTransfer.Click(objCioTransfer.relatedListTab);
+		String apn = objCioTransfer.getAttributeValue(objCioTransfer.apnFromRecordedDocument, "title");
+		objCioTransfer.deleteTransferActivityRecords(apn);
+		
 		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
 
 		// STEP 2-Query to fetch WI
@@ -1662,6 +1669,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForTransferActivityStatus);
 
 		objMappingPage.logout();
+		Thread.sleep(5000);
 
 		// STEP 5-Login with CIO staff
 		objMappingPage.login(loginUser);
@@ -1676,7 +1684,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.wiStatusDetailsPage);
-
+		
 		// STEP 7-Clicking on related action link
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
@@ -1684,11 +1692,14 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertContains(driver.getCurrentUrl(), navigationUrL.get("Navigation_Url__c").get(0),
 				"SMAB-T3306:Validating that user navigates to CIo transfer screenafter clicking on related action hyperlink");
 		String transferScreenURL = driver.getCurrentUrl();
-
+		String recordedDocumentNumber = objWorkItemHomePage.getFieldValueFromAPAS("EventID");
+		String dovOnTransferActivity = objWorkItemHomePage.getFieldValueFromAPAS("DOV");
+		String doeOnTransferActivity = objWorkItemHomePage.getFieldValueFromAPAS("DOE");
+		
 		ReportLogger.INFO("Add the Transfer Code");
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
-		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-GLEASM");
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, objCioTransfer.CIO_EVENT_CODE_GLEASM);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 
 		// STEP 8-Creating the new grantee
@@ -1754,7 +1765,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3881: Validating the 'Processed By' field value is blank in Audit Trail record.");
 		softAssert.assertTrue(objWorkItemHomePage.getFieldValueFromAPAS("Final Approver", "Additional Information").equals(""),
 				"SMAB-T3881: Validating the 'Final Approver' field value is blank in Audit Trail record.");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),objCioTransfer.CIO_EVENT_CODE_COPAL,
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"), objCioTransfer.CIO_EVENT_CODE_GLEASM,
 				"SMAB-T3631: Validating the 'Event Library' field value in Audit Trail record.");
 		
 
@@ -1795,7 +1806,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.waitForElementToBeVisible(20, objCioTransfer.CIOstatus);
 		objCioTransfer.scrollToElement(objCioTransfer.CIOstatus);
 		softAssert.assertEquals(objWorkItemHomePage.getElementText(objCioTransfer.CIOstatus), "Returned",
-				"SMAB-T3525, SMAB-T3341,SMAB-T3433: Validating CIO Transfer activity status on transfer activity screen after returned by supervisor.");
+				"SMAB-T3525, SMAB-T3341, SMAB-T3433: Validating CIO Transfer activity status on transfer activity screen after returned by supervisor.");
 
 		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
@@ -1805,7 +1816,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 19-Validating WI and AUDIT Trail status after returned by supervisor.
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.wiStatusDetailsPage);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Returned",
-				"SMAB-T3525, SMAB-T3341,SMAB-T3433: Validating that Back button navigates back to WI page ");
+				"SMAB-T3525, SMAB-T3341, SMAB-T3433: Validating that Back button navigates back to WI page ");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
 				+ auditTrailID + "/view");
 		Thread.sleep(2000); // Allow the screen to appear completely
@@ -1821,7 +1832,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);	
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
 		objCioTransfer.clearSelectionFromLookup("Transfer Code");;
-		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel,"CIO-GLEASM" );
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel,objCioTransfer.CIO_EVENT_CODE_GLEASM );
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
@@ -1881,7 +1892,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Thread.sleep(2000); //Added to handle regression failure
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Open",
 						"SMAB-T3631: Validating that audit trail status should be open after submit for approval.");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),"CIO-GLEASM",
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),objCioTransfer.CIO_EVENT_CODE_GLEASM,
 						"SMAB-T3631: Validating the 'Event Library' field after update transer code value in Audit Trail record.");
 				
 
@@ -1934,7 +1945,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 25-Validating that WI and audit trail status after approving the transfer activity.
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.wiStatusDetailsPage);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Completed",
-				"SMAB-T3525, SMAB-T3341,SMAB-T3433: Validating that WI status should be completed after approval by supervisor.");
+				"SMAB-T3525, SMAB-T3341, SMAB-T3433: Validating that WI status should be completed after approval by supervisor.");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
 				+ auditTrailID + "/view");
 		Thread.sleep(2000);// Allow the screen to appear completely
@@ -1963,7 +1974,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Thread.sleep(2000); //Added to handle regression failure
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Open",
 				"SMAB-T3764: Validating that audit trail status should be open after submit for approval.");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"),"CIO-GLEASM" ,
+
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Event Library"), objCioTransfer.CIO_EVENT_CODE_GLEASM,
 				"SMAB-T3764: Validating the 'Event Library' field value in Audit Trail record");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Applicable To Roll Year", "Additional Information"), rollYear,
 				"SMAB-T3764: Validating the 'Applicable To Roll Year' field value in Audit Trail record.");
@@ -1976,7 +1988,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Thread.sleep(5000);
 
 		//STEP 28- Validate the WI details for Type 'Govt CIO Appraisal'
-		objMappingPage.login(users.APPRAISAL_SUPPORT);
+		objMappingPage.login(users.RP_APPRAISER);
 		objMappingPage.searchModule(WORK_ITEM);
 		objMappingPage.globalSearchRecords(workItemNoForGovtCIOAppraisal);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -1994,8 +2006,31 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3764: Validating the Reference field value in Work Item");
 		
 		objCioTransfer.logout();
-	
+		Thread.sleep(5000);
+
+		//STEP 29- Validate COS Document Summary details on Parcel
+		objMappingPage.login(users.CIO_STAFF);
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(apnFromWIPage);
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(objCioTransfer.documentSummaryButton);
+		Thread.sleep(2000); //Allows the grid to load completely
+		
+		HashMap<String, ArrayList<String>> HashMapDocumentDetails = objCioTransfer.getGridDataInHashMap();	
+		softAssert.assertEquals(HashMapDocumentDetails.get("Recorded Document Number").get(0), recordedDocumentNumber,
+				"SMAB-T3760: Validate the Recorded Document Number on COS Document Summary Screen");
+		softAssert.assertEquals(HashMapDocumentDetails.get("Status").get(0), "Approved",
+				"SMAB-T3760: Validate the Status on COS Document Summary Screen");
+		softAssert.assertEquals(HashMapDocumentDetails.get("Transfer Code").get(0), objCioTransfer.CIO_EVENT_CODE_GLEASM,
+				"SMAB-T3760: Validate the Transfer Code on COS Document Summary Screen");	
+		softAssert.assertEquals(HashMapDocumentDetails.get("Event Date").get(0), objCioTransfer.updateDateFormat(doeOnTransferActivity),
+				"SMAB-T3760: Validate the Event Date on COS Document Summary Screen");	
+		softAssert.assertEquals(HashMapDocumentDetails.get("Value Date").get(0), objCioTransfer.updateDateFormat(dovOnTransferActivity),
+				"SMAB-T3760: Validate the Value Date on COS Document Summary Screen");	
+		
+		objCioTransfer.logout();
+		
 	}
+
 
 	/**
 	 * Verify that APN related details are updated when APN is updated on Recorded
@@ -2119,7 +2154,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.pucCodeTransferActivityLabel), pucValue,
 				"SMAB-T3232: Validate the PUC on CIO Transfer screen for " + activeApn2);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.situsOnTransferActivityLabel),
-				primarySitusValue.replaceFirst("\\s", ""),
+				primarySitusValue,
 				"SMAB-T3232: Validate the Situs on CIO Transfer screen for " + activeApn2);
 
 		// Step6: Update the APN value to Retired APN value and validate values
@@ -2138,7 +2173,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				responsePUCDetails2.get("Name").get(0),
 				"SMAB-T3232: Validate the PUC on CIO Transfer screen for " + retiredApn);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.situsOnTransferActivityLabel),
-				primarySitusValue2.replaceFirst("\\s", ""),
+				primarySitusValue2,
 				"SMAB-T3232: Validate the Situs on CIO Transfer screen for " + retiredApn);
 		softAssert.assertTrue(objCioTransfer.verifyElementExists(objCioTransfer.warningMessageArea),
 				"SMAB-T3232: Validate that warning message is displayed on CIO Transfer screen for Retired Parcel");
@@ -2166,7 +2201,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				responsePUCDetails1.get("Name").get(0),
 				"SMAB-T3232: Validate the PUC on CIO Transfer screen for " + activeApn1);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.situsOnTransferActivityLabel),
-				primarySitusValue1.replaceFirst("\\s", ""),
+				primarySitusValue1,
 				"SMAB-T3232: Validate the Situs on CIO Transfer screen for " + activeApn1);
 
 		// Step8: Validate the Ownership record on the parcel
@@ -2194,11 +2229,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 					.getParcelTableDataInHashMap("Mail-To");
 			String status = mailToTableDataHashMap.get("Status").get(0);
 			String formattedName1 = mailToTableDataHashMap.get("Formatted Name 1").get(0);
-			String formattedName2 = mailToTableDataHashMap.get("Formatted Name 2").get(0);
 
 			driver.navigate().to("https://smcacre--" + execEnv
 					+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.numberOfGrantorLabel);
+			objCioTransfer.scrollToBottom();
 			objCioTransfer.clickViewAll("CIO Transfer Mail To");
 
 			// Step9a: Validate the details in the grid
@@ -2207,8 +2242,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 					"SMAB-T3232: Validate the Status of Mail-To record");
 			softAssert.assertEquals(HashMapMailTo.get("Formatted Name1").get(0), formattedName1,
 					"SMAB-T3232: Validate the Formatted Name1 of Mail-To record");
-			softAssert.assertEquals(HashMapMailTo.get("Formatted Name2").get(0), formattedName2,
-					"SMAB-T3232: Validate the Formatted Name2 of Mail-To record");
 		} else {
 			ReportLogger.INFO("Validate if there is no Mail-To record on the parcel");
 			softAssert.assertTrue(numOfMailToRecordOnRAT.contains("0"),
@@ -3627,6 +3660,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			objCioTransfer.logout();
 
 		}
+	
+	
 	@Test(description = "SMAB-T3345, SMAB-T3392- Verify User is able to create WI from CIO transfer activity screen and Verify Event ID and APN should be displayed in WI and AT Business Event linked to WI", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void CIOTransfer_CreateWiFromCioTransferActivityScreen(String loginUser) throws Exception {
@@ -3703,8 +3738,353 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(statusOnNewScreen, "Completed",
 				"SMAB-T3345, SMAB-T3392-Verify that the status should be completed.");
 		ReportLogger.INFO("Completed the validation!");
+		
 		objWorkItemHomePage.logout();
+
 	}
+
+/*
+ * Verify that user is able to view COS Document Summary for a parcel record
+ */
+
+	@Test(description = "SMAB-T3760, SMAB-T3761, SMAB-T3838, SMAB-T3839, SMAB-T4210 : Verify that user is able to view COS Document Summary for a parcel record", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+		"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "UnrecordedEvent" })
+	public void OwnershipAndTransfer_COS_DocumentSummmary(String loginUser) throws Exception {
+
+	int i=1;
+	String execEnv = System.getProperty("region");
+	String unrecordedEventData=testdata.UNRECORDED_EVENT_DATA;
+	JSONObject jsonForTransferActivityStatus = objCioTransfer.getJsonObject();
+	
+	Map<String, String> dataToCreateUnrecordedEventMap = objUtil
+			.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
+	Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+			.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
+	
+	String recordedItemQuery = "SELECT Id, Name from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1 limit 1";
+	String recordedDocumentID = salesforceAPI.select(recordedItemQuery).get("Id").get(0);
+
+	// STEP 1-login with SYS-ADMIN, delete transfer activity records from the APN and generated WI
+	objMappingPage.login(loginUser);
+	objMappingPage.searchModule(PARCELS);
+	
+	salesforceAPI.update("Work_Item__c",
+			"SELECT Id FROM Work_Item__c where Type__c='CIO' AND AGE__C=0 AND status__c ='In Pool'", "status__c",
+			"In Progress");
+	
+	driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_Document__c/"+recordedDocumentID+"/view");
+	Thread.sleep(2000);
+	objCioTransfer.Click(objCioTransfer.relatedListTab);
+	String apn = objCioTransfer.getAttributeValue(objCioTransfer.apnFromRecordedDocument, "title");
+	objCioTransfer.deleteTransferActivityRecords(apn);
+	
+	objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
+
+	// STEP 2-Query to fetch WI
+	String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'  AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1";
+	String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
+	objMappingPage.searchModule(WORK_ITEM);
+	objMappingPage.globalSearchRecords(workItemNo);
+	String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+	String apnIdFromWIPage = salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0);
+	objCioTransfer.deleteOwnershipFromParcel(apnIdFromWIPage);
+	softAssert.assertEquals(apn, apnFromWIPage,
+			"SMAB-T3760: Validate the APN on the recorded transfer activity");
+	
+	
+	// STEP 3- adding owner after deleting for the recorded APN
+	String acesseName = objMappingPage.getOwnerForMappingAction();
+	objParcelsPage.createOwnershipRecord(apnFromWIPage, acesseName, hashMapCreateOwnershipRecordData);
+	String ownershipId = driver.getCurrentUrl().split("/")[6];
+
+	// STEP 4- updating the ownership date for current owners
+	String dateOfEvent = salesforceAPI
+			.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
+			.get("Ownership_Start_Date__c").get(0);
+	jsonForTransferActivityStatus.put("DOR__c", dateOfEvent);
+	jsonForTransferActivityStatus.put("DOV_Date__c", dateOfEvent);
+	salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForTransferActivityStatus);
+
+	objMappingPage.searchModule(WORK_ITEM);
+	objMappingPage.globalSearchRecords(workItemNo);
+
+	String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + workItemNo + "'";
+	HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);
+
+	// STEP 5-Finding the recorded apn transfer id
+	String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+	objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+	objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+	objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.wiStatusDetailsPage);
+	
+	// STEP 6-Clicking on related action link
+	objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+	String parentWindow = driver.getWindowHandle();
+	objWorkItemHomePage.switchToNewWindow(parentWindow);
+	softAssert.assertContains(driver.getCurrentUrl(), navigationUrL.get("Navigation_Url__c").get(0),
+			"SMAB-T3306:Validating that user navigates to CIo transfer screenafter clicking on related action hyperlink");
+	
+	String recordedDocumentNumber = objWorkItemHomePage.getFieldValueFromAPAS("EventID");
+	String dovOnTransferActivity = objWorkItemHomePage.getFieldValueFromAPAS("DOV");
+	String doeOnTransferActivity = objWorkItemHomePage.getFieldValueFromAPAS("DOE");
+	
+	// STEP 7 - Add the Transfer Code
+	ReportLogger.INFO("Add the Transfer Code");
+	objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
+	objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
+	objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, objCioTransfer.CIO_EVENT_CODE_COPAL);
+	objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+	Thread.sleep(2000);		
+	
+	// STEP 8 - Validate the COS Document Summary screen
+	objMappingPage.searchModule(PARCELS);
+	objMappingPage.globalSearchRecords(apnFromWIPage);
+	objCioTransfer.clickQuickActionButtonOnTransferActivity(objCioTransfer.documentSummaryButton);
+	objWorkItemHomePage.waitForElementToBeVisible(objCioTransfer.documentSummaryCaption, 10);
+	
+	HashMap<String, ArrayList<String>> HashMapDocumentDetails = objCioTransfer.getGridDataInHashMap();	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Recorded Document Number").get(0), recordedDocumentNumber,
+			"SMAB-T4210: Validate the Recorded Document Number on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Status").get(0), "In Progress",
+			"SMAB-T4210: Validate the Status on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Transfer Code").get(0), objCioTransfer.CIO_EVENT_CODE_COPAL,
+			"SMAB-T4210: Validate the Transfer Code on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Value Date").get(0), objCioTransfer.updateDateFormat(dovOnTransferActivity),
+			"SMAB-T4210: Validate the Event Date on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Event Date").get(0), objCioTransfer.updateDateFormat(doeOnTransferActivity),
+			"SMAB-T4210: Validate the Value Date on COS Document Summary Screen");	
+	
+	// STEP 9 - Update the Transfer Code
+	driver.navigate().to("https://smcacre--" + execEnv
+			+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+	
+	ReportLogger.INFO("Update the Transfer Status : NOAC - No Action");
+	objCioTransfer.editRecordedApnField(objCioTransfer.transferStatus);
+	objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferStatus);
+	objCioTransfer.selectOptionFromDropDown(objCioTransfer.transferStatus, "NOAC - No Action");
+	objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+	Thread.sleep(2000);		
+	HashMapDocumentDetails.clear();
+	
+	// STEP 10 - Validate the COS Document Summary screen
+	objMappingPage.searchModule(PARCELS);
+	objMappingPage.globalSearchRecords(apnFromWIPage);
+	objCioTransfer.clickQuickActionButtonOnTransferActivity(objCioTransfer.documentSummaryButton);
+	objWorkItemHomePage.waitForElementToBeVisible(objCioTransfer.documentSummaryCaption, 10);
+	
+	HashMapDocumentDetails = objCioTransfer.getGridDataInHashMap();	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Recorded Document Number").get(0), recordedDocumentNumber,
+			"SMAB-T3760: Validate the Recorded Document Number on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Status").get(0), "NOAC - No Action",
+			"SMAB-T3760: Validate the Status on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Transfer Code").get(0), objCioTransfer.CIO_EVENT_CODE_COPAL,
+			"SMAB-T3760: Validate the Transfer Code on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Value Date").get(0), objCioTransfer.updateDateFormat(dovOnTransferActivity),
+			"SMAB-T3760: Validate the Value Date on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Event Date").get(0), objCioTransfer.updateDateFormat(doeOnTransferActivity),
+			"SMAB-T3760: Validate the Event Date on COS Document Summary Screen");	
+	
+	// STEP 11 - Update the Transfer Code
+	driver.navigate().to("https://smcacre--" + execEnv
+			+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+	
+	ReportLogger.INFO("Update the Transfer Status : CONV - Converted");
+	objCioTransfer.editRecordedApnField(objCioTransfer.transferStatus);
+	objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferStatus);
+	objCioTransfer.selectOptionFromDropDown(objCioTransfer.transferStatus, "CONV - Converted");
+	objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+	Thread.sleep(2000);		
+	HashMapDocumentDetails.clear();
+	
+	// STEP 12 - Validate the COS Document Summary screen
+	objMappingPage.searchModule(PARCELS);
+	objMappingPage.globalSearchRecords(apnFromWIPage);
+	objCioTransfer.clickQuickActionButtonOnTransferActivity(objCioTransfer.documentSummaryButton);
+	objWorkItemHomePage.waitForElementToBeVisible(objCioTransfer.documentSummaryCaption, 10);
+	
+	HashMapDocumentDetails = objCioTransfer.getGridDataInHashMap();	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Recorded Document Number").get(0), recordedDocumentNumber,
+			"SMAB-T3839: Validate the Recorded Document Number on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Status").get(0), "CONV - Converted",
+			"SMAB-T3839: Validate the Status on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Transfer Code").get(0), objCioTransfer.CIO_EVENT_CODE_COPAL,
+			"SMAB-T3839: Validate the Transfer Code on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Value Date").get(0), objCioTransfer.updateDateFormat(dovOnTransferActivity),
+			"SMAB-T3839: Validate the Value Date on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Event Date").get(0), objCioTransfer.updateDateFormat(doeOnTransferActivity),
+			"SMAB-T3839: Validate the Event Date on COS Document Summary Screen");	
+	
+	// STEP 13 - Update the Transfer Code
+	driver.navigate().to("https://smcacre--" + execEnv
+			+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+	
+	ReportLogger.INFO("Update the Transfer Status : ReApproved");
+	objCioTransfer.editRecordedApnField(objCioTransfer.transferStatus);
+	objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferStatus);
+	objCioTransfer.selectOptionFromDropDown(objCioTransfer.transferStatus, "ReApproved");
+	objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+	Thread.sleep(2000);		
+	HashMapDocumentDetails.clear();
+	
+	// STEP 14 - Validate the COS Document Summary screen
+	objMappingPage.searchModule(PARCELS);
+	objMappingPage.globalSearchRecords(apnFromWIPage);
+	objCioTransfer.clickQuickActionButtonOnTransferActivity(objCioTransfer.documentSummaryButton);
+	objWorkItemHomePage.waitForElementToBeVisible(objCioTransfer.documentSummaryCaption, 10);
+	
+	HashMapDocumentDetails = objCioTransfer.getGridDataInHashMap();	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Recorded Document Number").get(0), recordedDocumentNumber,
+			"SMAB-T3838: Validate the Recorded Document Number on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Status").get(0), "Approved",
+			"SMAB-T3838: Validate the Status on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Transfer Code").get(0), objCioTransfer.CIO_EVENT_CODE_COPAL,
+			"SMAB-T3838: Validate the Transfer Code on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Value Date").get(0), objCioTransfer.updateDateFormat(dovOnTransferActivity),
+			"SMAB-T3838: Validate the Value Date on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Event Date").get(0), objCioTransfer.updateDateFormat(doeOnTransferActivity),
+			"SMAB-T3838: Validate the Event Date on COS Document Summary Screen");	
+	
+	objCioTransfer.Click(objCioTransfer.crossButton);
+	HashMapDocumentDetails.clear();
+	
+	// STEP 15 - Create Unrecorded event
+	objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
+	String unRecordedDocumentNumber = objWorkItemHomePage.getFieldValueFromAPAS("EventID");
+	String unrecordedTransferActivityURL = driver.getCurrentUrl();
+	
+	// STEP 16 - Validate the COS Document Summary screen
+	objMappingPage.searchModule(PARCELS);
+	objMappingPage.globalSearchRecords(apnFromWIPage);
+	objCioTransfer.clickQuickActionButtonOnTransferActivity(objCioTransfer.documentSummaryButton);
+	objWorkItemHomePage.waitForElementToBeVisible(objCioTransfer.documentSummaryCaption, 10);
+	
+	HashMapDocumentDetails = objCioTransfer.getGridDataInHashMap();	
+	if(HashMapDocumentDetails.get("Status").get(0).equals("In Progress")) i=0;
+	softAssert.assertEquals(HashMapDocumentDetails.get("Recorded Document Number").get(i), unRecordedDocumentNumber,
+			"SMAB-T3760: Validate the Recorded Document Number on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Status").get(i), "In Progress",
+			"SMAB-T3760: Validate the Status on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Transfer Code").get(i), "",
+			"SMAB-T3760: Validate the Transfer Code on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Event Date").get(i), objCioTransfer.updateDateFormat("07/04/2021"),
+			"SMAB-T3760: Validate the Event Date on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Value Date").get(i), objCioTransfer.updateDateFormat("07/04/2021"),
+			"SMAB-T3760: Validate the Value Date on COS Document Summary Screen");
+	
+	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Recorded Document Number").get(i==0?i+1:i-1), recordedDocumentNumber,
+			"SMAB-T3760: Validate the Recorded Document Number on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Status").get(i==0?i+1:i-1), "Approved",
+			"SMAB-T3760: Validate the Status on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Transfer Code").get(i==0?i+1:i-1), objCioTransfer.CIO_EVENT_CODE_COPAL,
+			"SMAB-T3760: Validate the Transfer Code on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Event Date").get(i==0?i+1:i-1), objCioTransfer.updateDateFormat(doeOnTransferActivity),
+			"SMAB-T3760: Validate the Event Date on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Value Date").get(i==0?i+1:i-1), objCioTransfer.updateDateFormat(dovOnTransferActivity),
+			"SMAB-T3760: Validate the Value Date on COS Document Summary Screen");
+	
+	objCioTransfer.Click(objCioTransfer.crossButton);
+	HashMapDocumentDetails.clear();
+	
+	// STEP 17- Update the Transfer Code
+	driver.navigate().to("https://smcacre--" + execEnv
+			+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+	
+	ReportLogger.INFO("Update the Transfer Status : Reopened");
+	objCioTransfer.editRecordedApnField(objCioTransfer.transferStatus);
+	objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferStatus);
+	objCioTransfer.selectOptionFromDropDown(objCioTransfer.transferStatus, "Reopened");
+	objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+	Thread.sleep(2000);		
+	
+	// STEP 18 - Validate the COS Document Summary screen
+	objMappingPage.searchModule(PARCELS);
+	objMappingPage.globalSearchRecords(apnFromWIPage);
+	objCioTransfer.clickQuickActionButtonOnTransferActivity(objCioTransfer.documentSummaryButton);
+	objWorkItemHomePage.waitForElementToBeVisible(objCioTransfer.documentSummaryCaption, 10);
+	
+	HashMapDocumentDetails = objCioTransfer.getGridDataInHashMap();	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Recorded Document Number").get(0), unRecordedDocumentNumber,
+			"SMAB-T3760: Validate the Recorded Document Number on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Status").get(0), "In Progress",
+			"SMAB-T3760: Validate the Status on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Transfer Code").get(0), "",
+			"SMAB-T3760: Validate the Transfer Code on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Event Date").get(0), objCioTransfer.updateDateFormat("07/04/2021"),
+			"SMAB-T3760: Validate the Event Date on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Value Date").get(0), objCioTransfer.updateDateFormat("07/04/2021"),
+			"SMAB-T3760: Validate the Value Date on COS Document Summary Screen");	
+	softAssert.assertTrue(!HashMapDocumentDetails.containsValue("Reopened"),
+			"SMAB-T3760: Validate that transfer activity with 'Reopened' status is not present in COS Document Summary Screen");
+	softAssert.assertTrue(!HashMapDocumentDetails.containsValue("Approved"),
+			"SMAB-T3760: Validate that transfer activity with 'Approved' status is not present in COS Document Summary Screen");
+	 
+	objCioTransfer.Click(objCioTransfer.crossButton);
+	HashMapDocumentDetails.clear();
+	
+	// STEP 19- Update the Transfer Code
+	driver.navigate().to("https://smcacre--" + execEnv
+			+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+	
+	ReportLogger.INFO("Update the Transfer Status : Submitted for Approval");
+	objCioTransfer.editRecordedApnField(objCioTransfer.transferStatus);
+	objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferStatus);
+	objCioTransfer.selectOptionFromDropDown(objCioTransfer.transferStatus, "Submitted for Approval");
+	objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+	Thread.sleep(2000);		
+	
+	// STEP 20 - Validate the COS Document Summary screen
+	objMappingPage.searchModule(PARCELS);
+	objMappingPage.globalSearchRecords(apnFromWIPage);
+	objCioTransfer.clickQuickActionButtonOnTransferActivity(objCioTransfer.documentSummaryButton);
+	objWorkItemHomePage.waitForElementToBeVisible(objCioTransfer.documentSummaryCaption, 10);
+	
+	HashMapDocumentDetails = objCioTransfer.getGridDataInHashMap();	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Recorded Document Number").get(0), unRecordedDocumentNumber,
+			"SMAB-T3760: Validate the Recorded Document Number on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Status").get(0), "In Progress",
+			"SMAB-T3760: Validate the Status on COS Document Summary Screen");
+	softAssert.assertEquals(HashMapDocumentDetails.get("Transfer Code").get(0), "",
+			"SMAB-T3760: Validate the Transfer Code on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Event Date").get(0), objCioTransfer.updateDateFormat("07/04/2021"),
+			"SMAB-T3760: Validate the Event Date on COS Document Summary Screen");	
+	softAssert.assertEquals(HashMapDocumentDetails.get("Value Date").get(0), objCioTransfer.updateDateFormat("07/04/2021"),
+			"SMAB-T3760: Validate the Value Date on COS Document Summary Screen");	
+	softAssert.assertTrue(!HashMapDocumentDetails.containsValue("Reopened"),
+			"SMAB-T3760: Validate that transfer activity with 'Reopened' status is not present in COS Document Summary Screen");
+	softAssert.assertTrue(!HashMapDocumentDetails.containsValue("Submitted for Approval"),
+			"SMAB-T3760: Validate that transfer activity with 'Submitted for Approval' status is not present in COS Document Summary Screen");
+	
+	objCioTransfer.Click(objCioTransfer.crossButton);
+	HashMapDocumentDetails.clear();
+	
+	// STEP 21- Update the Transfer Code
+	driver.navigate().to(unrecordedTransferActivityURL);
+	ReportLogger.INFO("Update the Transfer Code : CIO-COPAL");
+	objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
+	objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
+	objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, objCioTransfer.CIO_EVENT_CODE_COPAL);
+	objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+	Thread.sleep(2000);
+	
+	// STEP 22 - Validate the COS Document Summary screen
+	objMappingPage.searchModule(PARCELS);
+	objMappingPage.globalSearchRecords(apnFromWIPage);
+	objCioTransfer.clickQuickActionButtonOnTransferActivity(objCioTransfer.documentSummaryButton);
+	objWorkItemHomePage.waitForElementToBeVisible(objCioTransfer.documentSummaryCaption, 10);
+	
+	HashMapDocumentDetails = objCioTransfer.getGridDataInHashMap();		
+	softAssert.assertTrue(!HashMapDocumentDetails.containsValue("Reopened"),
+			"SMAB-T3760: Validate that transfer activity with 'Reopened' status is not present in COS Document Summary Screen");
+	softAssert.assertTrue(!HashMapDocumentDetails.containsValue("Submitted for Approval"),
+			"SMAB-T3760: Validate that transfer activity with 'Submitted for Approval' status is not present in COS Document Summary Screen");
+	softAssert.assertTrue(!HashMapDocumentDetails.containsValue("In Progress"),
+			"SMAB-T3760: Validate that transfer activity with 'In Progress' status is not present in COS Document Summary Screen");
+	
+	objCioTransfer.logout();
+	
+	}
+
 	/*
 	 * This method is used to Validate that user is able to update the status of Appraisal activity and related Work item to 'Submit for approval', 'Return','Approve' option using Quick Action button
 	 * Users: RP Appraiser, RP Supervisor 
@@ -3976,6 +4356,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertContains(objCioTransfer.saveRecordAndGetError(), "Start Date cannot be greater than End Date",
 				"SMAB-T2995:Start Date cannot be greater than End Date");
 		objWorkItemHomePage.logout();
-}
-	
+	}
+
 }
