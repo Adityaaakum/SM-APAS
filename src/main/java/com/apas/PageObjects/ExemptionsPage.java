@@ -60,7 +60,7 @@ public class ExemptionsPage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Grace End Date')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
     public WebElement graceEndDateExemptionDetails;
 
-    public String claimantName = "Claimant's Name";
+    public String claimantName = "Claimant 1 Name";
 
     public String claimantSSN = "Claimant's SSN";
 
