@@ -252,12 +252,14 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 
 		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(
 				"SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 
+		objMappingPage.deleteCharacteristicInstanceFromParcel(parcelToSearch);
+		
 		String legalDescriptionValue = "Legal PM 85/25-260";
 		String districtValue = "District01";
 		String parcelSize = "1000";
@@ -355,6 +357,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		ReportLogger.INFO("Switch to the Mapping Action screen");
 		objWorkItemHomePage.switchToNewWindow(parentWindow1);
 
+		objMappingPage.deleteCharacteristicInstanceFromParcel(parcelToSearch1);
 		// Step 9: Now on the Mapping action page from second WI and here user will perform One to One Mapping action
 		objMappingPage.waitForElementToBeVisible(60, objMappingPage.getButtonWithText(objMappingPage.EditButton));
 		objApasGenericPage.Click(objMappingPage.getButtonWithText(objMappingPage.EditButton));
@@ -425,11 +428,14 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		// Add the parcels in a Hash Map for later use in the combine action. Those parcels will be combined.
 
 		String concatenateAPNWithDifferentMapBookMapPage = apn2 + "," + apn3;
-
 		String legalDescriptionValue2 = "Legal PM 85/25-260";
 		String districtValue2 = "District01";
 		String parcelSize1 = "200";
+		
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn3);
 
+		
 		// Creating Json Object
 
 		jsonParcelObject.put("Status__c", "Active");

@@ -145,7 +145,8 @@ public class WorkItemAdministration_Consolidation_Test extends TestBase implemen
 		  //Login With supervisor 1 with rp admin 
 		  objWorkItemHomePage.login(loginUser);
 		  objWorkItemHomePage.searchModule(modules.HOME);
-		  objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
+//		  objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
+		  objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
 		  objWorkItemHomePage.selectWorkItemOnHomePage(PrimaryWorkitem);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
 		  objWorkItemHomePage.Click(objWorkItemHomePage.submittedforApprovalTimeline);

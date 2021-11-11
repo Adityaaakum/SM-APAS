@@ -22,6 +22,7 @@ public class NeighborhoodsPage extends ApasGenericPage {
     public String neighborhoodCodeEditBox="Neighborhood Code";
     public String primaryAppraiserDropDown="Primary Appraiser";
     public String districtDropDown="District";
+    public String legecyDropDown="Legacy";
     public String neighborhoodDescriptionEditBox="Neighborhood Description";
     public String neighborhoodDropDown= "Neighborhood";
     public String districtDescriptionEditBox="District Description";
@@ -48,6 +49,7 @@ public class NeighborhoodsPage extends ApasGenericPage {
         enter(neighborhoodDescriptionEditBox,neighborhoodReferenceData.get("Neighborhood Description"));
         objApasGenericPage.searchAndSelectOptionFromDropDown(primaryAppraiserDropDown,neighborhoodReferenceData.get("Primary Appraiser"));
         objApasGenericPage.selectOptionFromDropDown(districtDropDown,neighborhoodReferenceData.get("District"));
+        objApasGenericPage.selectOptionFromDropDown(legecyDropDown,neighborhoodReferenceData.get("Legacy"));
         if(neighborhoodReferenceData.get("District Description")!=null)
             enter(districtDescriptionEditBox,neighborhoodReferenceData.get("District Description"));
     }
