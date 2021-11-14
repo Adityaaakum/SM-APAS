@@ -771,7 +771,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		//Step6: Navigating to mail to screen and Create mail to record 
 		ReportLogger.INFO("Navigate to Mail-To screen and create a Mail To record");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+""+"/related/CIO_Transfer_Mail_To__r/view");
-	    objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.newButton));
+		objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.getButtonWithText(objCIOTransferPage.newButton));
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.newButton));
 	    objCIOTransferPage.enter(objCIOTransferPage.formattedName1Label, hashMapOwnershipAndTransferCreationData.get("Formatted Name1"));
 	    objCIOTransferPage.enter(objCIOTransferPage.startDate, hashMapOwnershipAndTransferCreationData.get("Start Date"));
 	    objCIOTransferPage.enter(objCIOTransferPage.endDate,  hashMapOwnershipAndTransferCreationData.get("End Date"));

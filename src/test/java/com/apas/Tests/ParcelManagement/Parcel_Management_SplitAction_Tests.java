@@ -1892,10 +1892,10 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 */
 	@Test(description = "SMAB-T2882, SMAB-T2895, SMAB-T3826: Verify generation of Interim Parcels for Split Mapping Action and validation around it", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
-	public void ParcelManagement_VerifyGenerationOfInterimParcelForSplitMappingAction(String loginUser) throws Exception {
+	public void AParcelManagement_VerifyGenerationOfInterimParcelForSplitMappingAction(String loginUser) throws Exception {
 		
 		//Fetching Interim parcels
-		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '8%' "
+		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '8%' and name like '%0'"
 				  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		
 		String apn1 = salesforceAPI.select(queryInterimAPNValue).get("Name").get(0);
