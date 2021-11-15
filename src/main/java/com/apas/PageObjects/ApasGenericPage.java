@@ -4,10 +4,8 @@ import com.apas.Utils.DateUtil;
 import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
-import com.apas.config.modules;
 import com.apas.config.modulesObjectName;
 
-import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
@@ -29,7 +27,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.Clock;
 import java.util.*;
 import java.util.List;
 
@@ -417,7 +414,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public void clickShowMoreButton(String modRecordName) throws Exception {		
 		Thread.sleep(1000);
-		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+ modRecordName +"']//parent::span//parent::td//following-sibling::th//a[@role = 'button']|//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//td//a[text() = '"+ modRecordName +"']//parent::span//parent::td//following-sibling::td//a[@role = 'button']";
+		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+ modRecordName +"']//parent::span//parent::td//following-sibling::th//a[@role = 'button']|//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//td//a[text() = '"+ modRecordName +"']//parent::span//parent::td//following-sibling::td//a[@role = 'button']|//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+modRecordName+"']//ancestor::th//following-sibling::td//a[@role = 'button']";
 		WebElement modificationsIcon = locateElement(xpathStr, 30);
 		clickAction(modificationsIcon);
 		ReportLogger.INFO(modRecordName + " record exist and user is able to click Show More button against it");
@@ -728,25 +725,18 @@ public void searchModule(String moduleToSearch) throws Exception {
 	 */
 	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
 		
-		String excEnv = System.getProperty("region");		
 		String fieldValue;
 		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'"
 				+ sectionName + "')]";
 		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName
 				+ "']/../..//slot[@slot='outputField']";
 		String fieldXpath;
-		if (!excEnv.equalsIgnoreCase("QA")) {
-			fieldXpath = fieldPath + "//force-hoverable-link//a//span | " + fieldPath + "//lightning-formatted-text | "
-					+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
-					+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
-					+ fieldPath + "//a//span | "+"//*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number | //*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";
-		} else {
-			fieldXpath = fieldPath + "//force-hoverable-link//a | " + fieldPath + "//lightning-formatted-text | "
-					+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
-					+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
-					+ fieldPath + "//a | "+"//*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number|//*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";	}
 		
-
+		fieldXpath = fieldPath + "//force-hoverable-link//a//span | " + fieldPath + "//lightning-formatted-text | "
+				+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
+				+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
+				+ fieldPath + "//a//span | "+"//*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number | //*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";
+	
 		waitForElementToBeVisible(20, fieldXpath);
 		
 		try {

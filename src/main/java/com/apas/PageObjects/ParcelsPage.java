@@ -253,6 +253,9 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//slot//div[contains(@class,'slds-text-heading_small')]/ancestor::c-org_parcel-ancestry-graph//div[2]/*[name()='svg']/*[name()='svg']/*[name()='text'][2]/*[name()='tspan'][3]")
 	public WebElement ancestorySqft;
+	
+	@FindBy(xpath ="//*[@class='actionBody']//*[text()='RP']")
+	public WebElement rpRadioButton;
 
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -445,6 +448,15 @@ public class ParcelsPage extends ApasGenericPage {
 		Thread.sleep(5000);
 		scrollToBottom();
 		createRecord();
+		if(dataMap.containsKey("RP Account")) {
+			Click(rpRadioButton);
+			ReportLogger.INFO("Creating RP Owner.");
+		}
+		else {
+			ReportLogger.INFO("Creating BPP Owner.");
+		}
+		
+		Thread.sleep(2000);
 		Click(ownershipNextButton);
 		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
 		selectOptionFromDropDown(typeDropDown, type);
@@ -507,10 +519,7 @@ public class ParcelsPage extends ApasGenericPage {
 			waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);
 			
 			selectOptionFromDropDown(recordTypeDropdown, dataMap.get("Record Type"));
-
 			selectOptionFromDropDown(group,dataMap.get("Group"));
-
-			
 
 			Thread.sleep(2000);
 			selectOptionFromDropDown(typeOfAuditTrailDropdown, dataMap.get("Type of Audit Trail Record?"));
@@ -538,7 +547,7 @@ public class ParcelsPage extends ApasGenericPage {
 		    
 		    if(responseSearchedAPN.isEmpty()) {
 		    	createParcel(apn,parcelNum,PUC);
-		    }else if (responseSearchedApnAgain.isEmpty()) {
+		    }else if (!responseSearchedApnAgain.isEmpty()) {
 		    	objSalesforceAPI.delete("Parcel__c",querySearchAPN);
 		    	createParcel(apn,parcelNum,PUC);
 		    }else {

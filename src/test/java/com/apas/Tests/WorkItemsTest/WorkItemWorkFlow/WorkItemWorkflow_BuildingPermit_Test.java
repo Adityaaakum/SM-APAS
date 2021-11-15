@@ -527,7 +527,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         objBuildingPermitPage.globalSearchRecords(importReviewWorkItem); 
         
         WebElement statusText=driver.findElement(By.xpath("//*[contains(text(),'Construction Completed')]"));
-        objBuildingPermitPage.waitForElementToBeInVisible(statusText);
+        objBuildingPermitPage.waitForElementToBeVisible(statusText);
         String expectedStatus=statusText.getText();
         
         softAssert.assertEquals(expectedStatus, "Construction Completed", "SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
@@ -611,17 +611,17 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 				.findElement(By.xpath("//a[contains(text(),'" + importReviewWorkItem + "')]"));
 		String expectedWI = completedWorkItem.getText();
 		softAssert.assertEquals(expectedWI, importReviewWorkItem,
-				"SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+				"SMAB-T3007:Status of the work item should be Construction completed");
 	
 		// Step 10: Going to WI page and checking the status
 		objBuildingPermitPage.globalSearchRecords(importReviewWorkItem);
 
 		WebElement statusText = driver.findElement(By.xpath("//*[contains(text(),'Construction Completed')]"));
-		objBuildingPermitPage.waitForElementToBeInVisible(statusText);
+		objBuildingPermitPage.waitForElementToBeVisible(statusText);
 		String expectedStatus = statusText.getText();
 
 		softAssert.assertEquals(expectedStatus, "Building Permit - Construction Completed - Manual Entry",
-				"SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+				"SMAB-T3007:Status of the work item should be Construction completed");
 
 //    Step11: Going to Home Page and then In Pool Tab to Accept the work item & Going to Tab In Progress to verify the work item moved to in progress tab.
 
@@ -705,16 +705,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		// Step10: Opening the building permit module
 		String buildingPermitQuery = "SELECT Id FROM Building_Permit__c where Name = '" + buildingPermitNumber +"'";
 		String buildingPermitId = objSalesforceAPI.select(buildingPermitQuery).get("Id").get(0);
-		String executionEnv = "";
-		
-		if (System.getProperty("region").toUpperCase().equals("QA"))
-			executionEnv = "qa";
-		if (System.getProperty("region").toUpperCase().equals("E2E"))
-			executionEnv = "e2e";
-		if (System.getProperty("region").toUpperCase().equals("PREUAT"))
-			executionEnv = "preuat";
-		if (System.getProperty("region").toUpperCase().equals("STAGING"))
-			executionEnv = "staging";
+		String executionEnv = System.getProperty("region");
 		
 		driver.navigate().to("https://smcacre--"+executionEnv+
 				 ".lightning.force.com/lightning/r/Building_Permit__c/"+buildingPermitId+"/view");
@@ -761,7 +752,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		objBuildingPermitPage.globalSearchRecords(editImportReviewWorkItem);
 
 		WebElement statusText = driver.findElement(By.xpath("//*[contains(text(),'Construction Completed')]"));
-		objBuildingPermitPage.waitForElementToBeInVisible(statusText);
+		objBuildingPermitPage.waitForElementToBeVisible(statusText);
 		String expectedStatus=driver.findElement(By.xpath("//*[contains(@class,'slds-text-title slds-truncate') and contains(@title,'Action')]/../*[contains(@class,'fieldComponent slds-text-body--regular slds-show_inline-block slds-truncate')]")).getText();
 		softAssert.assertEquals(expectedStatus, "Construction Completed",
 				"SMAB-T2987, SMAB-T2988, SMAB-T2989:Status of the work item should be Construction completed");
@@ -850,16 +841,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		
 		String buildingPermitQuery = "SELECT Id FROM Building_Permit__c where Name = '" + buildingPermitNumber +"'";
 		String buildingPermitId = objSalesforceAPI.select(buildingPermitQuery).get("Id").get(0);
-		String executionEnv = "";
-		
-		if (System.getProperty("region").toUpperCase().equals("QA"))
-			executionEnv = "qa";
-		if (System.getProperty("region").toUpperCase().equals("E2E"))
-			executionEnv = "e2e";
-		if (System.getProperty("region").toUpperCase().equals("PREUAT"))
-			executionEnv = "preuat";
-		if (System.getProperty("region").toUpperCase().equals("STAGING"))
-			executionEnv = "staging";
+		String executionEnv = System.getProperty("region");
 		
 		driver.navigate().to("https://smcacre--"+executionEnv+
 				 ".lightning.force.com/lightning/r/Building_Permit__c/"+buildingPermitId+"/view");
@@ -899,16 +881,16 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 				.findElement(By.xpath("//a[contains(text(),'" + editImportReviewWorkItem + "')]"));
 		String expectedWI = completedWorkItem.getText();
 		softAssert.assertEquals(expectedWI, editImportReviewWorkItem,
-				"SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+				"SMAB-T3007:Status of the work item should be Construction completed");
 
 		// Step 16: Going to WI page and checking the status
 		objBuildingPermitPage.globalSearchRecords(editImportReviewWorkItem);
 
 		WebElement statusText = driver.findElement(By.xpath("//*[contains(text(),'Construction Completed')]"));
-		objBuildingPermitPage.waitForElementToBeInVisible(statusText);
+		objBuildingPermitPage.waitForElementToBeVisible(statusText);
 		String expectedStatus=driver.findElement(By.xpath("//*[contains(@class,'slds-text-title slds-truncate') and contains(@title,'Action')]/../*[contains(@class,'fieldComponent slds-text-body--regular slds-show_inline-block slds-truncate')]")).getText();
 		softAssert.assertEquals(expectedStatus, "Construction Completed",
-				"SMAB-T2989, SMAB-T3089:Status of the work item should be Construction completed");
+				"SMAB-T3007:Status of the work item should be Construction completed");
 
 //             Step17: Going to Home Page and then In Pool Tab to Accept the work item & Going to Tab In Progress to verify the work item moved to in progress tab.
 
