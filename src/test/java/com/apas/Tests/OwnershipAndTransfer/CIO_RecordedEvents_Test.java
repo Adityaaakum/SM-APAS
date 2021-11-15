@@ -3702,4 +3702,124 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.logout();
 	}
 	
+	/*
+	 Recorder Integration- Verify No WI should be created if recorded document has invalid Recorded APN
+	 * 
+	 */
+
+	@Test(description = "SMAB-T3963:Recorder Integration- Verify No WI should be created if recorded document has invalid Recorded APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
+	public void RecorderIntegration_InvalidRecordedAPN_VerifyNoWICreated(String loginUser) throws Exception {
+
+		
+		// Step 1: getting recorded document for CIO and corresponding recorded apn 
+		
+		String fetchDocId ="SELECT id from recorded_document__c where recorder_doc_type__c='AD' and xAPN_count__c=1";
+		String	documentId=salesforceAPI.select(fetchDocId).get("Id").get(0);
+		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI
+				.select("SELECT ID,Name FROM Recorded_APN__c WHERE RECORDED_DOCUMENT__C='" + documentId + "'");
+		String recordedAPNID = hashMapRecordedApn.get("Id").get(0);
+
+		if(salesforceAPI.select("SELECT ID FROM Recorded_APN__c WHERE RECORDED_DOCUMENT__C='"+documentId+"'"+" AND PARCEL__C != NULL ").size()!=0)
+        		 
+		{	
+			
+		// Step 2: updating recorder_apn and parcel value in recorded apn
+		
+		JSONObject jsonToUpdateRecordedAPN = new JSONObject();
+		jsonToUpdateRecordedAPN.put("Parcel__c", "");
+		jsonToUpdateRecordedAPN.put("Recorder_APN__c", "123");
+		jsonToUpdateRecordedAPN.put("Status__c", "Pending");
+		salesforceAPI.update("Recorded_APN__c", recordedAPNID, jsonToUpdateRecordedAPN);
+		}
+		
+		// Step 3: generating recorded work items from job
+		objCioTransfer.generateRecorderJobWorkItems(documentId);
+
+		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO' and CreatedDate =TODAY and Recorded_Document__c='"+documentId+"'";
+		HashMap<String, ArrayList<String>> hashMapWorkItem=salesforceAPI.select(WorkItemQuery);
+		
+		softAssert.assertEquals(hashMapWorkItem.size(),"0",
+				"SMAB-T3963:Verifying that No WI should be created if recorded document has invalid Recorded APN");
+
+		 String statusRECDoc=salesforceAPI.select("SELECT Status__c FROM Recorded_Document__c where id='"+documentId+"'").get("Status__c").get(0);
+		 String statusRECAPN=salesforceAPI.select("SELECT Status__c FROM Recorded_APN__c where id='"+recordedAPNID+"'").get("Status__c").get(0);
+
+		softAssert.assertEquals(statusRECDoc,"Processed",
+				"SMAB-T3963:Verifying status of rec doc with invalid APN should be processed after REC INtegration batch job execution");
+
+		softAssert.assertEquals(statusRECAPN,"Processed",
+				"SMAB-T3963:Verifying status of rec APN  with invalid APN should be processed after REC INtegration batch job execution");
+
+	}
+	
+	/*
+	 Recorder Integration- Verify No WI should be created if recorded document has invalid Recorded APN
+	 * 
+	 */
+
+	@Test(description = "SMAB-T3964:Recorder Integration- Verify No WI should be created if recorded document has one valid APN and one invalid Recorded APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
+	public void RecorderIntegration_Invalid_ValidRecordedAPN_VerifyWICreated(String loginUser) throws Exception {
+
+		
+		// Step 1: getting recorded document for mapping and corresponding recorded apn 
+		
+		String fetchDocId ="SELECT id from recorded_document__c where recorder_doc_type__c='ES' and xAPN_count__c=2";
+		String	documentId=salesforceAPI.select(fetchDocId).get("Id").get(0);
+		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI
+				.select("SELECT ID,Name FROM Recorded_APN__c WHERE RECORDED_DOCUMENT__C='" + documentId + "'");
+		String recordedAPNID1 = hashMapRecordedApn.get("Id").get(0);
+		String recordedAPNID2 = hashMapRecordedApn.get("Id").get(1);
+
+		JSONObject jsonToUpdateRecordedAPN1 = new JSONObject();
+		
+		jsonToUpdateRecordedAPN1.put("Status__c", "Pending");
+		salesforceAPI.update("Recorded_APN__c", recordedAPNID1, jsonToUpdateRecordedAPN1);
+		salesforceAPI.update("Recorded_APN__c", recordedAPNID2, jsonToUpdateRecordedAPN1);
+		
+		if(salesforceAPI.select("SELECT ID FROM Recorded_APN__c WHERE id='"+recordedAPNID1+"'"+" AND PARCEL__C != NULL ").size()!=0 && salesforceAPI.select("SELECT ID FROM Recorded_APN__c WHERE id='"+recordedAPNID2+"'"+" AND PARCEL__C != NULL ").size()!=0)
+       		 
+		{	
+			
+		// Step 2: updating recorder_apn and parcel value in recorded apn
+		
+		JSONObject jsonToUpdateRecordedAPN = new JSONObject();
+		jsonToUpdateRecordedAPN.put("Parcel__c", "");
+		jsonToUpdateRecordedAPN.put("Recorder_APN__c", "123");
+		salesforceAPI.update("Recorded_APN__c", recordedAPNID1, jsonToUpdateRecordedAPN);
+		}
+		
+		String APNIdFromValidREcordedAPN =salesforceAPI.select("SELECT PARCEL__C FROM Recorded_APN__c WHERE RECORDED_DOCUMENT__C='"+fetchDocId+"'"+" AND PARCEL__C != NULL ").get("PARCEL__C").get(0);
+		
+		// Step 3: generating recorded work items from job
+		objCioTransfer.generateRecorderJobWorkItems(documentId);
+
+		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='Mapping' and CreatedDate =TODAY and Recorded_Document__c='"+documentId+"'";
+		HashMap<String, ArrayList<String>> hashMapWorkItem=salesforceAPI.select(WorkItemQuery);
+		
+		softAssert.assertEquals(hashMapWorkItem.size(),"1",
+				"SMAB-T3964:Verifying that only one WI should be created if recorded document has one invalid and one Recorded APN");
+
+		String workItemId=hashMapWorkItem.get("Id").get(0);
+				
+		String apnWorkItemQuery = "SELECT parcel__c FROM Work_Item_Linkage__c where Work_Item__c ='"+workItemId+"' ";
+
+		softAssert.assertEquals(salesforceAPI.select(apnWorkItemQuery).get("Parcel__c").get(0),APNIdFromValidREcordedAPN,
+						"SMAB-T3964: Validation that one WI for valid recorded APN is created when rec doc has one valid and one invalid APN ");
+				
+		 String statusRECDoc=salesforceAPI.select("SELECT Status__c FROM Recorded_Document__c where id='"+documentId+"'").get("Status__c").get(0);
+		 String statusRECAPN1=salesforceAPI.select("SELECT Status__c FROM Recorded_APN__c where id='"+recordedAPNID1+"'").get("Status__c").get(0);
+		 String statusRECAPN2=salesforceAPI.select("SELECT Status__c FROM Recorded_APN__c where id='"+recordedAPNID2+"'").get("Status__c").get(0);
+
+		softAssert.assertEquals(statusRECDoc,"Processed",
+				"SMAB-T3964:Verifying status of rec doc with one invalid APN and one valid APN should be processed after REC INtegration batch job execution");
+
+		softAssert.assertEquals(statusRECAPN1,"Processed",
+				"SMAB-T3964:Verifying status of rec APN  with invalid APN should be processed after REC INtegration batch job execution");
+
+		softAssert.assertEquals(statusRECAPN2,"Processed",
+				"SMAB-T3964:Verifying status of rec APN  with valid APN should be processed after REC INtegration batch job execution");
+
+	}
 }
