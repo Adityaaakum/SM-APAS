@@ -4479,5 +4479,136 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3964:Verifying status of rec APN  with valid APN should be processed after REC INtegration batch job execution");
 
 	}
+	
+	/*
+	 * Verify that For Recorder Feed with no APN , the initial Work Item will be routed to respective Work Pools based on document type. If routed to CIO Pool, the staff will try to attach APN/APN's as needed or use "Change WorkPool" option to acsertain APN
+	 * 
+	 */
+
+	@Test(description = "SMAB-T3962:Verify for Recorder Feed with no APN ,If routed to CIO Pool, the staff will try to attach APN/APN's as needed or use \"Change WorkPool\" option to acsertain APN", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration"}, enabled = true)
+	public void RecorderIntegration_VerifyWorkPoolChange_NewWIgeneratedForNOAPNRecordedDocument(
+			String loginUser) throws Exception {
+
+		String getApnToAdd = "Select Id,Name from Parcel__c where Id NOT IN(Select Parcel__c from Recorded_APN__c ) AND Status__c='Active' Limit 1";
+		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI.select(getApnToAdd);
+		String recordedAPN = hashMapRecordedApn.get("Name").get(0);
+
+		// login with CIO user
+
+		objMappingPage.login(loginUser);
+		objMappingPage.searchModule(PARCELS);
+
+		objCioTransfer.generateRecorderJobWorkItems("DE", 0);
+
+		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='NO APN' AND Sub_type__c='NO APN - CIO'  And status__c='In pool' order by createdDate desc limit 1";
+		String WorkItemNo = salesforceAPI.select(WorkItemQuery).get("Name").get(0);
+		objMappingPage.globalSearchRecords(WorkItemNo);
+
+		// CIO staff accepts the NO APN WI for CIO
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		
+		// CIO staff changes the work pool of NO APN WO from CIO to Mapping
+
+		objCioTransfer.searchModule(HOME);
+		objCioTransfer.Click(objWorkItemHomePage.lnkTABHome);
+		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABWorkItems);
+		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInProgress);
+		Thread.sleep(4000);
+		objWorkItemHomePage.clickCheckBoxForSelectingWI(WorkItemNo);
+		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool));
+		objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.WorkPool, "Mapping");
+		objWorkItemHomePage.enter(objWorkItemHomePage.reasonForTransferring,"Test");
+		objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert);
+		
+		// login with Mapping user user
+		objCioTransfer.logout();
+		Thread.sleep(5000);
+		objMappingPage.login(users.MAPPING_STAFF);
+		
+		objCioTransfer.searchModule(HOME);
+		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABHome);
+		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABWorkItems);
+		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInPool);
+		Thread.sleep(4000);
+		objWorkItemHomePage.clickCheckBoxForSelectingWI(WorkItemNo);
+		objWorkItemHomePage.Click(objWorkItemHomePage.acceptWorkItemBtn);
+		Thread.sleep(4000);
+		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInProgress);
+		Thread.sleep(4000);
+		objWorkItemHomePage.openWorkItem(WorkItemNo);
+		objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);  	
+		
+		// User tries to add the Recorded APN
+		objMappingPage.Click(objWorkItemHomePage.recordedAPNtab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.NewButton));
+		objWorkItemHomePage.enter(objWorkItemHomePage.apnLabel, recordedAPN);
+		objWorkItemHomePage.selectOptionFromDropDown(objWorkItemHomePage.apnLabel, recordedAPN);
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.SaveButton));
+		Thread.sleep(2000);
+		// User validates the status of added recorded APN
+		driver.navigate().back();
+		driver.navigate().back();
+
+		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Pending",
+						"SMAB-T3962: Validating that status of added APN is Pending");
+
+		// mapping staff changes the work pool of NO APN WI from  Mapping to CIO
+
+		objCioTransfer.searchModule(HOME);
+		objCioTransfer.Click(objWorkItemHomePage.lnkTABHome);
+		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABWorkItems);
+		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInProgress);
+		Thread.sleep(4000);
+		objWorkItemHomePage.clickCheckBoxForSelectingWI(WorkItemNo);
+		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool));
+		objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.WorkPool, "CIO");
+		objWorkItemHomePage.enter(objWorkItemHomePage.reasonForTransferring,"Test");
+		objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert);
+		
+		// CIO staff accepts the NO APN WI for CIO
+		objCioTransfer.logout();
+		Thread.sleep(5000);
+		objMappingPage.login(users.CIO_STAFF);
+		objMappingPage.searchModule(PARCELS);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+				
+		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Pending",
+				"SMAB-T3962: Validating that status of added APN is Pending");
+		
+		// CIO staff User clicks on Migrate button
+		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.migrateAPN));
+		Thread.sleep(2000);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert);
+
+		// User validates the status of added recorded APN
+		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Processed",
+				"SMAB-T3962: Validating that status of added APN is processed");
+		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.successAlert), "Pending",
+				"SMAB-T3962: Success message appears saying Recorded APN is merged successfully");
+		
+		// User tries to complete the WI
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert);
+
+		// User validates the status of the WI
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "Completed",
+				"SMAB-T3962:Validating that status of WI is completed");
+		softAssert.assertEquals(salesforceAPI.select(
+				"SELECT Id,name FROM Work_Item__c where Type__c='CIO'  and Sub_Type__c ='Process Transfer & Ownership' AND AGE__C=0 And status__c='In pool' order by createdDate desc limit 1")
+				.get("Name") != null, true, "SMAB-T3962:Validating a new WI genrated as soon as New APN is processed.");
+		objWorkItemHomePage.logout();
+
+	}
 
 }
