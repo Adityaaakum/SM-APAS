@@ -4447,7 +4447,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		salesforceAPI.update("Recorded_APN__c", recordedAPNID1, jsonToUpdateRecordedAPN);
 		}
 		
-		String APNIdFromValidREcordedAPN =salesforceAPI.select("SELECT PARCEL__C FROM Recorded_APN__c WHERE RECORDED_DOCUMENT__C='"+fetchDocId+"'"+" AND PARCEL__C != NULL ").get("PARCEL__C").get(0);
+		String APNIdFromValidREcordedAPN =salesforceAPI.select("SELECT PARCEL__C FROM Recorded_APN__c WHERE RECORDED_DOCUMENT__C='"+documentId+"' AND PARCEL__C != NULL ").get("Parcel__c").get(0);
 		
 		// Step 3: generating recorded work items from job
 		objCioTransfer.generateRecorderJobWorkItems(documentId);
