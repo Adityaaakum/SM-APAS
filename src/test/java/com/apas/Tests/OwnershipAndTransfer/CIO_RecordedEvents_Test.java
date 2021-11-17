@@ -4506,7 +4506,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String WorkItemNo = salesforceAPI.select(WorkItemQuery).get("Name").get(0);
 		objMappingPage.globalSearchRecords(WorkItemNo);
 
-		// CIO staff accepts the NO APN WI for CIO
+		// CIO staff accepts the NO APN WI for  CIO
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
@@ -4531,6 +4531,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Thread.sleep(5000);
 		objMappingPage.login(users.MAPPING_STAFF);
 		
+		// Mapping staff accepts the NO APN WI for  CIO
+
 		objCioTransfer.searchModule(HOME);
 		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABHome);
 		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABWorkItems);
@@ -4553,12 +4555,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.SaveButton));
 		Thread.sleep(2000);
+		
 		// User validates the status of added recorded APN
 		driver.navigate().back();
 		driver.navigate().back();
 
 		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Pending",
-						"SMAB-T3962: Validating that status of added APN is Pending");
+						"SMAB-T3962: Validating that status of added recorded APN is Pending");
 
 		// mapping staff changes the work pool of NO APN WI from  Mapping to CIO
 		driver.navigate().refresh();
@@ -4588,7 +4591,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objMappingPage.Click(objWorkItemHomePage.recordedAPNtab);
 
 		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Pending",
-				"SMAB-T3962: Validating that status of added APN is Pending");
+				"SMAB-T3962: Validating that status of added recorded APN is Pending");
 		
 		// CIO staff User clicks on Migrate button
 		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.migrateAPN));
@@ -4597,9 +4600,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// User validates the status of added recorded APN
 		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Processed",
-				"SMAB-T3962: Validating that status of added APN is processed");
-		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.successAlert), "success Success All recorded apn(s) are migrated successfully Close ",
-				"SMAB-T3962: Success message appears saying Recorded APN is migrated successfully");
+				"SMAB-T3962: Validating that status of added Recorded APN is processed once migrated");
+		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.successAlert).trim(), "success Success All recorded apn(s) are migrated successfully Close",
+				"SMAB-T3962: validatinmg that Success message appears once Recorded APN is migrated");
 		
 		// User tries to complete the WI
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
@@ -4608,13 +4611,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// User validates the status of the WI
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "Completed",
-				"SMAB-T3962:Validating that status of WI is completed");
+				"SMAB-T3962:Validating that status of NO APN WI is completed once CIO user completes the WI");
 		
 		String workItemId=salesforceAPI.select("SELECT Id,name FROM Work_Item__c where Type__c='CIO'  and Sub_Type__c ='Process Transfer & Ownership'  And status__c='In Progress' and CreatedDate =TODAY order by createdDate desc limit 1").get("Id").get(0);
 		String apnWorkItemQuery = "SELECT parcel__c FROM Work_Item_Linkage__c where Work_Item__c ='"+workItemId+"' ";
 
 		softAssert.assertEquals(salesforceAPI.select(apnWorkItemQuery).get("Parcel__c").get(0),APNIdFromValidREcordedAPN,
-						"SMAB-T3962: Validation Validating a new WI genrated as soon as New APN is processed ");
+						"SMAB-T3962:  Validating a new WI is genrated as soon as New APN is migrated ");
 				
 		objWorkItemHomePage.logout();
 

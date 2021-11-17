@@ -57,7 +57,7 @@ public class BPPTrend_EfileImport_Test extends TestBase {
 		objEFileImportLogPage=new EFileImportLogsPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
-		rollYearForImport = "2022";
+		rollYearForImport = "2021";
 		objSalesforceAPI = new SalesforceAPI();
 		objEfileHomePage.updateRollYearStatus("Open", rollYearForImport);
 
