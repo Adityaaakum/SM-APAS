@@ -157,6 +157,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		String missingAPNBuildingPermitNumber = "T" + DateUtil.getCurrentDate("dd-hhmmss");
 		Thread.sleep(1000);
 		String invalidAPNBuildingPermitNumber = "T" + DateUtil.getCurrentDate("dd-hhmmss");
+		String execEnv = System.getProperty("region");
 		String buildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "WrongParcelAndSitusTypePopulation.txt";
 		String temporaryFile = System.getProperty("user.dir") + CONFIG.get("temporaryFolderPath") + "WrongParcelAndSitusTypePopulation.txt";
 		FileUtils.replaceString(buildingPermitFile,"<PERMITNO>",missingAPNBuildingPermitNumber,temporaryFile);
@@ -187,7 +188,14 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
 
 		//Step3: Opening the Building Permit with the Building Permit Number imported through Efile import
-		objBuildingPermitPage.globalSearchRecords(missingAPNBuildingPermitNumber);
+		String buildingPermitNameQuery = "SELECT Id FROM Building_Permit__c where Name = '"+missingAPNBuildingPermitNumber+"'";
+		HashMap<String, ArrayList<String>> hashMapBuildingPermitName = salesforceAPI.select(buildingPermitNameQuery);
+		String buildingPermitName = hashMapBuildingPermitName.get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Building_Permit__c/"
+				+ buildingPermitName + "/view");
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.getFieldValueFromAPAS(""));
+		objBuildingPermitPage.getFieldValueFromAPAS("Building Permit Number");
+		
 
 		//Step4: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
 		String expectedMessage = "Invalid APN.";
@@ -202,10 +210,15 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 
 		//Step5: Opening the Building Permit with the Building Permit Number imported through Efile import
 		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
-		objBuildingPermitPage.globalSearchRecords(invalidAPNBuildingPermitNumber);
-
+		String buildingPermitNumberQuery = "SELECT Id FROM Building_Permit__c where Name = '"+invalidAPNBuildingPermitNumber+"'";
+		HashMap<String, ArrayList<String>> hashMapBuildingPermitNumber = salesforceAPI.select(buildingPermitNumberQuery);
+		String buildingPermitNumber = hashMapBuildingPermitNumber.get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Building_Permit__c/"
+				+ buildingPermitNumber + "/view");
+		objPage.waitForElementToBeVisible(objBuildingPermitPage.getFieldValueFromAPAS(""));
+		objBuildingPermitPage.getFieldValueFromAPAS("Building Permit Number");
+		
 		//Step6: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
-		expectedMessage = "Invalid APN.";
 		softAssert.assertEquals(objBuildingPermitPage.warningMessageWithPriorityFlag.getText().trim(), expectedMessage, "SMAB-T451: Warning message validation for building permit(Imported through E-File Intake module) with wrong APN");
 
 		//Logout at the end of the test
