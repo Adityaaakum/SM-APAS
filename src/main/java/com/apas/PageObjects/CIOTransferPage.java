@@ -96,7 +96,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String transferStatus ="CIO Transfer Status";
 	public String componentActionsButtonText = "Component Actions";
 	public String workItemTypeDropDownComponentsActionsModal = "Work Item Type";
-
+   
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
 	public static final String CIO_EVENT_CODE_GLEASM="CIO-GLEASM";
 	public static final String CIO_EVENT_CODE_PART="CIO-PART";
@@ -146,6 +146,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String calculatorSwitchLabel = "Calculator Switch";
 	public String activeLabel ="Active";
 	public String releaseIndicatorLabel = "Release Indicator";
+	public String useThisQuickActionButtonOnCopyTOMailTo = "Use This";
 	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
@@ -197,7 +198,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath =commonXpath+ "//select[@name='Formatted_Name_1']")
 	public WebElement formattedName1;
 	
-	@FindBy(xpath = commonXpath+"//input[@name='Mailing_ZIP']")
+	@FindBy(xpath = commonXpath+"//input[@name='Mailing_Zip__c']")
 	public WebElement mailZipCopyToMailTo;
 	
 	@FindBy(xpath = commonXpath+"//input[@name='Please_Enter_the_Retained_Ownership_Percentage_for_this_Owner']")
@@ -499,11 +500,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					Select select = new Select(formattedName1);
 					select.selectByVisibleText(granteeForMailTo);
 					Click(formattedName1);
-					Click(mailingState);
-					Select selectMailingState = new Select(mailingState);
-					selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"));
-					Click(mailingState);
+					
 					enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
+					Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));
 					Click(getButtonWithText(nextButton));
 					ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
 				} catch (Exception e) {
@@ -719,7 +718,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					login(SYSTEM_ADMIN);
 
-					Thread.sleep(4000);
+					Thread.sleep(5000);
+					searchModule(EFILE_INTAKE_VIEW);
 					String recordedDocumentID = salesforceApi.select(
 							"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=0")
 							.get("Id").get(0);
@@ -873,10 +873,11 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					ReportLogger.INFO("CIO!! Transfer submitted for approval");
 					waitForElementToBeClickable(10, finishButton);
 					Click(getButtonWithText(finishButton));
-
+					
 					logout();
 
 					login(CIO_SUPERVISOR);
+					Thread.sleep(3000);
 					driver.navigate()
 							.to("https://smcacre--" + excEnv
 									+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
@@ -887,6 +888,10 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					waitForElementToBeClickable(10, finishButton);
 					Click(getButtonWithText(finishButton));
+					salesforceApi.update("Recorded_APN_Transfer__c", recordeAPNTransferID, "Auto_Confirm_Start_Date__c",
+							"2021-04-07");
+					salesforceApi.generateReminderWorkItems(SalesforceAPI.CIO_AUTOCONFIRM_BATCH_JOB);
+					
 
 					// Fetching appraiser WI genrated on approval of CIO WI
 					if (enrollmentType.equalsIgnoreCase(APPRAISAL_NORMAL_ENROLLMENT)) {
@@ -903,7 +908,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 						}					
 						
 						String workItemNoForAppraiser = salesforceApi.select(
-								"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by createdDate desc")
+								"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by name desc")
 								.get("Name").get(0);						
 						String workItemNoForQuestionnaireCorrespondence = salesforceApi.select(
 								"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Questionnaire Correspondence' order by createdDate desc")

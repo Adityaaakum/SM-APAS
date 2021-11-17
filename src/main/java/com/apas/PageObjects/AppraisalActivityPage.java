@@ -44,6 +44,7 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	public String dorLabel ="DOR";
 	public String dovLabel ="DOV";
 	public String apnLabel ="APN";
+	public String ownerName ="Owner Name";
 	
 	
 	@FindBy(xpath = "//select[@name='Rejection_Reason_PickList']")
