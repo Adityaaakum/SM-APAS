@@ -1700,8 +1700,8 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
 		
 		objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
-		String eventId=objMappingPage.getFieldValueFromAPAS(trail.EventId);
-		String requestOrigin=objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
+		String eventId=objMappingPage.getFieldValueFromAPAS(trail.eventIdLabel);
+		String requestOrigin=objMappingPage.getFieldValueFromAPAS(trail.requestOriginLabel);
 		
 		driver.navigate().back();
 		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
@@ -1710,16 +1710,16 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.secondRelatedBuisnessEvent);
 		objWorkItemHomePage.scrollToBottom();
 		
-		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondence), parentAuditTrailNumber,
+		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondenceLabel), parentAuditTrailNumber,
 				"SMAB-T3385: Verifying that business event created by Recorder feed for Mapping WI is child of parent Recorded correspondence event");
 
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedBuisnessEvent), "",
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedBusinessEventLabel), "",
 				"SMAB-T3385:Verifying that related business event field in business event created by Recorder feed for Mapping WI  is blank");
 		
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.eventIdLabel), eventId,
 				"SMAB-T3385:Verifying that Event ID field in the business event created by Recorder feed for Mapping WI should be inherited from parent correspondence event");
 		
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.requestOriginLabel), requestOrigin,
 				"SMAB-T3385:Verifying that business event created by Recorder feed for Mapping WI inherits the Request Origin from parent event");
 		
 		driver.navigate().back();
@@ -1895,7 +1895,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	public void ParcelManagement_VerifyGenerationOfInterimParcelForSplitMappingAction(String loginUser) throws Exception {
 		
 		//Fetching Interim parcels
-		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '8%' "
+		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '8%' and name like '%0'"
 				  		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		
 		String apn1 = salesforceAPI.select(queryInterimAPNValue).get("Name").get(0);
@@ -2410,7 +2410,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String auditTrailNo = objWorkItemHomePage.getFieldValueFromAPAS("Name", "");
 		ReportLogger.INFO("Audit Trail no:" +auditTrailNo);
 		
-        String description= objWorkItemHomePage.getFieldValueFromAPAS(trail.description);
+        String description= objWorkItemHomePage.getFieldValueFromAPAS(trail.descriptionLabel);
 		String comments= hashMapSplitActionMappingData.get("Comments");
 		reasonCode= hashMapSplitActionMappingData.get("Reason code");
 			
