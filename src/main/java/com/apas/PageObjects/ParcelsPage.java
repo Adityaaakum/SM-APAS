@@ -547,7 +547,7 @@ public class ParcelsPage extends ApasGenericPage {
 		    
 		    if(responseSearchedAPN.isEmpty()) {
 		    	createParcel(apn,parcelNum,PUC);
-		    }else if (responseSearchedApnAgain.isEmpty()) {
+		    }else if (!responseSearchedApnAgain.isEmpty()) {
 		    	objSalesforceAPI.delete("Parcel__c",querySearchAPN);
 		    	createParcel(apn,parcelNum,PUC);
 		    }else {

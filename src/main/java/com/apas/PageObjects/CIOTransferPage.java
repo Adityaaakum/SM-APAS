@@ -200,7 +200,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Back'] | //button[text()='Back']")
 	public WebElement quickActionOptionBack;
 	
-	@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText']")
+	@FindBy(xpath = "//div[@class='flowruntimeRichTextWrapper flowruntimeDisplayText'] | //div[@class='slds-m-bottom_x-small']")
 	public WebElement validateErrorText;	
 	
 	@FindBy(xpath =commonXpath+ "//select[@name='Formatted_Name_1']")
