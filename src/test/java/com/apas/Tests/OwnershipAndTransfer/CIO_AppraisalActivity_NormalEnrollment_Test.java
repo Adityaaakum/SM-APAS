@@ -216,7 +216,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				Thread.sleep(3000);
 
 				objCIOTransferPage.login(CIO_STAFF);
-				Thread.sleep(4000);
+				
 				objAppraisalActivity.waitForElementToBeClickable(objApasGenericPage.appLauncher, 10);
 				
 				// Step 9 - Navigating to AT for newely create Review CIO -SALE WI
@@ -346,7 +346,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
             
             objCIOTransferPage.login(CIO_SUPERVISOR);
             
-            Thread.sleep(7000);
+            
             objCIOTransferPage.globalSearchRecords(WorkItemForReviewCioSale);
            	
             driver.navigate().to("https://smcacre--" + excEnv
@@ -400,7 +400,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 			Thread.sleep(3000);
 			
 			objAppraisalActivity.login(APPRAISAL_SUPPORT);
-			Thread.sleep(5000);
+			
 			
 			driver.navigate().to("https://smcacre--" + excEnv
 					+ ".lightning.force.com/lightning/r/Transaction_Trail__c/"
@@ -480,7 +480,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 			Thread.sleep(3000);
 			
 			objAppraisalActivity.login(users.APPRAISAL_SUPPORT);
-			Thread.sleep(3000);
+			
 			
 			objAppraisalActivity.globalSearchRecords(arrayForWorkItemAfterCIOSupervisorApproval[1]);
 			objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.inProgressOptionInTimeline,10);
