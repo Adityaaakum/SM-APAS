@@ -3111,7 +3111,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertContains(objMappingPage.getFieldValueFromAPAS("Event Library"),
 				"Combine","SMAB-T3569: Verify event library updated from draft to Combine");
 		
-		String description= objWorkItemHomePage.getFieldValueFromAPAS(trail.description);
+		String description= objWorkItemHomePage.getFieldValueFromAPAS(trail.descriptionLabel);
 		String comments= hashMapCombineActionMappingData.get("Comments");
 		reasonCode= hashMapCombineActionMappingData.get("Reason code");
 			

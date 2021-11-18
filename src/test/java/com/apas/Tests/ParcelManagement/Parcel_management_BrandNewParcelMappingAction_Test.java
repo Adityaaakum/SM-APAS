@@ -1400,33 +1400,33 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
         //Validating the fields on AT=C on the Recorder WI
          objMappingPage.scrollToElement(objWorkItemHomePage.firstRelatedBuisnessEvent);
          objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
-         String EventLib=   objMappingPage.getFieldValueFromAPAS(trail.EventLibrary);
+         String EventLib=   objMappingPage.getFieldValueFromAPAS(trail.eventLibraryLabel);
          softAssert.assertContains(EventLib, "Recorded Document - MAPPING ", "SMAB-T2946:Verifying Eventlibrary of correspondence AuditTrail");
-         String EventType=   objMappingPage.getFieldValueFromAPAS(trail.EventType);
+         String EventType=   objMappingPage.getFieldValueFromAPAS(trail.eventTypeLabel);
          softAssert.assertContains(EventLib, "Recorded Document - MAPPING ","SMAB-T2946:Verifying EventType of correspondence AuditTrail");
-         String EventId=   objMappingPage.getFieldValueFromAPAS(trail.EventId);
+         String EventId=   objMappingPage.getFieldValueFromAPAS(trail.eventIdLabel);
          //Validating eventTitle of AT=C
-         String EventTitle=   objMappingPage.getFieldValueFromAPAS(trail.EventTitle);
+         String EventTitle=   objMappingPage.getFieldValueFromAPAS(trail.eventTitleLabel);
          softAssert.assertContains(EventTitle, EventType+" "+EventId, "SMAB-T2946:Verifying EventTitle of correspondence AuditTrail");         
-         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), "Recorder's Office" , "SMAB-T2946:Verifying RequestOrigin of correspondence AuditTrail");         
-         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed" , "SMAB-T2946:Verifying Status of correspondence AuditTrail");
+         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.requestOriginLabel), "Recorder's Office" , "SMAB-T2946:Verifying RequestOrigin of correspondence AuditTrail");         
+         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Completed" , "SMAB-T2946:Verifying Status of correspondence AuditTrail");
          //Navigating back to WI linked grid table
          driver.navigate().back();
          
          //Validating the fields on Second Buisness Event on the Recorder WI
          objMappingPage.scrollToElement(objWorkItemHomePage.secondRelatedBuisnessEvent);
          objMappingPage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
-         EventLib=   objMappingPage.getFieldValueFromAPAS(trail.EventLibrary);
+         EventLib=   objMappingPage.getFieldValueFromAPAS(trail.eventLibraryLabel);
          softAssert.assertEquals(EventLib, "DRAFT - MAPPING - CC", "SMAB-T2946:Verifying Eventlibrary of Buisnessevent AuditTrail");
-         EventType=   objMappingPage.getFieldValueFromAPAS(trail.EventType);
+         EventType=   objMappingPage.getFieldValueFromAPAS(trail.eventTypeLabel);
          softAssert.assertEquals(EventType, "DRAFT - MAPPING - CC", "SMAB-T2946:Verifying EventType of Buisnessevent AuditTrail");
-         EventId=   objMappingPage.getFieldValueFromAPAS(trail.EventId);
-         EventTitle=   objMappingPage.getFieldValueFromAPAS(trail.EventTitle);
+         EventId=   objMappingPage.getFieldValueFromAPAS(trail.eventIdLabel);
+         EventTitle=   objMappingPage.getFieldValueFromAPAS(trail.eventTitleLabel);
          //Validating eventitle of AT=BE
          softAssert.assertContains(EventTitle, EventType+" "+EventId, "SMAB-T2946:Verifying EventTitle of Buisnessevent AuditTrail");
-         objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
-         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), "Recorder's Office" ,"SMAB-T2946:Verifying RequestOrigin of Buisnessevent AuditTrail");         
-         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.Status), "Open" ,"SMAB-T2946:Verifying Status of Buisnessevent AuditTrail");
+         objMappingPage.getFieldValueFromAPAS(trail.requestOriginLabel);
+         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.requestOriginLabel), "Recorder's Office" ,"SMAB-T2946:Verifying RequestOrigin of Buisnessevent AuditTrail");         
+         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Open" ,"SMAB-T2946:Verifying Status of Buisnessevent AuditTrail");
          driver.navigate().back();
          
          //Logging out as sysadmin
