@@ -190,14 +190,14 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 										+ workItemForAppraiser + "'")
 								.get("Business_Event__c").get(0)
 						+ "/view");
-				objAppraisalActivity.waitForElementToBeVisible(10, objAuditTrail.Status);
+				objAppraisalActivity.waitForElementToBeVisible(10, objAuditTrail.statusLabel);
 				String rollYear = objAuditTrail.getFieldValueFromAPAS(objAuditTrail.rollYearLabel);
 				String parentTransactionTrailForAppraiser = objAuditTrail
-						.getFieldValueFromAPAS(objAuditTrail.relatedCorrespondence);
+						.getFieldValueFromAPAS(objAuditTrail.relatedCorrespondenceLabel);
 				
 				// Step 8 -Validating the status of WI after rejection
 				
-				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.Status), "Completed",
+				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.statusLabel), "Completed",
 						"SMAB-T3637: Verify that AT status for appraisal  WI is completed after rejection ");
 				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.recordTypeLabel),
 						"Business Event", "SMAB-T3637: Verify that AT for appraisal WI is of type buisness event ");
@@ -224,23 +224,23 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 						+ "/view");
 				
 				// STEP 10- Validating the status of AT for REVIEW CIO-SALE WI after rejection
-				objCIOTransferPage.waitForElementToBeVisible(10, objAuditTrail.Status);
+				objCIOTransferPage.waitForElementToBeVisible(10, objAuditTrail.statusLabel);
 				
-				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.Status), "Open",
+				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.statusLabel), "Open",
 						"SMAB-T3637: Verify the status of AT is open");
-				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.EventLibrary),
+				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.eventLibraryLabel),
 						EventCode, "SMAB-T3637:Verify that Event Library remains same as that of Appraisal WI before rejection");
 				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.dorLabel), DOR,
 						"SMAB-T3637:Verifying DOR is remains same as that of Appraisal WI AT");
 				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.dovLabel), DOV,
 						"SMAB-T3637:Verifying DOV is remains same as that of Appraisal WI AT");
-				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.RequestOrigin),
+				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.requestOriginLabel),
 						"Internal Request", "SMAB-T3637:Verify that request origin is Internal request");
 				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.rollYearLabel),
 						rollYear, "SMAB-T3637:Verify roll year remains same as that of Appraisla WI AT");
 				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.recordTypeLabel),
 						"Business Event", "SMAB-T3637:Verify that AT record is of type Buisness Event");
-				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.relatedCorrespondence),
+				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.relatedCorrespondenceLabel),
 						parentTransactionTrailForAppraiser, "SMAB-T3637:Verify that Parent of Review CIO -SALE WI AT remains same as that of appraisal WI");
 
 				objCIOTransferPage.globalSearchRecords(WorkItemForReviewCioSale);
@@ -370,9 +370,9 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 			
 			//Step 19 -Validating the status of AT after reapproval
 			
-			objCIOTransferPage.waitForElementToBeVisible(10,objAuditTrail.Status);
+			objCIOTransferPage.waitForElementToBeVisible(10,objAuditTrail.statusLabel);
 			
-			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.Status), "Completed",
+			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.statusLabel), "Completed",
 					"SMAB-T3749:Verifying that Status of AT is closed related to Review CIO-Sale");
 			
 			objCIOTransferPage.globalSearchRecords(WorkItemForReviewCioSale);
@@ -405,23 +405,23 @@ public class CIO_AppraisalActivity_NormalEnrollment extends TestBase implements 
 			
 			//Step 21 -Validating the status of AT for new appraisal WI
 			
-			objCIOTransferPage.waitForElementToBeVisible(10,objAuditTrail.Status);
+			objCIOTransferPage.waitForElementToBeVisible(10,objAuditTrail.statusLabel);
 			
-			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.Status), "Open",
+			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.statusLabel), "Open",
 					"SMAB-T3637:Verifying that status of the AT is Open");
-			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.EventLibrary),
+			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.eventLibraryLabel),
 					EventCode, "SMAB-T3749:Verifying that EventLibrary of the AT is same as that CIO-Review WI");
 			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.dorLabel), DOR,
 					"SMAB-T3749:Verifying that DOR of the AT is same as that CIO-Review WI");
 			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.dovLabel), DOV,
 					"SMAB-T3749: Verifying that DOV of the AT is same as that CIO-Review WI");
-			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.RequestOrigin),
+			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.requestOriginLabel),
 					"Internal Request", "SMAB-T3749: Verifying that request origin of AT is Internal request");
 			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.rollYearLabel),
 					rollYear, "SMAB-T3749: Verify that roll year of appraiser WI is same as that of Appraisal WI before rejection provided there is no change in events date");
 			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.recordTypeLabel),
 					"Business Event", "SMAB-T3749: Verify that AT for appraisal activity after reapproval is of type Buisness Event");
-			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.relatedCorrespondence),
+			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.relatedCorrespondenceLabel),
 					parentTransactionTrailForAppraiser, "SMAB-T3749: Verify that new AT for appraisal remains child of CIO Process transfer WI AT=C");
 			
 			objAppraisalActivity.globalSearchRecords(WorkItemForAppraislAfterReapproval);

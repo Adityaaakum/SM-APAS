@@ -22,23 +22,22 @@ public class AuditTrailPage extends ApasGenericPage {
 		objUtil = new Util();
 	}
 
-	
-	public String EventLibrary = "Event Library";
-	public String EventType="Event Type";
-	public String Status="Status";
-	public String RequestOrigin="Request Origin";
-	public String EventId="Event ID";
-	public String EventTitle="Event Title";
-	public String relatedCorrespondence="Related Correspondence";
-	public String relatedBuisnessEvent="Related Business Event";
-	public String description = "Description";
-	public String nameField = "Name";
+	public String eventLibraryLabel = "Event Library";
+	public String eventTypeLabel="Event Type";
+	public String statusLabel="Status";
+	public String requestOriginLabel="Request Origin";
+	public String eventIdLabel="Event ID";
+	public String eventTitleLabel="Event Title";
+	public String relatedCorrespondenceLabel="Related Correspondence";
+	public String relatedBusinessEventLabel="Related Business Event";
+	public String descriptionLabel = "Description";
+	public String nameLabel = "Name";
 	public String recordTypeLabel = "Record Type";
 	public String dovLabel ="Date of Value";
 	public String dorLabel ="Date of Recording";
 	public String rollYearLabel ="Applicable To Roll Year";
 	public String relatedActionLabel ="Related Action";
-	
+	public String eventNumberLabel = "Event Number";
 	
 	@FindBy(xpath="//li[@title='Related Business Records']//a[@data-label='Related Business Records']")
 	public WebElement relatedBusinessRecords;

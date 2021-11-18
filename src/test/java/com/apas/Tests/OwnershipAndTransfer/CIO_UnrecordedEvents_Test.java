@@ -253,10 +253,10 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.Click(objCIOTransferPage.eventIDOnTransferActivityLabel);
 		String  parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		String parentAuditTrailNumber=objCIOTransferPage.getFieldValueFromAPAS(trail.nameField);
+		String parentAuditTrailNumber=objCIOTransferPage.getFieldValueFromAPAS(trail.nameLabel);
 		
-		String eventId=trail.getFieldValueFromAPAS(trail.EventId);
-		String requestOrigin=trail.getFieldValueFromAPAS(trail.RequestOrigin);
+		String eventId=trail.getFieldValueFromAPAS(trail.eventIdLabel);
+		String requestOrigin=trail.getFieldValueFromAPAS(trail.requestOriginLabel);
 		
 		driver.switchTo().window(parentWindow);
 		objCIOTransferPage.waitForElementToBeVisible(30,
@@ -288,16 +288,16 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objParcelsPage.createUnrecordedEvent(hashMapCorrespondenceEventForAutoConfirm);		
 		String urlForTransactionTrail = driver.getCurrentUrl();
 		
-		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedBuisnessEvent), parentAuditTrailNumber,
+		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedBusinessEventLabel), parentAuditTrailNumber,
 				"SMAB-T3457: Verifying that outbound AT is child of parent  business event");
 
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedCorrespondence), "",
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedCorrespondenceLabel), "",
 				"SMAB-T3457:Verifying that related business event field in that outbound AT  is blank");
 		
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.eventIdLabel), eventId,
 				"SMAB-T3457:Verifying that Event ID field in the correspondence event detail page should be inherited from parent business event");
 		
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.requestOriginLabel), requestOrigin,
 				"SMAB-T3457:Verifying that  child correspondence event created from CIO screen inherits the Request Origin from parent event");
 		
 		driver.navigate().to("https://smcacre--" + execEnv
@@ -369,9 +369,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			objWorkItemHomePage.waitForElementToBeVisible(10, objWorkItemHomePage.secondRelatedBuisnessEvent);
 			objMappingPage.scrollToElement(objWorkItemHomePage.firstRelatedBuisnessEvent);
 			objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
-			objWorkItemHomePage.waitForElementToBeVisible(10, trail.Status);
+			objWorkItemHomePage.waitForElementToBeVisible(10, trail.statusLabel);
 
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Completed",
 					"SMAB-T3377,SMAB-T10081:Verifying Status of Buisnessevent AuditTrail");
 			driver.navigate().back();
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -382,8 +382,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			//Navigating to the outbound event
 			
 			driver.navigate().to(urlForTransactionTrail);
-			objWorkItemHomePage.waitForElementToBeVisible(10, trail.Status);
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
+			objWorkItemHomePage.waitForElementToBeVisible(10, trail.statusLabel);
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Completed",
 					"SMAB-T3377,SMAB-T10081:Verifying Status of Outbound  AuditTrail");
 			
 			objCIOTransferPage.logout();
@@ -449,8 +449,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			
 			objMappingPage.scrollToElement(objWorkItemHomePage.firstRelatedBuisnessEvent);
 			objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
-			objWorkItemHomePage.waitForElementToBeVisible(10, trail.Status);
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
+			objWorkItemHomePage.waitForElementToBeVisible(10, trail.statusLabel);
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Completed",
 					"SMAB-T3377,SMAB-T10081:Verifying Status of Buisnessevent AuditTrail");
 			driver.navigate().back();
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -460,8 +460,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			
 			//Navigating to outbound event
 			driver.navigate().to(urlForTransactionTrail);
-			objWorkItemHomePage.waitForElementToBeVisible(10, trail.Status);
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
+			objWorkItemHomePage.waitForElementToBeVisible(10, trail.statusLabel);
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Completed",
 					"SMAB-T3377,SMAB-T10081:Verifying Status of Outbound  AuditTrail");			
 			objCIOTransferPage.logout();
 	}
@@ -646,8 +646,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
 
 			// STEP 13:Verifying that AT=BE is completed
-			objCIOTransferPage.waitForElementToBeVisible(10, trail.Status);
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
+			objCIOTransferPage.waitForElementToBeVisible(10, trail.statusLabel);
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Completed",
 					"SMAB-T3377,SMAB-T10081:Verifying Status of Buisnessevent AuditTrail");
 			driver.navigate().back();
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -658,8 +658,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			// STEP 14:Verifying that outbound event is completed
 
 			driver.navigate().to(urlForTransactionTrail);
-			objCIOTransferPage.waitForElementToBeVisible(10, trail.Status);
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed",
+			objCIOTransferPage.waitForElementToBeVisible(10, trail.statusLabel);
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Completed",
 					"SMAB-T3377,SMAB-T10081:Verifying Status of Outbound  AuditTrail");
 
 			objCIOTransferPage.logout();
@@ -1285,7 +1285,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.Click(objCIOTransferPage.eventIDOnTransferActivityLabel);
 		 parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(trail.nameField), auditTrailName,
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(trail.nameLabel), auditTrailName,
 				"SMAB-T3139: Verifying that click on UT business event  directs to the buisness event audit trail recordt");
 
 		
@@ -1393,7 +1393,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.firstRelatedBuisnessEvent);
 		objMappingPage.scrollToElement(objWorkItemHomePage.firstRelatedBuisnessEvent);
 		objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Open",
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Open",
 				"SMAB-T3533:Verifying Status of Buisnessevent AuditTrail is open ");
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.recordTypeLabel), "Business Event",
 				"SMAB-T3533:Verifying Record Type of  AuditTrail is Buisnessevent ");
@@ -1561,10 +1561,10 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.Click(objCIOTransferPage.eventIDOnTransferActivityLabel);
 		String  parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		String parentAuditTrailNumber=objCIOTransferPage.getFieldValueFromAPAS(trail.nameField);
+		String parentAuditTrailNumber=objCIOTransferPage.getFieldValueFromAPAS(trail.nameLabel);
 		
-		String eventId=trail.getFieldValueFromAPAS(trail.EventId);
-		String requestOrigin=trail.getFieldValueFromAPAS(trail.RequestOrigin);
+		String eventId=trail.getFieldValueFromAPAS(trail.eventIdLabel);
+		String requestOrigin=trail.getFieldValueFromAPAS(trail.requestOriginLabel);
 		
 		driver.switchTo().window(parentWindow);
 		objCIOTransferPage.waitForElementToBeVisible(30,
@@ -1702,16 +1702,16 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 					+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrailIdLegalDescriptionWI + "/view");
 		
 		objMappingPage.scrollToBottom();
-		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedBuisnessEvent), parentAuditTrailNumber,
+		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedBusinessEventLabel), parentAuditTrailNumber,
 				"SMAB-T3457: Verifying that business event created for  APN & Legal description WI  is child of parent Recorded correspondence event");
 
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedCorrespondence), "",
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedCorrespondenceLabel), "",
 				"SMAB-T3457:Verifying that related correspondence event field in business event created for  APN & Legal description WI  is blank");
 		
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.eventIdLabel), eventId,
 				"SMAB-T3457:Verifying that Event ID field in the business event created for  APN & Legal description WI detail page should be inherited from parent correspondence event");
 		
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.requestOriginLabel), requestOrigin,
 				"SMAB-T3457:Verifying that business event created for  APN & Legal description WI inherits the Request Origin from parent event");
 		
 		// STEP 13-verifying the original UT WI and Buisness event  created are linked to the updated APN
@@ -1797,25 +1797,25 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				driver.navigate().to("https://smcacre--" + execEnv
 						+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrailId + "/view");
 			
-			softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedBuisnessEvent), parentAuditTrailNumber,
+			softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedBusinessEventLabel), parentAuditTrailNumber,
 					"SMAB-T3384: Verifying that business event created by transfer code update is child of parent Recorded correspondence event");
 
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedCorrespondence), "",
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.relatedCorrespondenceLabel), "",
 					"SMAB-T3384:Verifying that related correspondence event field in business event created by transfer code update  is blank");
 			
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventId), eventId,
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.eventIdLabel), eventId,
 					"SMAB-T3384:Verifying that Event ID field in the business event created by transfer code update detail page should be inherited from parent correspondence event");
 			
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), requestOrigin,
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.requestOriginLabel), requestOrigin,
 					"SMAB-T3384:Verifying that business event created by transfer code update inherits the Request Origin from parent event");
 			
 			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.dovLabel), dovCIOScreen,
 					"SMAB-T3384:Verifying that business event created by transfer code update inherits the DOV from recorded document");
 			
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.EventLibrary), "CIO-COPAL",
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.eventLibraryLabel), "CIO-COPAL",
 					"SMAB-T3384:Verifying that business event created by transfer code update has event library value as the event code entered in transfer screen");
 			
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.Status), "Open",
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Open",
 					"SMAB-T3384:Verifying that business event created by transfer code update has status as open");
 			
 			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.dorLabel), dorCIOScreen,

@@ -606,13 +606,13 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 		
 		objMappingPage.scrollToElement(objWorkItemHomePage.firstRelatedBuisnessEvent);
 		objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
-		objCIOTransferPage.waitForElementToBeVisible(20, trail.Status);
+		objCIOTransferPage.waitForElementToBeVisible(20, trail.statusLabel);
 				
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"), "Open",
 				"SMAB-T3359: Validate that audit trail status");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objCIOTransferPage.eventLibraryLabel),"Leops",
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(trail.eventLibraryLabel),"Leops",
 				"SMAB-T3359: Validate the 'Event Library' field in Audit Trail record.");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objCIOTransferPage.eventTypeLabel),"LEOP Activity",
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(trail.eventTypeLabel),"LEOP Activity",
 				"SMAB-T3359: Validate the 'Event Type' field in Audit Trail record.");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objCIOTransferPage.leopReceivedByBOE),"Yes",
 				"SMAB-T3359: Validate the 'LEOP received by BOE' field in Audit Trail record.");
@@ -624,11 +624,11 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 				"SMAB-T3359: Validate the 'DOV' field in Audit Trail record.");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dateOfRecordingInputTextBox),objExemptionsPage.removeZeroInMonthAndDay(dataToCreateUnrecordedEventMap.get("Date of Recording")),
 				"SMAB-T3359: Validate the 'DOR' field in Audit Trail record.");
-		softAssert.assertTrue(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.relatedBusinessEventLabel).equals(""),
+		softAssert.assertTrue(objCIOTransferPage.getFieldValueFromAPAS(trail.relatedBusinessEventLabel).equals(""),
 				"SMAB-T3359: Validate the 'Related Business Event' field in Audit Trail record is empty");
-		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventNumberLabel),leopEventId,
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(trail.eventNumberLabel),leopEventId,
 				"SMAB-T3359: Validate the 'Event Number' field in Audit Trail record.");
-		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.nameLabel),parentAuditTrailNumber,
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(trail.nameLabel),parentAuditTrailNumber,
 				"SMAB-T3359: Validate the 'Name' field in Audit Trail record.");
 		
 		//Navigate back to Work Item followed by transfer activity record using related action link
@@ -752,7 +752,7 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 				"SMAB-T3439: Validate the status on WI");
 		
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Transaction_Trail__c/"+auditTrailID+"/view");
-		objCIOTransferPage.waitForElementToBeVisible(20, trail.Status);
+		objCIOTransferPage.waitForElementToBeVisible(20, trail.statusLabel);
 		
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Open", 
 				"SMAB-T3439: Validate the audit trail status after LEOP activity is returned");
@@ -792,7 +792,7 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Submitted for Approval", 
 				"SMAB-T3439: Validate WI status after resubmit for approval ");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Transaction_Trail__c/"+auditTrailID+"/view");
-		objCIOTransferPage.waitForElementToBeVisible(20, trail.Status);
+		objCIOTransferPage.waitForElementToBeVisible(20, trail.statusLabel);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Open", 
 				"SMAB-T3439: Validate the audit trail status after resubmitted for approval.");
 
@@ -827,7 +827,7 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Completed", 
 				"SMAB-T3439: Validate the WI status after approval by supervisor.");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Transaction_Trail__c/"+auditTrailID+"/view");
-		objCIOTransferPage.waitForElementToBeVisible(20, trail.Status);
+		objCIOTransferPage.waitForElementToBeVisible(20, trail.statusLabel);
 		
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Completed", 
 				"SMAB-T3439: Validate that audit trail status after LEOP activity is approved");
@@ -835,9 +835,9 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 				"SMAB-T3439: Validate the 'Processed By' field value in Audit Trail record");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Final Approver", "Additional Information"), salesforceAPI.select("SELECT Name FROM User where Username ='" + userNameForCioSupervisor + "'").get("Name").get(0),
 				"SMAB-T3439: Validate the 'Final Approver' field value in Audit Trail record.");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objCIOTransferPage.eventLibraryLabel),"Leops",
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(trail.eventLibraryLabel),"Leops",
 				"SMAB-T3359: Validate the 'Event Library' field in Audit Trail record.");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objCIOTransferPage.eventTypeLabel),"LEOP Activity",
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(trail.eventTypeLabel),"LEOP Activity",
 				"SMAB-T3359: Validate the 'Event Type' field in Audit Trail record.");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objCIOTransferPage.leopReceivedByBOE),"Yes",
 				"SMAB-T3359: Validate the 'LEOP received by BOE' field in Audit Trail record.");
@@ -849,11 +849,11 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 				"SMAB-T3359: Validate the 'DOV' field in Audit Trail record.");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dateOfRecordingInputTextBox),objExemptionsPage.removeZeroInMonthAndDay(dataToCreateUnrecordedEventMap.get("Date of Recording")),
 				"SMAB-T3359: Validate the 'DOR' field in Audit Trail record.");
-		softAssert.assertTrue(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.relatedBusinessEventLabel).equals(""),
+		softAssert.assertTrue(objCIOTransferPage.getFieldValueFromAPAS(trail.relatedBusinessEventLabel).equals(""),
 				"SMAB-T3359: Validate the 'Related Business Event' field in Audit Trail record is empty");
-		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventNumberLabel),leopEventId,
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(trail.eventNumberLabel),leopEventId,
 				"SMAB-T3359: Validate the 'Event Number' field in Audit Trail record.");
-		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.nameLabel),parentAuditTrailNumber,
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(trail.nameLabel),parentAuditTrailNumber,
 				"SMAB-T3359: Validate the 'Name' field in Audit Trail record.");
 								
 		objCIOTransferPage.logout();

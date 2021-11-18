@@ -148,14 +148,6 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String releaseIndicatorLabel = "Release Indicator";
 	public String saveAndNextButtonCaption = commonXpath + "//button[text()='Save and Next']";
 	
-
-	//Locators on Audit Trail screen
-	public String eventTypeLabel = "Event Type";
-	public String eventLibraryLabel = "Event Library";
-	public String eventNumberLabel = "Event Number";
-	public String relatedBusinessEventLabel = "Related Business Event";
-	public String nameLabel = "Name";
-	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
 
