@@ -458,8 +458,11 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
     
         //Step 7: Accepting the work item & Going to Tab In Progress
         objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+        objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);  
         objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
         objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
+        objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+        objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);      
         WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + importReviewWorkItem + "')]"));
 		String expectedWI=completedWorkItem.getText();
 		softAssert.assertEquals(expectedWI, importReviewWorkItem, "SMAB-T3087,SMAB-T3088 : Status of the workitem should be Final review");
