@@ -146,6 +146,14 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String calculatorSwitchLabel = "Calculator Switch";
 	public String activeLabel ="Active";
 	public String releaseIndicatorLabel = "Release Indicator";
+	public String saveAndNextButtonCaption = commonXpath + "//button[text()='Save and Next']";
+	
+	//Locators on Audit Trail screen
+	public String eventTypeLabel = "Event Type";
+	public String eventLibraryLabel = "Event Library";
+	public String eventNumberLabel = "Event Number";
+	public String relatedBusinessEventLabel = "Related Business Event";
+	public String nameLabel = "Name";
 	
 	@FindBy(xpath = "//a[@id='relatedListsTab__item']")
 	public WebElement relatedListTab;
@@ -287,6 +295,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath = "//a[starts-with(@title,\"RD-APN\")][@class='tabHeader slds-context-bar__label-action '][@aria-selected='true']//span[@class='title slds-truncate']")
 	public WebElement recordedDocumentApnGenerated;
 	
+	@FindBy(xpath=commonXpath+"//div[text()='New']")
+	public WebElement newButtonMailToListViewScreen;
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
@@ -542,8 +552,28 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 						ReportLogger.INFO("!!Deleted mail to record with id= " + Id);
 					});
 				}
-		 }
-		 
+			}
+			
+			/*
+			 * This method deletes mail to records from Parcel
+			 * @param : APN name
+			 */
+				
+			public void deleteMailToRecordsFromParcel(String apn) throws IOException, Exception {
+				HashMap<String, ArrayList<String>> HashMapMailTo = salesforceApi
+						.select("SELECT Id FROM Mail_To__c where Parcel__r.name ='"
+								+ apn + "'");
+				if (!HashMapMailTo.isEmpty()) {
+					HashMapMailTo.get("Id").stream().forEach(Id -> {
+						objSalesforceAPI.delete("Mail_To__c", Id);
+						ReportLogger.INFO("!!Deleted mail to record with id= " + Id);
+					});
+				}
+			}
+			
+			
+			
+			
 		 /*
 		  * This method will create one new grantee per method call in Recorded APN transfer screen.
 		  * 
@@ -552,7 +582,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
 		 {
 				try {
-					Thread.sleep(6000);
+					Thread.sleep(5000);
 					String execEnv = System.getProperty("region");
 					driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/"
 							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
@@ -563,8 +593,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 						enter(ownerPercentage, dataToCreateGrantee.get("Owner Percentage"));
 					if (dataToCreateGrantee.get("First Name") != null)
 						enter(firstNameLabel, dataToCreateGrantee.get("First Name"));					
-						//enter("Legacy_System_Id", "12345");
-					
+						
 					Click(getButtonWithText(saveButton));
 					Thread.sleep(3000);
 					ReportLogger.INFO("GRANTEE RECORD ADDED!!");
@@ -975,8 +1004,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 				 * @param dataMap: A data map which contains data to create audit trail record
 				 * @throws Exception
 				 */
-				public String createLeopUnrecordedEvent(Map<String, String> dataMap) throws Exception {
-					ReportLogger.INFO("Create Leop Unrecorded Event Transfer");
+		public String createLeopUnrecordedEvent(Map<String, String> dataMap) throws Exception {
+					ReportLogger.INFO("Create LEOP Event Transfer");
 					String timeStamp = String.valueOf(System.currentTimeMillis());
 					String description = dataMap.get("Description") + "_" + timeStamp;
 
@@ -1007,6 +1036,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					Click(getButtonWithText(saveAndNextButton));
 					Thread.sleep(5000);
 					if (dataMap.get("Record Type").equalsIgnoreCase("Correspondence")) {
+						return null;
+					}
+					if (verifyElementExists(saveAndNextButtonCaption)) {
 						return null;
 					}
 
