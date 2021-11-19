@@ -19,7 +19,6 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	public final String TAB_IN_PROGRESS = "In Progress";
 	public final String TAB_IN_POOL = "In Pool";
-	public final String TAB_MAIL_TO = "Mail-To";	
 	public final String TAB_MY_SUBMITTED_FOR_APPROVAL = "Submitted for Approval";
 	public final String TAB_NEED_MY_APPROVAL = "Needs My Approval";
 	public final String TAB_COMPLETED = "Completed";
@@ -28,7 +27,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public final String TAB_StaffOnHold = "Staff - On Hold";
 	public final String TAB_StaffInPool = "Staff - In Pool";
 	public final String Tab_WorkItems_ON_parcel="Work Items";
-	public final String Tab_Details="Details";
+	
 
 	ApasGenericPage objApasGenericPage;
 	Page objPageObj;
@@ -53,246 +52,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String dropDownRejected = "Rejected?";
 	public String rejectedReason = "Rejection Reason";
 	public String rejectedComments = "Rejection Comments";
-
-
-	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
-	public WebElement successAlert;
-
-	@FindBy(xpath = "//label[contains(.,'Show RP')]//span[@class='slds-checkbox_faux_container']")
-	public WebElement chkShowRP;
-
-	@FindBy(xpath = "//button[text()='Accept Work Item']")
-	public WebElement acceptWorkItemButton;
-
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@data-tab-name='Completed']")
-	public WebElement dataTabCompleted;
-
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Mark Status as Complete')]")
-	public WebElement markStatusAsCompleteButton;
-
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Mark as Current Status')]")
-	public WebElement markAsCurrentStatusButton;
-
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Details']")
-	public WebElement detailsTab;
-
-	@FindBy(xpath = "//a[@role='tab'][@data-label='In Progress']")
-	public WebElement inProgressTab;
-
-	@FindBy(xpath = "//a[@role='tab'][@data-label='Completed']")
-	public WebElement completedTab;
-
-	@FindBy(xpath = "//a[@role='tab'][@data-label='In Pool']")
-	public WebElement inPoolTab;
-
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-item[contains(.,'Related Action')]//a[@target='_blank']")
-	public WebElement reviewLink;
-
-	@FindBy(xpath = "//a[@role='tab'][@data-label='Needs My Approval']")
-	public WebElement needsMyApprovalTab;
-
-	@FindBy(xpath = "//button[text()='Return']")
-	public WebElement returnWorkItemButton;
-
-	@FindBy(xpath = "//button[text() = 'Save']")
-	public WebElement saveButton;
-
-	@FindBy(xpath = "//label[text()='Returned Reason']//following-sibling::div//input")
-	public WebElement returnedReasonTxtBox;
-
-	@FindBy(xpath = "//table[@role='grid']//span[text()='Action']")
-	public WebElement actionColumn;
-
-	@FindBy(xpath = "//*[@aria-labelledby='In Progress__item']//span[text()='Action']")
-	public WebElement actionColumnInProgressTab;
-
-	public String linkedItemEFileIntakeLogs = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'E File Intake Logs')]";
-
-	public String relatedBuildingPermits = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'Related Building Permits')]";
-
-	@FindBy(xpath="//a[@title='Home']")
-	public WebElement lnkTABHome;
-
-	@FindBy(xpath="//a/span[text()='Work Items']")
-	public WebElement lnkTABWorkItems;  
-
-	@FindBy(xpath="//a[@data-label='In Progress']")
-	public WebElement lnkTABInProgress;
-
-	@FindBy(xpath="//a[@data-label='In Pool']")
-	public WebElement lnkTABInPool;
-
-	@FindBy(xpath="//a[@data-label='Submitted for Approval']")
-	public WebElement lnkTABMySubmittedforApproval;
-
-	@FindBy(xpath="//a[@data-label='Completed']")
-	public WebElement lnkTABCompleted;
-
-	@FindBy(xpath="//input[@placeholder='Search Work Pool']")
-	public WebElement txtSearchWorkPool;
-
-	@FindBy(xpath="//input[@name='status']")
-	public WebElement selStatus;
-
-	@FindBy(xpath="//input[@name='type']")
-	public WebElement selType;
-
-	@FindBy(xpath="//input[@name='action']")
-	public WebElement selAction;
-
-	@FindBy(xpath="//label[contains(.,'Show RP')]//span[@class='slds-checkbox_faux']")
-	public WebElement toggleBUtton;
-
-	@FindBy(xpath="//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits')]//parent::tr/th//span")
-	public WebElement reminderWINameLink;
-
-	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Pool__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/th//span")
-	public List<WebElement> lowIncomeInPoolWILinks;
-
-	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Pool__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[1]//input[@type='checkbox']/parent::span")
-	public List<WebElement> lowIncomeInPoolWIbox;
-
-	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/th//span")
-	public List<WebElement> lowIncomeInProgressWILinks;
-
-	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
-	public List<WebElement> lowIncomeInProgressWIbox;
-
-	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
-	public List<WebElement> lowincomeSubmittedWI;
-	
-	@FindBy(xpath = "//span[@title='Age(Days)'][@class='slds-truncate']")
-    public WebElement ageDays;
-
-	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(@class,'slds-truncate') or contains(@class,'slds-hyphenate')]//a")
-	public WebElement linkedItemsRecord;
-
-	@FindBy(xpath="//button[@title='Accept Work Item']")
-	public WebElement acceptWorkItemBtn;
-
-	@FindBy(xpath="//div[@class='pageLevelErrors']//ul[1]")
-	public WebElement errorMsg;
-
-	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li[@title='Details']//a[@data-label='Details']")
-	public WebElement detailsWI;
-
-	@FindBy(xpath="//li[@title='Linked Items']//a[@data-label='Linked Items']")
-	public WebElement linkedItemsWI;
-
-	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@class='test-id__field-label' and text()='Related Action']/parent::div/following-sibling::div//a")
-	public WebElement relatedActionLink;
-
-	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Status']/parent::div/following-sibling::div//lightning-formatted-text")
-	public WebElement wiStatusDetailsPage;
-
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li//a[@aria-selected='true' and @role='option']")
-	public WebElement currenWIStatusonTimeline;
-
-	@FindBy(xpath = "//div[@class='pageLevelErrors']//li")
-	public WebElement pageLevelErrorMsg;
-
-	@FindBy(xpath = "//button[contains(.,'Cancel')]")
-	public WebElement cancelBtn;
-
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@name= 'Edit']")
-	public WebElement editBtn;
-
-	@FindBy(xpath ="//div[@class='windowViewMode-maximized active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
-	public WebElement vaRollYear;
-
-	@FindBy(xpath = "//div[@class='warning']")
-	public WebElement warningOnAssignLevel2Approver;
-
-	@FindBy(xpath="//span[text()='Submitted for Approval']")
-	public WebElement submittedforApprovalTimeline;
-
-	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Completed']")
-	public WebElement completedTimeline;
-
-	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button//span[text()='Mark as Current Status']")
-	public WebElement markStatusCompleteBtn;
-
-	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button//span[text()='Mark Status as Complete']")
-	public WebElement markStatusAsCompleteBtn;
-
-	@FindBy(xpath="//button[@title='Mark Complete']") 
-	public WebElement btnMarkComplete;
-
-	@FindBy(xpath="//a[@title='Exemption Limits - 2021']")
-	public WebElement rpslRecord;
-
-	@FindBy(xpath="//span[text()='Reference Data Details']")
-	public WebElement referenceDetailsLabel;
-
-	@FindBy(xpath="//button[@title='Approve']") 
-	public WebElement btnApprove;
-
-	public String ConsolidateButton="Consolidate";
-
-	@FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Child Work Items']")
-	public WebElement ChildWorkItemsTab;
-
-	@FindBy (xpath="//*[@data-key='error']//..//button[@title='Close'] | //button[@title='Close error dialog']")
-	public WebElement CloseErrorMsg;
-
-	@FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
-	public WebElement workItemNumberDetailView;
-
-	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Assigned To']/..//input")
-	public WebElement AssignedTo;
-
-	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
-	public WebElement WorkPool;
-
-	@FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
-	public WebElement getWorkItem;
-
-	@FindBy(xpath = "//h2[@class='slds-modal__title slds-hyphenate']")
-	public WebElement headerLevel2Approver;
-
-	@FindBy(xpath = "//table/thead//tr//th[@aria-label='Work item #']//a//span[@title='Work item #']")
-	public WebElement gridColWorkItemNum;
-
-	@FindBy(xpath = "//input[@type='button' and @value='Remove']")
-	public WebElement removeButton;
-
-	@FindBy(xpath="//*[@name='Select Primary']")
-	public WebElement SelectPrimaryButton;
-
-	@FindBy(xpath = "//input[@placeholder='Search Parcels...']")
-	public WebElement searchParcelsDropdown;
-
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Linked Items']")
-	public WebElement linkedItemsTab;
-	
-	@FindBy(xpath = "//a[contains(text(),'Trail')][1]")
-	public WebElement firstRelatedBuisnessEvent;
-	
-	@FindBy(xpath = "//a[contains(text(),'Trail')][1]/ancestor::tr/following-sibling::tr//a[1]")
-	public WebElement secondRelatedBuisnessEvent;
-	
-	@FindBy(xpath = "//a[@data-label='Recorded APN(s)']")
-	public WebElement recordedAPNtab;
-	
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'Information')]//force-record-layout-item//button[@title = 'Edit Event ID']")
-	public WebElement editEventIdButton;
-    
-    @FindBy(xpath = "//div[contains(@class,'notify__content')]//span")
-	public WebElement parentParcelSizeErrorMsg;
-    
-    @FindBy(xpath="//*[@class='test-id__field-label'][text()='Parent Work Item']/parent::div/following-sibling::div//a")
-	public WebElement parentWorkItemLink;
-	
-	@FindBy(xpath="//div[@class='slds-grid slds-size_1-of-1 label-inline']//button[@title='Edit Rejected?']")
-	public WebElement editRejected;
-	
-	@FindBy(xpath="//*[@class='slds-text-title_bold slds-p-bottom_small']")
-	public WebElement pageNotExist;
-    
-   
-  
 	public String editButton = "Edit";
-
 	public String wiActionDetailsPage = "Action";
 	public String wiRelatedActionDetailsPage = "Related Action";
 	public String wiDateDetailsPage = "Date";
@@ -307,13 +67,11 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String wiAPNDetailsPage = "APN";
 	public String wiLevel2ApproverDetailsPage = "Level2 Approver";
 	public String wiCurrentApproverDetailsPage = "Current Approver";
-
 	public String SaveButton="Save";
 	public String valueTextBox = "Value";
 	public String WithdrawButton="Withdraw";
 	public String PutOnHoldButton="Put on Hold";
 	public String assignLevel2Approver = "Assign Level2 Approver";
-
 	public String warningOnAssignLevel2ApproverScreen = "//div[@class='warning']";
 	public String assignLevel2ApproverBtn = "//button[@title='Assign Level2 Approver']";
 	public String submittedForApprovalOptionInTimeline = "Submitted for Approval";
@@ -327,8 +85,162 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String NewButton="New";
 	public String migrateAPN="Migrate APN(s)";
 	public String wiEventId = "Event ID";
-	public final String NoOfLinkedParcelsInWI = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//thead//th[@aria-label='APN']//ancestor::thead//following-sibling::tbody//tr";
 
+
+
+	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
+	public WebElement successAlert;
+	@FindBy(xpath = "//label[contains(.,'Show RP')]//span[@class='slds-checkbox_faux_container']")
+	public WebElement chkShowRP;
+	@FindBy(xpath = "//button[text()='Accept Work Item']")
+	public WebElement acceptWorkItemButton;
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@data-tab-name='Completed']")
+	public WebElement dataTabCompleted;
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Mark Status as Complete')]")
+	public WebElement markStatusAsCompleteButton;
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Mark as Current Status')]")
+	public WebElement markAsCurrentStatusButton;
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Details']")
+	public WebElement detailsTab;
+	@FindBy(xpath = "//a[@role='tab'][@data-label='In Progress']")
+	public WebElement inProgressTab;
+	@FindBy(xpath = "//a[@role='tab'][@data-label='Completed']")
+	public WebElement completedTab;
+	@FindBy(xpath = "//a[@role='tab'][@data-label='In Pool']")
+	public WebElement inPoolTab;
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-item[contains(.,'Related Action')]//a[@target='_blank']")
+	public WebElement reviewLink;
+	@FindBy(xpath = "//a[@role='tab'][@data-label='Needs My Approval']")
+	public WebElement needsMyApprovalTab;
+	@FindBy(xpath = "//button[text()='Return']")
+	public WebElement returnWorkItemButton;
+	@FindBy(xpath = "//button[text() = 'Save']")
+	public WebElement saveButton;
+	@FindBy(xpath = "//label[text()='Returned Reason']//following-sibling::div//input")
+	public WebElement returnedReasonTxtBox;
+	@FindBy(xpath = "//table[@role='grid']//span[text()='Action']")
+	public WebElement actionColumn;
+	@FindBy(xpath = "//*[@aria-labelledby='In Progress__item']//span[text()='Action']")
+	public WebElement actionColumnInProgressTab;
+	
+	public String linkedItemEFileIntakeLogs = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'E File Intake Logs')]";
+	public String relatedBuildingPermits = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'Related Building Permits')]";
+
+	@FindBy(xpath="//a[@title='Home']")
+	public WebElement lnkTABHome;
+	@FindBy(xpath="//a/span[text()='Work Items']")
+	public WebElement lnkTABWorkItems;  
+	@FindBy(xpath="//a[@data-label='In Progress']")
+	public WebElement lnkTABInProgress;
+	@FindBy(xpath="//a[@data-label='In Pool']")
+	public WebElement lnkTABInPool;
+	@FindBy(xpath="//a[@data-label='Submitted for Approval']")
+	public WebElement lnkTABMySubmittedforApproval;
+	@FindBy(xpath="//a[@data-label='Completed']")
+	public WebElement lnkTABCompleted;
+	@FindBy(xpath="//input[@placeholder='Search Work Pool']")
+	public WebElement txtSearchWorkPool;
+	@FindBy(xpath="//input[@name='status']")
+	public WebElement selStatus;
+	@FindBy(xpath="//input[@name='type']")
+	public WebElement selType;
+	@FindBy(xpath="//input[@name='action']")
+	public WebElement selAction;
+	@FindBy(xpath="//label[contains(.,'Show RP')]//span[@class='slds-checkbox_faux']")
+	public WebElement toggleBUtton;
+	@FindBy(xpath="//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits')]//parent::tr/th//span")
+	public WebElement reminderWINameLink;
+	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Pool__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/th//span")
+	public List<WebElement> lowIncomeInPoolWILinks;
+	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Pool__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[1]//input[@type='checkbox']/parent::span")
+	public List<WebElement> lowIncomeInPoolWIbox;
+	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/th//span")
+	public List<WebElement> lowIncomeInProgressWILinks;
+	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
+	public List<WebElement> lowIncomeInProgressWIbox;
+	@FindBy(xpath="//lightning-tab[@aria-labelledby='In Progress__item']//td[@data-label='Request Type' and contains(.,'Disabled Veterans - Review and Update - Annual exemption amount verification')]//parent::tr/td[2]//input[@type='checkbox']/parent::span")
+	public List<WebElement> lowincomeSubmittedWI;
+	@FindBy(xpath = "//span[@title='Age(Days)'][@class='slds-truncate']")
+    public WebElement ageDays;
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(@class,'slds-truncate') or contains(@class,'slds-hyphenate')]//a")
+	public WebElement linkedItemsRecord;
+	@FindBy(xpath="//button[@title='Accept Work Item']")
+	public WebElement acceptWorkItemBtn;
+	@FindBy(xpath="//div[@class='pageLevelErrors']//ul[1]")
+	public WebElement errorMsg;
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li[@title='Details']//a[@data-label='Details']")
+	public WebElement detailsWI;
+	@FindBy(xpath="//li[@title='Linked Items']//a[@data-label='Linked Items']")
+	public WebElement linkedItemsWI;
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@class='test-id__field-label' and text()='Related Action']/parent::div/following-sibling::div//a")
+	public WebElement relatedActionLink;
+	@FindBy(xpath = "//div[@class='windowViewMode-maximized active lafPageHost']//*[@class='test-id__field-label' and text()='Status']/parent::div/following-sibling::div//lightning-formatted-text")
+	public WebElement wiStatusDetailsPage;
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li//a[@aria-selected='true' and @role='option']")
+	public WebElement currenWIStatusonTimeline;
+	@FindBy(xpath = "//div[@class='pageLevelErrors']//li")
+	public WebElement pageLevelErrorMsg;
+	@FindBy(xpath = "//button[contains(.,'Cancel')]")
+	public WebElement cancelBtn;
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@name= 'Edit']")
+	public WebElement editBtn;
+	@FindBy(xpath ="//div[@class='windowViewMode-maximized active lafPageHost']//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
+	public WebElement vaRollYear;
+	@FindBy(xpath = "//div[@class='warning']")
+	public WebElement warningOnAssignLevel2Approver;
+	@FindBy(xpath="//span[text()='Submitted for Approval']")
+	public WebElement submittedforApprovalTimeline;
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Completed']")
+	public WebElement completedTimeline;
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button//span[text()='Mark as Current Status']")
+	public WebElement markStatusCompleteBtn;
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button//span[text()='Mark Status as Complete']")
+	public WebElement markStatusAsCompleteBtn;
+	@FindBy(xpath="//button[@title='Mark Complete']") 
+	public WebElement btnMarkComplete;
+	@FindBy(xpath="//a[@title='Exemption Limits - 2021']")
+	public WebElement rpslRecord;
+	@FindBy(xpath="//span[text()='Reference Data Details']")
+	public WebElement referenceDetailsLabel;
+	@FindBy(xpath="//button[@title='Approve']") 
+	public WebElement btnApprove;
+	public String ConsolidateButton="Consolidate";
+	@FindBy (xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Child Work Items']")
+	public WebElement ChildWorkItemsTab;
+	@FindBy (xpath="//*[@data-key='error']//..//button[@title='Close'] | //button[@title='Close error dialog']")
+	public WebElement CloseErrorMsg;
+	@FindBy(xpath="//div[not(contains(@class,'hasActiveSubtab')) and contains(@class,'oneWorkspace active')]//following::lightning-formatted-text[contains(text(),'WI')]")
+	public WebElement workItemNumberDetailView;
+	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Assigned To']/..//input")
+	public WebElement AssignedTo;
+	@FindBy(xpath = "//div[contains(@class,'approver-modal slds-modal__container')]//label[text()='Work Pool']/..//input")
+	public WebElement WorkPool;
+	@FindBy(xpath = "//div[contains(@class,'slds-media__body')]//slot/lightning-formatted-text[contains(text(),'WI-')]")
+	public WebElement getWorkItem;
+	@FindBy(xpath = "//h2[@class='slds-modal__title slds-hyphenate']")
+	public WebElement headerLevel2Approver;
+	@FindBy(xpath = "//table/thead//tr//th[@aria-label='Work item #']//a//span[@title='Work item #']")
+	public WebElement gridColWorkItemNum;
+	@FindBy(xpath = "//input[@type='button' and @value='Remove']")
+	public WebElement removeButton;
+	@FindBy(xpath="//*[@name='Select Primary']")
+	public WebElement SelectPrimaryButton;
+	@FindBy(xpath = "//input[@placeholder='Search Parcels...']")
+	public WebElement searchParcelsDropdown;
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Linked Items']")
+	public WebElement linkedItemsTab;	
+	@FindBy(xpath = "//a[contains(text(),'Trail')][1]")
+	public WebElement firstRelatedBuisnessEvent;	
+	@FindBy(xpath = "//a[contains(text(),'Trail')][1]/ancestor::tr/following-sibling::tr//a[1]")
+	public WebElement secondRelatedBuisnessEvent;	
+	@FindBy(xpath = "//a[@data-label='Recorded APN(s)']")
+	public WebElement recordedAPNtab;	
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'Information')]//force-record-layout-item//button[@title = 'Edit Event ID']")
+	public WebElement editEventIdButton;   
+    @FindBy(xpath = "//div[contains(@class,'notify__content')]//span")
+	public WebElement parentParcelSizeErrorMsg;
+       
+	
 
 
 	/**
@@ -404,7 +316,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String completeWorkItem() throws Exception {
 		ReportLogger.INFO("Completing the work item");
 		Click(detailsWI);
-		waitForElementToBeVisible(20, wiValueDetailsPage);
+		waitForElementToBeVisible(10, wiValueDetailsPage);
 		Click(editBtn);
 		enter(wiValueDetailsPage, "-1");
 		saveRecord();
@@ -633,10 +545,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 **/
 
 	public void clickOnTimelineAndMarkComplete(String timelineTab) throws Exception {
-		Thread.sleep(5000);
 		ReportLogger.INFO("Click on the '" + timelineTab + "' option in Timeline and mark it complete");
 		WebElement webElement = driver.findElement(By.xpath("//span[text()='" + timelineTab + "']"));
-		Thread.sleep(2000);
+		Thread.sleep(1000);
 		javascriptClick(webElement);
 		if (waitForElementToBeVisible(5, markStatusCompleteBtn)) {
 			javascriptClick(markStatusCompleteBtn);
@@ -644,7 +555,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 		else {
 			javascriptClick(markStatusAsCompleteBtn);
 		}
-		Thread.sleep(5000);
+		Thread.sleep(2000);
 	}
 
 
@@ -888,5 +799,35 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 * 
 	 * return flag; }
 	 */
+	
+	
+	public boolean verifyTransactionalTrailRowDatafromWebTable(String Name , String Type) {
+        
+		boolean flag = false;
+		
+		String tblWebTable = "//table//th//a[@title='"+Name+"']/ancestor::tr/"
+				+ "td[2]//span/div/lightning-base-formatted-text[text()='"+Type+"']";
+		
+		WebElement objWebTable = driver.findElementByXPath(tblWebTable);
+		
+		if(objWebTable!=null) {
+			
+			return flag =  true;
+			
+		}else {
+		
+		return flag;		
+		
+	    }
+	}
+	
+	public void clickTransactionTrailLink(String TTName) throws IOException {
+		
+		String xpathTransactionTrail = "//table//th//a[@title='"+TTName+"']";
+	    WebElement lnkTransactionTrail = driver.findElementByXPath(xpathTransactionTrail);
+	    
+	    objPageObj.Click(lnkTransactionTrail);
+	    		
+	}
 
 }

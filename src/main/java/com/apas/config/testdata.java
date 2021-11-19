@@ -73,13 +73,9 @@ public interface testdata {
 	String WORKITEMREJECTIONREASONS = userDirectory+"\\data\\WorkItems\\WorkItemRejectionReason.json";
 	String OWNERSHIP_AND_TRANSFER_CREATION_DATA= userDirectory+"\\data\\OwnershipAndTransfer\\OwnershipAndTransfer.json";	
 	String HOME_OWNER_EXEMPTION_DATA = userDirectory+"\\data\\Exemptions\\HomeOwnerData.json";
-	String MAILTO_RECORD_DATA_PARCEL = userDirectory+"\\data\\OwnershipAndTransfer\\CreateMailToRecordFromParcel.json";
 	String UNRECORDED_EVENT_DATA = userDirectory+"\\data\\OwnershipAndTransfer\\AuditTrail.json";
     String TRA_DATA = userDirectory + "\\data\\TRA\\TRA_DATA.json";
     String CHARACTERISTICS_FILE = userDirectory + "\\data\\Characteristics\\00202.tif";
-    String PARCEL_MANAGEMENT_REPORTS=userDirectory+"\\data\\MappingActions\\ParcelManagementReports.json";
-    String ASSESSED_VALUE_CREATION_DATA= userDirectory+"\\data\\OwnershipAndTransfer\\AssessedValue.json";	
-    String CHARACTERISTICS = userDirectory + "\\data\\Characteristics\\CharacteristicsCreationData.json";
-    String AUDIT_TRAIL_DATA = userDirectory+"\\data\\AuditTrail\\AuditTrail.json";
-    String SITUS_DATA = userDirectory+"\\data\\Situses\\Situs.json";	
+
+	
 }

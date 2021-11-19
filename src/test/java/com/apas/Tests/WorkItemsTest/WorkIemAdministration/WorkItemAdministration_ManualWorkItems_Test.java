@@ -1333,6 +1333,4 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 
 		objWorkItemHomePage.logout();
 	}
-	
-	
 }

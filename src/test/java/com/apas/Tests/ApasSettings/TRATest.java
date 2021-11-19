@@ -75,11 +75,7 @@ public class TRATest extends TestBase implements testdata, modules, users {
 		// Step3 : Creating a new TRA record with same name as above created TRA record
 		objTRAPage.searchModule(TRA);
 		objTRAPage.createTRARecord(hashMapTRAData);
-		objTRAPage.Click(objTRAPage.getButtonWithText("Save"));
-		objTRAPage.waitForElementToBeClickable(objTRAPage.pageError,20);
-		Thread.sleep(3000);
-		
-		softAssert.assertContains(objTRAPage.getElementText(objTRAPage.pageError),
+		softAssert.assertContains(objTRAPage.saveRecordAndGetError(),
 				"You can't save this record because a duplicate record already exists. To save, use different information.",
 				"SMAB-T3256: Verify that system should not allow duplicate TRAs with the same name and error message and link to the existing TRA should be displayed");
 

@@ -60,7 +60,7 @@ public class ExemptionsPage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Grace End Date')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
     public WebElement graceEndDateExemptionDetails;
 
-    public String claimantName = "Claimant 1 Name";
+    public String claimantName = "Claimant's Name";
 
     public String claimantSSN = "Claimant's SSN";
 
@@ -773,13 +773,10 @@ public class ExemptionsPage extends ApasGenericPage {
     public void enterHomeOwnerExemptionData(Map<String, String> dataMap) throws Exception {
     	Click(homeOwnerExemptionRadioButton);
     	Click(exemptionRecordTypeNextButton);
-    	
-    	//String assesseeName = fetchAssesseeName();
-    	//Commented above code temporarily and added below code till current HOE implementation is completed 
-    	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'DoNot'";
-        HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
-        String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
+    	String assesseeName = fetchAssesseeName();
         
+    	//String apnNumber = fetchActiveAPN();
+        //searchAndSelectOptionFromDropDown(apn, apnNumber);
         searchAndSelectOptionFromDropDown(claimantName, assesseeName);
         selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
         scrollToElement(getWebElementWithLabel(dateApplicationReceived));

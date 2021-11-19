@@ -160,23 +160,5 @@
     "Description": "Creation of work item",
     "Priority": "Urgent",
     "Work Item Routing": "Give Work Item to Me"
-  },
-  "DataToCreateCioApnAndLegalDescriptionWorkItem": {
-    "Work Item Type": "CIO",
-    "Actions": "APN & Legal Description Validation",
-    "Audit Trail": "No",
-    "Reference": "Test WI",
-    "Description": "Creation of work item",
-    "Priority": "Urgent",
-    "Work Item Routing": "Give Work Item to Default Work Pool"
-  },
-  "DataToCreateWorkItemOfTypeCIOWithActionAPNLegalDescription": {
-    "Work Item Type": "CIO",
-    "Actions": "APN & Legal Description Validation",
-    "Audit Trail": "No",
-    "Reference": "Test WI",
-    "Description": "Creation of work item",
-    "Priority": "Urgent",
-    "Work Item Routing": "Give Work Item to Me"
   }
 }

@@ -111,7 +111,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[text() = 'BPP Settings']//parent::span[text() = 'View All']")
 	public WebElement viewAllBppSettings;
 
-	@FindBy(xpath = "//span[text()='BPP Composite Factors Settings']//following::span[text() = 'View All']")
+	@FindBy(xpath = "//span[text()='BPP Composite Factors Settings']//ancestor::lst-common-list//following-sibling::a//span[text() = 'View All']")
 	public WebElement viewAllBppCompositeFactorSettings;
 
 	@FindBy(xpath = "//span[text() = 'Name']//parent::label//following-sibling::input")
@@ -151,7 +151,7 @@ public class BppTrendSetupPage extends ApasGenericPage {
 	public WebElement fieldError;
 
 	public String minGoodFactorEditBox = "Minimum Good Factor";
-	public String moreTabCompositeFactorSettings = "//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs'] |  //a[text()='BPP Settings']//following::button[@title = 'More Tabs']";
+	public String moreTabCompositeFactorSettings = "//div[contains(@class, 'column region-sidebar-right')]//button[@title = 'More Tabs']";
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[text() = 'Imported Valuation Factors']")
 	public WebElement bppImportedValuationFactorsTab;
@@ -797,8 +797,8 @@ public class BppTrendSetupPage extends ApasGenericPage {
 		//Step15: Create a BPP Composite Factor Settings
 		ReportLogger.INFO("** Clicking on Bpp Composite Factors Settings tab **");
 
-		if(waitForElementToBeClickable(10,moreTabCompositeFactorSettings) != null) {
-			objPage.Click(driver.findElement(By.xpath(moreTabCompositeFactorSettings)));
+		if(waitForElementToBeClickable(10,moreTabRightSection) != null) {
+			objPage.Click(moreTabRightSection);
 			objPage.Click(bppCompositeFactorOption);
 		} else
 			objPage.Click(bppCompFactorSettingTab);

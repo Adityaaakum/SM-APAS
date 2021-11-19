@@ -195,7 +195,7 @@ public class SalesforceAPI extends TestBase {
      * @param sqlQuery : Select SQL query
      * @return String json data in string
      */
-    private String getSelectQueryDateInJson(String sqlQuery) {
+    public String getSelectQueryDateInJson(String sqlQuery) {
         ReportLogger.INFO("Executing the query : " + sqlQuery);
         sqlQuery = sqlQuery.replace("%", "%25");
         sqlQuery = sqlQuery.replace(" ", "%20");
@@ -204,8 +204,6 @@ public class SalesforceAPI extends TestBase {
         sqlQuery = sqlQuery.replace("!", "%21");
         sqlQuery = sqlQuery.replace("<", "%3C");
         sqlQuery = sqlQuery.replace(">", "%3E");
-        sqlQuery = sqlQuery.replace("&", "%26");
-        
         System.out.println("Modified query for URI : " + sqlQuery);
 
         String jsonData = "";

@@ -70,11 +70,6 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
 		
-		//Deleting charecteristic record from parcels
-		
-		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
-		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
-		
 		String activeParcelWithoutHyphen=apn2.replace("-","");
 		String accessorMapParcel = apn1.replace("-", "").substring(0, 5);
 		String expectedIndividualFieldMessage = "Complete this field.";
@@ -269,30 +264,9 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		String apn2=responseAPNDetails2.get("Name").get(0);
 		
 		//Fetching Active Mobile home parcel
-		String apn3 = "";
-		String createNewParcel = testdata.MANUAL_PARCEL_CREATION_DATA;
-		Map<String, String> hashMapCreateNewParcel = objUtil.generateMapFromJsonFile(createNewParcel,
-				"DataToCreateParcelStartingWith134");
-		String apnStartingWith134 = hashMapCreateNewParcel.get("APN");
-		String parcelNumberStartingWith134 = hashMapCreateNewParcel.get("Parcel Number");
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
-				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
-				+ "where Status__c='Active') limit 1");
-		String PUC = responsePUCDetails.get("Name").get(0);
-				
-		String queryAPN3 = "Select Name, ID From Parcel__c where name like '134%' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		String queryAPN3 = "Select Name, ID From Parcel__c where name like '134%' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails3 = salesforceAPI.select(queryAPN3);
-		
-		if (responseAPNDetails3 != null) {
-			apn3=responseAPNDetails3.get("Name").get(0);
-			salesforceAPI.update("Parcel__c",responseAPNDetails3.get("Id").get(0),"Status__c","Active");
-		}
-		else {
-			objMappingPage.login(users.SYSTEM_ADMIN);
-			apn3 = objParcelsPage.createNewParcel(apnStartingWith134,parcelNumberStartingWith134,PUC);
-	        objWorkItemHomePage.logout();
-	        Thread.sleep(5000);	
-		}
+		String apn3=responseAPNDetails3.get("Name").get(0);
 		
 		//Add the parcels in a Hash Map for validations later
 		Map<String,String> apnValue = new HashMap<String,String>(); 
@@ -471,165 +445,6 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 		objMappingPage.globalSearchRecords(apn);
 		String Status = objMappingPage.getFieldValueFromAPAS("Status", "Parcel Information");
 		softAssert.assertEquals(Status, "Retired", "SMAB-T3622: Verify Status of Parcel:" + apn);
-
-		objWorkItemHomePage.logout();
-	}
-	
-	/**
-	 * This method is to Parcel Management- Verify that User is able to view other parcels getting added in the associated work item after Retire Parcel Action is completed
-	 * @param loginUser
-	 * @throws Exception
-	 */
-	@Test(description = "SMAB-T2670,SMAB-T2764,SMAB-T2910,SMAB-T3473,SMAB-T2909,SMAB-T3474,SMAB-T3475:Parcel Management- Verify that User is able to view other parcels getting added in the associated work item after Retire Parcel Action is completed", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
-	public void ParcelManagement_verifyLinkedAPN_OnDiffMapBookAndMapPageParentParcelAdditions_RetireParcelMappingAction(String loginUser)
-			throws Exception {
-
-		// Fetching parcel that is Active
-		String queryAPNValue = "select Name from Parcel__c where Status__c='Active' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
-		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
-		String apn1 = responseAPNDetails.get("Name").get(0);
-
-		// Fetching parcels that are Active with different map book and map page
-		String mapBookForAPN1 = apn1.split("-")[0];
-		String mapPageForAPN1 = apn1.split("-")[1];
-		queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '"
-				+ mapBookForAPN1 + "%') and (Not Name like '" + mapBookForAPN1 + "-" + mapPageForAPN1
-				+ "%') and Status__c = 'Active' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')limit 2";
-		HashMap<String, ArrayList<String>> responseAPN2Details = salesforceAPI.select(queryAPNValue);
-		String apn2 = responseAPN2Details.get("Name").get(0);
-		String apn3 = responseAPN2Details.get("Name").get(1);
-
-		String concatenateAPNWithDifferentMapBookMapPage = apn2 + "," + apn3;
-
-		// Add the parcels in a Hash Map for validations later
-		Map<String, String> apnValue = new HashMap<String, String>();
-		apnValue.put("APN1", apn1);
-		apnValue.put("APN2", apn2);
-		apnValue.put("APN3", apn3);
-
-		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
-		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
-				"DataToCreateWorkItemOfTypeParcelManagement");
-
-		String mappingActionCreationData = testdata.RETIRE_ACTION;
-		Map<String, String> hashMapRetireParcelActionMappingData = objUtil
-				.generateMapFromJsonFile(mappingActionCreationData, "DataToPerformRetireAction");
-
-		// Step1: Login to the APAS application
-		objMappingPage.login(loginUser);
-
-		// Step2: Opening the PARCELS page and searching the parcel
-		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords(apn1);
-
-		// Step 3: Creating Manual work item for the Parcel
-		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
-
-		// Step 4:Clicking the details tab for the work item newly created and clicking
-		// on Related Action Link
-		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
-		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
-		String parentWindow = driver.getWindowHandle();
-		objWorkItemHomePage.switchToNewWindow(parentWindow);
-
-		// Step 5: Selecting Action as 'perform Retire Parcel'
-		String mappingActionWindow = driver.getWindowHandle();
-		objMappingPage.waitForElementToBeVisible(100, objMappingPage.actionDropDownLabel);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
-		ReportLogger.INFO("Add a parcel with different Map Book and Map Page in Parent APN field :: "
-				+ concatenateAPNWithDifferentMapBookMapPage);
-		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, concatenateAPNWithDifferentMapBookMapPage);
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
-
-		// Step 6: filling all fields in mapping action screen
-		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapRetireParcelActionMappingData.get("Action"));
-		objMappingPage.enter(objMappingPage.commentsTextBoxLabel, hashMapRetireParcelActionMappingData.get("Comments"));
-		objMappingPage.enter(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel), "For Testing");
-
-		// Step 7: Verify Linked Items on WI before Retire Parcel Mapping Action is
-		// performed
-		ReportLogger.INFO(
-				"validate that new APNs added are not lnked to WI before Retire Parcel Mapping Action is performed");
-		driver.switchTo().window(parentWindow);
-		objMappingPage.waitUntilPageisReady(driver);
-
-		objMappingPage.searchModule(WORK_ITEM);
-		objMappingPage.globalSearchRecords(workItemNumber);
-		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		driver.navigate().refresh();
-		objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI);
-		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
-
-		softAssert.assertEquals(1, objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI, 10).size(),
-				"SMAB-T2670: Validate that only 1 APN is linked to Work Item");
-		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
-				"SMAB-T2670: Validate that first Parent APN is displayed in the linked item");
-
-		// Step 8: Click Retire Parcel Button
-		driver.switchTo().window(mappingActionWindow);
-		objMappingPage.waitUntilPageisReady(driver);
-		ReportLogger.INFO("Perform the Retire action");
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.retireButton));
-		softAssert.assertContains(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),
-				"pending verification from the supervisor in order to be retired.",
-				"SMAB-T2670: Validate that User is able to perform Retire action for more than one active parcels");
-
-		// Step 9: Submit the WI for approval and validate the linked parcels to the WI
-		driver.switchTo().window(parentWindow);
-		objMappingPage.waitUntilPageisReady(driver);
-		objMappingPage.searchModule(WORK_ITEM);
-		objMappingPage.globalSearchRecords(workItemNumber);
-		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		driver.navigate().refresh();
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
-		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
-		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),
-				"Submitted for Approval", "SMAB-T2670:Verify user is able to submit the Work Item for approval");
-
-		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
-
-		softAssert.assertEquals(2, objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI, 10).size(),
-				"SMAB-T2670,SMAB-T2764,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that 2 APNs are linked to Work Item");
-		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
-				"SMAB-T2670,SMAB-T2764,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that first Parent APN is displayed in the linked item");
-		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
-				"SMAB-T2670,SMAB-T2764,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that second Parent APN is displayed in the linked item");
-		objMappingPage.Click(objWorkItemHomePage.detailsTab);
-		String referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
-		softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
-				"SMAB-T2910,SMAB-T3473: Validate that Parent APNs are present in the reference Link");
-		
-		objWorkItemHomePage.logout();
-		Thread.sleep(5000);
-
-		// Step 10: Login from Mapping Supervisor to approve the WI
-		ReportLogger.INFO(
-				"Now logging in as Mapping Supervisor to approve the work item and validate that new WIs are accessible");
-		objWorkItemHomePage.login(MAPPING_SUPERVISOR);
-
-		objMappingPage.searchModule(WORK_ITEM);
-		objMappingPage.globalSearchRecords(workItemNumber);
-		objWorkItemHomePage.completeWorkItem();
-		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),
-				"Completed", "SMAB-T2670:Verify user is able to complete the Work Item");
-
-		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		objMappingPage.waitForElementToBeClickable(objWorkItemHomePage.linkedItemsRecord);
-
-		softAssert.assertEquals(2, objMappingPage.locateElements(objWorkItemHomePage.NoOfLinkedParcelsInWI, 10).size(),
-				"SMAB-T2670,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that 2 APNs are linked to Work Item");
-		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("0")),
-				"SMAB-T2670,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that first Parent APN is displayed in the linked item");
-		softAssert.assertTrue(apnValue.containsValue(objMappingPage.getLinkedParcelInWorkItem("1")),
-				"SMAB-T2670,SMAB-T2909,SMAB-T3474,SMAB-T3475: Validate that second Parent APN is displayed in the linked item");
-		objMappingPage.Click(objWorkItemHomePage.detailsTab);
-		referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
-		softAssert.assertTrue(referenceURl.contains(concatenateAPNWithDifferentMapBookMapPage),
-				"SMAB-T2910,SMAB-T3473: Validate that Parent APNs are present in the reference Link");
 
 		objWorkItemHomePage.logout();
 	}

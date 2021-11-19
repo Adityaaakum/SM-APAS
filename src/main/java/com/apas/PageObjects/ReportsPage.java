@@ -60,9 +60,6 @@ public class ReportsPage extends ApasGenericPage {
 	@FindBy(xpath="//*[text()='Report: Custom Building Permit Report']//following::span[text()='Final Review Building Permits']")
 	public WebElement buildingPermitHeaderText;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//input[@placeholder='Search all reports...']")
-	public WebElement searchListEditBox;
-	
 
 	public String linkBuildingPermitNumber = "//table[contains(@class,'data-grid-full-table')]//tbody//tr//th[@data-row-index='2']/../td[@data-column-index='2']//a[contains(@href,'')]";
 	public String linkAPN = "//table[contains(@class,'data-grid-full-table')]//tbody//tr//th[@data-row-index='3']/../td[@data-column-index='3']//a[contains(@href,'')]";
@@ -77,7 +74,7 @@ public class ReportsPage extends ApasGenericPage {
 	 * @param reportType: Type of Report, Refer to class variables, it can be either FORMATTED_EXPORT or DATA_EXPORT
 	 * @param reportName: Name of the Report
 	 */
-	public void exportReport(String reportName, String reportType) throws Exception {
+	public void exportReport(String reportName, String reportType) throws IOException, InterruptedException {
 		int initialFileCount = Objects.requireNonNull(new File(testdata.DOWNLOAD_FOLDER).listFiles()).length;
 		// Opening all reports screen
 		ReportLogger.INFO("Opening All Reports Screen");
@@ -88,16 +85,13 @@ public class ReportsPage extends ApasGenericPage {
 		//Using the JavaScriptExecutor as CLICK method is not working
 		ReportLogger.INFO("Opening the report " + reportName);
 		JavascriptExecutor executor = driver;
-		enter(searchListEditBox, reportName);
-		WebElement webElement =  driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//a[contains(@title,'" + reportName + "')]"));
+		WebElement webElement =  driver.findElement(By.xpath("//a[@title='" + reportName + "']"));
 		executor.executeScript("arguments[0].click();", webElement);
-		
-		Thread.sleep(10000);
-		driver.manage().window().maximize();
-	    int size = driver.findElements(By.tagName("iframe")).size();
-		
-         //Switching the frame as the generated report is in different frame
-		driver.switchTo().frame(size-1);
+		Thread.sleep(30000);
+
+		//Switching the frame as the generated report is in different frame
+		driver.switchTo().frame(0);
+
 		Click(arrowButton);
 		Click(linkExport);
 
@@ -127,10 +121,8 @@ public class ReportsPage extends ApasGenericPage {
 	/**
 	 * Description: This method will navigate to the report Name passed as parameter
 	 * @param reportName: Name of the Report
-	 * @return 
-	 * @throws Exception 
 	 */
-	public String navigateToReport(String reportName) throws Exception {
+	public void navigateToReport(String reportName) throws IOException, InterruptedException {
 		// Opening all reports screen
 		ReportLogger.INFO("Opening All Reports Screen");
 		Click(linkAllReports);
@@ -140,14 +132,9 @@ public class ReportsPage extends ApasGenericPage {
 		//Using the JavaScriptExecutor as CLICK method is not working
 		ReportLogger.INFO("Opening the report " + reportName);
 		JavascriptExecutor executor = driver;
-		enter(searchListEditBox, reportName);
-		WebElement webElement =  driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//a[contains(@title,'" + reportName + "')]"));
-		
-		String getReportName=getElementText(webElement);
-        executor.executeScript("arguments[0].click();", webElement);
-		Thread.sleep(3000);
-		return getReportName;
-		
+		WebElement webElement =  driver.findElement(By.xpath("//a[@title='" + reportName + "']"));
+		executor.executeScript("arguments[0].click();", webElement);
+		Thread.sleep(30000);
 	}
 	
 	/**

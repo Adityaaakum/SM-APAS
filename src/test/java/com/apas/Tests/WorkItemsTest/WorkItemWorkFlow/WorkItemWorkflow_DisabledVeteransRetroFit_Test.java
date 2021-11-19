@@ -74,15 +74,14 @@ public class WorkItemWorkflow_DisabledVeteransRetroFit_Test extends TestBase imp
 	public void WorkItemWorkflow_DisabledVeteran_RPSLandReminderWIClaimSubmitValidations(String loginUser) throws Exception {
 		// deleting Existing WI from Disabled veterans Work pool and 2021-RPSL from
 		// system
-		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
-		String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
-
 		String deleteDVWIQuery = "select id from Work_Item__c where Request_Type__c in ('Disabled Veterans - Update and Validate - Disabled veterans Yearly exemption amounts and income limits','Disabled Veterans - Review and Update - Annual exemption amount verification')";
 		salesforceAPI.delete("Work_Item__c", deleteDVWIQuery);
 
-		String deleteRPSLQuery = "select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name='"+currentRollYear+"'";
+		String deleteRPSLQuery = "select id from Real_Property_Settings_Library__c where Roll_Year_Settings__r.name='2021'";
 		salesforceAPI.delete("Real_Property_Settings_Library__c", deleteRPSLQuery);
-		
+		String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
+		String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
+
 		// To run the reminder job WI creation query
 		salesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_DV);
 

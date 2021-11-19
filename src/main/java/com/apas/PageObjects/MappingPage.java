@@ -14,10 +14,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
-import com.apas.config.users;
 
 public class MappingPage extends ApasGenericPage {
 	Util objUtil;
@@ -89,7 +87,6 @@ public class MappingPage extends ApasGenericPage {
 	public String updateParcelsButton = "//button[text()='Update Parcel(s)']";
 	public String updateParcelButtonLabelName = "Update Parcel(s)";
 	public String parcelSizeColumnSecondScreen = "Parcel Size(SQFT)*";
-	public String apn = "APN";
 	public String parcelSizeColumnSecondScreenWithSpace = "Parcel Size (SQFT)*";
 	public final String DOC_CERTIFICATE_OF_COMPLIANCE="CC";
 	public final String DOC_LOT_LINE_ADJUSTMENT="LL";
@@ -107,10 +104,7 @@ public class MappingPage extends ApasGenericPage {
 	public String errorCompleteThisField = "Complete this field.";
 	public String editParcel = "Edit Parcel";
 	public String parcelSitus ="Parcel Situs";
-	public String performAdditionalMappingButton = "Perform Additional Mapping Action";
-	public String userNameForRpAppraiser = CONFIG.getProperty(users.RP_APPRAISER + "UserName");
-	public String appraiserwWorkPool = "Appraiser";
-
+	
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
 	public WebElement editButtonInSeconMappingScreen;
 	
@@ -140,19 +134,13 @@ public class MappingPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//div[contains(@id,'salesforce-lightning-tooltip-bubble')]")
 	public WebElement helpIconToolTipBubble;
-	
+
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//*[@data-label='Legal Description*']")
 	public WebElement legalDescriptionFieldSecondScreen;
 
 	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li[last()] |//div[contains(@class,'error') and not(contains(@class,'message-font'))]")
 	public WebElement errorMessageFirstScreen;
-	
-	@FindBy(xpath = "//div[contains(@id,'help-message')]")
-	public WebElement errorMessageOnFirstCustomScreen;
-	
-	@FindBy(xpath = "//div[contains(@class,'flowruntimeBody')]//li[1]")
-	public WebElement errorMessageonSecondCustomScreen;
-	
+
 	@FindBy(xpath = "//div[contains(@class,'flowRuntimeV2')]//c-org_parcel-process-brand-new-view[1]//div[contains(@class,'error')]//li")
 	public WebElement errorMessageSecondScreen;
 	
@@ -201,11 +189,8 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//h2[contains(text(),'Edit PS-')]")
 	public WebElement visibleParcelSitusEditpopUp;
 	
-	@FindBy(xpath = "//*[contains(@class,'NewButtonForParcel')]//div[@class='override_error']")
-	public WebElement createNewParcelErrorMessage;
-	
-	@FindBy(xpath = "//*[contains(@class,'message-font slds-align_absolute-center slds-text-color_success slds-m-bottom_medium slds-m-top_medium')]")
-	public WebElement createNewParcelSuccessMessage;
+	@FindBy(xpath = "//label[text()='Reason Code']/../div/input")
+	public WebElement txtReasonCode;
 	
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
@@ -437,7 +422,7 @@ public class MappingPage extends ApasGenericPage {
     
      public HashMap<String, ArrayList<String>> getActiveApnWithNoOwner(int numberofRecords) throws Exception {
         
-    	 String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '1%') and (Not Name like '8%') "
+    	 String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '134%') and (Not Name like '100%') and (Not Name like '800%') "
     	 		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
     	 		+ "and Status__c = 'Active' Limit " + numberofRecords;   	    
      	return objSalesforceAPI.select(queryActiveAPNValue);
@@ -453,7 +438,7 @@ public class MappingPage extends ApasGenericPage {
         }
         
       public HashMap<String, ArrayList<String>> getCondoApnWithNoOwner(int numberofRecords) throws Exception {
-        	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and (Not Name like '%990') and name like '1%' and Status__c = 'Active' Limit " + numberofRecords;
+        	String queryCondoAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')  and (Not Name like '%990') and name like '100%' and Status__c = 'Active' Limit " + numberofRecords;
         	return objSalesforceAPI.select(queryCondoAPNValue);
         }
      
@@ -491,33 +476,33 @@ public class MappingPage extends ApasGenericPage {
    *     
    */
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
-    		
+  		
 			String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
 			String TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
 			String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1").get("Name").get(0);
 		    objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='"+PUC+"'").get("Id").get(0), "Legacy__c", "No");
-
+		    
 			Click(editButtonInSeconMappingScreen);
-
-			clearSelectionFromLookup("TRA");
+			if (waitForElementToBeVisible(2, clearSelectionTRA))
+			Click(clearSelectionTRA);
 			enter(parcelTRA, TRA);
 			Thread.sleep(2000);
 			selectOptionFromDropDown(parcelTRA, TRA);
-			ReportLogger.INFO("TRA:" +TRA);
-
-			clearSelectionFromLookup("District / Neighborhood Code");
+			
+			if (waitForElementToBeVisible(2, clearSelectionNeigh))
+			Click(clearSelectionNeigh);
 			enter(parcelDistrictNeighborhood, distNeigh);
 			selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
-			ReportLogger.INFO("District / Neighborhood Code:" +distNeigh);
+	
 
-			clearSelectionFromLookup("PUC");
+			if (waitForElementToBeVisible(2, clearSelectionPUC))
+			Click(clearSelectionPUC);
 			enter(parcelPUC, PUC);
 			selectOptionFromDropDown(parcelPUC, PUC);
-			ReportLogger.INFO("PUC:" + PUC);
-
+				
 			editSitusModalWindowFirstScreen(dataMap);
 			
-	}
+  	}
       
       public void updateMultipleGridCellValue(String columnNameOnGrid, String expectedValue,int i) throws IOException, AWTException, InterruptedException {
     		String xPath =  "//lightning-tab[contains(@class,'slds-show')]//tr["+i+"]"
@@ -543,7 +528,7 @@ public class MappingPage extends ApasGenericPage {
 	    		Thread.sleep(2000);
     	}
       /*
-       * this method is used to validate parent APNs on custom mapping Second screen
+       * this method is used to validate parent APNs on custom mapping screeen
        */
       public boolean validateParentAPNsOnMappingScreen(String parentAPNs) {
     	  boolean flag = false;
@@ -561,130 +546,4 @@ public class MappingPage extends ApasGenericPage {
      	    }
      	  return flag;
        }
-      
-      /*
-       * this method is used to validate parent APNs on custom mapping first screen
-       */
-		public boolean validateParentAPNsOnMappingFirstScreen(String parentAPNs) {
-			boolean flag = false;
-
-			String xPath = "//label[text()='Parent APN(s)']/following::span[text()='" + parentAPNs + "']";
-			if (verifyElementVisible(xPath))
-				flag = true;
-
-			return flag;
-		}
-		
-		 /**
-	       *  This method will delete existing characteristic instances  from the Parcel
-	       * @param apn-Apn whose records needs to be deleted
-	       * @return
-	       * @throws Exception
-	       */
-			public void deleteCharacteristicInstanceFromParcel(String apn) {
-				String query = "SELECT Id FROM Characteristics__c where APN__c in( SELECT id FROM Parcel__c where name='"
-						+ apn + "')";
-				HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
-
-				if (!response.isEmpty()) {
-					response.get("Id").stream().forEach(Id -> {
-						objSalesforceAPI.delete("Characteristics__c", Id);
-						ReportLogger.INFO("Characteristics deleted for Id ::"+Id);
-					});
-				}
-			}
-			
-			
-			/**
-			 *  This method will delete existing mailTo instances  from the Parcel
-			 * @param apn-Apn whose records needs to be deleted
-			 * @return
-			 * @throws Exception
-			 */
-			public void deleteMailToInstanceFromParcel(String apn) {
-				String query = "SELECT Id FROM Mail_To__C where Parcel__c in( SELECT id FROM Parcel__c where name='"
-						+ apn + "')";
-				HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
-
-				if (!response.isEmpty()) {
-					response.get("Id").stream().forEach(Id -> {
-						objSalesforceAPI.delete("Mail_To__C", Id);
-						ReportLogger.INFO("Mail To deleted for Id ::"+Id);
-					});
-				}
-			}
-			
-			/**
-			 *  This method will delete existing Work item instances  from the Parcel
-			 * @param apn-Apn whose records needs to be deleted
-			 * @return
-			 * @throws Exception
-			 */
-			public void deleteExistingWIFromParcel(String apn) {
-				String query ="Select id, name , parcel__c, work_item__r.Name from"
-						+ " work_item_linkage__c where parcel__r.Name = '"+ apn 
-						+"' and work_item__r.status__c != 'completed' and  Work_Item__r.type__c = 'CIO'";
-				
-				HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
-
-				if (!response.isEmpty()) {
-					response.get("Id").stream().forEach(Id -> {
-						objSalesforceAPI.delete("work_item_linkage__c", Id);
-						ReportLogger.INFO("work_item_linkage__c  deleted for Id ::"+Id);
-					});
-				}
-			}
-
-			/**
-			 * @Description: This method will fill  the fields in Mapping Action Page mapping action
-			 * @param dataMap: A data map which contains data to perform  mapping action
-			 * @throws Exception
-			 */
-			public void fillMappingActionFormWithSitus(Map<String, String> dataMap) throws Exception {
-				String action = dataMap.get("Action");
-				String taxesPaid = dataMap.get("Are taxes fully paid?");
-				String reasonCode = dataMap.get("Reason code");
-				String parcelSizeValidation = dataMap.get("Parcel Size Validation");
-				String netLandLoss = dataMap.get("Net Land Loss");
-				String netLandGain = dataMap.get("Net Land Gain");
-				String firstnonCondoParcelNumber = dataMap.get("First non-Condo Parcel Number");
-				String legalDescription = dataMap.get("Legal Description");
-				String legalDescriptionBrandNewAction = dataMap.get("Legal Descriptions");
-				String comments= dataMap.get("Comments");
-				String numberOfChildNonCondoParcels= dataMap.get("Number of Child Non-Condo Parcels");
-				String numberOfChildCondoParcels= dataMap.get("Number of Child Condo Parcels");
-				String firstCondoParcelNumber= dataMap.get("First Condo Parcel Number");
-
-				selectOptionFromDropDown(actionDropDownLabel, action);
-				if (taxesPaid != null)selectOptionFromDropDown(taxesPaidDropDownLabel, taxesPaid);
-				if (reasonCode != null)enter(reasonCodeTextBoxLabel, reasonCode);
-				if (parcelSizeValidation != null)selectOptionFromDropDown(parcelSizeDropDownLabel, parcelSizeValidation);
-				if (netLandLoss != null)enter(netLandLossTextBoxLabel, netLandLoss);
-				if (netLandGain != null)enter(netLandGainTextBoxLabel, netLandGain);
-				if (numberOfChildNonCondoParcels != null)
-					enter(numberOfChildNonCondoTextBoxLabel, numberOfChildNonCondoParcels);
-				if (firstnonCondoParcelNumber != null)
-					enter(firstNonCondoTextBoxLabel, firstnonCondoParcelNumber);
-				if (numberOfChildCondoParcels != null)
-					enter(numberOfChildCondoTextBoxLabel, numberOfChildCondoParcels);
-				if (firstCondoParcelNumber != null)
-					enter(firstCondoTextBoxLabel, firstCondoParcelNumber);
-				if (legalDescription != null)
-					enter(legalDescriptionTextBoxLabel, legalDescription);
-				if (comments != null)
-					enter(commentsTextBoxLabel, comments);
-				
-				clearFieldValue("Situs");
-				enter(getWebElementWithLabel("Situs Number"), "101");
-				enter(getWebElementWithLabel("Situs Street Name"), "ST");
-				enter(getWebElementWithLabel("Situs Unit Number"), "102");
-				clearFieldValue("Situs Type");
-				selectOptionFromDropDown("Situs Type", "DR");
-				clearFieldValue("City Name");
-				selectOptionFromDropDown("City Name", "ATHERTON");
-				Click(getButtonWithText("Save"));
-
-				
-			}
-
 }

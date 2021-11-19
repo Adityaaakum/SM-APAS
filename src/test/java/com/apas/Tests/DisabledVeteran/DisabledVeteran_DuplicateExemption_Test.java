@@ -73,7 +73,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(5, 16);
+		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		String veteranName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage));
 		
 		objPage.expandIcon(objExemptionsPage.expandedIconForMoreExemptionOnDetailPage);
@@ -99,7 +99,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(5, 16);
+		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		String veteranName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage));
 		
 		objPage.expandIcon(objExemptionsPage.expandedIconForMoreExemptionOnDetailPage);
@@ -140,7 +140,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(5, 16);
+		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		String veteranName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage));
 		
 		objPage.expandIcon(objExemptionsPage.expandedIconForMoreExemptionOnDetailPage);
@@ -165,7 +165,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(5, 16);
+		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		String veteranName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage));
 
 		objPage.expandIcon(objExemptionsPage.expandedIconForMoreExemptionOnDetailPage);
@@ -204,7 +204,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(5, 16);
+		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithNoEndDateOfRatingMap.get("Veteran Name"), "SMAB-T532: Validate 'Veteran Name' in the Exemption record with no End Date");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithNoEndDateOfRatingMap.get("Veteran SSN").substring(7), "SMAB-T532: Validate last 4 digits of 'Veteran's SSN' in the Exemption record with no End Date");
 		
@@ -229,7 +229,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(5, 16);
+		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithEndDateOfRatingMap.get("Veteran Name"), "SMAB-T532: Validate 'Veteran Name' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithEndDateOfRatingMap.get("Veteran SSN").substring(7), "SMAB-T532: Validate last 4 digits of 'Veteran's SSN' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
 		
@@ -273,7 +273,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(5, 16);
+		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithRequiredFieldsMap.get("Veteran Name"), "SMAB-T609: Validate 'Veteran Name' in the Exemption record");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithRequiredFieldsMap.get("Veteran SSN").substring(7), "SMAB-T609: Validate last 4 digits of 'Veteran's SSN' in the Exemption record");
 		
@@ -300,7 +300,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(5, 16);
+		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap.get("Veteran Name"), "SMAB-T532: Validate 'Veteran Name' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithDatesEarlierThanOriginalRecordMap.get("Veteran SSN").substring(7), "SMAB-T532: Validate last 4 digits of 'Veteran's SSN' in the Exemption record with End Date set to a date earlier than Start Date of initial record");
 		
@@ -326,7 +326,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId3 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName3 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		String apn3 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(5, 16);
+		String apn3 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap.get("Veteran Name"), "SMAB-T534 : Validate 'Veteran Name' in the Exemption record with Start Date set to a date later than End Date of initial record");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithDatesLaterThanOriginalRecordWithEndDateOfRatingMap.get("Veteran SSN").substring(7), "SMAB-T534 : Validate last 4 digits of 'Veteran's SSN' in the Exemption record with Start Date set to a date later than End Date of initial record");
 			
@@ -364,7 +364,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId1 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName1 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(5, 16);
+		String apn1 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithEndDateMap.get("Veteran Name"), "SMAB-T534 : Validate 'Veteran Name' in the Exemption record");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithEndDateMap.get("Veteran SSN").substring(7), "SMAB-T534 : Validate last 4 digits of 'Veteran's SSN' in the Exemption record");
 		
@@ -385,7 +385,7 @@ public class DisabledVeteran_DuplicateExemption_Test extends TestBase {
 		String recordId2 = objApasGenericPage.getCurrentRecordId(driver, "Exemption");
 		objExemptionsPage.expandIcon(objExemptionsPage.expandedIconForGeneralExemptionOnDetailPage);
 		String exemptionName2 = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
-		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(5, 16);
+		String apn2 = (objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.parcelOnDetailPage))).substring(0, 11);
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranNameOnDetailPage)), dataToCreateExemptionWithoutEndDateMap.get("Veteran Name"), "SMAB-T534: Validate 'Veteran Name' in the Exemption detail record with End Date set to a date earlier than Start Date of initial record");
 		softAssert.assertEquals(objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.veteranSSNOnDetailPage)).substring(7), dataToCreateExemptionWithoutEndDateMap.get("Veteran SSN").substring(7), "SMAB-T534: Validate last 4 digits of 'Veteran's SSN' in the Exemption detail record with End Date set to a date earlier than Start Date of initial record");
 		

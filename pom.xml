@@ -82,6 +82,12 @@
 			<artifactId>selenium-edge-driver</artifactId>
 			<version>3.14.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager -->
+		<dependency>
+		    <groupId>io.github.bonigarcia</groupId>
+		    <artifactId>webdrivermanager</artifactId>
+		    <version>5.0.3</version>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -183,7 +189,12 @@
 		    <groupId>com.jayway.jsonpath</groupId>
 		    <artifactId>json-path</artifactId>
 		    <version>2.6.0</version>
-		</dependency>        
+		</dependency> 
+		<dependency>
+           <groupId>com.jayway.jsonpath</groupId>
+           <artifactId>json-path</artifactId>
+           <version>2.4.0</version>
+        </dependency>       
 	</dependencies>
 
 	<build>

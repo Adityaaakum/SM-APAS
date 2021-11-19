@@ -78,7 +78,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		String apn = salesforceAPI.select(queryForActiveAPN).get("Name").get(0);
 		String apnId = salesforceAPI.select(queryForActiveAPN).get("Id").get(0);
 		
-		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT id, Name FROM PUC_Code__c where Name Not in ('99-RETIRED PARCEL') and Disabled_Veteran_Exemption__c = true limit 1");
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT id, Name FROM PUC_Code__c where Name Not in ('99-RETIRED PARCEL') limit 1");
 		salesforceAPI.update("Parcel__c", apnId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 		
 		Map<String, String> dataToCreateHomeOwnerExemptionMap = objUtil.generateMapFromJsonFile(homeOwnerExemptionData, "NewHOECreation");
@@ -118,7 +118,6 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-SALE");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
-		Thread.sleep(5000); //Added to avoid regression failure
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferCodeLabel, ""),"CIO-SALE",
 				"SMAB-T3479: Validate the Transfer Code on CIO Transfer screen");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferDescriptionLabel, ""),"Chg of Own, Ass, Sale",
@@ -127,10 +126,12 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 				"SMAB-T3479: Validate the Exemption Retain field on CIO Transfer screen");
 		
 		//Step5: Submit for Approval
-		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.quickActionOptionSubmitForApproval);
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.finishButton);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
-		Thread.sleep(2000);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferStatusLabel);
 		
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.transferStatusLabel, "System Information"),"Submitted for Approval",
 				"SMAB-T3479: Validate the Transfer Activity status on CIO Transfer screen");
@@ -149,10 +150,8 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 				"SMAB-T3479: Validate that 'Exemption' amount is removed from Exemption field on Parcel record");
 		
 		objApasGenericPage.searchModule(modules.EXEMPTION);
-		objApasGenericPage.displayRecords("All");
 		objApasGenericPage.globalSearchRecords(exemptionName);
 		
-		objCIOTransferPage.waitForElementToBeVisible(6, objExemptionsPage.qualification);
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objExemptionsPage.qualification, "General Information"),"Not Qualified",
 				"SMAB-T3479: Validate that 'Qualification?' field is updated to on HOE Exemption record");
 		
@@ -172,11 +171,12 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		
 		// Step 1: Executing the recorder feed batch job to generate CIO WI
 		objCIOTransferPage.generateRecorderJobWorkItems("DE", 1);
+		Thread.sleep(7000);
 		String cioWorkItem = objWorkItemHomePage.getLatestWorkItemDetailsOnWorkbench(1).get("Name").get(0);
 
 		// Step2: Login to the APAS application 
 		objCIOTransferPage.login(loginUser);
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 		objCIOTransferPage.closeDefaultOpenTabs();
 
 		// Step3: Opening the work items and accepting the WI created by recorder batch
@@ -185,10 +185,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
-		objApasGenericPage.scrollToElement(objApasGenericPage.getWebElementWithLabel(objParcelsPage.editApnField));
 		String apn = objCIOTransferPage.getFieldValueFromAPAS(objWorkItemHomePage.wiAPNDetailsPage, "Information");
-		String apnQuery = "SELECT Id FROM Parcel__c where Name ='" + apn + "'";
-		String apnId = salesforceAPI.select(apnQuery).get("Id").get(0);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		
 		objApasGenericPage.logout();
@@ -196,15 +193,11 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 
 		//Step4: Login to the APAS application
 		objApasGenericPage.login(users.SYSTEM_ADMIN);
-		
+				
 		//Step5: Open the Parcel module and add values for Exemption fields
 		Map<String, String> dataToCreateHomeOwnerExemptionMap = objUtil.generateMapFromJsonFile(homeOwnerExemptionData, "NewHOECreation");
 		objApasGenericPage.searchModule(modules.PARCELS);
-		
-		String executionEnv = System.getProperty("region");
-		driver.navigate().to("https://smcacre--"+executionEnv+
-				 ".lightning.force.com/lightning/r/Parcel__c/"+apnId+"/view");
-		
+		objApasGenericPage.globalSearchRecords(apn);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.editParcelButton));
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.saveButton);
 		objApasGenericPage.scrollToElement(objApasGenericPage.getWebElementWithLabel(objParcelsPage.exemptionLabel));

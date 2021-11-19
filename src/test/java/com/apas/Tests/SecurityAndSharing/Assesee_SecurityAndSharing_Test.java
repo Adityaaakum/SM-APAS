@@ -118,14 +118,20 @@ public class Assesee_SecurityAndSharing_Test extends TestBase {
 
 		Thread.sleep(1000);
 		objAsseseePage.displayRecords("All Assessees");
-		Thread.sleep(3000);
+		String queryAPN = "Select FirstName,LastName From Account limit 1";
 
-		objAsseseePage.Click(objAsseseePage.showMoreDropdownAssessesPage);
-		softAssert.assertTrue(!objAsseseePage.waitForElementToBeVisible(4,objAsseseePage.editButtonText),
+		HashMap<String, ArrayList<String>> responseAPNDetails = objSalesforceAPI.select(queryAPN);
+		String firstName = responseAPNDetails.get("FirstName").get(0);
+		String lastName = responseAPNDetails.get("LastName").get(0);
+		String name = firstName + " " + lastName;
+		objAsseseePage.searchRecords(name);
+		Thread.sleep(1000);
+
+		softAssert.assertTrue(!objAsseseePage.clickShowMoreButtonAndAct(name, "Edit"),
 				"SMAB-T2994: edit button should not be visible to other users");
 
-		softAssert.assertTrue(!objAsseseePage.waitForElementToBeVisible(4,objAsseseePage.deleteButtonText),
-				"SMAB-T2994: delete button should not be visible to other users");
+		softAssert.assertTrue(!objAsseseePage.clickShowMoreButtonAndAct(name, "Delete"),
+				"SMAB-T2993: delete button should not be visible to other users");
 
 		objAsseseePage.logout();
 
