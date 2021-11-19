@@ -253,19 +253,23 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 	 * @throws Exception
 	 */	
 	
+
 	@Test(description = "SMAB-T3010: Validate New Botton on MailTo record on parcel for BPP_Admin,Mapping staff,RP Admin and CIO Staff,", dataProvider = "usersRestrictedToNewandEditButtonOnParcelMailto", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement", "SecurityAndSharing" })
 	public void validateNewButtonOnMailToRecordForAllUsers(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL AND Status__c = 'Active' limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn=responseAPNDetails.get("Name").get(0);
 		String mailToRecordFromParcel = "SELECT Parcel__c,Id FROM Mail_To__c where status__c = 'Active' Limit 1";
 		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI.select(mailToRecordFromParcel);
 		String mailToID = hashMapRecordedApn.get("Id").get(0);
 		// STEP 1:login with All the users and verify the new button on Mail-to record is not visible
 		if (loginUser.equals(users.MAPPING_STAFF)) {
 			objMappingPage.login(loginUser);
-			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Mail_To__c/"
-					+ mailToID + "/view");
+			objMappingPage.globalSearchRecords(apn);
+			objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_MAIL_TO);
 			Thread.sleep(2000);
 			softAssert.assertEquals(objParcelsPage.verifyElementVisible("New"), "false",
 					"SMAB-T3010: New button is not present for" + loginUser + "User");
@@ -274,9 +278,8 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 			objWorkItemHomePage.logout();
 		} else {
 			objMappingPage.login(loginUser);
-			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Mail_To__c/"
-					+ mailToID + "/view");
-			Thread.sleep(2000);
+			objMappingPage.globalSearchRecords(apn);
+			objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_MAIL_TO);
 			softAssert.assertEquals(objParcelsPage.verifyElementVisible("New"), "false",
 					"SMAB-T3010: New button is not present for" + loginUser + "User");
 			objWorkItemHomePage.logout();
