@@ -39,8 +39,8 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	String apnPrefix=new String();
 	AuditTrailPage trail;
 	CIOTransferPage objtransfer;
-	
 
+	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
 		driver = null;
@@ -49,8 +49,8 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
-		 trail= new AuditTrailPage(driver);
-		 objtransfer=new CIOTransferPage(driver);
+		trail= new AuditTrailPage(driver);
+		objtransfer=new CIOTransferPage(driver);
 
 	}
 	/**
@@ -279,8 +279,8 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @param loginUser-Mapping user
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3620,SMAB-T2642,SMAB-T2643,SMAB-T2644,SMAB-T3243,SMAB-T3771:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" },enabled =true)
+	@Test(description = "SMAB-T3620,SMAB-T2642,SMAB-T2643,SMAB-T2644,SMAB-T3243,SMAB-T3771,SMAB-T3926,SMAB-T3928,SMAB-T3927,SMAB-T4251,SMAB-T4165,SMAB-T4166,SMAB-T4167,SMAB-T4250:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement" }, enabled = true)
 	public void ParcelManagement_Verify_Brand_NewParcel_Mapping_Action(String loginUser) throws Exception {
 		
 		JSONObject jsonObject = objMappingPage.getJsonObject();
@@ -450,51 +450,57 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
-			softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3771: Validation WI completed successfully");
+			softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3771,SMAB-T3927,: Validation WI completed successfully");
 			objMappingPage.searchModule(PARCELS);
 			objMappingPage.globalSearchRecords(newCreatedApn);
 			
-			//Moving to Allocate Values WI
-			String districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code", "Summary Values");
+			// Moving to Allocate Values WI
+			String districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code",
+					"Summary Values");
 			String Puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
-			softAssert.assertEquals(districtAndNeighCode,PucAndNeighCode[1], "matched successfully");
-			softAssert.assertEquals(Puc, PucAndNeighCode[0]," matched successfully");
+			softAssert.assertEquals(districtAndNeighCode, PucAndNeighCode[1],
+					"SMAB-T3926: District and Neighbrhood code was updated successfully");
+			softAssert.assertEquals(Puc, PucAndNeighCode[0], "SMAB-T3926:PUC was updated successfully");
 			objParcelsPage.Click(objParcelsPage.workItems);
 			objParcelsPage.Click(objParcelsPage.allocateValue);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
 			String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
-			softAssert.assertEquals(assignedTo, salesforceAPI.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'").get("Name").get(0), "SMAB-T3771:Assiged to is matched successfully");
-			softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool, "SMAB-T3771:workPool is matched successfully");
+			softAssert.assertEquals(assignedTo, salesforceAPI
+					.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'")
+					.get("Name").get(0), "SMAB-T3771,SMAB-T3928:Assiged to is matched successfully");
+			softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool,
+					"SMAB-T3771,SMAB-T3928:workPool is matched successfully");
 			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
-			parentWindow = driver.getWindowHandle();	
+			parentWindow = driver.getWindowHandle();
 			objWorkItemHomePage.switchToNewWindow(parentWindow);
-			objMappingPage.enter("Remarks","It's a Remarks");
-			
-			gridParcelData = objMappingPage.getGridDataInHashMap();	
+			objMappingPage.enter("Remarks", "It's a Remarks");
+
+			//fetching the grid values to verify the presence of expected fields
+			gridParcelData = objMappingPage.getGridDataInHashMap();
 
 			softAssert.assertEquals(gridParcelData.containsKey("Parcel"), "true",
-					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+					"SMAB-T4165:Verifying Parcel field is present");
 			softAssert.assertEquals(gridParcelData.containsKey("Parcel Size (SqFt)"), "true",
-					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+					"SMAB-T4165:Verifying parcel Size (SqFt) field is present");
 			softAssert.assertEquals(gridParcelData.containsKey("Land %"), "true",
-					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+					"SMAB-T4165:Verifying Land % field is persent");
 			softAssert.assertEquals(gridParcelData.containsKey("Proposed Land (FBYV)"), "true",
-					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+					"SMAB-T4165:Verifying Proposed Land (FBYV) field is present");
 			softAssert.assertEquals(gridParcelData.containsKey("Adjusted Land (FBYV)"), "true",
-					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+					"SMAB-T4165:Verifying Adjusted Land (FBYV) field is present");
 			softAssert.assertEquals(gridParcelData.containsKey("Imp (FBYV)"), "true",
-					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+					"SMAB-T4165:Verifying Imp (FBYV) field is present");
 			softAssert.assertEquals(gridParcelData.containsKey("Total (FBYV)"), "true",
-					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+					"SMAB-T4165:Verifying Total (FBYV) field is present");
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
-			
+
 			driver.switchTo().window(parentWindow);
-            objWorkItemHomePage.logout();
-			
-			ReportLogger.INFO(" RP Business Admin logins ");
+			objWorkItemHomePage.logout();
+
+			ReportLogger.INFO(" RP Principal logins ");
 			objMappingPage.login(users.RP_PRINCIPAL);
-			
+
 			objMappingPage.searchModule(PARCELS);
 			objMappingPage.globalSearchRecords(newCreatedApn);
 			objParcelsPage.Click(objParcelsPage.workItems);
@@ -502,9 +508,10 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.detailsTab);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.previousRelatedAction);
-			
+
 			String previousRelatedAction = objWorkItemHomePage.previousRelatedAction.getText();
-			softAssert.assertEquals(previousRelatedAction,"Update Characteristics & Verify PUC", "");
+			softAssert.assertEquals(previousRelatedAction, "Update Characteristics & Verify PUC",
+					"SMAB-T4167:Update Characteristics & Verify PUC link is present");
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 
 			objMappingPage.searchModule(PARCELS);
@@ -512,14 +519,16 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.waitForElementToBeVisible(20, objParcelsPage.ValueAllocation);
 			objParcelsPage.Click(objParcelsPage.ValueAllocation);
 			String remarksOnAuditTrails = objMappingPage.getFieldValueFromAPAS("Remarks", "");
-			softAssert.assertEquals(remarksOnAuditTrails, "It's a Remarks", " matched successfully");
-
+			softAssert.assertEquals(remarksOnAuditTrails, "It's a Remarks",
+					"SMAB-T4251: Remarks added by Appraiser was saved successfully");
+			trail.Click(trail.relatedBusinessRecords);
+			objWorkItemHomePage.waitForElementToBeVisible(20, trail.valuesAllocated);
+			String trailSubject = trail.valuesAllocated.getText();
+			softAssert.assertEquals(trailSubject, "Values Allocated",
+					"SMAB-T4250: Verified Summary that summary is Values Allocate ");
 			objWorkItemHomePage.logout();
-			
-		   		
-            		                          
-		   
-	}
+
+		}
 	/**
 	 * Once the parcel creation has been approved, the user will not be allowed to change the APN allocated.
 	 * 
