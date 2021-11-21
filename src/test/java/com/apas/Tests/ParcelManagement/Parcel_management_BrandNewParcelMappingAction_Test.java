@@ -470,6 +470,23 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			parentWindow = driver.getWindowHandle();	
 			objWorkItemHomePage.switchToNewWindow(parentWindow);
 			objMappingPage.enter("Remarks","It's a Remarks");
+			
+			gridParcelData = objMappingPage.getGridDataInHashMap();	
+
+			softAssert.assertEquals(gridParcelData.containsKey("Parcel"), "true",
+					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+			softAssert.assertEquals(gridParcelData.containsKey("Parcel Size (SqFt)"), "true",
+					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+			softAssert.assertEquals(gridParcelData.containsKey("Land %"), "true",
+					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+			softAssert.assertEquals(gridParcelData.containsKey("Proposed Land (FBYV)"), "true",
+					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+			softAssert.assertEquals(gridParcelData.containsKey("Adjusted Land (FBYV)"), "true",
+					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+			softAssert.assertEquals(gridParcelData.containsKey("Imp (FBYV)"), "true",
+					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
+			softAssert.assertEquals(gridParcelData.containsKey("Total (FBYV)"), "true",
+					"SMAB-T3832:Verifying The order of the CIO Transfer Grantee and new Owner Ship");
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
 			
 			driver.switchTo().window(parentWindow);
@@ -482,17 +499,21 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objMappingPage.globalSearchRecords(newCreatedApn);
 			objParcelsPage.Click(objParcelsPage.workItems);
 			objParcelsPage.Click(objParcelsPage.allocateValue);
-			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+			objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.previousRelatedAction);
 			
+			String previousRelatedAction = objWorkItemHomePage.previousRelatedAction.getText();
+			softAssert.assertEquals(previousRelatedAction,"Update Characteristics & Verify PUC", "");
+			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+
 			objMappingPage.searchModule(PARCELS);
 			objMappingPage.globalSearchRecords(newCreatedApn);
-			Thread.sleep(5000);
+			objWorkItemHomePage.waitForElementToBeVisible(20, objParcelsPage.ValueAllocation);
 			objParcelsPage.Click(objParcelsPage.ValueAllocation);
 			String remarksOnAuditTrails = objMappingPage.getFieldValueFromAPAS("Remarks", "");
-			softAssert.assertEquals(remarksOnAuditTrails, "It's a Remarks"," matched successfully");
-			
-			
-			
+			softAssert.assertEquals(remarksOnAuditTrails, "It's a Remarks", " matched successfully");
+
 			objWorkItemHomePage.logout();
 			
 		   		
