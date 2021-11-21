@@ -206,6 +206,7 @@ public class MappingPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//*[contains(@class,'message-font slds-align_absolute-center slds-text-color_success slds-m-bottom_medium slds-m-top_medium')]")
 	public WebElement createNewParcelSuccessMessage;
+
 	
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
@@ -687,4 +688,34 @@ public class MappingPage extends ApasGenericPage {
 				
 			}
 
-}
+			/**
+			 * @Description This method can be utilized to update parcel's PUC and District
+			 *              and neighbourhood Code through Puc and District WI Custom page
+			 * @return Array of String , containing updated PUC and District Neighbrood code
+			 * @throws Exception
+			 */
+		
+			public String[] editActionInUpdatePucAndCharsScreen() throws Exception {
+
+				Click(mappingSecondScreenEditActionGridButton);
+				Click(editButtonInSeconMappingScreen);
+
+				String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 4").get("Name").get(3);
+
+				String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 4").get("Name").get(3);
+				objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='" + PUC + "'").get("Id").get(0),"Legacy__c", "No");
+				clearSelectionFromLookup("District / Neighborhood Code");
+				enter(parcelDistrictNeighborhood, distNeigh);
+				selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
+				ReportLogger.INFO("District / Neighborhood Code:" + distNeigh);
+
+				clearSelectionFromLookup("PUC");
+				enter(parcelPUC, PUC);
+				selectOptionFromDropDown(parcelPUC, PUC);
+				ReportLogger.INFO("PUC:" + PUC);
+				Click(getButtonWithText(SaveButton));
+				
+				return new String[] { PUC, distNeigh };
+			}
+
+		}

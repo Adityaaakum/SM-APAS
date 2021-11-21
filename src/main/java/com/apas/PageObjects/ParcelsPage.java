@@ -256,6 +256,9 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath ="//*[@class='actionBody']//*[text()='RP']")
 	public WebElement rpRadioButton;
+		
+	@FindBy(xpath = "//strong[contains(normalize-space(),'Value Allocation ')]")
+	public WebElement ValueAllocation;
 
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";

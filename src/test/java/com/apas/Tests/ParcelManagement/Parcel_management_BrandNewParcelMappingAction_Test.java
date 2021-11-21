@@ -293,6 +293,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 		String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
+
+		
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformBrandNewParcelMappingActionWithSitusData");
 
@@ -438,6 +440,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
 			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 			objWorkItemHomePage.switchToNewWindow(parentWindow);
+			
+			String[] PucAndNeighCode = objMappingPage.editActionInUpdatePucAndCharsScreen();
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
 			ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
 
@@ -451,6 +455,10 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objMappingPage.globalSearchRecords(newCreatedApn);
 			
 			//Moving to Allocate Values WI
+			String districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code", "Summary Values");
+			String Puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+			softAssert.assertEquals(districtAndNeighCode,PucAndNeighCode[1], "matched successfully");
+			softAssert.assertEquals(Puc, PucAndNeighCode[0]," matched successfully");
 			objParcelsPage.Click(objParcelsPage.workItems);
 			objParcelsPage.Click(objParcelsPage.allocateValue);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -458,9 +466,35 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
 			softAssert.assertEquals(assignedTo, salesforceAPI.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'").get("Name").get(0), "SMAB-T3771:Assiged to is matched successfully");
 			softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool, "SMAB-T3771:workPool is matched successfully");
-
+			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			parentWindow = driver.getWindowHandle();	
+			objWorkItemHomePage.switchToNewWindow(parentWindow);
+			objMappingPage.enter("Remarks","It's a Remarks");
+			objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
+			
+			driver.switchTo().window(parentWindow);
+            objWorkItemHomePage.logout();
+			
+			ReportLogger.INFO(" RP Business Admin logins ");
+			objMappingPage.login(users.RP_PRINCIPAL);
+			
+			objMappingPage.searchModule(PARCELS);
+			objMappingPage.globalSearchRecords(newCreatedApn);
+			objParcelsPage.Click(objParcelsPage.workItems);
+			objParcelsPage.Click(objParcelsPage.allocateValue);
+			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+			
+			objMappingPage.searchModule(PARCELS);
+			objMappingPage.globalSearchRecords(newCreatedApn);
+			Thread.sleep(5000);
+			objParcelsPage.Click(objParcelsPage.ValueAllocation);
+			String remarksOnAuditTrails = objMappingPage.getFieldValueFromAPAS("Remarks", "");
+			softAssert.assertEquals(remarksOnAuditTrails, "It's a Remarks"," matched successfully");
+			
+			
+			
 			objWorkItemHomePage.logout();
-
+			
 		   		
             		                          
 		   
