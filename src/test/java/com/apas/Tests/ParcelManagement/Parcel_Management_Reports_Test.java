@@ -38,7 +38,7 @@ public class Parcel_Management_Reports_Test extends TestBase {
 	}
 
 	@Test(description = "SMAB-T3444: Validation of parcel management reports", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "WorkItemWorkflow_Reports","ParcelManagement_Reports" }, alwaysRun = true)
+			"Regression", "WorkItemWorkflow_Reports","ParcelManagement_Reports", "ParcelManagement" }, alwaysRun = true)
 	public void Reports_ParcelManagementReports(String loginUser) throws Exception {
 		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		String reportName;

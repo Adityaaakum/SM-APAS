@@ -26,7 +26,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase implements testdata, modules, users{
+public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase implements testdata, modules, users{
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
@@ -1409,7 +1409,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		 * @throws Exception
 		 */
 		@Test(description = "SMAB-T2946:Verify the type of WI system creates for different recorded document types for a recorded document with one APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-				"Smoke","Regression","ChangeInOwnershipManagement","RecorderIntegration" },enabled=true)
+				"Smoke","Regression","ParcelManagement","RecorderIntegration" },enabled=true)
 		public void ParcelManagement_VerifyNewWIgenratedfromRecorderIntegrationAndBrandNewMappingAction(String loginUser) throws Exception {
 					
 			
