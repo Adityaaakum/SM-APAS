@@ -261,11 +261,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		String legalDescriptionValue = "Legal PM 85/25-260";
 		String districtValue = "District01";
 		String parcelSize = "1000";
-		
-	objParcelsPage.deleteParcelSitusFromParcel(parcelToSearch);
-	objParcelsPage.deleteParcelSitusFromParcel(parcelToSearch1);
-	//objParcelsPage.deleteParcelSitusFromParcel(parcelToSearch);
-	
+
 		jsonParcelObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 		jsonParcelObject.put("Status__c", "Active");
 		jsonParcelObject.put("Short_Legal_Description__c", legalDescriptionValue);
@@ -327,6 +323,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		}
 
 		objMappingPage.waitForElementToBeVisible(10, objMappingPage.updateParcelsButton);
+
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		Thread.sleep(2000);
 		objMappingPage.waitForElementToBeVisible(objMappingPage.createNewParcelSuccessMessage);
@@ -339,19 +336,14 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 
-		//objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentWorkItemLink);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentWorkItemLink);
 
 		String findSecondWorkItemNumber = "SELECT Name FROM Work_Item__c WHERE Type__c = 'Mapping' AND Sub_Type__c = 'Other Mapping Work' order by createdDate desc limit 1";
 		HashMap<String, ArrayList<String>> workItemResponse1 = salesforceAPI.select(findSecondWorkItemNumber);
 
 		String secondWorkItemNumber = workItemResponse1.get("Name").get(0);
-		//objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
-		//objWorkItemHomePage.Click(objWorkItemHomePage.parentWorkItemLink);
-		
-		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords(secondWorkItemNumber);
-		driver.navigate().refresh();
-		Thread.sleep(3000);
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.parentWorkItemLink);
 
 		String workItemLink2 = driver.getCurrentUrl();
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
@@ -385,7 +377,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 
-		//objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentWorkItemLink);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentWorkItemLink);
 
 		String findThirdWorkItemNumber = "SELECT Name FROM Work_Item__c WHERE Type__c = 'Mapping' AND Sub_Type__c = 'Other Mapping Work' order by createdDate desc limit 1";
 		HashMap<String, ArrayList<String>> workItemResponse2 = salesforceAPI.select(findThirdWorkItemNumber);
@@ -409,11 +401,8 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
 		String apn1 = responseAPNDetails.get("Name").get(0);
 		String apn2 = responseAPNDetails.get("Name").get(1);
-		objParcelsPage.deleteParcelSitusFromParcel(apn1);
-		objParcelsPage.deleteParcelSitusFromParcel(apn2);
 
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
-		
 
 		// Fetching parcels that are Active with different map book and map page
 		String mapBookForAPN1 = apn1.split("-")[0];
