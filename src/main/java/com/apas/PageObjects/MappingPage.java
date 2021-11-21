@@ -326,7 +326,7 @@ public class MappingPage extends ApasGenericPage {
 		if (cityName != null) selectOptionFromDropDown(cityNameLabel, cityName);
 		if (situsCityCode != null) selectOptionFromDropDown(situsCityCodeLabel, situsCityCode);
 		if (situsCityName != null) enter(situsCityNameLabel, situsCityName);
-		if (direction != null)enter(directionLabel, direction);
+		if (direction != null) selectOptionFromDropDown(directionLabel, direction);
 		if (situsNumber != null) enter(situsNumberLabel, situsNumber);
 		if (situsStreetName != null) enter(situsStreetNameLabel, situsStreetName);
 		if (situsType != null) selectOptionFromDropDown(situsTypeLabel, situsType);

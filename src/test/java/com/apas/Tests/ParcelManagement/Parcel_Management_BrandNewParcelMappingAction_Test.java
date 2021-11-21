@@ -319,7 +319,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		
 		//objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 						
-		// entering data in form for Brand New Parcel mapping
+		// entering data in form for B rand New Parcel mapping
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
 		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
 		objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen, "Legal Discription");
