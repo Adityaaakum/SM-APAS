@@ -670,7 +670,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 	 * Verify details on the Unrecorded Transfer event
 	 */
 	
-	@Test(description = "SMAB-T3139,SMAB-T3231:Verify details on the Unrecorded Transfer event", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3139,SMAB-T3231,SMAB-T3206,SMAB-T4319:Verify details on the Unrecorded Transfer event", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
 	public void UnrecordedEvent_TransferScreenConfiguration(String loginUser) throws Exception {
 		
@@ -754,6 +754,14 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dorLabel, ""),objExemptionsPage.removeZeroInMonthAndDay(dataToCreateUnrecordedEventMap.get("Date of Recording")),
 				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the DOR on UT");
 		
+		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.valueFromDocTaxCityLabel),
+				 "SMAB-T3206,SMAB-T4319: Verifying that Doc Tax(City) is not visible on RAT screen ");
+		
+		softAssert.assertTrue(objCIOTransferPage.verifyElementVisible(objCIOTransferPage.verifiedValueFromPcorLabel),
+				 "SMAB-T3206,SMAB-T4319: Verifying that valueFromPcorLabel  is  visible on RAT screen ");
+		
+		softAssert.assertTrue(objCIOTransferPage.editFieldButton(objCIOTransferPage.verifiedValueFromPcorLabel)!=null,
+				 "SMAB-T4319: Verifying that valueFromPcorLabel  is editable  on RAT screen ");
 		//Step5: Edit the Transfer activity and update the DOE
 		ReportLogger.INFO("Update the DOE");
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.doeLabel);
@@ -959,6 +967,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Transaction_Trail__c/"+auditTrailID+"/view");
 		Thread.sleep(2000); //Added to handle regression failure
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),"Open", "SMAB-T3525: Validating that audit trail status should be open after submit for approval.");
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS("Event Title"),objCIOTransferPage.getFieldValueFromAPAS("Event Library")+" "+objCIOTransferPage.getFieldValueFromAPAS("Event Number")+" "+objCIOTransferPage.updateDateFormat(objCIOTransferPage.getFieldValueFromAPAS("Date of Value")) ,
+				"SMAB-T4317: Verify that event title   of the AT is cancatination of Event Library ,Event id or Event number  and date of value");
 
 		//STEP 16-Navigating back to RAT screen and clicking on back quick action button
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+recordeAPNTransferID+"/view");
