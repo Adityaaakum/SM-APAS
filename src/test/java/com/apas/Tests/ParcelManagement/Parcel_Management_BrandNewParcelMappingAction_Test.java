@@ -504,6 +504,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 
 			ReportLogger.INFO(" RP Principal logins ");
 			objMappingPage.login(users.RP_PRINCIPAL);
+			// Navigating to child APN
 			driver.navigate().to("https://smcacre--"+executionEnv+
 					 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
 			
@@ -519,6 +520,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 					"SMAB-T4167:Update Characteristics & Verify PUC link is present");
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 
+			// Navigating to child APN
 			driver.navigate().to("https://smcacre--"+executionEnv+
 					 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
 
