@@ -19,4 +19,5 @@ public interface users {
 	String MAPPING_SUPERVISOR = "mappingSupervisor";
 	String CIO_STAFF = "cioStaff";
 	String CIO_SUPERVISOR = "cioSupervisor";
+	String APPRAISAL_SUPERVISOR = "appraisalSupervisor";
 }

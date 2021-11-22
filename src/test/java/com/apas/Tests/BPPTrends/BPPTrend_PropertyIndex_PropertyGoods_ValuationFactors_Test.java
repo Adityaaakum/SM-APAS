@@ -134,7 +134,7 @@ public class BPPTrend_PropertyIndex_PropertyGoods_ValuationFactors_Test extends 
 		//Step19: Validating Edit button is visible under show more drop down
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Clicking show more button for property type: "+entryName);
 		Thread.sleep(2000);
-		entryName = entryName.split("\n")[0];
+		entryName = entryName.split("\n")[0].replace("Open ", "").replace(" Preview", "");
 		objBppTrendSetupPage.clickShowMoreLink(entryName);
 		Thread.sleep(2000);
 		objBppTrnPg.waitForElementToBeVisible(objBuildPermitPage.editLinkUnderShowMore, 10);

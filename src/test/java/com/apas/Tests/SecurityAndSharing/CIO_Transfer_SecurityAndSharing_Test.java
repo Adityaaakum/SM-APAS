@@ -171,7 +171,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		ReportLogger.INFO("Submitting the WI for approval");
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
-		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
+		objCIOTransferPage.waitForElementToBeVisible(20,objCIOTransferPage.confirmationMessageOnTranferScreen);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
 		ReportLogger.INFO("WI Submitted  for approval successfully");
 
@@ -224,7 +224,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		ReportLogger.INFO("CIO Supervisor:- Approving the transfer screen");
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionApprove);
-		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
+		objCIOTransferPage.waitForElementToBeVisible(20,objCIOTransferPage.confirmationMessageOnTranferScreen);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
 		objCIOTransferPage.waitForElementToBeInVisible(objCIOTransferPage.xpathSpinner, 6);
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
@@ -318,7 +318,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForReview);
-		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen,30);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
 		objCIOTransferPage.waitForElementToBeInVisible(objCIOTransferPage.xpathSpinner, 6);
 
@@ -332,7 +332,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		driver.navigate().refresh();
-		objCIOTransferPage.waitForElementToBeVisible(10,
+		objCIOTransferPage.waitForElementToBeVisible(20,
 				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
@@ -366,7 +366,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 
 		// Step7: marking the WI as review complete
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionReviewComplete);
-		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
+		objCIOTransferPage.waitForElementToBeVisible(30,objCIOTransferPage.confirmationMessageOnTranferScreen);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
 		objCIOTransferPage.waitForElementToBeInVisible(objCIOTransferPage.xpathSpinner, 6);
 		softAssert.assertTrue(objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),

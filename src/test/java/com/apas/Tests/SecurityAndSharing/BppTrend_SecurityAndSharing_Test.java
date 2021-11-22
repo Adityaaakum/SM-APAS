@@ -7,6 +7,8 @@ import java.util.List;
 import com.apas.PageObjects.BppTrendSetupPage;
 import com.apas.config.BPPTablesData;
 import com.apas.config.users;
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
@@ -304,7 +306,13 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
 		//Step5: Validating that user doesn't have the access to create/Edit Composite Factor Settings
-		objPage.Click(objApasGenericFunctions.bppCompFactorSettingTab);
+		
+		if(objApasGenericFunctions.waitForElementToBeClickable(10,objApasGenericFunctions.moreTabCompositeFactorSettings) != null) {
+			objPage.Click(driver.findElement(By.xpath(objApasGenericFunctions.moreTabCompositeFactorSettings)));
+			objPage.Click(objApasGenericFunctions.bppCompositeFactorOption);
+		} else
+			objPage.Click(objApasGenericFunctions.bppCompFactorSettingTab);
+		
 		objBppTrendPage.Click(objBppTrendPage.waitForElementToBeClickable(20,objApasGenericFunctions.dropDownIconBppCompFactorSetting));
 		softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
@@ -374,7 +382,13 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 		softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
 		//Step5: Validating that user doesn't have the access to create/Edit Composite Factor Settings
-		objPage.Click(objApasGenericFunctions.bppCompFactorSettingTab);
+		if(objApasGenericFunctions.waitForElementToBeClickable(10,objApasGenericFunctions.moreTabCompositeFactorSettings) != null) {
+			objPage.Click(driver.findElement(By.xpath(objApasGenericFunctions.moreTabCompositeFactorSettings)));
+			objPage.Click(objApasGenericFunctions.bppCompositeFactorOption);
+		} else
+			objPage.Click(objApasGenericFunctions.bppCompFactorSettingTab);
+		
+		
 		objBppTrendPage.Click(objBppTrendPage.waitForElementToBeClickable(20,objApasGenericFunctions.dropDownIconBppCompFactorSetting));
 		softAssert.assertTrue(objBppTrendPage.waitForElementToBeVisible(5, objBppTrendPage.noActionsLinkUnderShowMore), "SMAB-T270: For User '"+ loginUser +"': 'No Actions Available' option is visible on details page");
 
