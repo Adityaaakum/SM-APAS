@@ -435,6 +435,9 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 			objMappingPage.login(users.RP_APPRAISER);
 			objMappingPage.searchModule(PARCELS);
 			objMappingPage.globalSearchRecords(newCreatedApn);
+			String puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+			String districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code","Summary Values");
+			
 			objParcelsPage.Click(objParcelsPage.workItems);
 			
 			//Moving to the Update Characteristics Verify PUC WI
@@ -445,7 +448,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 			objWorkItemHomePage.switchToNewWindow(parentWindow);
 			
-			String[] pucAndNeighCode = objMappingPage.editActionInUpdatePucAndCharsScreen();
+			String[] pucAndNeighCode = objMappingPage.editActionInUpdatePucAndCharsScreen(districtAndNeighCode, puc);
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
 			ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
 
@@ -459,9 +462,9 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 			objMappingPage.globalSearchRecords(newCreatedApn);
 			
 			// Moving to Allocate Values WI
-			String districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code",
+			districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code",
 					"Summary Values");
-			String puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+			puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
 			softAssert.assertEquals(districtAndNeighCode, pucAndNeighCode[1],
 					"SMAB-T3926: District and Neighbrhood code was updated successfully");
 			softAssert.assertEquals(puc, pucAndNeighCode[0], "SMAB-T3926:PUC was updated successfully");

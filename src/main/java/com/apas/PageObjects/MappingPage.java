@@ -691,29 +691,37 @@ public class MappingPage extends ApasGenericPage {
 			/**
 			 * @Description This method can be utilized to update parcel's PUC and District
 			 *              and neighbourhood Code through Puc and District WI Custom page
-			 * @return Array of String , containing updated PUC and District Neighbrood code
+			 * @param  parcelNeighCode is the current District & neighbourhood code and 
+			 *         parcelPuc is the current puc for the parcel 
+			 * @return Array of String , containing updated PUC and District neighbourhood code
 			 * @throws Exception
 			 */
 		
-			public String[] editActionInUpdatePucAndCharsScreen() throws Exception {
+			public String[] editActionInUpdatePucAndCharsScreen(String parcelNeighCode, String parcelPuc) throws Exception {
 
 				Click(mappingSecondScreenEditActionGridButton);
 				Click(editButtonInSeconMappingScreen);
 
-				String puc = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c where legacy__c='no' limit 4").get("Name").get(3);
-				String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 4").get("Name").get(3);
-		        
+				String puc = objSalesforceAPI.select(
+						"SELECT Name FROM PUC_Code__c where legacy__c='no'and Name !='" + parcelPuc + "'limit 1")
+						.get("Name").get(0);
+				String distNeigh = objSalesforceAPI
+						.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL and Name!='" + parcelNeighCode
+								+ "' limit 1")
+						.get("Name").get(0);
+
 				clearSelectionFromLookup("PUC");
 				enter(parcelPUC, puc);
 				selectOptionFromDropDown(parcelPUC, puc);
 				ReportLogger.INFO("PUC:" + puc);
-				
+
 				clearSelectionFromLookup("District / Neighborhood Code");
 				enter(parcelDistrictNeighborhood, distNeigh);
 				selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
 				ReportLogger.INFO("District / Neighborhood Code:" + distNeigh);
+				Click(getButtonWithText("Save"));
 				Thread.sleep(2000);
-				
+
 				return new String[] { puc, distNeigh };
 			}
 
