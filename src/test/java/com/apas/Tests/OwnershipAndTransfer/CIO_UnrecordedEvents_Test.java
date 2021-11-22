@@ -852,7 +852,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
      * Verify that User is able to perform CIO transfer  for Unrecorded events APN and validate all status
 	 */
 
-	@Test(description = "SMAB-T3431,SMAB-T3139,SMAB-T3525, SMAB-T3929 : Verify that User is able to perform CIO transfer  for Unrecorded events APN and validate all status and values in Audit Trail record", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3431,SMAB-T3139,SMAB-T3525, SMAB-T3929 ,SMAB-T4317: Verify that User is able to perform CIO transfer  for Unrecorded events APN and validate all status and values in Audit Trail record", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
 	public void UnrecordedEvent_VerifyStatusForUTEvents(String loginUser) throws Exception {
 		
