@@ -4,7 +4,7 @@
     "Are taxes fully paid?": "Yes",
     "Reason code": "Testing Combine",
     "Legal Description": "Test Legal Description",
-    "First Non-Condo Parcel Number": "151-550-010",
+    "First Non-Condo Parcel Number": "251-550-010",
     "Comments": "Perform Combine"
   },
 
@@ -26,7 +26,7 @@
     "PUC": "01-SINGLE FAMILY RES"
 },
 
- "DataToCreateOwnershipRecord": {
+  "DataToCreateOwnershipRecord": {
     "Type": "Owner",
     "Status": "Active"
   }

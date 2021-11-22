@@ -4,10 +4,8 @@ import com.apas.Utils.DateUtil;
 import com.apas.Utils.PasswordUtils;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
-import com.apas.config.modules;
 import com.apas.config.modulesObjectName;
 
-import net.bytebuddy.implementation.bind.MethodDelegationBinder;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
@@ -29,7 +27,6 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.Clock;
 import java.util.*;
 import java.util.List;
 
@@ -51,6 +48,7 @@ public class ApasGenericPage extends Page {
 	public String tabRelated = "Related";
 	public String tabLinkedItems = "Linked Items";
 	public String columnInGrid =commonXpath+"//a[contains(@class,'toggle')]//span[text()='columnName']";
+	public String deleteButtonText ="Delete";
 
 
 	@FindBy(xpath = "//button[@title='Close error dialog']")
@@ -138,6 +136,7 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
 	public WebElement successAlertText;
+	
 	
 	public String xpathSpinner = "//lightning-spinner";
 
@@ -340,7 +339,7 @@ public class ApasGenericPage extends Page {
         			+ "or contains(@class,'slds-input slds-combobox__input')]";//the class flowruntimeBody has been added to handle elements in mapping actions page
 			xpathDropDownOption = commonPath + 
 					"//label[text()='" + element + "']/..//*[@title='" + value + "' or text() = '" + value + "']" ;
-			
+		
         } else{
             webElement = (WebElement) element;
             xpathDropDownOption="//*[contains(@class, 'left uiMenuList--short') "
@@ -415,7 +414,7 @@ public class ApasGenericPage extends Page {
 	 */
 	public void clickShowMoreButton(String modRecordName) throws Exception {		
 		Thread.sleep(1000);
-		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+ modRecordName +"']//parent::span//parent::td//following-sibling::th//a[@role = 'button']|//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//td//a[text() = '"+ modRecordName +"']//parent::span//parent::td//following-sibling::td//a[@role = 'button']";
+		String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+ modRecordName +"']//parent::span//parent::td//following-sibling::th//a[@role = 'button']|//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//td//a[text() = '"+ modRecordName +"']//parent::span//parent::td//following-sibling::td//a[@role = 'button']|//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//table//tbody/tr//th//a[text() = '"+modRecordName+"']//ancestor::th//following-sibling::td//a[@role = 'button']";
 		WebElement modificationsIcon = locateElement(xpathStr, 30);
 		clickAction(modificationsIcon);
 		ReportLogger.INFO(modRecordName + " record exist and user is able to click Show More button against it");
@@ -526,7 +525,7 @@ public class ApasGenericPage extends Page {
 		
 		if(verifyElementVisible(closeAllBtn))
 		{Click(closeAllBtn);}
-		Thread.sleep(3000);
+		Thread.sleep(5000);
 
 	}
 
@@ -642,17 +641,8 @@ public void searchModule(String moduleToSearch) throws Exception {
 			
 			catch (Exception e) {
 				
-				String executionEnv = "";
-				
-				if (System.getProperty("region").toUpperCase().equals("QA"))
-					executionEnv = "qa";
-				if (System.getProperty("region").toUpperCase().equals("E2E"))
-					executionEnv = "e2e";
-				if (System.getProperty("region").toUpperCase().equals("PREUAT"))
-					executionEnv = "preuat";
-				if (System.getProperty("region").toUpperCase().equals("STAGING"))
-					executionEnv = "staging";
-				
+				String executionEnv = System.getProperty("region");
+		
 				// for parcel search
 					if(searchString.length()== 11 && isSearchStringParcel(searchString)) {
 						ReportLogger.INFO("Opening parcel record: " + searchString);
@@ -660,9 +650,9 @@ public void searchModule(String moduleToSearch) throws Exception {
 						HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
 						driver.navigate().to("https://smcacre--"+executionEnv+
 								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
-						ReportLogger.INFO("https://smcacre--"+executionEnv+
+						ReportLogger.INFO("Navigating to Parcel Record - https://smcacre--"+executionEnv+
 								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
-						Thread.sleep(5000);
+						Thread.sleep(15000);
 					}
 					// for work item search
 					else if(searchString.startsWith("WI-")){
@@ -671,9 +661,9 @@ public void searchModule(String moduleToSearch) throws Exception {
 						HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
 						driver.navigate().to("https://smcacre--"+executionEnv+
 								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
-						ReportLogger.INFO("https://smcacre--"+executionEnv+
+						ReportLogger.INFO("Navigating to Work Item Record - https://smcacre--"+executionEnv+
 								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
-						Thread.sleep(5000);
+						Thread.sleep(15000);
 					}
 					 else {
 						  ReportLogger.INFO("Unable to search string: " + searchString + e);
@@ -734,24 +724,25 @@ public void searchModule(String moduleToSearch) throws Exception {
 	 * @description: This method will return the value of the field passed in the parameter from the currently open page
 	 */
 	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
+		
 		String fieldValue;
-		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') "
-				+ "or contains(@class,'windowViewMode-maximized')]"
-				+ "//force-record-layout-section[contains(.,'" + sectionName + "')]";
-		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName + "']/../..//slot[@slot='outputField']";
-
-		String fieldXpath = fieldPath + "//force-hoverable-link//a | " +
-				fieldPath + "//lightning-formatted-text | " +
-				fieldPath + "//lightning-formatted-number | " +
-				fieldPath + "//lightning-formatted-rich-text | " +
-				fieldPath + "//force-record-type//span | " +
-				fieldPath + "//lightning-formatted-name |" +
-				fieldPath + "//a";
-		waitForElementToBeVisible(20,fieldXpath);
-		try{
-			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();
-		}catch (Exception ex){
-			fieldValue= "";
+		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'"
+				+ sectionName + "')]";
+		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName
+				+ "']/../..//slot[@slot='outputField']";
+		String fieldXpath;
+		
+		fieldXpath = fieldPath + "//force-hoverable-link//a//span | " + fieldPath + "//lightning-formatted-text | "
+				+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
+				+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
+				+ fieldPath + "//a//span | "+"//*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number | //*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";
+	
+		waitForElementToBeVisible(20, fieldXpath);
+		
+		try {
+			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();			
+		} catch (Exception ex) {
+			fieldValue = "";
 		}
 
 		System.out.println(fieldName + " : " + fieldValue);
@@ -768,8 +759,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 	}
 
 	/**
-	 * Description: This method will save the grid data in hashmap 
-	 * (Default Behavior: First Table and All Rows displayed on UI)
+	 * Description: This method will save the grid data in hashmap (Default Behavior: First Table and All Rows displayed on UI)
 	 *
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
@@ -777,21 +767,20 @@ public void searchModule(String moduleToSearch) throws Exception {
 		return getGridDataInHashMap(1);
 	}
 
+
 	/**
-	 * Description: This method will save the grid data in hashmap 
-	 * (Default Behavior: Table Index passed in the parameter and all the rows)
+	 * Description: This method will save the grid data in hashmap (Default Behavior: Table Index passed in the parameter and all the rows)
 	 *
-	 * @param tableIndex: Table Index displayed on UI if there are 
-	 * multiple tables displayed on UI
+	 * @param tableIndex: Table Index displayed on UI if there are multiple tables displayed on UI
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
 	 */
 	public HashMap<String, ArrayList<String>> getGridDataInHashMap(int tableIndex) {
 		return getGridDataInHashMap(tableIndex, -1);
 	}
 
+
 	/**
-	 * Description: This method will save the grid data in hashmap for the 
-	 * Table Index and Row Number passed in the argument
+	 * Description: This method will save the grid data in hashmap for the Table Index and Row Number passed in the argument
 	 *
 	 * @param rowNumber: Row Number for which data needs to be fetched
 	 * @return hashMap: Grid data in hashmap of type HashMap<String,ArrayList<String>>
@@ -988,8 +977,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 
 
 	/**
-	 * Description: This method will save the grid data in ArrayList(Headers=value) for the 
-	 * Row Number passed in the argument
+	 * Description: This method will save the grid data in ArrayList(Headers=value) for the Row Number passed in the argument
 	 *
 	 * @param rowNumber: Row Number for which data needs to be fetched
 	 * @return hashMap: Grid data in ArrayList of type ArrayList<String>
@@ -1290,7 +1278,7 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
    
    public String getErrorMessage() throws Exception {
 	   	String ErrorTxt = "";
-	   	Thread.sleep(5000);
+	   	Thread.sleep(7000);
 		List<WebElement> ErrorText = locateElements("//div[contains(@class,'color_error')] |"
 				+ "//div[contains(@class,'error') and not(contains(@class,'message-font'))]",15);
 	   	if(ErrorText.get(0).getAttribute("class").contains("color_error")){
@@ -1310,9 +1298,7 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 	 */
 	public HashMap<String, ArrayList<String>> getGridDataForRowString(String rowString) {
 		String xpath="(//*[contains(@class,'slds-show')]//table/tbody//tr)";
-		String xpathTable = "//div[contains(@class,'windowViewMode-normal') "
-				+ "or contains(@class,'windowViewMode-maximized') "
-				+ "or contains(@class,'flowruntimeBody')]//table/tbody//tr";
+		String xpathTable = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'flowruntimeBody')]//table/tbody//tr";
 		if(verifyElementVisible(xpath))
 		{xpathTable=xpath;}
 
@@ -1399,7 +1385,7 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
      */
     public void deleteOwnershipFromParcel(String apnId)
     {
-  	  String query ="SELECT  Id FROM Property_Ownership__c where parcel__c='" +apnId+"'";
+  	  String query ="SELECT  Id FROM Property_Ownership__c where parcel__c='" +apnId+"' or Ownership_Roll_Back__c='" +apnId+"'";
   	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
   	  
   	  if(!response.isEmpty())
@@ -1501,9 +1487,9 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 	/**
 	 *@Description: This method will delete situs from Parcel situs tab
 	 **/
-	public void deleteParcelSitusFromParcel(String apnId)
+	public void deleteParcelSitusFromParcel(String apn)
 	{
-		String query ="SELECT Id FROM Parcel_Situs__c where parcel__c ='" +apnId+"'";
+		String query ="SELECT Id FROM Parcel_Situs__c where parcel__c ='" +objSalesforceAPI.select("Select Id from parcel__c where name='"+apn+"'").get("Id").get(0)+"'";
 		HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
 
 		if(!response.isEmpty())
@@ -1515,5 +1501,6 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		}
 
 	}
+	
 }
 

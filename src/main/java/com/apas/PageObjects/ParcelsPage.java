@@ -5,6 +5,8 @@ import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.relevantcodes.extentreports.LogStatus;
+
+import org.json.JSONException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -58,6 +60,9 @@ public class ParcelsPage extends ApasGenericPage {
 	public String editParcelButton="Edit";
 	public String parcelCharacteristics = "Characteristics";
 	
+
+	
+	
 	
 	/** Added to identify fields, dropdowns for CIO functionality **/
 	public String exemptionTypeLabel="Exemption Type(s)";
@@ -70,6 +75,7 @@ public class ParcelsPage extends ApasGenericPage {
 
 	public String typeOfAuditTrailDropdown = "Type of Audit Trail Record?";
 	public String sourceDropdown = "Source";
+	public String eventNumberComponentAction = "Event Number";
 	public String dateOfEventInputTextBox = "Date of Event";
 	public String dateOfValueInputTextBox = "Date of Value";
 	public String dateOfRecordingInputTextBox = "Date of Recording";
@@ -85,6 +91,58 @@ public class ParcelsPage extends ApasGenericPage {
 	public String isPrimaryDropdown = "Is Primary?";
 	public String situsSearch = "Situs";
 	
+	public String assessedValueLable = "Assessed Values";
+	public String assessedValueType = "Assessed Value Type";
+	public String effectiveEndDate = "Effective End Date";
+	public String landCashValue = "Land Cash Value";
+	public String improvementCashValue = "Improvement Cash Value";
+	public String typeOfDecline = "Type of Decline";
+	public String land = "Land";
+	public String improvements = "Improvements";
+	public String additionalDeclines = "Additional Declines";
+	public String linkExistingAuditTrail="Please select the Parent Audit Trail Record";
+	
+	/**Adding fields for layout on assessed values*/
+	public String factoredBaseYearValue = "Factored BYV";
+	public String hpiValueAllowance = "HPI Value Allowance";
+	public String originDov = "Origin DOV";
+	public String originImprovementValue = "Origin Improvement Value";
+	public String originLandValue = "Origin Land Value";
+	public String originFcv = "Origin FCV";
+	public String apn = "APN";
+	public String parcelAncestry = "Parcel Ancestry";
+	
+
+	/** Added to identify fields, dropdowns for Assessed value and AVO functionality **/	
+
+	public String newButtonText = "New";	
+	public String propertyOwner = "Property Owner";
+	public String startDate = "Start Date";
+	public String ownershipPercentageTextBoxForAVO="Ownership %";
+	public String dov = "DOV";
+	
+	public String mailTo = "Mail-To";
+	public String formattedName1 = "Formatted Name 1";
+	public String mailZipCopyToMailTo ="Mailing Zip";
+	public String salesPrice ="Sales Price";
+	public String purchasePrice ="Purchase Price";
+	public String landFactoredBaseYearValue ="Land Factored Base Year Value";
+	public String improvementsFactoredBaseYearValue ="Improvement Factored Base Year Value";
+	public String difference ="Difference";
+	public String differenceApportionedToLand ="Difference Apportioned to Land";
+	public String differenceApportionedToImprovement ="Difference Apportioned to Improvement";
+	public String improvement = "Improvement";
+	public String total = "Total";
+	public String fullCashValue = "Full Cash Value";
+	public String combinedFactoredandHPI = "Combined FBYV and HPI";
+	
+	
+	
+	
+	
+	
+	
+	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
 
@@ -99,6 +157,9 @@ public class ParcelsPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//div[contains(@class,'ErrorText')]")
 	public WebElement workItemTypeAndSubTypeError;
+	
+	@FindBy(xpath = "//div[contains(@class,'slds-form-element__help')]")
+	public WebElement sourceFieldComponentActionErrorMessage;
 
 	@FindBy (xpath= "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//li[1]//button[@title='Toggle details for work item']")
 	public WebElement ExpendWIOnParcels;
@@ -139,6 +200,63 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[text() = 'View All']")
 	public WebElement viewAll;
 	
+	@FindBy(xpath = "//span[@title='Target Parcel Relationships']")
+	public WebElement targetParcelLabel;
+	
+	@FindBy(xpath = "//strong[normalize-space()='New APN - Update Characteristics & Verify PUC']")
+	public WebElement updateCharacteristicsVerifyPUC;
+
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Work Items']")
+	public WebElement workItems;
+
+	@FindBy(xpath = "//strong[normalize-space()='New APN - Allocate Value']")
+	public WebElement allocateValue;
+	
+	@FindBy(xpath = "//*[@role='menuitem' and contains(.,'Assessed Values')]")
+	public WebElement assessedValue;
+	
+	@FindBy(xpath = "//h2[contains(text(),'New Assessed Values')]")
+	public WebElement newAssessedValuePopUp;
+		
+	@FindBy(xpath = "//*[@class='inline-edit-trigger-icon slds-button__icon slds-button__icon_hint']")
+	public WebElement inlineEditIcon;
+	
+	@FindBy(xpath = "//*[@name=\"Additional_Land_Value__c\"]")
+	public WebElement additionalLand;
+	
+	@FindBy(xpath = "//*[@name=\"Additional_Improvement_Value__c\"]")
+	public WebElement additionalImprovement;
+
+	@FindBy(xpath = "//*[@name='HPI_Value_Allowance__c']")
+	public WebElement objHpiValueAllowance;
+
+	@FindBy(xpath = "//div[@class='slds-tabs_card']//*[text()='Land Value']")
+	public WebElement detailPagelandValue;
+	
+	@FindBy(xpath = "//div[@class='slds-tabs_card']//*[text()='Improvement Value']")
+	public WebElement detailPageImprovementValue;
+	
+	@FindBy(xpath = "//div[@class='slds-tabs_card']//*[text()='Total Value']")
+	public WebElement detailPageTotalValue;
+	
+	@FindBy(xpath = "//a[text()='Assessed Values Ownership']")
+	public WebElement assessedValueOwnershipTab;
+	
+	@FindBy(xpath = "//div[contains(@class,'slds-text-heading_small')]")
+	public WebElement parcelAncestoryHeader;	
+	
+	@FindBy(xpath = "//slot//div[contains(@class,'slds-text-heading_small')]/ancestor::c-org_parcel-ancestry-graph//div[2]/*[name()='svg']/*[name()='svg']/*[name()='text'][2]/*[name()='tspan'][1]")
+	public WebElement ancestoryAPN;
+	
+	@FindBy(xpath = "//slot//div[contains(@class,'slds-text-heading_small')]/ancestor::c-org_parcel-ancestry-graph//div[2]/*[name()='svg']/*[name()='svg']/*[name()='text'][2]/*[name()='tspan'][2]")
+	public WebElement ancestoryReasonCode;
+	
+	@FindBy(xpath = "//slot//div[contains(@class,'slds-text-heading_small')]/ancestor::c-org_parcel-ancestry-graph//div[2]/*[name()='svg']/*[name()='svg']/*[name()='text'][2]/*[name()='tspan'][3]")
+	public WebElement ancestorySqft;
+	
+	@FindBy(xpath ="//*[@class='actionBody']//*[text()='RP']")
+	public WebElement rpRadioButton;
+
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";
@@ -173,9 +291,11 @@ public class ParcelsPage extends ApasGenericPage {
 		String dov = dataMap.get("DOV");
 		String workItemOwner= dataMap.get("Work Item Owner");
 		String workItemNumber;
+		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
 		
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
+		Thread.sleep(2000);
 		//waitForElementToBeClickable(selectOptionDropDownComponentsActionsModal);
 		//selectOptionFromDropDown(selectOptionDropDownComponentsActionsModal, "Create Work Item");
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
@@ -194,7 +314,7 @@ public class ParcelsPage extends ApasGenericPage {
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
-		Thread.sleep(5000);
+		Thread.sleep(10000);
 
 		String workItemQuery = "SELECT Name FROM Work_Item__c where Description__c = '" + description + "' order by Name desc limit 1";
 		workItemNumber = objSalesforceAPI.select(workItemQuery).get("Name").get(0);
@@ -202,7 +322,8 @@ public class ParcelsPage extends ApasGenericPage {
 		
 		return workItemNumber;
 	}
-	 
+
+	
     
     /**
 	 * Description: This method will save the table data in hashmap for the Target/Source Parcel relationship
@@ -279,7 +400,7 @@ public class ParcelsPage extends ApasGenericPage {
 			Click(moretab);
 			Click(driver.findElement(By.xpath(xPath)));
 		}
-		Thread.sleep(5000);
+		Thread.sleep(8000);
 	}
 	
 	/**
@@ -311,6 +432,7 @@ public class ParcelsPage extends ApasGenericPage {
 			searchAndSelectOptionFromDropDown(bppAccountDropDown, bppAccount);
 		
 		String successMsg = saveRecord();
+		Thread.sleep(2000);
 		return successMsg;
 	}
 	
@@ -323,8 +445,18 @@ public class ParcelsPage extends ApasGenericPage {
 		String ownershipStartDate = dataMap.get("Ownership Start Date");
 		String ownershipPercentage=dataMap.get("Ownership Percentage");
 		
+		Thread.sleep(5000);
 		scrollToBottom();
 		createRecord();
+		if(dataMap.containsKey("RP Account")) {
+			Click(rpRadioButton);
+			ReportLogger.INFO("Creating RP Owner.");
+		}
+		else {
+			ReportLogger.INFO("Creating BPP Owner.");
+		}
+		
+		Thread.sleep(2000);
 		Click(ownershipNextButton);
 		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
 		selectOptionFromDropDown(typeDropDown, type);
@@ -340,6 +472,10 @@ public class ParcelsPage extends ApasGenericPage {
         waitForElementToBeClickable(successAlert,25);
         String messageOnAlert = getElementText(successAlert);
         waitForElementToDisappear(successAlert,10);
+        ReportLogger.INFO("Owner created on parcel : " + messageOnAlert);
+		owner = getFieldValueFromAPAS("Owner", "General Information");
+		String parcel = getFieldValueFromAPAS("Parcel", "General Information");
+		ReportLogger.INFO("Owner created on parcel "+parcel+" : " + owner);
 		return messageOnAlert;
 	}
 
@@ -374,6 +510,7 @@ public class ParcelsPage extends ApasGenericPage {
 			String timeStamp = String.valueOf(System.currentTimeMillis());
 			String description = dataMap.get("Description") + "_" + timeStamp;
 			
+			Thread.sleep(2000);
 			waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 			Click(getButtonWithText(componentActionsButtonText));
 			waitForElementToBeClickable(selectOptionDropdown);
@@ -382,10 +519,7 @@ public class ParcelsPage extends ApasGenericPage {
 			waitForElementToBeClickable(workItemTypeDropDownComponentsActionsModal);
 			
 			selectOptionFromDropDown(recordTypeDropdown, dataMap.get("Record Type"));
-
 			selectOptionFromDropDown(group,dataMap.get("Group"));
-
-			
 
 			Thread.sleep(2000);
 			selectOptionFromDropDown(typeOfAuditTrailDropdown, dataMap.get("Type of Audit Trail Record?"));
@@ -394,6 +528,8 @@ public class ParcelsPage extends ApasGenericPage {
 			if(dataMap.get("Date of Value")!=null) {enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));}
 			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
 			enter(descriptionInputTextBox, description);
+			if(dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?")!=null) {enter(auditTrailRecordDropDownComponentsActionsModal, dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?"));}
+			if(dataMap.get("Please select the Parent Audit Trail Record")!=null) {enter(linkExistingAuditTrail, dataMap.get("Please select the Parent Audit Trail Record"));}
 			Click(getButtonWithText(saveAndNextButton));
 			Thread.sleep(5000);
 			if(dataMap.get("Record Type").equalsIgnoreCase("Correspondence")) {return null;}				
@@ -411,7 +547,7 @@ public class ParcelsPage extends ApasGenericPage {
 		    
 		    if(responseSearchedAPN.isEmpty()) {
 		    	createParcel(apn,parcelNum,PUC);
-		    }else if (responseSearchedApnAgain.isEmpty()) {
+		    }else if (!responseSearchedApnAgain.isEmpty()) {
 		    	objSalesforceAPI.delete("Parcel__c",querySearchAPN);
 		    	createParcel(apn,parcelNum,PUC);
 		    }else {
@@ -524,22 +660,223 @@ public class ParcelsPage extends ApasGenericPage {
 		 * @Description: This method will create primary on parcel 
 		 * 
 		 */
-		public String createParcelSitus( Map<String, String> dataMap) throws Exception {
-			ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Parcel Situs Record");        
-			String isPrimary = dataMap.get("isPrimary");
-			String situs = dataMap.get("Situs");
+		public String createParcelSitus( String APN) throws Exception {
+			
+			ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Parcel Situs Record");
 
+			deleteParcelSitusFromParcel(APN);
+
+			openParcelRelatedTab(parcelSitus);
+			scrollToElement(getButtonWithText("New"));
+			waitForElementToBeVisible(10, getButtonWithText("New"));
 			createRecord();
-			waitForElementToBeVisible(10,newParcelSitus);
-			selectOptionFromDropDown(isPrimaryDropdown, isPrimary);
-			searchAndSelectOptionFromDropDown(situsSearch, situs);
+			waitForElementToBeVisible(10, isPrimaryDropdown);
+			selectOptionFromDropDown(isPrimaryDropdown, "Yes");
+
+			searchAndSelectOptionFromDropDown(situsSearch,
+					objSalesforceAPI.select("Select Name from Situs__c where name != null limit 1").get("Name").get(0));
 			Click(saveButton);
-			waitForElementToBeClickable(successAlert,25);
+			waitForElementToBeClickable(successAlert, 25);
 			String messageOnAlert = getElementText(successAlert);
-			waitForElementToDisappear(successAlert,10);
-			ReportLogger.INFO("Primary Situs created on parcel : "+messageOnAlert);
-			String situsCreated = getFieldValueFromAPAS("Situs","");
-			ReportLogger.INFO("Primary Situs created on parcel : "+situsCreated);
-			return situsCreated;	
+			waitForElementToDisappear(successAlert, 10);
+			ReportLogger.INFO("Primary Situs created on parcel : " + messageOnAlert);
+			String situsCreated = getFieldValueFromAPAS("Situs", "");
+			ReportLogger.INFO("Primary Situs created on parcel : " + APN);
+			globalSearchRecords(APN);
+			Thread.sleep(5000);
+			return situsCreated;
 		}
-}
+
+		/*
+		 * This method return dynamic xpath with double index value on AV Form.
+		 */
+		public WebElement returnElementXpathOnAVForm( String index1, String index2) throws Exception {
+			String xpath="//slot/slot/flexipage-column2["+index1+"]/div/slot/flexipage-field["+index2+"]/slot/record_flexipage-record-field/div/div/div[1]/span[1]";
+			waitUntilElementIsPresent(xpath,20); 
+			WebElement webelement = driver.findElement(By.xpath(xpath));
+			
+			return webelement;
+		}
+		/*
+		 * This method return dynamic xpath with single index value on AV Header.
+		 */
+		public WebElement returnElementXpathOnAVHeader(String title) throws Exception {
+			String xpath = "//*[contains(@class,'slds-text-title slds-truncate')and contains(@title,'" + title
+					+ "')]/../*[contains(@class,'fieldComponent slds-text-body--regular slds-show_inline-block slds-truncate')]";
+			WebElement webelement = driver.findElement(By.xpath(xpath));
+			return webelement;
+		}
+		
+		/*
+		 * This method deletes old assessed value if any and creates new ownership record based on 
+		 * Hashmap provided by it.
+		 * 
+		 */
+		public void deleteOldAndCreateNewAssessedValuesRecords(Map<String, String>hashMapToCreateAssessedValueRecords,String APN) throws Exception
+		{
+		 String excEnv =System.getProperty("region");
+		 
+		 // Navigating to Parcel
+		 
+		 String apnId = objSalesforceAPI.select("Select Id from parcel__c where name= '"+APN+"'").get("Id").get(0);	
+		 driver.navigate().to("https://smcacre--"+excEnv+".lightning.force.com/lightning/r/Parcel__c/"+apnId+"/view");
+		 
+		 //Finding the owner name that will later used while creating AVO record
+		 
+		 
+	     HashMap<String, ArrayList<String>> hashMapParcelAcessedValueRecord =objSalesforceAPI.select("Select id from Assessed_BY_Values__c where APN__c='"+apnId+"'");
+	     
+			if (!hashMapParcelAcessedValueRecord.isEmpty()) {
+				hashMapParcelAcessedValueRecord.get("Id").stream().forEach(Id -> {
+					objSalesforceAPI.delete("Assessed_BY_Values__c", Id);
+					ReportLogger.INFO("AV Records  deleted for Id ::" + Id);
+				});}
+				ReportLogger.INFO("Adding AV Records for APN= "+APN  );			
+				
+				Thread.sleep(4000);
+				openParcelRelatedTab(assessedValueLable);
+				waitForElementToBeClickable(NewButton,10);
+				Click(getButtonWithText(NewButton));
+				
+				//Entering DOV
+				
+				waitForElementToBeVisible(getWebElementWithLabel(dovInputTextBox),10);
+	            enter(dovInputTextBox, hashMapToCreateAssessedValueRecords.get("DOV"));
+	            
+	            //Entering AV type
+	            
+	            waitForElementToBeVisible(getWebElementWithLabel(assessedValueType),5);
+	            selectOptionFromDropDown(assessedValueType, hashMapToCreateAssessedValueRecords.get("Assessed Value Type"));
+	            waitForElementToBeVisible(10, landCashValue);
+	            if(hashMapToCreateAssessedValueRecords.get("Land Cash Value")!=null) {
+	            enter(landCashValue, hashMapToCreateAssessedValueRecords.get("Land Cash Value"));}
+	            waitForElementToBeVisible(10, improvementCashValue);
+	            if( hashMapToCreateAssessedValueRecords.get("Improvement Cash Value")!=null) {
+	            enter(improvementCashValue, hashMapToCreateAssessedValueRecords.get("Improvement Cash Value"));}
+	            if( hashMapToCreateAssessedValueRecords.get("Sales Price")!=null) {
+		            enter(salesPrice, hashMapToCreateAssessedValueRecords.get("Sales Price"));}
+	            if( hashMapToCreateAssessedValueRecords.get("Purchase Price")!=null) {
+		            enter(purchasePrice, hashMapToCreateAssessedValueRecords.get("Purchase Price"));}
+	            waitForElementToBeClickable(10, SaveButton);
+	            Click(getButtonWithText(SaveButton));
+	            Thread.sleep(4000);            
+	            ReportLogger.INFO(" AV Records added for APN= "+APN  );
+	            if(hashMapToCreateAssessedValueRecords.get("Ownership Percentage")!=null) {
+	            	
+	            String ownerName = objSalesforceAPI.select("SELECT id ,name  FROM Property_Ownership__c where Parcel__c='"+apnId+"'"+" and status__c='Active' order by dov_date__c ").get("Name").get(0);
+	            
+	            ReportLogger.INFO("Adding AV0 Records for APN= "+APN  );
+	            
+	            waitForElementToBeClickable(5, assessedValueOwnershipTab);
+	            Click(assessedValueOwnershipTab);
+	            waitForElementToBeClickable(5, newButton);
+	            Click(getButtonWithText(NewButton));
+	          
+	            //Entering Owner name
+	            
+	            searchAndSelectOptionFromDropDown(propertyOwner, ownerName);
+	            enter(startDate, hashMapToCreateAssessedValueRecords.get("Start Date"));
+	            enter(ownershipPercentageTextBoxForAVO ,hashMapToCreateAssessedValueRecords.get("Ownership Percentage"));
+	            enter(dov, hashMapToCreateAssessedValueRecords.get("DOV"));
+	            
+	            waitForElementToBeClickable(10, SaveButton);           
+	            Click(getButtonWithText(SaveButton));
+	            ReportLogger.INFO("Added AV0 Records for APN= "+APN  );
+	            Thread.sleep(4000);}
+			}
+			
+			/*
+			 * This method is used to add few details on the parcel using the salesforce API
+			 * 
+			 * 
+			 */
+
+			public void addParcelDetails(String PUC, String shortLegalDescription, String district,
+					String neighborhoodReferencec, String TRA, String parcelSize,
+					HashMap<String, ArrayList<String>> listofParcels, String hashmapAPNfieldname) throws JSONException{
+
+				jsonObject.put("PUC_Code_Lookup__c", PUC);
+				jsonObject.put("Short_Legal_Description__c", shortLegalDescription);
+				jsonObject.put("District__c", district);
+				jsonObject.put("Neighborhood_Reference__c", neighborhoodReferencec);
+				jsonObject.put("TRA__c", TRA);
+				jsonObject.put("Lot_Size_SQFT__c", parcelSize);
+
+				if (!listofParcels.isEmpty()) {
+					listofParcels.get(hashmapAPNfieldname).stream().forEach(Apn -> {
+						objSalesforceAPI.update(
+								"Parcel__c", objSalesforceAPI
+										.select("select Id from parcel__c where name='" + Apn + "'").get("Id").get(0),
+								jsonObject);
+					});
+
+				}
+			}
+			
+		//This method will create mail to record on parcel
+		public void createMailToRecord(Map<String, String> dataToCreateMailTo,String apn) throws  Exception {		 		 
+
+			try {
+				waitForElementToBeVisible(10,getButtonWithText(newButtonText));
+				Click(getButtonWithText(newButtonText));
+				waitForElementToBeVisible(10,formattedName1);
+				enter(formattedName1, dataToCreateMailTo.get("Formatted Name1"));
+				enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
+				Click(getButtonWithText(SaveButton));
+				waitForElementToBeClickable(successAlert, 25);
+				String messageOnAlert = getElementText(successAlert);
+				waitForElementToDisappear(successAlert, 10);
+				ReportLogger.INFO("Mail To record created on parcel : " + messageOnAlert);
+				ReportLogger.INFO("Mail To created on parcel : " + apn);
+				ReportLogger.INFO("Generated mail to record ");
+				globalSearchRecords(apn);
+				Thread.sleep(5000);
+			} catch (Exception e) {
+				ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE GENERATED");
+			}
+		}
+		
+//		This method will create characteristics on parcel
+		public void createCharacteristicsOnParcel (Map<String, String> dataToCreateCharacteristics,String apn) throws IOException, Exception {		 		 
+
+			try {
+				waitForElementToBeVisible(10,getButtonWithText(newButtonText));
+				Click(getButtonWithText(newButtonText));
+				waitForElementToBeVisible(10,"Property Type");
+				selectOptionFromDropDown("Property Type",dataToCreateCharacteristics.get("Property Type"));
+				selectOptionFromDropDown("Characteristics Screen", dataToCreateCharacteristics.get("Characteristics Screen"));
+				Click(getButtonWithText("Save"));
+				waitForElementToBeClickable(successAlert, 25);
+				String messageOnAlert = getElementText(successAlert);
+				waitForElementToDisappear(successAlert, 10);
+				ReportLogger.INFO("Characteristics record created on parcel : " + messageOnAlert);
+				String characteristicsScreen = getFieldValueFromAPAS("Characteristics Screen", "Characteristics Screen Information");
+				ReportLogger.INFO("Characteristics created on parcel "+apn+" : " + characteristicsScreen);
+				ReportLogger.INFO("Generated Characteristics record ");
+				globalSearchRecords(apn);
+				Thread.sleep(5000);
+			} catch (Exception e) {
+				ReportLogger.INFO("SORRY!! CHARACTERISTICS RECORD CANNOT BE GENERATED");
+			}
+		}
+
+		
+		/**
+		 * This method will create situs
+		 * 
+		 * @throws Exception
+		 **/
+		public void createSitus(Map<String, String> dataMap) throws Exception
+		{
+			Click(getButtonWithText("New"));
+			enter(getWebElementWithLabel("Situs Number"), dataMap.get("Situs Number"));
+			enter(getWebElementWithLabel("Situs Street Name"), dataMap.get("Situs Street Name"));
+			enter(getWebElementWithLabel("Situs Unit Number"), dataMap.get("Situs Unit Number"));
+			clearFieldValue("Situs Type");
+			selectOptionFromDropDown("Situs Type", dataMap.get("Situs Type"));
+			clearFieldValue("City Name");
+			selectOptionFromDropDown("City Name", dataMap.get("City Name"));
+			enter(getWebElementWithLabel("Situs Name"), dataMap.get("Situs Name"));
+			Click(getButtonWithText("Save"));
+		}
+	}

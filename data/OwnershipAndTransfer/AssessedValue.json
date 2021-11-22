@@ -1,0 +1,56 @@
+{  "dataToCreateAssesedValueRecord":{
+	
+	"DOV": "7/19/1950",
+	"Land Cash Value" : "100,000",
+	"Improvement Cash Value" : "20,000" ,
+	"Start Date" : "7/19/1950",
+	"Assessed Value Type" : "Assessed Value",
+	"Ownership Percentage" : "100" 
+	
+
+
+},
+
+  "dataToCreateAssesedValueRecordForP19D":{
+	
+	"DOV": "7/19/1950",
+	"Land Cash Value" : "500,000",
+	"Improvement Cash Value" : "25,000" ,
+	"Sales Price":"400000",
+	"Assessed Value Type" : "Prop 19 Disabled Owner Transfer",
+	 "Purchase Price" : " 500,000"
+	
+	},
+	 "dataToCreateAssesedValueRecordForP19B":{
+	
+	"DOV": "7/19/1950",
+	"Land Cash Value" : "500,000",
+	"Improvement Cash Value" : "25,000" ,
+	"Sales Price":"400000",
+	"Assessed Value Type" : "Prop 19 Base Year Transfer",
+	 "Purchase Price" : " 500,000"
+
+
+	},
+	"dataToCreateAssesedValueRecordForP19E":{
+		
+		"DOV": "7/19/1950",
+		"Land Cash Value" : "5,000,000",
+		"Improvement Cash Value" : "250,0000" ,	
+		"Assessed Value Type" : "Prop 19 Intergenerational Exclusion"
+		 
+	
+	
+	}
+
+
+
+
+
+
+
+
+
+
+
+}

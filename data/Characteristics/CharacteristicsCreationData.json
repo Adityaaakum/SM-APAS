@@ -1,0 +1,11 @@
+{
+  "DataToCreateImprovementCharacteristics": {
+    "Property Type": "Residential",
+    "Characteristics Screen": "Multi-Family"
+  },
+  
+  "DataToCreateLandCharacteristics": {
+    "Property Type": "Land",
+    "Characteristics Screen": "Land"
+  }
+  }

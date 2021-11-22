@@ -1,7 +1,6 @@
 {
 	"UnrecordedEventCreation": {
     	"Record Type": "Business Event",
-
     	"Group":"CIO",
 		"Type of Audit Trail Record?": "Unrecorded Event",
 		"Source": "Unrecorded document",
@@ -17,5 +16,48 @@
 		"Date of Value": "07/05/2021",
 		"Date of Recording": "07/06/2021",
 		"Description": "test_CIO_AUTOCONFIRM"
-	}
+	},
+	"DataToCreateLeopEventCreation": {
+    	"Record Type": "Business Event",
+    	"Group":"CIO",
+		"Type of Audit Trail Record?": "LEOP Activity",
+		"Source": "Unrecorded document",
+		"LEOP Received By BOE": "Yes",
+		"Penalty Required Per BOE": "Yes",
+		"Date of Event": "10/04/2021",
+		"Date of Recording": "10/04/2021",
+		"Description": "Unrecorded LEOP Transfer"
+	},	
+	"ExistingMHTransferventCreation": {
+    	"Record Type": "Business Event",
+    	"Group":"CIO",
+		"Type of Audit Trail Record?": "Existing MH Transfer",
+		"Source": "Unrecorded document",
+		"Date of Event": "07/04/2021",
+		"Date of Recording": "07/06/2021",
+		"Description": "Existing MH Transfer",		
+		"Updated DOE": "07/05/2021"
+	},
+	"DataToAttemptToCreateLeopEvent": {
+    	"Record Type": "Business Event",
+    	"Group":"CIO",
+		"Type of Audit Trail Record?": "LEOP Activity",
+		"Source": "Unrecorded document",
+		"LEOP Received By BOE": "Yes",
+		"Penalty Required Per BOE": "Yes",
+		"Date of Event": "",
+		"Date of Recording": "10/04/2021",
+		"Description": "Unrecorded LEOP Transfer"
+	},	
+	"DataToCreateLeopEvent": {
+    	"Record Type": "Business Event",
+    	"Group":"CIO",
+		"Type of Audit Trail Record?": "LEOP Activity",
+		"Source": "Unrecorded document",
+		"LEOP Received By BOE": "Yes",
+		"Penalty Required Per BOE": "Yes",
+		"Date of Event": "09/04/2021",
+		"Date of Recording": "10/04/2021",
+		"Description": "Unrecorded LEOP Transfer"
+	}	
 }

@@ -16,8 +16,6 @@ import org.openqa.selenium.safari.SafariOptions;
 
 import com.apas.Utils.Util;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-
 public class BrowserDriver {
 	public static ThreadLocal<RemoteWebDriver> dr = new ThreadLocal<RemoteWebDriver>();
 
@@ -63,7 +61,6 @@ public class BrowserDriver {
 				setWebDriver(Wdriver);
 
 			} else if (browser.equalsIgnoreCase("chrome")) {
-				//WebDriverManager.chromedriver().setup();
 				String downloadFilepath = System.getProperty("user.dir") + "\\downloads";
 				HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
 				chromePrefs.put("profile.default_content_settings.popups", 0);
