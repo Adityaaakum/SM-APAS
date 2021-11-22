@@ -700,22 +700,27 @@ public class MappingPage extends ApasGenericPage {
 				Click(mappingSecondScreenEditActionGridButton);
 				Click(editButtonInSeconMappingScreen);
 
-				String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c where legacy__c='no' limit 4").get("Name").get(3);
-
+				String puc = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c where legacy__c='no' limit 4").get("Name").get(3);
 				String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 4").get("Name").get(3);
-				//objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='" + PUC + "'").get("Id").get(0),"Legacy__c", "No");
+		        
+				clearSelectionFromLookup("PUC");
+				enter(parcelPUC, puc);
+				selectOptionFromDropDown(parcelPUC, puc);
+				ReportLogger.INFO("PUC:" + puc);
+				
 				clearSelectionFromLookup("District / Neighborhood Code");
 				enter(parcelDistrictNeighborhood, distNeigh);
 				selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
 				ReportLogger.INFO("District / Neighborhood Code:" + distNeigh);
 
 				clearSelectionFromLookup("PUC");
-				enter(parcelPUC, PUC);
-				selectOptionFromDropDown(parcelPUC, PUC);
-				ReportLogger.INFO("PUC:" + PUC);
+				enter(parcelPUC, puc);
+				selectOptionFromDropDown(parcelPUC, puc);
+				ReportLogger.INFO("PUC:" + puc);
 				Click(getButtonWithText(SaveButton));
 				Thread.sleep(2000);
-				return new String[] { PUC, distNeigh };
+				
+				return new String[] { puc, distNeigh };
 			}
 
 		}
