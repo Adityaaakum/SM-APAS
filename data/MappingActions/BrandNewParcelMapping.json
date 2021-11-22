@@ -24,16 +24,16 @@
     "Situs City Description": "Daly City",
     "Situs City Code": "DC",    
     "City Name": "DALY CITY",
-    "Direction": "West Coast",
-    "Situs Number": "69",
+    "Direction": "S",
+    "Situs Number": "60",
     "Situs Street Name": "CLIFFSIDE",
-    "Situs Type": "ALLEE",
-    "Situs Unit Number": "56",
+    "Situs Type": "CT",
+    "Situs Unit Number": "50",
     "TRA":"12345",
     "PUC": "01-SINGLE FAMILY RES",
     "Legal Descriptions": "legal Description"
   
-  }
+  },
    "DataToPerformBrandNewParcelMappingActionWithSitusDataForDuplicateSitus": {
     "Action": "Brand New Parcel",
     "Reason code": "PM 85/25-26",
