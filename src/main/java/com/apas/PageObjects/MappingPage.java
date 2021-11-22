@@ -700,10 +700,10 @@ public class MappingPage extends ApasGenericPage {
 				Click(mappingSecondScreenEditActionGridButton);
 				Click(editButtonInSeconMappingScreen);
 
-				String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 4").get("Name").get(3);
+				String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c where legacy__c='no' limit 4").get("Name").get(3);
 
 				String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 4").get("Name").get(3);
-				objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='" + PUC + "'").get("Id").get(0),"Legacy__c", "No");
+				//objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='" + PUC + "'").get("Id").get(0),"Legacy__c", "No");
 				clearSelectionFromLookup("District / Neighborhood Code");
 				enter(parcelDistrictNeighborhood, distNeigh);
 				selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
@@ -714,7 +714,7 @@ public class MappingPage extends ApasGenericPage {
 				selectOptionFromDropDown(parcelPUC, PUC);
 				ReportLogger.INFO("PUC:" + PUC);
 				Click(getButtonWithText(SaveButton));
-				
+				Thread.sleep(2000);
 				return new String[] { PUC, distNeigh };
 			}
 

@@ -284,6 +284,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	public void ParcelManagement_Verify_Brand_NewParcel_Mapping_Action(String loginUser) throws Exception {
 		
 		JSONObject jsonObject = objMappingPage.getJsonObject();
+		String executionEnv = System.getProperty("region");
 		
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -319,7 +320,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		
 		//objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 						
-		// entering data in form for B rand New Parcel mapping
+		// entering data in form for Brand New Parcel mapping
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
 		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
 		objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen, "Legal Discription");
@@ -414,7 +415,10 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
            // driver.switchTo().window(parentWindow);
            
            objMappingPage.searchModule(PARCELS);
-           objMappingPage.globalSearchRecords(newCreatedApn);
+		   objMappingPage.globalSearchRecords(newCreatedApn);
+
+		   query = "Select Id from Parcel__c where Name = '" + newCreatedApn + "'";
+		   HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
          //Fetching Child's PUC after closing WI
            childParcelPuc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
            softAssert.assertEquals(childParcelPuc, childAPNPucFromGrid,
@@ -441,7 +445,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 			objWorkItemHomePage.switchToNewWindow(parentWindow);
 			
-			String[] PucAndNeighCode = objMappingPage.editActionInUpdatePucAndCharsScreen();
+			String[] pucAndNeighCode = objMappingPage.editActionInUpdatePucAndCharsScreen();
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
 			ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
 
@@ -457,10 +461,10 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 			// Moving to Allocate Values WI
 			String districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code",
 					"Summary Values");
-			String Puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
-			softAssert.assertEquals(districtAndNeighCode, PucAndNeighCode[1],
+			String puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+			softAssert.assertEquals(districtAndNeighCode, pucAndNeighCode[1],
 					"SMAB-T3926: District and Neighbrhood code was updated successfully");
-			softAssert.assertEquals(Puc, PucAndNeighCode[0], "SMAB-T3926:PUC was updated successfully");
+			softAssert.assertEquals(puc, pucAndNeighCode[0], "SMAB-T3926:PUC was updated successfully");
 			objParcelsPage.Click(objParcelsPage.workItems);
 			objParcelsPage.Click(objParcelsPage.allocateValue);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -500,9 +504,10 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 
 			ReportLogger.INFO(" RP Principal logins ");
 			objMappingPage.login(users.RP_PRINCIPAL);
-
-			objMappingPage.searchModule(PARCELS);
-			objMappingPage.globalSearchRecords(newCreatedApn);
+			driver.navigate().to("https://smcacre--"+executionEnv+
+					 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
+			
+			objParcelsPage.waitForElementToBeVisible(20,objParcelsPage.workItems);
 			objParcelsPage.Click(objParcelsPage.workItems);
 			objParcelsPage.Click(objParcelsPage.allocateValue);
 			objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.detailsTab);
@@ -514,10 +519,12 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 					"SMAB-T4167:Update Characteristics & Verify PUC link is present");
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 
-			objMappingPage.searchModule(PARCELS);
-			objMappingPage.globalSearchRecords(newCreatedApn);
-			objWorkItemHomePage.waitForElementToBeVisible(20, objParcelsPage.ValueAllocation);
-			objParcelsPage.Click(objParcelsPage.ValueAllocation);
+			driver.navigate().to("https://smcacre--"+executionEnv+
+					 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
+
+			objParcelsPage.waitForElementToBeVisible(20,objParcelsPage.workItems);
+			objWorkItemHomePage.waitForElementToBeVisible(20, objParcelsPage.valueAllocation);
+			objParcelsPage.Click(objParcelsPage.valueAllocation);
 			String remarksOnAuditTrails = objMappingPage.getFieldValueFromAPAS("Remarks", "");
 			softAssert.assertEquals(remarksOnAuditTrails, "It's a Remarks",
 					"SMAB-T4251: Remarks added by Appraiser was saved successfully");
