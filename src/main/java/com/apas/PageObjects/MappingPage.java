@@ -712,12 +712,6 @@ public class MappingPage extends ApasGenericPage {
 				enter(parcelDistrictNeighborhood, distNeigh);
 				selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
 				ReportLogger.INFO("District / Neighborhood Code:" + distNeigh);
-
-				clearSelectionFromLookup("PUC");
-				enter(parcelPUC, puc);
-				selectOptionFromDropDown(parcelPUC, puc);
-				ReportLogger.INFO("PUC:" + puc);
-				Click(getButtonWithText(SaveButton));
 				Thread.sleep(2000);
 				
 				return new String[] { puc, distNeigh };
