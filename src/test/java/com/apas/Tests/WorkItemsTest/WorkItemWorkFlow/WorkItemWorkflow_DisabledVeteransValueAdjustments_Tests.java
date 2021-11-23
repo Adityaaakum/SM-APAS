@@ -321,7 +321,7 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
     ReportLogger.INFO("Step 17: Search open App. module - Work Item Management from App Launcher");
     driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Work_Item__c/" + WorkitemID
 			+ "" + "/view");
-    Thread.sleep(10000);
+    objWIHomePage.waitForElementToBeClickable(20,objWIHomePage.TAB_IN_PROGRESS);
     objWIHomePage.clickOnTimelineAndMarkComplete(objWIHomePage.TAB_IN_PROGRESS);
     objWIHomePage.waitForElementToBeClickable(objWIHomePage.detailsTab);
     objWIHomePage.Click(objWIHomePage.detailsTab);
@@ -337,7 +337,6 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 	driver.switchTo().window(parentWindow);
 	objWIHomePage.clickOnTimelineAndMarkComplete(objWIHomePage.submittedForApprovalOptionInTimeline);
   	
-
     ReportLogger.INFO("Step 15: Logging OUT from SF");
     objApasGenericPage.logout();
     Thread.sleep(5000);
@@ -345,8 +344,7 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
   	objApasGenericPage.login(users.RP_BUSINESS_ADMIN);
   	driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Work_Item__c/" + WorkitemID
 			+ "" + "/view");
-    Thread.sleep(5000);
-    objWIHomePage.waitForElementToBeClickable(objWIHomePage.detailsTab);
+  	objWIHomePage.waitForElementToBeClickable(20,objWIHomePage.detailsTab);
     objWIHomePage.Click(objWIHomePage.detailsTab);
     
 	//SMAB-T2093 opening the action link to validate that link redirects to Value Adjustment Details page 
