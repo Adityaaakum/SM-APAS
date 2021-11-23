@@ -286,7 +286,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * transfer on CIO transfer screen
 	 */
 
-	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308,SMAB-T3691,SMAB-T3162,SMAB-T3164,SMAB-T3165,SMAB-T3166,SMAB-T3207,SMAB-T3567:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308,SMAB-T3691,SMAB-T3162,SMAB-T3164,SMAB-T3165,SMAB-T3166,SMAB-T3207,SMAB-T3567,SMAB-T4319:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "Smoke" }, enabled = true)
 	public void OwnershipAndTransfer_VerifyPartialOwnershipTransfer(String loginUser) throws Exception {
 
@@ -478,8 +478,14 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"$" + recorderConvTax.substring(0, 2) + "," + recorderConvTax.substring(2),
 				"SMAB-T3206: Verifying that recorder conv tax equals City of SM Tax ");
 
-		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.valueFromDocTaxCityLabel),
-				"$2,375,000.00", "SMAB-T3206: Verifying that Doc Tax(City) equals (City of SM Tax / 0.005) ");
+		softAssert.assertTrue(!objCioTransfer.verifyElementVisible(objCioTransfer.valueFromDocTaxCityLabel),
+				 "SMAB-T3206,SMAB-T4319: Verifying that Doc Tax(City) is not visible on RAT screen ");
+		
+		softAssert.assertTrue(objCioTransfer.verifyElementVisible(objCioTransfer.verifiedValueFromPcorLabel),
+				 "SMAB-T3206,SMAB-T4319: Verifying that valueFromPcorLabel  is  visible on RAT screen ");
+		
+		softAssert.assertTrue(objCioTransfer.editFieldButton(objCioTransfer.verifiedValueFromPcorLabel)!=null,
+				 "SMAB-T4319: Verifying that valueFromPcorLabel  is editable  on RAT screen ");
 
 		ReportLogger.INFO("Add the Transfer Code");
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
