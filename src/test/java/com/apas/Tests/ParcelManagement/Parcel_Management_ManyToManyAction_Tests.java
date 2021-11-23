@@ -2335,7 +2335,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 	}
 	
-	@Test(description = "SMAB-T3803,SMAB-T3804,SMAB-T3805,SMAB-T3806,SMAB-T3777,SMAB-T3787,SMAB-T3788,SMAB-T3771,SMAB-T3928,SMAB-T3888,SMAB-T3889,SMAB-T3813:Verify that User is able to perform a \"Many to Many\" mapping action for a Parcel   from a work item and verify output with update chars and verify PUC", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3803,SMAB-T3804,SMAB-T3805,SMAB-T3806,SMAB-T3777,SMAB-T3787,SMAB-T3788,SMAB-T3854,SMAB-T3888,SMAB-T3854,SMAB-T3855,SMAB-T3889,SMAB-T3813:Verify that User is able to perform a \"Many to Many\" mapping action for a Parcel   from a work item and verify output with update chars and verify PUC", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement" }, enabled = true)
 	public void ParcelManagement_Verify_ManyToMany_Mapping_Action_UpdateChars_VerifyPUC_Output(String loginUser)
 			throws Exception {
@@ -2513,9 +2513,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 				salesforceAPI
 						.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'")
 						.get("Name").get(0),
-				"SMAB-T3771,SMAB-T3928:Assiged to is matched successfully");
+				"SMAB-T3854:Assiged to is matched successfully");
 		softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool,
-				"SMAB-T3771,SMAB-T3928:workPool is matched successfully");
+				"SMAB-T3854:workPool is matched successfully");
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -2525,19 +2525,19 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		gridParcelData = objMappingPage.getGridDataInHashMap();
 
 		softAssert.assertEquals(gridParcelData.containsKey("Parcel"), "true",
-				"SMAB-T3888:Verifying Parcel field is present");
+				"SMAB-T3888, SMAB-T3855:Verifying Parcel field is present");
 		softAssert.assertEquals(gridParcelData.containsKey("Parcel Size (SqFt)"), "true",
-				"SMAB-T3888:Verifying parcel Size (SqFt) field is present");
+				"SMAB-T3888,SMAB-T3855:Verifying parcel Size (SqFt) field is present");
 		softAssert.assertEquals(gridParcelData.containsKey("Land %"), "true",
-				"SMAB-T3888:Verifying Land % field is persent");
+				"SMAB-T3888,SMAB-T3855:Verifying Land % field is persent");
 		softAssert.assertEquals(gridParcelData.containsKey("Proposed Land (FBYV)"), "true",
-				"SMAB-T3888:Verifying Proposed Land (FBYV) field is present");
+				"SMAB-T3888,SMAB-T3855:Verifying Proposed Land (FBYV) field is present");
 		softAssert.assertEquals(gridParcelData.containsKey("Adjusted Land (FBYV)"), "true",
-				"SMAB-T3888:Verifying Adjusted Land (FBYV) field is present");
+				"SMAB-T3888,SMAB-T3855:Verifying Adjusted Land (FBYV) field is present");
 		softAssert.assertEquals(gridParcelData.containsKey("Imp (FBYV)"), "true",
-				"SMAB-T3888:Verifying Imp (FBYV) field is present");
+				"SMAB-T3888,SMAB-T3855:Verifying Imp (FBYV) field is present");
 		softAssert.assertEquals(gridParcelData.containsKey("Total (FBYV)"), "true",
-				"SMAB-T3888:Verifying Total (FBYV) field is present");
+				"SMAB-T3888,SMAB-T3855:Verifying Total (FBYV) field is present");
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
 
 		driver.switchTo().window(parentWindow);
