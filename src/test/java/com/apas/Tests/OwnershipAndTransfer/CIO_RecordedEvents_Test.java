@@ -4439,7 +4439,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			
 		// Step 2: updating recorder_apn and parcel value in recorded apn
 		
-		JSONObject jsonToUpdateRecordedAPN = new JSONObject();
+		JSONObject jsonToUpdateRecordedAPN = objCioTransfer.getJsonObject();
 		jsonToUpdateRecordedAPN.put("Parcel__c", "");
 		jsonToUpdateRecordedAPN.put("Recorder_APN__c", "123");
 		salesforceAPI.update("Recorded_APN__c", recordedAPNID1, jsonToUpdateRecordedAPN);
