@@ -4409,7 +4409,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	}
 	
 	/*
-	 Recorder Integration- Verify No WI should be created if recorded document has invalid Recorded APN
+	 Recorder Integration- Verify No WI should be created if recorded document has one valid APN and one invalid Recorded APN
 	 * 
 	 */
 
@@ -4427,7 +4427,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String recordedAPNID1 = hashMapRecordedApn.get("Id").get(0);
 		String recordedAPNID2 = hashMapRecordedApn.get("Id").get(1);
 
-		JSONObject jsonToUpdateRecordedAPN1 = new JSONObject();
+		JSONObject jsonToUpdateRecordedAPN1 = objCioTransfer.getJsonObject() ;
 		
 		jsonToUpdateRecordedAPN1.put("Status__c", "Pending");
 		salesforceAPI.update("Recorded_APN__c", recordedAPNID1, jsonToUpdateRecordedAPN1);
@@ -4535,12 +4535,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABHome);
 		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABWorkItems);
 		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInPool);
-		Thread.sleep(4000);
+		objWorkItemHomePage.waitForElementToBeVisible(10,objWorkItemHomePage.acceptWorkItemButton);
 		objWorkItemHomePage.clickCheckBoxForSelectingWI(WorkItemNo);
 		objWorkItemHomePage.Click(objWorkItemHomePage.acceptWorkItemBtn);
-		Thread.sleep(4000);
+		Thread.sleep(2000);
 		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInProgress);
-		Thread.sleep(4000);
+		objWorkItemHomePage.waitForElementToBeVisible(15, objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool));
 		objWorkItemHomePage.clickCheckBoxForSelectingWI(WorkItemNo);
 		objWorkItemHomePage.openWorkItem(WorkItemNo);
 		objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);  	
@@ -4567,7 +4567,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.Click(objWorkItemHomePage.lnkTABHome);
 		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABWorkItems);
 		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInProgress);
-		Thread.sleep(6000);
+		objWorkItemHomePage.waitForElementToBeVisible(15, objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool));
 		objWorkItemHomePage.clickCheckBoxForSelectingWI(WorkItemNo);
 		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.changeWorkPool));
 		objWorkItemHomePage.searchAndSelectOptionFromDropDown(objWorkItemHomePage.WorkPool, "CIO");
@@ -4593,13 +4593,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 		// CIO staff User clicks on Migrate button
 		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.migrateAPN));
-		Thread.sleep(2000);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert);
 
 		// User validates the status of added recorded APN
 		softAssert.assertEquals(objMappingPage.getGridDataInHashMap(1).get("Status").get(0), "Processed",
 				"SMAB-T3962: Validating that status of added Recorded APN is processed once migrated");
-		softAssert.assertEquals(objMappingPage.getElementText(objWorkItemHomePage.successAlert).trim(), "success Success All recorded apn(s) are migrated successfully Close",
+		softAssert.assertContains(objMappingPage.getElementText(objWorkItemHomePage.successAlert), "All recorded apn(s) are migrated successfully",
 				"SMAB-T3962: validatinmg that Success message appears once Recorded APN is migrated");
 		
 		// User tries to complete the WI
