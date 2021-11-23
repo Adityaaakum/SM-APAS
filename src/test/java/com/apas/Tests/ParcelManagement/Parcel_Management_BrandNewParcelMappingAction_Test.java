@@ -26,7 +26,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase implements testdata, modules, users{
+public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase implements testdata, modules, users{
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
@@ -39,8 +39,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	String apnPrefix=new String();
 	AuditTrailPage trail;
 	CIOTransferPage objtransfer;
-	
 
+	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
 		driver = null;
@@ -49,8 +49,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage= new MappingPage(driver);
-		 trail= new AuditTrailPage(driver);
-		 objtransfer=new CIOTransferPage(driver);
+		trail= new AuditTrailPage(driver);
+		objtransfer=new CIOTransferPage(driver);
 
 	}
 	/**
@@ -279,11 +279,12 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @param loginUser-Mapping user
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3620,SMAB-T2642,SMAB-T2643,SMAB-T2644,SMAB-T3243,SMAB-T3771:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" },enabled =true)
+	@Test(description = "SMAB-T3620,SMAB-T2642,SMAB-T2643,SMAB-T2644,SMAB-T3243,SMAB-T3771,SMAB-T3926,SMAB-T3928,SMAB-T3927,SMAB-T4251,SMAB-T4165,SMAB-T4166,SMAB-T4167,SMAB-T4250:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement" }, enabled = true)
 	public void ParcelManagement_Verify_Brand_NewParcel_Mapping_Action(String loginUser) throws Exception {
 		
 		JSONObject jsonObject = objMappingPage.getJsonObject();
+		String executionEnv = System.getProperty("region");
 		
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -293,6 +294,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 		String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
+
+		
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformBrandNewParcelMappingActionWithSitusData");
 
@@ -412,7 +415,10 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
            // driver.switchTo().window(parentWindow);
            
            objMappingPage.searchModule(PARCELS);
-           objMappingPage.globalSearchRecords(newCreatedApn);
+		   objMappingPage.globalSearchRecords(newCreatedApn);
+
+		   query = "Select Id from Parcel__c where Name = '" + newCreatedApn + "'";
+		   HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
          //Fetching Child's PUC after closing WI
            childParcelPuc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
            softAssert.assertEquals(childParcelPuc, childAPNPucFromGrid,
@@ -429,6 +435,9 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objMappingPage.login(users.RP_APPRAISER);
 			objMappingPage.searchModule(PARCELS);
 			objMappingPage.globalSearchRecords(newCreatedApn);
+			String puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+			String districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code","Summary Values");
+			
 			objParcelsPage.Click(objParcelsPage.workItems);
 			
 			//Moving to the Update Characteristics Verify PUC WI
@@ -438,6 +447,8 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
 			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 			objWorkItemHomePage.switchToNewWindow(parentWindow);
+			
+			String[] pucAndNeighCode = objMappingPage.editActionInUpdatePucAndCharsScreen(districtAndNeighCode, puc);
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
 			ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
 
@@ -446,25 +457,90 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
-			softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3771: Validation WI completed successfully");
+			softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3771,SMAB-T3927,: Validation WI completed successfully");
 			objMappingPage.searchModule(PARCELS);
 			objMappingPage.globalSearchRecords(newCreatedApn);
 			
-			//Moving to Allocate Values WI
+			// Moving to Allocate Values WI
+			districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code",
+					"Summary Values");
+			puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+			softAssert.assertEquals(districtAndNeighCode, pucAndNeighCode[1],
+					"SMAB-T3926: District and Neighbrhood code was updated successfully");
+			softAssert.assertEquals(puc, pucAndNeighCode[0], "SMAB-T3926:PUC was updated successfully");
 			objParcelsPage.Click(objParcelsPage.workItems);
 			objParcelsPage.Click(objParcelsPage.allocateValue);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
 			String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
-			softAssert.assertEquals(assignedTo, salesforceAPI.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'").get("Name").get(0), "SMAB-T3771:Assiged to is matched successfully");
-			softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool, "SMAB-T3771:workPool is matched successfully");
+			softAssert.assertEquals(assignedTo, salesforceAPI
+					.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'")
+					.get("Name").get(0), "SMAB-T3771,SMAB-T3928:Assiged to is matched successfully");
+			softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool,
+					"SMAB-T3771,SMAB-T3928:workPool is matched successfully");
+			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+			parentWindow = driver.getWindowHandle();
+			objWorkItemHomePage.switchToNewWindow(parentWindow);
+			objMappingPage.enter("Remarks", "It's a Remarks");
 
+			//fetching the grid values to verify the presence of expected fields
+			gridParcelData = objMappingPage.getGridDataInHashMap();
+
+			softAssert.assertEquals(gridParcelData.containsKey("Parcel"), "true",
+					"SMAB-T4165:Verifying Parcel field is present");
+			softAssert.assertEquals(gridParcelData.containsKey("Parcel Size (SqFt)"), "true",
+					"SMAB-T4165:Verifying parcel Size (SqFt) field is present");
+			softAssert.assertEquals(gridParcelData.containsKey("Land %"), "true",
+					"SMAB-T4165:Verifying Land % field is persent");
+			softAssert.assertEquals(gridParcelData.containsKey("Proposed Land (FBYV)"), "true",
+					"SMAB-T4165:Verifying Proposed Land (FBYV) field is present");
+			softAssert.assertEquals(gridParcelData.containsKey("Adjusted Land (FBYV)"), "true",
+					"SMAB-T4165:Verifying Adjusted Land (FBYV) field is present");
+			softAssert.assertEquals(gridParcelData.containsKey("Imp (FBYV)"), "true",
+					"SMAB-T4165:Verifying Imp (FBYV) field is present");
+			softAssert.assertEquals(gridParcelData.containsKey("Total (FBYV)"), "true",
+					"SMAB-T4165:Verifying Total (FBYV) field is present");
+			objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
+
+			driver.switchTo().window(parentWindow);
 			objWorkItemHomePage.logout();
 
-		   		
-            		                          
-		   
-	}
+			ReportLogger.INFO(" RP Principal logins ");
+			objMappingPage.login(users.RP_PRINCIPAL);
+			// Navigating to child APN
+			driver.navigate().to("https://smcacre--"+executionEnv+
+					 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
+			
+			objParcelsPage.waitForElementToBeVisible(20,objParcelsPage.workItems);
+			objParcelsPage.Click(objParcelsPage.workItems);
+			objParcelsPage.Click(objParcelsPage.allocateValue);
+			objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+			objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.previousRelatedAction);
+
+			String previousRelatedAction = objWorkItemHomePage.previousRelatedAction.getText();
+			softAssert.assertEquals(previousRelatedAction, "Update Characteristics & Verify PUC",
+					"SMAB-T4167:Update Characteristics & Verify PUC link is present");
+			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+
+			// Navigating to child APN
+			driver.navigate().to("https://smcacre--"+executionEnv+
+					 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
+
+			objParcelsPage.waitForElementToBeVisible(20,objParcelsPage.workItems);
+			objWorkItemHomePage.waitForElementToBeVisible(20, objParcelsPage.valueAllocation);
+			objParcelsPage.Click(objParcelsPage.valueAllocation);
+			String remarksOnAuditTrails = objMappingPage.getFieldValueFromAPAS("Remarks", "");
+			softAssert.assertEquals(remarksOnAuditTrails, "It's a Remarks",
+					"SMAB-T4251: Remarks added by Appraiser was saved successfully");
+			trail.Click(trail.relatedBusinessRecords);
+			objWorkItemHomePage.waitForElementToBeVisible(20, trail.valuesAllocated);
+			String trailSubject = trail.valuesAllocated.getText();
+			softAssert.assertEquals(trailSubject, "Values Allocated",
+					"SMAB-T4250: Verified Summary that summary is Values Allocate ");
+			objWorkItemHomePage.logout();
+
+		}
 	/**
 	 * Once the parcel creation has been approved, the user will not be allowed to change the APN allocated.
 	 * 
@@ -1354,7 +1430,7 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
 		 * @throws Exception
 		 */
 		@Test(description = "SMAB-T2946:Verify the type of WI system creates for different recorded document types for a recorded document with one APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-				"Smoke","Regression","ChangeInOwnershipManagement","RecorderIntegration" },enabled=true)
+				"Smoke","Regression","ParcelManagement","RecorderIntegration" },enabled=true)
 		public void ParcelManagement_VerifyNewWIgenratedfromRecorderIntegrationAndBrandNewMappingAction(String loginUser) throws Exception {
 					
 			
@@ -1400,33 +1476,33 @@ public class Parcel_management_BrandNewParcelMappingAction_Test extends TestBase
         //Validating the fields on AT=C on the Recorder WI
          objMappingPage.scrollToElement(objWorkItemHomePage.firstRelatedBuisnessEvent);
          objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
-         String EventLib=   objMappingPage.getFieldValueFromAPAS(trail.EventLibrary);
+         String EventLib=   objMappingPage.getFieldValueFromAPAS(trail.eventLibraryLabel);
          softAssert.assertContains(EventLib, "Recorded Document - MAPPING ", "SMAB-T2946:Verifying Eventlibrary of correspondence AuditTrail");
-         String EventType=   objMappingPage.getFieldValueFromAPAS(trail.EventType);
+         String EventType=   objMappingPage.getFieldValueFromAPAS(trail.eventTypeLabel);
          softAssert.assertContains(EventLib, "Recorded Document - MAPPING ","SMAB-T2946:Verifying EventType of correspondence AuditTrail");
-         String EventId=   objMappingPage.getFieldValueFromAPAS(trail.EventId);
+         String EventId=   objMappingPage.getFieldValueFromAPAS(trail.eventIdLabel);
          //Validating eventTitle of AT=C
-         String EventTitle=   objMappingPage.getFieldValueFromAPAS(trail.EventTitle);
+         String EventTitle=   objMappingPage.getFieldValueFromAPAS(trail.eventTitleLabel);
          softAssert.assertContains(EventTitle, EventType+" "+EventId, "SMAB-T2946:Verifying EventTitle of correspondence AuditTrail");         
-         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), "Recorder's Office" , "SMAB-T2946:Verifying RequestOrigin of correspondence AuditTrail");         
-         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.Status), "Completed" , "SMAB-T2946:Verifying Status of correspondence AuditTrail");
+         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.requestOriginLabel), "Recorder's Office" , "SMAB-T2946:Verifying RequestOrigin of correspondence AuditTrail");         
+         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Completed" , "SMAB-T2946:Verifying Status of correspondence AuditTrail");
          //Navigating back to WI linked grid table
          driver.navigate().back();
          
          //Validating the fields on Second Buisness Event on the Recorder WI
          objMappingPage.scrollToElement(objWorkItemHomePage.secondRelatedBuisnessEvent);
          objMappingPage.Click(objWorkItemHomePage.secondRelatedBuisnessEvent);
-         EventLib=   objMappingPage.getFieldValueFromAPAS(trail.EventLibrary);
+         EventLib=   objMappingPage.getFieldValueFromAPAS(trail.eventLibraryLabel);
          softAssert.assertEquals(EventLib, "DRAFT - MAPPING - CC", "SMAB-T2946:Verifying Eventlibrary of Buisnessevent AuditTrail");
-         EventType=   objMappingPage.getFieldValueFromAPAS(trail.EventType);
+         EventType=   objMappingPage.getFieldValueFromAPAS(trail.eventTypeLabel);
          softAssert.assertEquals(EventType, "DRAFT - MAPPING - CC", "SMAB-T2946:Verifying EventType of Buisnessevent AuditTrail");
-         EventId=   objMappingPage.getFieldValueFromAPAS(trail.EventId);
-         EventTitle=   objMappingPage.getFieldValueFromAPAS(trail.EventTitle);
+         EventId=   objMappingPage.getFieldValueFromAPAS(trail.eventIdLabel);
+         EventTitle=   objMappingPage.getFieldValueFromAPAS(trail.eventTitleLabel);
          //Validating eventitle of AT=BE
          softAssert.assertContains(EventTitle, EventType+" "+EventId, "SMAB-T2946:Verifying EventTitle of Buisnessevent AuditTrail");
-         objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin);
-         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.RequestOrigin), "Recorder's Office" ,"SMAB-T2946:Verifying RequestOrigin of Buisnessevent AuditTrail");         
-         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.Status), "Open" ,"SMAB-T2946:Verifying Status of Buisnessevent AuditTrail");
+         objMappingPage.getFieldValueFromAPAS(trail.requestOriginLabel);
+         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.requestOriginLabel), "Recorder's Office" ,"SMAB-T2946:Verifying RequestOrigin of Buisnessevent AuditTrail");         
+         softAssert.assertContains(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Open" ,"SMAB-T2946:Verifying Status of Buisnessevent AuditTrail");
          driver.navigate().back();
          
          //Logging out as sysadmin
