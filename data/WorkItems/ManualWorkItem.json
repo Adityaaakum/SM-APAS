@@ -93,7 +93,8 @@
     "Description": "Give Work Item to Someone Else",
     "Reference": "Give Work Item to Someone Else",
     "Priority": "Urgent",
-    "Work Item Routing": "Give Work Item to Someone Else"
+    "Work Item Routing": "Give Work Item to Someone Else",
+    "Work Item Owner": "exemption supportAUT"
   },
   "WorkItemRoutingToDefaultPool": {
     "Work Item Type": "Building Permit",

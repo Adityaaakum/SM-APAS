@@ -252,7 +252,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 
 		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(

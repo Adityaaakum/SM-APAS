@@ -229,11 +229,13 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		objWorkItemHomePage.searchModule(PARCELS);
 		objWorkItemHomePage.globalSearchRecords(apnValue);
 
+		String activeApnUrl=driver.getCurrentUrl();
 		// Step3: Creating Manual work item with earlier DOV
 		hashMapmanualWorkItemData.put("DOV","11/21/2020");
 		String workItemWithEarlierDOV = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
-		objWorkItemHomePage.globalSearchRecords(apnValue);
+//		objWorkItemHomePage.globalSearchRecords(apnValue);
+		driver.navigate().to(activeApnUrl);
 		// Step4: Creating Manual work item with Later DOV
 		hashMapmanualWorkItemData.put("DOV","11/22/2020");
 		String workItemWithLaterDOV = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
@@ -242,9 +244,9 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		driver.navigate().refresh();
 		Thread.sleep(3000);
 		objWorkItemHomePage.searchModule(HOME);
-		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
+		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
 		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
-		Thread.sleep(5000);
+		objWorkItemHomePage.waitForElementToBeClickable(workItemWithEarlierDOV);
 		objWorkItemHomePage.acceptWorkItem(workItemWithEarlierDOV);
 		Thread.sleep(5000);
 		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
@@ -327,17 +329,18 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		// Step2: Opening the PARCELS page and searching a parcel
 		objWorkItemHomePage.searchModule(PARCELS);
 		objWorkItemHomePage.globalSearchRecords(apnValue);
-
+		String activeApnUrl=driver.getCurrentUrl();
 		// Step3: Creating Manual work item with work item routing as "Give Work Item to Someone Else"
 		Map<String, String> hashMapGiveWorkItemToSomeoneElse = objUtil.generateMapFromJsonFile(workItemCreationData, "WorkItemRoutingGiveToSomeoneElse");
 		String workItemAssignedToSomeoneElse = objParcelsPage.createWorkItem(hashMapGiveWorkItemToSomeoneElse);
-		objWorkItemHomePage.globalSearchRecords(apnValue);
+//		objWorkItemHomePage.globalSearchRecords(apnValue);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.componentActionsButtonText)),"SMAB-T1988 : Validation that Parcel screen is displayed when work item routing option is selected as 'Give Work Item to Someone Else'");
 
 		// Step4: Creating Manual work item with work item routing as "Give Work Item to Default Work Pool"
 		Map<String, String> hashMapGiveWorkItemToDefaultWorkPool = objUtil.generateMapFromJsonFile(workItemCreationData, "WorkItemRoutingToDefaultPool");
 		String workItemDefaultToWorkPool = objParcelsPage.createWorkItem(hashMapGiveWorkItemToDefaultWorkPool);
-		objWorkItemHomePage.globalSearchRecords(apnValue);
+//		objWorkItemHomePage.globalSearchRecords(apnValue);
+		driver.navigate().to(activeApnUrl);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.componentActionsButtonText)),"SMAB-T1989 : Validation that Parcel screen is displayed when work item routing option is selected as 'Give Work Item to Default Work Pool'");
 
 
@@ -369,7 +372,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		objWorkItemHomePage.globalSearchRecords(workItemAssignedToSomeoneElse);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.tabDetails);
 		ReportLogger.INFO("Validations when work item routing is selected as 'Give Work Item To Someone Else'");
-//		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Assigned To"),hashMapGiveWorkItemToSomeoneElse.get("Work Item Owner"),"SMAB-T1988: Validation that newly created work item is assigned to the selected user in work item routing");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Assigned To"),hashMapGiveWorkItemToSomeoneElse.get("Work Item Owner"),"SMAB-T1988: Validation that newly created work item is assigned to the selected user in work item routing");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Approver"),supervisor,"SMAB-T1988: Validation that newly created work item having the correct approver");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Level2 Approver"),level2Supervisor,"SMAB-T1988: Validation that newly created work item having the correct level2 approver");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Work Pool"),workPool,"SMAB-T1988: Validation that newly created work item is in the correct work pool");

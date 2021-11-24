@@ -57,7 +57,6 @@ public class WorkItemAdministration_Configuration_Test extends TestBase {
         //Step3: Opening the manual work item creation window
         objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.componentActionsButtonText));
         objWorkItemHomePage.waitForElementToBeClickable(objParcelsPage.selectOptionDropDownComponentsActionsModal);
-//        objWorkItemHomePage.selectOptionFromDropDown(objParcelsPage.selectOptionDropDownComponentsActionsModal, "Create Work Item");
         objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objParcelsPage.nextButtonComponentsActionsModal));
         objWorkItemHomePage.waitForElementToBeClickable(objParcelsPage.workItemTypeDropDownComponentsActionsModal);
 
