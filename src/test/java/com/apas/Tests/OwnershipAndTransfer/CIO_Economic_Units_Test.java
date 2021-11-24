@@ -26,14 +26,11 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
-
-	Util objUtil = new Util();
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	CIOTransferPage objCioTransfer;
 
 	Page objPage;
-	String apnPrefix = new String();
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -43,19 +40,17 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 		objParcelsPage = new ParcelsPage(driver);
 		objCioTransfer = new CIOTransferPage(driver);
 
-		objPage = new Page(driver);
-
 		driver.manage().timeouts().pageLoadTimeout(15, TimeUnit.SECONDS);
 
 	}
 	/*
-	 * Economic Units- Verify that RP Appraiser is able to select certain parcels and group them as economic units
+	 * Economic Units- Verify that RP Appraiser is able to select certain parcels
+	 * and group them as economic units
 	 */
 
-	@Test(description = "SMAB-T4153,SMAB-T4152: Verify that RP Appraiser is able to select certain parcels and group them as economic units ", dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T4280,SMAB-T4153,SMAB-T4152: Verify that RP Appraiser is able to select certain parcels and group them as economic units ", dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "EconomicUnits" }, enabled = true)
-	public void  verify_EconomicUnits_GroupParcels_EcnomicUnit(
-			String loginUser) throws Exception {
+	public void verify_EconomicUnits_GroupParcels_EcnomicUnit(String loginUser) throws Exception {
 
 		// fetch parcels to add in economic unit
 		String getApnToAddInEconomicUNit = "Select Id,Name from Parcel__c where Status__c='Active' and PUC_Code_Lookup__c not in ( select id from puc_code__c where name like '%retire%') Limit 3";
@@ -69,7 +64,7 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 
 		}
 		String listOfParcelsEconomicUnit = APNNameList[0] + "," + APNNameList[1] + "," + APNNameList[2];
-		String incorrectlistOfParcelsEconomicUnit="010234567,234567890,123456789";
+		String incorrectlistOfParcelsEconomicUnit = "010234567,234567890,123456789";
 
 		JSONObject jsonNObject = objParcelsPage.getJsonObject();
 
@@ -117,7 +112,7 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 				listOfParcelsEconomicUnit,
 				"SMAB-T4152:- list Of Parcels in EconomicUnit field should be correct after creating economic unit");
 
-		// verify that economic unit is created properly for the first parcel
+		// verify that economic unit is created properly for the second parcel
 
 		objParcelsPage.globalSearchRecords(APNNameList[1]);
 
@@ -136,7 +131,7 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 				listOfParcelsEconomicUnit,
 				"SMAB-T4152:- list Of Parcels in EconomicUnit field should be correct after creating economic unit");
 
-		// verify that economic unit is created properly for the first parcel
+		// verify that economic unit is created properly for the third parcel
 
 		objParcelsPage.globalSearchRecords(APNNameList[2]);
 
@@ -154,19 +149,20 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 						"Parcel Characteristics Summary"),
 				listOfParcelsEconomicUnit,
 				"SMAB-T4152:- list Of Parcels in EconomicUnit field should be correct after creating economic unit");
-		
-		//verifying validations of economic unit fields
-		
+
+		// verifying validations of economic unit fields in third parcel
+
 		objCioTransfer.editRecordedApnField(objParcelsPage.partOfEconomicUnit);
 		objCioTransfer.waitForElementToBeVisible(6, objParcelsPage.partOfEconomicUnit);
 
 		objParcelsPage.scrollToElement(objParcelsPage.getWebElementWithLabel(objParcelsPage.partOfEconomicUnit));
 		objCioTransfer.enter(objParcelsPage.numberOfParcelsEconomicUnit, "2");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
-		
-		softAssert.assertContains(objCioTransfer.getElementText(objCioTransfer.pageError),"ENTER ALL THE PARCELS FOR THIS ECONOMIC UNIT",
+
+		softAssert.assertContains(objCioTransfer.getElementText(objCioTransfer.pageError),
+				"ENTER ALL THE PARCELS FOR THIS ECONOMIC UNIT",
 				"SMAB-T4153: Validate that proper message is displayed when there is mismatch in number of parcels and list of parcels in economic unit ");
-		
+
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.CancelButton));
 		objCioTransfer.editRecordedApnField(objParcelsPage.partOfEconomicUnit);
 		objCioTransfer.waitForElementToBeVisible(6, objParcelsPage.partOfEconomicUnit);
@@ -174,11 +170,79 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 		objCioTransfer.enter(objParcelsPage.listOfParcelsEconomicUnit, incorrectlistOfParcelsEconomicUnit);
 
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
-		
-		softAssert.assertContains(objCioTransfer.getElementText(objCioTransfer.pageError),"ENTER PARCEL NUMBER IN XXX-XXX-XXX FORMAT",
+
+		softAssert.assertContains(objCioTransfer.getElementText(objCioTransfer.pageError),
+				"ENTER PARCEL NUMBER IN XXX-XXX-XXX FORMAT",
 				"SMAB-T4153: Validate that proper message is displayed when the parcel number added in list of parcels in economic unit field is in improper format ");
-		
-		
+
+		// verifying removal of third parcel from economic unit
+
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.CancelButton));
+
+		objCioTransfer.editRecordedApnField(objParcelsPage.partOfEconomicUnit);
+		objCioTransfer.waitForElementToBeVisible(6, objParcelsPage.partOfEconomicUnit);
+
+		objParcelsPage.scrollToElement(objParcelsPage.getWebElementWithLabel(objParcelsPage.partOfEconomicUnit));
+
+		objCioTransfer.selectOptionFromDropDown(objParcelsPage.partOfEconomicUnit, "No");
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+
+		softAssert.assertEquals(
+				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.partOfEconomicUnit,
+						"Parcel Characteristics Summary"),
+				"No", "SMAB-T4280:-Part of economic unit field should be No after removing parcel from  economic unit");
+		softAssert.assertEquals(
+				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.numberOfParcelsEconomicUnit,
+						"Parcel Characteristics Summary"),
+				"",
+				"SMAB-T4280:- NUmber of parcels in economic unit field should be blank after  removing parcel from economic unit");
+		softAssert.assertEquals(
+				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.listOfParcelsEconomicUnit,
+						"Parcel Characteristics Summary"),
+				"",
+				"SMAB-T4280:- list Of Parcels in EconomicUnit field should be blank  after removing parcel from economic unit");
+
+		listOfParcelsEconomicUnit = APNNameList[0] + "," + APNNameList[1];
+
+		// verify that economic unit still exists for first parcel
+
+		objParcelsPage.globalSearchRecords(APNNameList[0]);
+
+		softAssert.assertEquals(
+				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.partOfEconomicUnit,
+						"Parcel Characteristics Summary"),
+				"Yes",
+				"SMAB-T4280:-Part of economic unit field should be Yes for first parcel even though third parcel is removed from economic unit");
+		softAssert.assertEquals(
+				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.numberOfParcelsEconomicUnit,
+						"Parcel Characteristics Summary"),
+				"2",
+				"SMAB-T4280:- NUmber of parcels in economic unit field should be updated after third parcel is removed from economic unit");
+		softAssert.assertEquals(
+				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.listOfParcelsEconomicUnit,
+						"Parcel Characteristics Summary"),
+				listOfParcelsEconomicUnit,
+				"SMAB-T4280:- list Of Parcels in EconomicUnit field should be updated after third parcel is removed from economic unit");
+
+		// verify that economic unit still exists for second parcel
+
+		objParcelsPage.globalSearchRecords(APNNameList[1]);
+
+		softAssert.assertEquals(
+				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.partOfEconomicUnit,
+						"Parcel Characteristics Summary"),
+				"Yes",
+				"SMAB-T4280:-Part of economic unit field should be Yes for second parcel even though third parcel is removed from economic unit");
+		softAssert.assertEquals(
+				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.numberOfParcelsEconomicUnit,
+						"Parcel Characteristics Summary"),
+				"2",
+				"SMAB-T4280:- NUmber of parcels in economic unit field should be updated after third parcel is removed from economic unit");
+		softAssert.assertEquals(
+				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.listOfParcelsEconomicUnit,
+						"Parcel Characteristics Summary"),
+				listOfParcelsEconomicUnit,
+				"SMAB-T4280:- list Of Parcels in EconomicUnit field should be updated after third parcel is removed from economic unit");
 		
 		objParcelsPage.logout();
 
