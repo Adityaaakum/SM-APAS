@@ -293,7 +293,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		String ExemptionId = "a0Z3500000277MLEAY";
 		String claimantName = "ABBUSHI SUSIE";
 		String claimantSSN = "123454321";
-		String validClaimantSSN = "1234554322";
+		String validClaimantSSN = "123454322";
 		String expectedErrorMessage = "SSN Exists with a qualified HOE in this APN";
 		
 		String execEnv = System.getProperty("region");
@@ -313,6 +313,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		
 		// Verify error message
 		objExemptionsPage.waitForElementToBeVisible(5,objExemptionsPage.errorMessage);
+		ReportLogger.INFO("User cannot enter a SSN that already exists in another HOE");
 		softAssert.assertContains(expectedErrorMessage, objExemptionsPage.errorMessage.getText(), "SMAB-T4293: Verify user is able toview an error message on saving HO Exemptions when the SSN value entered in the HOE record already exist against another HOE record against another APN.");
 		
 		// ------------------------------ SMAB-T4294 ------------------------------
@@ -324,6 +325,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		objExemptionsPage.saveRecord();
 		
 		// Verify SSN was saved
+		ReportLogger.INFO("User is able to save the SSN");
 		softAssert.assertEquals(objExemptionsPage.claimantSSNOnDetailPage.getText(), validClaimantSSN, "SMAB-T4294: Verify the SSN data entry is allowed and saved when SNN doesn't exist in APAS previously.");
 		
 		
