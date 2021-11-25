@@ -281,5 +281,54 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		objCIOTransferPage.logout();	
 	
 	}
-
+	
+	/**
+	 * Below test case will verify error message on saving Exemption when the Claimant SSN value already exist in San Mateo county with another ownership with an existing / qualified HOE record
+	 **/
+	@Test(description = "SMAB-T4293: Verify user is able toview an error message on saving HO Exemptions when the SSN value entered in the HOE record already exist against another HOE record against another APN.",
+			dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class , groups = {"regression","HomeOwnerExemption" })
+	public void HOE_verifyExemptionwithSSNisAlreadyInUse(String loginUser) throws Exception {
+		
+		// Test data
+		String ExemptionId = "a0Z3500000277MLEAY";
+		String claimantName = "ABBUSHI SUSIE";
+		String claimantSSN = "123454321";
+		String expectedErrorMessage = "SSN Exists with a qualified HOE in this APN";
+		
+		String execEnv = System.getProperty("region");
+		
+		//Step1: Login to the APAS application using the credentials passed through
+		objExemptionsPage.login(loginUser);
+		
+		//Step2: User opens a HOExemption record -> https://smcacre--qa.lightning.force.com/lightning/r/Exemption__c/a0Z3500000276GeEAI/view
+		driver.navigate().to(("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Exemption__c/" + ExemptionId + "/view"));
+				
+		// Step3: User enters SSN 
+		objExemptionsPage.editExemptionRecord();
+		objExemptionsPage.enter(objExemptionsPage.claimantSSNOnDetailEditPage, claimantSSN);
+		
+		// Step4: User clicks on save button
+		objExemptionsPage.saveRecordAndGetError();
+		
+		// Verify error message
+		objExemptionsPage.waitForElementToBeVisible(5,objExemptionsPage.errorMessage);
+		softAssert.assertContains(expectedErrorMessage, objExemptionsPage.errorMessage.getText(), "SMAB-T4293");
+		
+		
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
