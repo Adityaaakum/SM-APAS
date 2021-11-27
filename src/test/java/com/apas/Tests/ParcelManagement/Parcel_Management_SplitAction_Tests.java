@@ -2777,7 +2777,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		for (int i = 0; i < childParcelsList.size(); i++) {
 			softAssert.assertEquals(childParcelsList.get(i).getText(), gridParcelData.get("APN").get(i),
-					"SMAB-T3991:Child parcels are displayed in the correct order:"+childParcelsList.get(i).getText());
+					"SMAB-T3991:Child parcels are displayed in the correct order:" + childParcelsList.get(i).getText());
 
 		}
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Next"));
