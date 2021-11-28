@@ -2335,14 +2335,23 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.logout();
 	}
 	
+	/**
+	 * This method is to Verify that User is able to perform a \"Many to Many\" mapping action for a Parcel   from a work item and verify output with update chars and verify PUC"
+	 * @param loginUser
+	 * @throws Exception
+	 */	
 	@Test(description = "SMAB-T3803,SMAB-T3804,SMAB-T3805,SMAB-T3806,SMAB-T3777,SMAB-T3787,SMAB-T3788,SMAB-T3854,SMAB-T3888,SMAB-T3855,SMAB-T3889,SMAB-T3813:Verify that User is able to perform a \"Many to Many\" mapping action for a Parcel   from a work item and verify output with update chars and verify PUC", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement" }, enabled = true)
 	public void ParcelManagement_Verify_ManyToMany_Mapping_Action_UpdateChars_VerifyPUC_Output(String loginUser)
 			throws Exception {
 
 		String executionEnv = System.getProperty("region");
+		
+		//Getting Owner or Account records
+				HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(2);
+			    String assesseeName1 = responseAssesseeDetails.get("Name").get(0);
 
-		// Fetching parcels that are Active with no Ownership record
+		// Fetching parcels that are Active 
 		String queryAPN = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '8%')"
 				+ " and (Not Name like '134%') and Id NOT IN (SELECT APN__c FROM Work_Item__c"
 				+ " where type__c='CIO') and Status__c = 'Active' limit 2";
@@ -2358,7 +2367,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.deleteOwnershipFromParcel(apnId1);
 		objMappingPage.deleteOwnershipFromParcel(apnId2);
 
-		String concatenateAPNWithSameOwnership = apn1 + "," + apn2;
+		String concatenateAPN = apn1 + "," + apn2;
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
@@ -2366,6 +2375,42 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		Map<String, String> hashMapManyToManyMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformManyToManyMappingActionWithSitusData");
+		
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+                "DataToCreateOwnershipRecord");
+		
+		//Login with system admin and create new same Ownership on both parcel 
+		objMappingPage.login(users.SYSTEM_ADMIN);
+        
+        // Opening the PARCELS page and searching the parcel to create ownership record        
+		responseAPNDetails.get("Name").stream().forEach(parcel -> {
+        	try {
+	        	objMappingPage.searchModule(PARCELS);
+		        objMappingPage.globalSearchRecords(parcel);
+		        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+		         
+		        HashMap<String, ArrayList<String>> responseAPNid = 
+		        		salesforceAPI.select("Select Id from parcel__C where name='"
+		        		+parcel+"'");
+				String id=responseAPNid.get("Id").get(0);
+		        String ownershipURL = "https://smcacre--"
+		        		+ executionEnv
+		        		+ ".lightning.force.com/lightning/r/Parcel__c/"
+		        		+ id
+		        		+ "/related/Property_Ownerships__r/view";
+		        ReportLogger.INFO(ownershipURL);
+		        driver.navigate().to(ownershipURL);
+		        objParcelsPage.createOwnershipRecord(assesseeName1,hashMapCreateOwnershipRecordData);
+				objMappingPage.closeDefaultOpenTabs();
+
+        	}
+        	catch(Exception e) {
+        		ReportLogger.INFO("Fail to create ownership record : "+e);
+        	}
+        });
+		objWorkItemHomePage.logout();
+		
+
 
 		// Login to the APAS application using the credentials passed through data
 		// provider (login Mapping User)
@@ -2374,7 +2419,8 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		// Opening the PARCELS page and searching the parcel to perform many to many
 		// parcel mapping
 		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords(apn1);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ apnId1 + "/view");
 
 		// Creating Manual work item for the Parcel
 		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
@@ -2392,23 +2438,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		// ownership record
 		ReportLogger.INFO("Add a parcel in Parent APN field with same ownership record :: " + apn1 + ", " + apn2);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
-		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, concatenateAPNWithSameOwnership);
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, concatenateAPN);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
 
 		// entering data in form for many to many mapping action
 		objMappingPage.fillMappingActionForm(hashMapManyToManyMappingData);
 		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
-		objMappingPage.editGridCellValue(objMappingPage.legalDescriptionColumnSecondScreen, "Legal Discription");
-		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "100");
-
-		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
-		objMappingPage.editActionInMappingSecondScreen(hashMapManyToManyMappingData);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-
-		// Validating that Parcel has been successfully created.
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),
-				"Parcel(s) have been created successfully. Please review spatial information.",
-				"SMAB-T2642: Validation that Parcel has been successfully created. Please Review Spatial Information");
 
 		// Retriving new APN genrated
 		HashMap<String, ArrayList<String>> gridParcelData = objMappingPage.getGridDataInHashMap();
@@ -2417,17 +2453,18 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		// Submit work item for approval
 		String query = "Select Id from Work_Item__c where Name = '" + workItemNumber + "'";
+		HashMap<String, ArrayList<String>> responseWI = salesforceAPI.select(query);
 		salesforceAPI.update("Work_Item__c", query, "Status__c", "Submitted for Approval");
-
+		
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
 		objMappingPage.searchModule(WORK_ITEM);
-		objMappingPage.globalSearchRecords(workItemNumber);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ responseWI.get("Id").get(0) + "/view");
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		driver.navigate().refresh(); // refresh as the focus is getting lost
 		Thread.sleep(5000);
 
 		// Completing the workItem
@@ -2435,11 +2472,13 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI, 10);
 		objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);
 
-		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords(newCreatedApn1);
-
 		query = "Select Id from Parcel__c where Name = '" + newCreatedApn1 + "'";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		objMappingPage.searchModule(PARCELS);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ response.get("Id").get(0) + "/view");
+
+	
 
 		objMappingPage.logout();
 		Thread.sleep(3000);
@@ -2447,7 +2486,8 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		ReportLogger.INFO(" Appraiser logins ");
 		objMappingPage.login(users.RP_APPRAISER);
 		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords(newCreatedApn1);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ response.get("Id").get(0) + "/view");
 		String puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
 		String districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code",
 				"Summary Values");
@@ -2496,7 +2536,8 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 				"SMAB-T3777,SMAB-T3787,: Validation WI completed successfully when the appraiser clicks on done in the custom second screen.");
 
 		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords(newCreatedApn1);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ response.get("Id").get(0) + "/view");
 
 		// Moving to Allocate Values WI
 		districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code", "Summary Values");
@@ -2542,6 +2583,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
 
 		ReportLogger.INFO(" RP Principal logins ");
 		objMappingPage.login(users.RP_PRINCIPAL);
