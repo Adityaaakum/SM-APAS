@@ -2635,10 +2635,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String apn = responseAPNDetails.get("Name").get(0);
 		String apnId = responseAPNDetails.get("Id").get(0);
 
-		objMappingPage.deleteRelationshipInstanceFromParcel(apn);
-		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 		objMappingPage.deleteParcelSitusFromParcel(apn);
-		objMappingPage.deleteOwnershipFromParcel(apnId);
 
 		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), "Lot_Size_SQFT__c", "100");
 
@@ -2655,7 +2652,6 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		String districtValue = "District01";
 
 		jsonForOutputValidations.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
-		jsonForOutputValidations.put("Status__c", "Active");
 		jsonForOutputValidations.put("Short_Legal_Description__c", legalDescriptionValue);
 		jsonForOutputValidations.put("District__c", districtValue);
 		jsonForOutputValidations.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
@@ -2677,8 +2673,10 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 
 		// Step2: Opening the PARCELS page and searching the parcel to perform split
 		// mapping
-		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords(apn);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ responseAPNDetails.get("Id").get(0) + "/view");
+		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.componentActionsButtonText);
+
 		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		// Step 4:Clicking the details tab for the work item newly created and clicking
@@ -2727,16 +2725,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.globalSearchRecords(workItemNumber);
 		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.completedOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
-
-		// Moving to Child APN
-		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
-				+ response.get("Id").get(0) + "/view");
-
-		String queryToGetRequestType = "SELECT Work_Item__r.Request_Type__c FROM Work_Item_Linkage__c Where Parcel__r.Name = '"
-				+ newCreatedApn + "' ";
-		HashMap<String, ArrayList<String>> responseRequestType = salesforceAPI.select(queryToGetRequestType);
-		softAssert.assertContains(responseRequestType, "New APN - Update Characteristics & Verify PUC",
-				"SMAB-T2717: Verify Request Type of 1 new Work Items generated that are linked to each child parcel after many to many mapping action is performed and WI is completed");
+		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.successAlert);
 		objMappingPage.logout();
 		Thread.sleep(5000);
 
@@ -2746,6 +2735,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		// Moving to Child APN
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ response.get("Id").get(0) + "/view");
+		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.componentActionsButtonText);
 		String puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
 		String districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code",
 				"Summary Values");
@@ -2757,6 +2747,10 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.reviewLink);
+		String requestType = objMappingPage.getFieldValueFromAPAS("Request Type", "Information");
+		softAssert.assertEquals(requestType, "New APN - Update Characteristics & Verify PUC",
+				"SMAB-T2717: Verify Request Type of 1 new Work Items generated that are linked to each child parcel after Split mapping action is performed and WI is completed");
+
 		String previousRelatedAction = objWorkItemHomePage.reviewLink.getText();
 		softAssert.assertEquals(previousRelatedAction, "Update Characteristics & Verify PUC",
 				"SMAB-T3993:Update Characteristics & Verify PUC link is present");
@@ -2787,6 +2781,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objMappingPage.clearSelectionFromLookup("PUC");
 		objMappingPage.clearSelectionFromLookup("District / Neighborhood Code");
 		objMappingPage.Click(objMappingPage.getButtonWithText("Save"));
+		Thread.sleep(2000);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
 
 		softAssert.assertContains(objMappingPage.getErrorMessage(),
