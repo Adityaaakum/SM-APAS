@@ -447,7 +447,6 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
 			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 			objWorkItemHomePage.switchToNewWindow(parentWindow);
-			objParcelsPage.Click(objMappingPage.getButtonWithText("Next"));
 			
 			String[] pucAndNeighCode = objMappingPage.editActionInUpdatePucAndCharsScreen(districtAndNeighCode, puc);
 			objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
