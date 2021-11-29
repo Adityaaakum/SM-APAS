@@ -2418,9 +2418,9 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		// Opening the PARCELS page and searching the parcel to perform many to many
 		// parcel mapping
-		objMappingPage.searchModule(PARCELS);
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ apnId1 + "/view");
+		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
 
 		// Creating Manual work item for the Parcel
 		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
@@ -2461,12 +2461,11 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		Thread.sleep(5000);
 
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
-		objMappingPage.searchModule(WORK_ITEM);
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ responseWI.get("Id").get(0) + "/view");
+		objParcelsPage.waitForElementToBeVisible(20, objWorkItemHomePage.linkedItemsWI);
 		objMappingPage.Click(objWorkItemHomePage.linkedItemsWI);
-		Thread.sleep(5000);
-
+		
 		// Completing the workItem
 		objWorkItemHomePage.completeWorkItem();
 		objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI, 10);
@@ -2474,7 +2473,6 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		query = "Select Id from Parcel__c where Name = '" + newCreatedApn1 + "'";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
-		objMappingPage.searchModule(PARCELS);
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ response.get("Id").get(0) + "/view");
 
@@ -2485,7 +2483,6 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 		ReportLogger.INFO(" Appraiser logins ");
 		objMappingPage.login(users.RP_APPRAISER);
-		objMappingPage.searchModule(PARCELS);
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ response.get("Id").get(0) + "/view");
 		String puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
@@ -2535,9 +2532,10 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		softAssert.assertEquals(workItemStatus, "Completed",
 				"SMAB-T3777,SMAB-T3787,: Validation WI completed successfully when the appraiser clicks on done in the custom second screen.");
 
-		objMappingPage.searchModule(PARCELS);
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ response.get("Id").get(0) + "/view");
+		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
+
 
 		// Moving to Allocate Values WI
 		districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code", "Summary Values");
@@ -2591,6 +2589,8 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		// Navigating to child APN
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ response.get("Id").get(0) + "/view");
+		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
+
 
 		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.workItems);
 		objWorkItemHomePage.waitForElementToBeVisible(20, objParcelsPage.valueAllocation);
