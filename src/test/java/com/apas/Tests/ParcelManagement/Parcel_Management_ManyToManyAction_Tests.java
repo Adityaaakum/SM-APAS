@@ -2470,21 +2470,17 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		objWorkItemHomePage.completeWorkItem();
 		objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI, 10);
 		objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);
-
-		query = "Select Id from Parcel__c where Name = '" + newCreatedApn1 + "'";
-		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
-		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
-				+ response.get("Id").get(0) + "/view");
-
 	
-
 		objMappingPage.logout();
 		Thread.sleep(3000);
 
 		ReportLogger.INFO(" Appraiser logins ");
 		objMappingPage.login(users.RP_APPRAISER);
+		query = "Select Id from Parcel__c where Name = '" + newCreatedApn1 + "'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ response.get("Id").get(0) + "/view");
+		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
 		String puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
 		String districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code",
 				"Summary Values");
