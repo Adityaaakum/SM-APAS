@@ -286,27 +286,32 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 	 * Below test case will verify error message on saving Exemption when the Claimant SSN value already exist in San Mateo county with another ownership with an existing / qualified HOE record
 	 **/
 	@Test(description = "SMAB-T4293, SMAB-T4294: Verify user is able toview an error message on saving HO Exemptions when the SSN value entered in the HOE record already exist against another HOE record against another APN.",
-			dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class , groups = {"regression","HomeOwnerExemption" })
+			dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class , groups = {"regression","HomeOwnerExemption" })
 	public void HOE_verifyExemptionwithSSNisAlreadyInUse(String loginUser) throws Exception {
 		
 		// Test data
-		String ExemptionId = "a0Z3500000277MLEAY";
-		String claimantName = "ABBUSHI SUSIE";
-		String claimantSSN = "123454321";
+		String invalidClaimantSSN = "123454321";
 		String validClaimantSSN = "123454322";
 		String expectedErrorMessage = "SSN Exists with a qualified HOE in this APN";
 		
-		String execEnv = System.getProperty("region");
+		// Getting an active HOE record
+		String exemptionQuery = "SELECT Id FROM Exemption__c WHERE Qualification__c = 'Qualified' AND Status__c = 'Active' AND RecordTypeId = '01235000000EXHEAA4' AND Parcel__c IN (SELECT Id FROM Parcel__c WHERE Status__c = 'Active') limit 1";
+		String exemptionID = salesforceAPI.select(exemptionQuery).get("Id").get(0);
 		
 		//Step1: Login to the APAS application using the credentials passed through
 		objExemptionsPage.login(loginUser);
 		
-		//Step2: User opens a HOExemption record -> https://smcacre--qa.lightning.force.com/lightning/r/Exemption__c/a0Z3500000276GeEAI/view
-		driver.navigate().to(("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Exemption__c/" + ExemptionId + "/view"));
+		//Step2: User opens a HOExemption record 
+		String execEnv = System.getProperty("region");
+		driver.navigate().to(("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Exemption__c/" + exemptionID + "/view"));
 				
+		// Copying previous SSN value to undo any changes later
+		objExemptionsPage.waitForElementToBeVisible(objExemptionsPage.claimantSSNOnDetailPage);
+		String currentSSN = objExemptionsPage.claimantSSNOnDetailPage.getText();
+		
 		// Step3: User enters SSN 
-		objExemptionsPage.editExemptionRecord();
-		objExemptionsPage.enter(objExemptionsPage.claimantSSNOnDetailEditPage, claimantSSN);
+		objExemptionsPage.editExemptionRecord();		
+		objExemptionsPage.enter(objExemptionsPage.claimantSSNOnDetailEditPage, invalidClaimantSSN);
 		
 		// Step4: User clicks on save button
 		objExemptionsPage.saveRecordAndGetError();
@@ -314,7 +319,8 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		// Verify error message
 		objExemptionsPage.waitForElementToBeVisible(5,objExemptionsPage.errorMessage);
 		ReportLogger.INFO("User cannot enter a SSN that already exists in another HOE");
-		softAssert.assertContains(expectedErrorMessage, objExemptionsPage.errorMessage.getText(), "SMAB-T4293: Verify user is able toview an error message on saving HO Exemptions when the SSN value entered in the HOE record already exist against another HOE record against another APN.");
+		softAssert.assertContains(expectedErrorMessage, objExemptionsPage.errorMessage.getText(), "SMAB-T4293: Verify user is able to view an error message on saving HO Exemption when the SSN value entered already exist against another HOE record against another APN.");
+		
 		
 		// ------------------------------ SMAB-T4294 ------------------------------
 		
@@ -329,8 +335,12 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		softAssert.assertEquals(objExemptionsPage.claimantSSNOnDetailPage.getText(), validClaimantSSN, "SMAB-T4294: Verify the SSN data entry is allowed and saved when SNN doesn't exist in APAS previously.");
 		
 		
+		// ------------------------------ Undoing changes  ------------------------------ 
 		
-		
+		objExemptionsPage.editExemptionRecord();
+		objExemptionsPage.enter(objExemptionsPage.claimantSSNOnDetailEditPage, currentSSN);
+		objExemptionsPage.saveRecord();
+				
 	}
 }
 
