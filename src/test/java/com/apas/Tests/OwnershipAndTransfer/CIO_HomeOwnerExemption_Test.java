@@ -291,12 +291,14 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		
 		// Test data
 		String invalidClaimantSSN = "123454321";
-		String validClaimantSSN = "123454322";
 		String expectedErrorMessage = "SSN Exists with a qualified HOE in this APN";
 		
 		// Getting an active HOE record
 		String exemptionQuery = "SELECT Id FROM Exemption__c WHERE Qualification__c = 'Qualified' AND Status__c = 'Active' AND RecordTypeId = '01235000000EXHEAA4' AND Parcel__c IN (SELECT Id FROM Parcel__c WHERE Status__c = 'Active') limit 1";
 		String exemptionID = salesforceAPI.select(exemptionQuery).get("Id").get(0);
+		
+		
+		// ------------------------------ SMAB-T4293 ------------------------------
 		
 		//Step1: Login to the APAS application using the credentials passed through
 		objExemptionsPage.login(loginUser);
@@ -325,21 +327,15 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		// ------------------------------ SMAB-T4294 ------------------------------
 		
 		// Step3: User enters valid SSN
-		objExemptionsPage.enter(objExemptionsPage.claimantSSNOnDetailEditPage, validClaimantSSN);
+		objExemptionsPage.enter(objExemptionsPage.claimantSSNOnDetailEditPage, currentSSN);
 		
 		//Step4: User clicks on save button
 		objExemptionsPage.saveRecord();
 		
 		// Verify SSN was saved
 		ReportLogger.INFO("User is able to save the SSN");
-		softAssert.assertEquals(objExemptionsPage.claimantSSNOnDetailPage.getText(), validClaimantSSN, "SMAB-T4294: Verify the SSN data entry is allowed and saved when SNN doesn't exist in APAS previously.");
+		softAssert.assertEquals(objExemptionsPage.claimantSSNOnDetailPage.getText(), currentSSN, "SMAB-T4294: Verify the SSN data entry is allowed and saved when SNN doesn't exist in APAS previously.");
 		
-		
-		// ------------------------------ Undoing changes  ------------------------------ 
-		
-		objExemptionsPage.editExemptionRecord();
-		objExemptionsPage.enter(objExemptionsPage.claimantSSNOnDetailEditPage, currentSSN);
-		objExemptionsPage.saveRecord();
 				
 	}
 }
