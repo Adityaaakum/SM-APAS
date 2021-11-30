@@ -72,7 +72,7 @@ public class ExemptionsPage extends ApasGenericPage {
 
     public String dateOfDeathOfVeteran = "Date of Death of Veteran";
 
-    public String veteranName = "Veteran's Name";
+    public String veteranName = "Veteran's 1 Name";
 
     public String veteranSSN = "Veteran's SSN";
 
@@ -134,6 +134,10 @@ public class ExemptionsPage extends ApasGenericPage {
     public String endRatingReason = "End Rating Reason";
 
     public String endDateOfRating = "End Date of Rating";
+    
+    public String exemptionCode ="Exemption Code";
+    
+    public String Penalty ="Penalty %";
     
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Next']")
 	public WebElement exemptionRecordTypeNextButton;
@@ -374,7 +378,13 @@ public class ExemptionsPage extends ApasGenericPage {
     /** Locators for Home Owner Exemptions **/
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(@class,'slds-radio topdown-radio')]//span[text()='HOE']")
     public WebElement homeOwnerExemptionRadioButton;
-  
+    
+    /** Locators for Institution Exemptions **/
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(@class,'slds-radio topdown-radio')]//span[text()='Institutional']")
+    public WebElement institutionalExemptionRadioButton;
+    
+    public String createNewButton ="New";
+    
     
     /**
      * Description: This method is to determine the Roll Year of any given date(e.g Application received date)
@@ -448,7 +458,7 @@ public class ExemptionsPage extends ApasGenericPage {
         ReportLogger.INFO("Entering/Selecting values for New Exemption record");
         searchAndSelectOptionFromDropDown("APN", fetchActiveAPN());
         objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-        searchAndSelectOptionFromDropDown("Claimant's Name", fetchAssesseeName());
+        searchAndSelectOptionFromDropDown("Claimant's 1 Name", fetchAssesseeName());
         objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
         objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
         objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));
@@ -786,4 +796,65 @@ public class ExemptionsPage extends ApasGenericPage {
         enter(dateApplicationReceived, dataMap.get("Date Application Received"));
         Thread.sleep(1000);
     }
+    
+    public void createInstitutionalExemption(Map<String, String> dataMap) throws Exception {
+    	Thread.sleep(2000);
+        ReportLogger.INFO("Click 'New' button to fill the following details in the Home Owner Exemption record : " + dataMap);
+        Click(waitForElementToBeClickable(newExemptionButton));
+        Thread.sleep(2000);
+    	Click(institutionalExemptionRadioButton);
+    	Click(exemptionRecordTypeNextButton);
+    	
+    	//Commented above code temporarily and added below code till current HOE implementation is completed 
+    	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'DoNot'";
+        HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
+        String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
+        String apnNumber = fetchActiveAPN();
+        searchAndSelectOptionFromDropDown(apn, apnNumber);
+        searchAndSelectOptionFromDropDown(claimantName, assesseeName);
+        enter(claimantSSN, dataMap.get("ClaimantSSN"));
+        selectOptionFromDropDown(exemptionCode, dataMap.get("exemptionCode"));
+        enter(Penalty, dataMap.get("PenaltyPercentage"));
+        selectOptionFromDropDown(qualification, dataMap.get("Qualification"));
+        enter(dateApplicationReceived, dataMap.get("DateApplicationReceived"));
+        scrollToElement(getWebElementWithLabel(dateApplicationReceived));
+        enter(dateApplicationReceived, dataMap.get("DateApplicationReceived"));
+        enter(dateApplicationReceived, dataMap.get("DateAquiredProperty"));
+        enter(dateApplicationReceived, dataMap.get("DateOccupyProperty"));
+
+        Thread.sleep(1000);
+        ReportLogger.INFO("Click 'Save' button to save the details entered in Exemption record");
+        saveExemptionRecord();
+    }
+    public void createNewVaOnInstitutionalExemption(Map<String, String> dataMap) throws Exception {
+    	Thread.sleep(2000);
+        ReportLogger.INFO("Click 'New' button to fill the following details in the Home Owner Exemption record : " + dataMap);
+        Click(waitForElementToBeClickable(createNewButton));
+        Thread.sleep(2000);
+    	Click(institutionalExemptionRadioButton);
+    	Click(exemptionRecordTypeNextButton);
+    	
+    	//Commented above code temporarily and added below code till current HOE implementation is completed 
+    	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'DoNot'";
+        HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
+        String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
+        String apnNumber = fetchActiveAPN();
+        searchAndSelectOptionFromDropDown(apn, apnNumber);
+        searchAndSelectOptionFromDropDown(claimantName, assesseeName);
+        enter(claimantSSN, dataMap.get("ClaimantSSN"));
+        selectOptionFromDropDown(exemptionCode, dataMap.get("exemptionCode"));
+        selectOptionFromDropDown(qualification, dataMap.get("Qualification"));
+        
+        scrollToElement(getWebElementWithLabel(dateApplicationReceived));
+        enter(dateApplicationReceived, dataMap.get("DateApplicationReceived"));
+        enter(dateApplicationReceived, dataMap.get("DateAquiredProperty"));
+        enter(dateApplicationReceived, dataMap.get("DateOccupyProperty"));
+
+        Thread.sleep(1000);
+        ReportLogger.INFO("Click 'Save' button to save the details entered in Exemption record");
+        saveExemptionRecord();
+    }
+    
+    
+
 }
