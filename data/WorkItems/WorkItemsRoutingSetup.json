@@ -3,6 +3,7 @@
     "District / Neighborhood Code": "06/01",
     "Neighborhood Code": "01",
     "Neighborhood Description": "Test",
+    "Legacy": "No",
     "Primary Appraiser": "rpbusiness adminAUT",
     "District": "06"
   },
@@ -10,6 +11,7 @@
     "District / Neighborhood Code": "06/02",
     "Neighborhood Code": "02",
     "Neighborhood Description": "Test",
+    "Legacy": "No",
     "Primary Appraiser": "rpbusiness adminAUT",
     "District": "06"
   },

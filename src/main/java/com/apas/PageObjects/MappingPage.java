@@ -90,6 +90,7 @@ public class MappingPage extends ApasGenericPage {
 	public String updateParcelButtonLabelName = "Update Parcel(s)";
 	public String parcelSizeColumnSecondScreen = "Parcel Size(SQFT)*";
 	public String apn = "APN";
+	public String listOfChildParcels = "//hr//following::div/div/div/c-mol_generic-hyperlink/a";
 	public String parcelSizeColumnSecondScreenWithSpace = "Parcel Size (SQFT)*";
 	public final String DOC_CERTIFICATE_OF_COMPLIANCE="CC";
 	public final String DOC_LOT_LINE_ADJUSTMENT="LL";
@@ -203,7 +204,7 @@ public class MappingPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//*[contains(@class,'NewButtonForParcel')]//div[@class='override_error']")
 	public WebElement createNewParcelErrorMessage;
-	
+
 	@FindBy(xpath = "//*[contains(@class,'message-font slds-align_absolute-center slds-text-color_success slds-m-bottom_medium slds-m-top_medium')]")
 	public WebElement createNewParcelSuccessMessage;
 

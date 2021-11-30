@@ -254,12 +254,13 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 	  	objApasGenericPage.logout();
 	}
 
-	@Test(description = "SMAB-T2093,SMAB-T1979: Approver should be able to Approve the WI - Annual Exemption Amount Verification" , 
+	@Test(description = "SMAB-T2093,SMAB-T1979,SMAB-T4248,SMAB-T4249: Approver should be able to Approve the WI - Annual Exemption Amount Verification" , 
 			dataProvider = "loginExemptionSupportStaff", 
 			dataProviderClass = DataProviders.class , 
 			groups = {"Regression","DisabledVeteran","WorkItemWorkflow_DisabledVeteran"})
 	public void WorkItemWorkflow_DisabledVeteran_AnnualExemptionAmountVerificationWIIsApproved(String loginUser) throws Exception {
 	
+	String execEnv = System.getProperty("region");
 	Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 	//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 	ReportLogger.INFO("Step 1: Login to the Salesforce ");
@@ -296,7 +297,9 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 	objPage.Click(objExemptionsPage.exemptionDetailsTab);
 	ReportLogger.INFO("Step 8: Click on the Edit Icon for the Determination field");
 	objPage.Click(ObjValueAdjustmentPage.editButton);
-	//objPage.waitForElementToBeClickable(ObjValueAdjustmentPage.vaEditDeterminationDropDown, 10);
+	objPage.waitForElementToBeClickable(ObjValueAdjustmentPage.vaEditDeterminationDropDown, 10);
+	softAssert.assertTrue(objPage.verifyElementVisible(ObjValueAdjustmentPage.vAEditDeterminationButton),
+			"SMAB-T4249: Validation that exemption staff is able to edit The determination field  in Value adjustment.");	
 	ReportLogger.INFO("Step 9: Select from the Determination option : Low-Income ..");
 	objApasGenericPage.selectOptionFromDropDown(ObjValueAdjustmentPage.vaEditDeterminationDropDown,"Low-Income Disabled Veterans Exemption");
 	String dateAfterAppdate=DateUtil.getFutureORPastDate(applicationDate, 1, "MM/dd/yyyy");
@@ -313,76 +316,49 @@ public class WorkItemWorkflow_DisabledVeteransValueAdjustments_Tests extends Tes
 	
 	HashMap<String, ArrayList<String>> sqlgetWIDeatilsForVA = objWIHomePage.getWorkItemDetailsForVA(vANameValue, "In Pool", "Disabled Veterans", "Update and Validate", "Annual exemption amount verification");
 	
-    String WIName = sqlgetWIDeatilsForVA.get("Name").get(0);
+    String WIName =sqlgetWIDeatilsForVA.get("Name").get(0);
+    String WorkitemID=salesforceAPI.select("SELECT Id FROM Work_Item__c where Name='"+WIName+"'").get("Id").get(0);;
     ReportLogger.INFO("Step 17: Search open App. module - Work Item Management from App Launcher");
-  	objApasGenericPage.searchModule(modules.HOME);
-  	//Step5: Click on the Main TAB - Home
-  	ReportLogger.INFO("Step 18: Click on the Main TAB - Home");
-  	objPage.Click(objWIHomePage.lnkTABHome);
-  	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
-  	objPage.Click(objWIHomePage.lnkTABWorkItems);
-	
-  	ReportLogger.INFO("Step 21: Click on the TAB - In Pool");
-  	objPage.Click(objWIHomePage.lnkTABInPool);
-  	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
-  	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-  	ReportLogger.INFO("Step 23: Click on the button Accept the Work Item");
-  	objPage.Click(objWIHomePage.acceptWorkItemBtn);
-  	Thread.sleep(3000);
-  	
-  	ReportLogger.INFO("Step 21: Click on the TAB - In Progress");
-  	objPage.Click(objWIHomePage.lnkTABInProgress);
-  	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
-  	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-  	
+    driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Work_Item__c/" + WorkitemID
+			+ "" + "/view");
+    objWIHomePage.waitForElementToBeClickable(20,objWIHomePage.TAB_IN_PROGRESS);
+    objWIHomePage.clickOnTimelineAndMarkComplete(objWIHomePage.TAB_IN_PROGRESS);
+    objWIHomePage.waitForElementToBeClickable(objWIHomePage.detailsTab);
+    objWIHomePage.Click(objWIHomePage.detailsTab);
 	//SMAB-T2093 opening the action link to validate that link redirects to Value Adjustment Details page 
-  	objWIHomePage.openActionLink(WIName);
-	softAssert.assertTrue(objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll),
-			"SMAB-T2093: Validation that Value Adjustment Details label is visible");
+    objWIHomePage.waitForElementToBeClickable(objWIHomePage.relatedActionLink);
+    objPage.Click(objWIHomePage.relatedActionLink);
+    String parentWindow = driver.getWindowHandle();	
+    objWIHomePage.switchToNewWindow(parentWindow);
+
+	softAssert.assertEquals(objPage.getElementText(ObjValueAdjustmentPage.vaDeterminationType),"Low-Income Disabled Veterans Exemption",
+			"SMAB-T2093,SMAB-T4249: Validation that Value Adjustment Details label is visible");
 	
-	driver.navigate().back();
-	Thread.sleep(10000);	//It takes long to load back the screen
-	
-	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
-  	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-	
-  	ReportLogger.INFO("Step 23: Click on the button - Mark Complete");
-  	objPage.Click(objWIHomePage.btnMarkComplete);
+	driver.switchTo().window(parentWindow);
+	objWIHomePage.clickOnTimelineAndMarkComplete(objWIHomePage.submittedForApprovalOptionInTimeline);
   	
     ReportLogger.INFO("Step 15: Logging OUT from SF");
     objApasGenericPage.logout();
     Thread.sleep(5000);
     ReportLogger.INFO("Step 16: Logging IN as a RP Business ADMIN");
   	objApasGenericPage.login(users.RP_BUSINESS_ADMIN);
-  	
-    //Step4: Opening the Work Item Module
-    ReportLogger.INFO("Step 17: Search open App. module - Work Item Management from App Launcher");
-  	objApasGenericPage.searchModule(modules.HOME);
-  	//Step5: Click on the Main TAB - Home
-  	ReportLogger.INFO("Step 18: Click on the Main TAB - Home");
-  	objPage.Click(objWIHomePage.lnkTABHome);
-  	ReportLogger.INFO("Step 19: Click on the Sub  TAB - Work Items");
-  	objPage.Click(objWIHomePage.lnkTABWorkItems);
-  	ReportLogger.INFO("Step 21: Click on the TAB Needs My Approval");
-  	objPage.Click(objWIHomePage.needsMyApprovalTab);
-  	Thread.sleep(3000);
-  	
-  	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
-  	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-  	
-	//SMAB-T2093 opening the action link to validate that link redirects to Value Adjustments page 
-  	objWIHomePage.openActionLink(WIName);
-	softAssert.assertTrue(objPage.verifyElementVisible(ObjValueAdjustmentPage.valueAdjustmentViewAll),
-			"SMAB-T2093: Validation that Value Adjustments label is visible");
-	
-	driver.navigate().back();
-	Thread.sleep(10000);	//It takes long to load back the screen
-	
-	ReportLogger.INFO("Step 22: Search and select the work item :"+WIName);
-  	objWIHomePage.clickCheckBoxForSelectingWI(WIName);
-	ReportLogger.INFO("Step 23: Click on the Approve button");
-  	objPage.Click(objWIHomePage.btnApprove);
-  	Thread.sleep(3000);
+  	driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Work_Item__c/" + WorkitemID
+			+ "" + "/view");
+  	objWIHomePage.waitForElementToBeClickable(20,objWIHomePage.detailsTab);
+    objWIHomePage.Click(objWIHomePage.detailsTab);
+    
+	//SMAB-T2093 opening the action link to validate that link redirects to Value Adjustment Details page 
+    objWIHomePage.waitForElementToBeClickable(objWIHomePage.relatedActionLink);
+    objPage.Click(objWIHomePage.relatedActionLink);
+    parentWindow = driver.getWindowHandle();	
+    objWIHomePage.switchToNewWindow(parentWindow);
+
+	softAssert.assertEquals(objPage.getElementText(ObjValueAdjustmentPage.vaDeterminationType),"Low-Income Disabled Veterans Exemption",
+			"SMAB-T2093,: Validation that Value Adjustment Details label is visible");
+	softAssert.assertTrue(objPage.verifyElementNotVisible(ObjValueAdjustmentPage.vAEditDeterminationButton),
+			"SMAB-T4248: Validation that rp admin is unable to edit The determination field  in Value adjustment ");
+	driver.switchTo().window(parentWindow);
+	objWIHomePage.clickOnTimelineAndMarkComplete(objWIHomePage.completedOptionInTimeline);
   	
   	ReportLogger.INFO("Step 24: Logging OUT from SF");
   	objApasGenericPage.logout();

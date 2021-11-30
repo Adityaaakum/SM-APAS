@@ -53,6 +53,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String dropDownRejected = "Rejected?";
 	public String rejectedReason = "Rejection Reason";
 	public String rejectedComments = "Rejection Comments";
+	public String dateLabel= "Date";
 
 
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")

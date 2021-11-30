@@ -77,7 +77,8 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 * 
 	 */
 	
-	@Test(description = "SMAB-T4154,SMAB-T3637,SMAB-T3749,SMAB-T3736,SMAB-T3786,SMAB-T3738,SMAB-T3933,SMAB-T3807,SMAB-T3762 : Verify that CIO supervisor on approval is able to create Appraisal WI for non exempted CIO transfers ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+
+	@Test(description = "SMAB-T4154,SMAB-T3637,SMAB-T3749,SMAB-T3736,SMAB-T3786,SMAB-T3738,SMAB-T3933,SMAB-T3807,SMAB-T3762,SMAB-T4317 : Verify that CIO supervisor on approval is able to create Appraisal WI for non exempted CIO transfers ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
 	public void OwnershipAndTransfer_CreateAppraisalActivityWorkItem(String loginUser) throws Exception {
 
@@ -111,6 +112,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		   //Step 2- LOGIN with appraiser staff 
 		
 		      objAppraisalActivity.login(APPRAISAL_SUPPORT);
+		      Thread.sleep(4000);
 
 				String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
 
@@ -128,9 +130,10 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 						"SMAB-T3786: Verify that Type of the WI is Appraisal");
 				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS("Action"), "Appraisal Activity",
 						"SMAB-T3786: Verify that Action of the WI is Appraisal Activity");
-				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS("Request Type"),objAppraisalActivity.getFieldValueFromAPAS("Type")+" -"+objAppraisalActivity.getFieldValueFromAPAS("Action")+" -"+objAppraisalActivity.getFieldValueFromAPAS("Reference") ,
+				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS("Request Type"),objAppraisalActivity.getFieldValueFromAPAS("Type")+" "+"-"+" "+objAppraisalActivity.getFieldValueFromAPAS("Action")+" "+"-"+" "+objAppraisalActivity.getFieldValueFromAPAS("Reference") ,
 						"SMAB-T3762: Verify that request type  of the WI is cancatination of Type ,Action and reference");
-
+				
+				
 				//STEP 4 -Navigating to appraisal activity screen
 				
 				objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
@@ -239,6 +242,10 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				String parentTransactionTrailForAppraiser = objAuditTrail
 						.getFieldValueFromAPAS(objAuditTrail.relatedCorrespondenceLabel);
 				
+				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS("Event Title"),objAppraisalActivity.getFieldValueFromAPAS("Event Library")+" "+objAppraisalActivity.getFieldValueFromAPAS("Event ID")+" "+objCIOTransferPage.updateDateFormat(objAppraisalActivity.getFieldValueFromAPAS("Date of Value")) ,
+						"SMAB-T4317: Verify that event title   of the AT is cancatination of Event Library ,Event id or Event number  and date of value");
+
+				
 				// Step 8 -Validating the status of WI after rejection
 				
 				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.statusLabel), "Completed",
@@ -254,7 +261,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				Thread.sleep(3000);
 
 				objCIOTransferPage.login(CIO_STAFF);
-				
+				Thread.sleep(4000);
 				objAppraisalActivity.waitForElementToBeClickable(objApasGenericPage.appLauncher, 10);
 				
 				// Step 9 - Navigating to AT for newely create Review CIO -SALE WI
@@ -306,8 +313,9 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 						"SMAB-T3637: Verify Workpool of WI is CIO");
 				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objWorkItemHomePage.apnLabel),
 						apnLabel, "SMAB-T3637:Verify APN of WI remains same as that of Appraisal WIs");
-				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS("Request Type"),objAppraisalActivity.getFieldValueFromAPAS("Type")+" -"+objAppraisalActivity.getFieldValueFromAPAS("Action")+" -"+objAppraisalActivity.getFieldValueFromAPAS("Reference") ,
+				softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS("Request Type"),objAppraisalActivity.getFieldValueFromAPAS("Type")+" "+"-"+" "+objAppraisalActivity.getFieldValueFromAPAS("Action")+" "+"-"+" "+objAppraisalActivity.getFieldValueFromAPAS("Reference") ,
 						"SMAB-T3762: Verify that request type  of the WI is cancatination of Type ,Action and reference");
+				
 
 				objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 				objCIOTransferPage.waitForElementToBeVisible(objWorkItemHomePage.relatedActionLink, 10);
@@ -384,7 +392,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
             
             objCIOTransferPage.login(CIO_SUPERVISOR);
             
-            
+            Thread.sleep(4000);
             objCIOTransferPage.globalSearchRecords(WorkItemForReviewCioSale);
            	
             driver.navigate().to("https://smcacre--" + excEnv
@@ -438,7 +446,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 			Thread.sleep(3000);
 			
 			objAppraisalActivity.login(APPRAISAL_SUPPORT);
-			
+			Thread.sleep(4000);
 			
 			driver.navigate().to("https://smcacre--" + excEnv
 					+ ".lightning.force.com/lightning/r/Transaction_Trail__c/"
@@ -457,9 +465,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 
 			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.eventLibraryLabel),
 					objCIOTransferPage.CIO_EVENT_CODE_PART, "SMAB-T3749:Verifying that EventLibrary of the AT is same as that CIO-Review WI");
-
-			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.eventLibraryLabel),
-					EventCode, "SMAB-T3749:Verifying that EventLibrary of the AT is same as that CIO-Review WI");
+			
 
 			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.dorLabel), DOR,
 					"SMAB-T3749:Verifying that DOR of the AT is same as that CIO-Review WI");
@@ -473,6 +479,10 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 					"Business Event", "SMAB-T3749: Verify that AT for appraisal activity after reapproval is of type Buisness Event");
 			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.relatedCorrespondenceLabel),
 					parentTransactionTrailForAppraiser, "SMAB-T3749: Verify that new AT for appraisal remains child of CIO Process transfer WI AT=C");
+			
+			softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAuditTrail.relatedCorrespondenceLabel),
+					parentTransactionTrailForAppraiser, "SMAB-T3749: Verify that new AT for appraisal remains child of CIO Process transfer WI AT=C");
+			
 			
 			objAppraisalActivity.globalSearchRecords(WorkItemForAppraislAfterReapproval);
 			objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
@@ -519,7 +529,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 			
 			objAppraisalActivity.login(users.APPRAISAL_SUPPORT);
 			
-			
+			Thread.sleep(4000);
 			objAppraisalActivity.globalSearchRecords(arrayForWorkItemAfterCIOSupervisorApproval[1]);
 			objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.inProgressOptionInTimeline,10);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -530,7 +540,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiWorkPoolDetailsPage),"Normal Enrollment" , "SMAB-T3807: Verify that the WI for questionnaire is routed to Normal Enrollment workpool");
 			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage),"Appraiser" , "SMAB-T3807: Verify that the WI for questionnaire is of type  Appraiser");
 			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage),"Questionnaire Correspondence" , "SMAB-T3807: Verify that the WI for questionnaire is of subtype Questionnaire Correspondence");
-			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus),"In Pool" , "SMAB-T3807: Verify that the WI for questionnaire is in pool status");
+			softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus),"Completed" , "SMAB-T3807: Verify that the WI for questionnaire is in pool status");
 	
 			objAppraisalActivity.logout();
 	}

@@ -238,7 +238,7 @@ public class Page extends TestBase {
 		} else
 			elem = (WebElement) element;
 
-		waitForElementToBeClickable(15, elem);
+		waitForElementToBeClickable(30, elem);
 		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", elem);
 		elem.clear();
 		elem.sendKeys(Keys.chord(Keys.CONTROL, "a"));
@@ -738,7 +738,7 @@ public class Page extends TestBase {
 				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//span[@class='slds-col'] | " + //this condition was observed on Mapping Action screen for Parent APN(s) field
 				commonPath + "//label[text()=\"" + label + "\"]/..//textarea | "+//this condition was added to handle webelements of type textarea
 				commonPath + "//span[text()=\"" + label + "\"]/../following-sibling::input";
-		waitUntilElementIsPresent(xpath, 10);
+		waitUntilElementIsPresent(xpath, 20);
 		return driver.findElement(By.xpath(xpath));
 	}
 	
