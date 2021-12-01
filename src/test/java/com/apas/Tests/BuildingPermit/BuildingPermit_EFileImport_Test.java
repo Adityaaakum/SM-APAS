@@ -54,7 +54,7 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 			+ "Transaction record verification for the imported Building Permit in TXT Format", 
 			dataProvider = "loginBPPBusinessAdmin",
 			dataProviderClass = DataProviders.class, 
-			groups = {"Smoke","Regression","BuildingPermit_1"}, 
+			groups = {"Smoke","Regression","BuildingPermit"}, 
 			alwaysRun = true, 
 			enabled = true)
 	public void BuildingPermit_DiscardAndApprove(String loginUser) throws Exception {

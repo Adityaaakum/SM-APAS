@@ -75,7 +75,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			+ "Future dates Error Messages for date Fields",
 			dataProvider="loginExemptionSupportStaff" ,
 			dataProviderClass = DataProviders.class, 
-			groups = {"Regression","DisabledVeteran","Exemption_1"})
+			groups = {"Regression","DisabledVeteran","Exemption"})
 	public void Disabledveteran_FutureDatesErrorMessagesWhileCreatingExemption(String loginUser) throws Exception{
 		
 		Map<String, String> fieldData = objUtil.generateMapFromJsonFile(exemptionFilePath, "BusinessValidationsForExemptionFields");
