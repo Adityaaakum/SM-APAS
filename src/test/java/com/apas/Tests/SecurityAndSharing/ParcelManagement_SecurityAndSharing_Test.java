@@ -254,9 +254,9 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 	 */	
 	
 
-	@Test(description = "SMAB-T3010: Validate New Botton on MailTo record on parcel for BPP_Admin,Mapping staff,RP Admin and CIO Staff,", dataProvider = "usersRestrictedToNewandEditButtonOnParcelMailto", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3010,SMAB-T3280: Validate New Botton on MailTo record on parcel for BPP_Admin,Mapping staff,RP Admin and CIO Staff,", dataProvider = "usersRestrictedToNewandEditButtonOnParcelMailto", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement", "SecurityAndSharing" })
-	public void validateNewButtonOnMailToRecordForAllUsers(String loginUser) throws Exception {
+	public void ParcelManagement_validateNewButtonOnMailToRecordForAllUsers(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL AND Status__c = 'Active' limit 1";
