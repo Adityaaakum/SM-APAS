@@ -2135,7 +2135,7 @@ public void CIO_UpdateReturnedReasonOtheWorkItemForSubmitForReview(String loginU
 	objParcelsPage.openTab("Details");
 	String currentURL2 = driver.getCurrentUrl();
 	softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS("Returned Reason"), "Returned by CIO Supervisor",
-			"SMAB-T3608 : Validated retirned reason on work item");
+			"SMAB-T3608 : Validated returned reason on work item");
 	objCIOTransferPage.logout();
 
 	// STEP 10: Login as CIO-Staff and correct the return reason and submit for approval again
@@ -2153,6 +2153,7 @@ public void CIO_UpdateReturnedReasonOtheWorkItemForSubmitForReview(String loginU
 	objWorkItemHomePage.switchToNewWindow(parentWindow1);
 	objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionOptionSubmitForApproval);
 	objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+	
 	// Thread.sleep(5000);
 	objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.finishButtonPopUp);
 	objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
@@ -2172,6 +2173,6 @@ public void CIO_UpdateReturnedReasonOtheWorkItemForSubmitForReview(String loginU
 	objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
 	Thread.sleep(3000);
 	objCIOTransferPage.logout();
-}
+  }
 	
 }
