@@ -888,6 +888,12 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 * 
 	 * return flag; }
 	 */
+	
+	/**
+	 * This method will check the Audit Trails record created with the Mapping type WIs on WI Linked Items screen
+	 *
+	 * @param Audit Trail Name and its Type
+	 **/	
 
     public boolean verifyTransactionalTrailRowDatafromWebTable(String Name , String Type) {
         

@@ -66,7 +66,7 @@ public class Parcel_Management_Retrofit_AuditTrail_Test extends TestBase impleme
 			+ "the system will create two audit trail records against the parcel associated to the request ", 
 			dataProvider = "loginMappingUser", 
 			dataProviderClass = DataProviders.class, 
-			groups = {"Regression","ParcelManagement","AuditTrailInternal" })
+			groups = {"Regression","ParcelManagement","ParcelAuditTrail" })
 	public void ParcelManagement_VerifyAuditTrailsCreatedOnInternalMappingRequestWI(String loginUser) throws Exception {
 		
 		//Fetching parcel that are Active
@@ -121,14 +121,19 @@ public class Parcel_Management_Retrofit_AuditTrail_Test extends TestBase impleme
 				// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 				objWorkItemHomePage.login(loginUser);
 
-				// Step2: Opening the PARCELS page  and searching a parcel where PUC and Primary Situs field (Street) have values saved
-				objWorkItemHomePage.searchModule(PARCELS);
-				objWorkItemHomePage.globalSearchRecords(apn1);
+				// Step2: Navigating to the Parcel View page				
+				
+				String execEnv = System.getProperty("region");
+
+				driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com"
+						+ "/lightning/r/Parcel__c/"
+						+ apnId1 + "/view");
+						objParcelsPage.waitForElementToBeVisible(20, 
+								objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));								
 				
 				// Step 3: Creating Manual work item for the Parcel 
 				String WINumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
-				driver.navigate().refresh();
-				Thread.sleep(30000);		
+				driver.navigate().refresh();						
 		        
 				String sqlgetTransanctionTrail ="SELECT Business_Event__r.name , Business_Event__r.Type__c, Business_Event__r.Event_Type__c "
 						+ "FROM Work_Item_Linkage__c where work_item__r.name = '"+WINumber+"'";
@@ -204,8 +209,7 @@ public class Parcel_Management_Retrofit_AuditTrail_Test extends TestBase impleme
 				
 				String parentWindow = driver.getWindowHandle();
 				ReportLogger.INFO("Switch to the Mapping Action screen");
-				objWorkItemHomePage.switchToNewWindow(parentWindow);
-				Thread.sleep(5000);			
+				objWorkItemHomePage.switchToNewWindow(parentWindow);					
 				
 				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateCondoWithNonCondo);
@@ -266,13 +270,13 @@ public class Parcel_Management_Retrofit_AuditTrail_Test extends TestBase impleme
 			+ "the system will create two audit trail records against the parcel associated to the request ", 
 			dataProvider = "loginMappingUser", 
 			dataProviderClass = DataProviders.class, 
-			groups = {"Regression","ParcelManagement","AuditTrailExternal" })
+			groups = {"Regression","ParcelManagement","ParcelAuditTrail" })
 	public void ParcelManagement_VerifyAuditTrailsCreatedOnExternalMappingRequestWI(String loginUser) throws Exception {
 		
 		//Fetching parcel that are Active
 		String queryApnDetails ="SELECT Id,Name FROM Parcel__c where primary_situs__c != NULL and "
 				+ "Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where "
-				+ "type__c='CIO') and (Not Name like '100%') and (Not Name like '800%') "
+				+ "type__c='CIO') and (Not Name like '1%') and (Not Name like '8%') "
 				+ "and (Not Name like '%990') and (Not Name like '134%') Limit 2";
 		
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryApnDetails);
@@ -321,9 +325,16 @@ public class Parcel_Management_Retrofit_AuditTrail_Test extends TestBase impleme
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objWorkItemHomePage.login(loginUser);
 
-		// Step2: Opening the PARCELS page  and searching a parcel where PUC and Primary Situs field (Street) have values saved
-		objWorkItemHomePage.searchModule(PARCELS);
-		objWorkItemHomePage.globalSearchRecords(apn1);
+		// Step2: Navigating to the Parcel View page				
+		
+		String execEnv = System.getProperty("region");
+
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com"
+				+ "/lightning/r/Parcel__c/"
+				+ apnId1 + "/view");
+				objParcelsPage.waitForElementToBeVisible(20, 
+						objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));								
+
 		
 		// Step 3: Creating Manual work item for the Parcel 
 		String WINumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
