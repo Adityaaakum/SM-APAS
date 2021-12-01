@@ -53,6 +53,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public String dropDownRejected = "Rejected?";
 	public String rejectedReason = "Rejection Reason";
 	public String rejectedComments = "Rejection Comments";
+	public String dateLabel= "Date";
 
 
 	@FindBy(xpath = "//div[@data-key='success'][@role='alert']")
@@ -87,6 +88,9 @@ public class WorkItemHomePage extends ApasGenericPage {
 
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-item[contains(.,'Related Action')]//a[@target='_blank']")
 	public WebElement reviewLink;
+	
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-item[contains(.,'Previous Related Action')]//a[@target='_blank']")
+	public WebElement previousRelatedAction;
 
 	@FindBy(xpath = "//a[@role='tab'][@data-label='Needs My Approval']")
 	public WebElement needsMyApprovalTab;
@@ -107,6 +111,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	public WebElement actionColumnInProgressTab;
 
 	public String linkedItemEFileIntakeLogs = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'E File Intake Logs')]";
+	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 
 	public String relatedBuildingPermits = "//flexipage-tab2[contains(@class,'slds-show')]//c-org_work-item-related-list[contains(.,'Related Building Permits')]";
 
@@ -271,7 +276,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//a[contains(text(),'Trail')][1]/ancestor::tr/following-sibling::tr//a[1]")
 	public WebElement secondRelatedBuisnessEvent;
 	
-	@FindBy(xpath = "//a[@data-label='Recorded APN(s)']")
+	@FindBy(xpath = commonXpath+"//a[@data-label='Recorded APN(s)']")
 	public WebElement recordedAPNtab;
 	
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'Information')]//force-record-layout-item//button[@title = 'Edit Event ID']")
@@ -289,7 +294,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath="//*[@class='slds-text-title_bold slds-p-bottom_small']")
 	public WebElement pageNotExist;
     
-   
+
   
 	public String editButton = "Edit";
 

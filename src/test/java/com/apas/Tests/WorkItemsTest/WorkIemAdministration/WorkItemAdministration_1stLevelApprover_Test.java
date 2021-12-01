@@ -86,10 +86,8 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 			  
 			   //Get the WI Name from DB through the newly created Exemption
 			   newExemptionName = objExemptionsPage.createNewExemptionWithMandatoryData(newExemptionData);
-			   HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
+			   Thread.sleep(2000);
 			   
-			    String WIName = getWIDetails.get("Name").get(0);
-			    String WIRequestType = getWIDetails.get("Request_Type__c").get(0);
 			   
 			    //Step4: Opening the Work Item Module
 			    ReportLogger.INFO("Step 4: Search open App. module - Work Item Management from App Launcher");
@@ -102,6 +100,12 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 			   objPage.Click(objWIHomePage.lnkTABWorkItems);
 			   ReportLogger.INFO("Step 8: Click on the SUB TAB - My Submitted for Approval");
 			   objPage.Click(objWIHomePage.lnkTABMySubmittedforApproval);
+			   
+			   HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
+			   
+			    String WIName = getWIDetails.get("Name").get(0);
+			    String WIRequestType = getWIDetails.get("Request_Type__c").get(0);
+			   
 			   //Search the Work Item Name in the Grid 1st Column
 			   String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);			   
 			   

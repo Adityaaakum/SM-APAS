@@ -146,6 +146,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String calculatorSwitchLabel = "Calculator Switch";
 	public String activeLabel ="Active";
 	public String releaseIndicatorLabel = "Release Indicator";
+	public String verifiedValueFromPcorLabel = "Verified Value from PCOR";
+	
 
 	public String useThisQuickActionButtonOnCopyTOMailTo = "Use This";
 
@@ -925,7 +927,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 						
 						if (transferCode.equals(CIO_EVENT_CODE_CIOGOVT)) {
 							String workItemNoForGovtCIOAppraisal = salesforceApi.select(
-									"Select Id ,Name from Work_Item__c where type__c='Govt CIO Appraisal' and sub_type__c='Appraisal Activity' order by createdDate desc")
+									"Select Id ,Name from Work_Item__c where type__c='Govt CIO Appraisal' and sub_type__c='Appraisal Activity' order by name desc")
 									.get("Name").get(0);
 							String[] arrayForWorkItemAfterCIOSupervisorApproval = { workItemNoForGovtCIOAppraisal };
 							logout();
@@ -936,7 +938,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 								"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by name desc")
 								.get("Name").get(0);						
 						String workItemNoForQuestionnaireCorrespondence = salesforceApi.select(
-								"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Questionnaire Correspondence' order by createdDate desc")
+								"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Questionnaire Correspondence' order by name desc")
 								.get("Name").get(0);						
 						String[] arrayForWorkItemAfterCIOSupervisorApproval = { workItemNoForAppraiser,
 								workItemNoForQuestionnaireCorrespondence };
