@@ -72,7 +72,7 @@ public class ExemptionsPage extends ApasGenericPage {
 
     public String dateOfDeathOfVeteran = "Date of Death of Veteran";
 
-    public String veteranName = "Veteran's 1 Name";
+    public String veteranName = "Veteran's Name";
 
     public String veteranSSN = "Veteran's SSN";
 
@@ -134,10 +134,6 @@ public class ExemptionsPage extends ApasGenericPage {
     public String endRatingReason = "End Rating Reason";
 
     public String endDateOfRating = "End Date of Rating";
-    
-    public String exemptionCode ="Exemption Code";
-    
-    public String Penalty ="Penalty %";
     
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Next']")
 	public WebElement exemptionRecordTypeNextButton;
@@ -385,6 +381,10 @@ public class ExemptionsPage extends ApasGenericPage {
     
     public String createNewButton ="New";
     
+    public String exemptionCode ="Exemption Code";
+    
+    public String Penalty ="Penalty %";
+  
     
     /**
      * Description: This method is to determine the Roll Year of any given date(e.g Application received date)
@@ -458,7 +458,7 @@ public class ExemptionsPage extends ApasGenericPage {
         ReportLogger.INFO("Entering/Selecting values for New Exemption record");
         searchAndSelectOptionFromDropDown("APN", fetchActiveAPN());
         objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-        searchAndSelectOptionFromDropDown("Claimant's 1 Name", fetchAssesseeName());
+        searchAndSelectOptionFromDropDown("Claimant 1 Name", fetchAssesseeName());
         objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
         objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
         objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));
@@ -854,7 +854,4 @@ public class ExemptionsPage extends ApasGenericPage {
         ReportLogger.INFO("Click 'Save' button to save the details entered in Exemption record");
         saveExemptionRecord();
     }
-    
-    
-
 }
