@@ -244,11 +244,11 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 		objParcelsPage.waitForElementToBeVisible(objParcelsPage.moretab, 8);
 	
 		softAssert.assertEquals(improvementValueSmall, improvementValueText,
-				"SMAB-T3198: Validation that Improvement Value should be the smallest value from Calamity or Decline.");
+				"SMAB-T3198, SMAB-T3221: Validation that Improvement Value should be the smallest value from Calamity or Decline.");
 		softAssert.assertEquals(landValueSmall, landValueText,
-				"SMAB-T3198: Validation that Land Value should be the smallest value from Calamity or Decline.");
+				"SMAB-T3198, SMAB-T3221: Validation that Land Value should be the smallest value from Calamity or Decline.");
 		softAssert.assertEquals("300,000", totalValueText,
-				"SMAB-T3198: Validation that Total Value should be the total of land and improvement value.");
+				"SMAB-T3198, SMAB-T3221: Validation that Total Value should be the total of land and improvement value.");
 		ReportLogger.INFO("Verification has been completed for Land Value, Improvement Value and Total Value fields ");
 
 		// Step 7: User going to create new Assessed Value with the Assessed Value type to verify the Land Cash Value and Improvement Cash Value
@@ -268,20 +268,20 @@ public class Parcel_Management_BaseYear_AssessedValues_Tests extends TestBase im
 //		Verify Land, Improvement& total value is available in header only not on detail page. 
 
 		softAssert.assertEquals(improvementCashValueNumber, improvementValueText,
-				"SMAB-T3198: Validation that Improvement Value should be the smallest value from Calamity or Decline.");
+				"SMAB-T3198, SMAB-T3221: Validation that Improvement Value should be the smallest value from Calamity or Decline.");
 		softAssert.assertEquals(landCashValueNumber, landValueText,
-				"SMAB-T3198: Validation that Land Value should be the smallest value from Calamity or Decline.");
+				"SMAB-T3198, SMAB-T3221: Validation that Land Value should be the smallest value from Calamity or Decline.");
 		softAssert.assertEquals("300,000", totalValueText,
-				"SMAB-T3198: Validation that Total Value should be the total of land and improvement value.");
+				"SMAB-T3198, SMAB-T3221: Validation that Total Value should be the total of land and improvement value.");
 		ReportLogger.INFO("Verification has been completed for Land Value, Improvement Value and Total Value fields for Assessed Value Type");
 		ReportLogger.INFO("All the validations completed successfully");
 
 		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.detailPagelandValue),
-				"SMAB-T3198: Validation that Land Value should not be visible.");
+				"SMAB-T3198, SMAB-T3221: Validation that Land Value should not be visible.");
 		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.detailPageImprovementValue),
-				"SMAB-T3198: Validation that Improvement Value should not be visible.");
+				"SMAB-T3198, SMAB-T3221: Validation that Improvement Value should not be visible.");
 		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.detailPageTotalValue),
-				"SMAB-T3198: Validation that Total Value should not be visible.");
+				"SMAB-T3198, SMAB-T3221: Validation that Total Value should not be visible.");
 
 		objParcelsPage.logout();
 
