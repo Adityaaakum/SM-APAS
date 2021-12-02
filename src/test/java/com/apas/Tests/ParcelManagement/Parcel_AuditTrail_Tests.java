@@ -109,10 +109,9 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		String apn = responseAPNDetails.get("Name").get(0);
 		String apnId = responseAPNDetails.get("Id").get(0);
 
-		objMappingPage.deleteOwnershipFromParcel(apnId);
+		
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
-		objMappingPage.deleteMailToInstanceFromParcel(apn);
-		objMappingPage.deleteParcelSitusFromParcel(apn);
+
 
 		String mappingActionCreationData = testdata.ONE_TO_ONE_MAPPING_ACTION;
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
@@ -122,48 +121,24 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 
-		String ownershipCreationData = testdata.MANUAL_PARCEL_CREATION_DATA;
-		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData,
-				"DataToCreateOwnershipRecord");
-
-		String mailToRecordCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
-		Map<String, String> hashMapMailToRecordData = objUtil.generateMapFromJsonFile(mailToRecordCreationData,
-				"dataToCreateMailToRecordsWithIncompleteData");
-
 		String characteristicsRecordCreationData = testdata.CHARACTERISTICS;
 		Map<String, String> hashMapImprovementCharacteristicsData = objUtil
 				.generateMapFromJsonFile(characteristicsRecordCreationData, "DataToCreateImprovementCharacteristics");
 
-		// Adding Ownership records in the parcels
+		// Adding Characteristic record in the parcel
 		objMappingPage.login(users.SYSTEM_ADMIN);
 
-		objMappingPage.searchModule(PARCELS);
-		objMappingPage.closeDefaultOpenTabs();
-
-		objMappingPage.globalSearchRecords(apn);
-
-		HashMap<String, ArrayList<String>> responseAssesseeDetails = objMappingPage.getOwnerForMappingAction(2);
-		String assesseeName1 = responseAssesseeDetails.get("Name").get(0);
-
-		// Opening the PARCELS page and searching the parcel to create ownership record
-
-		try {
-
-			objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
-			objParcelsPage.createOwnershipRecord(assesseeName1, hashMapCreateOwnershipRecordData);
-		} catch (Exception e) {
-			ReportLogger.INFO("Fail to create ownership record : " + e);
-		}
-
-		objMappingPage.globalSearchRecords(apn);
-		objParcelsPage.openParcelRelatedTab(objParcelsPage.mailTo);
-		objParcelsPage.createMailToRecord(hashMapMailToRecordData, apn);
+		driver.navigate().to(
+				"https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+				objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
 
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
 		objParcelsPage.createCharacteristicsOnParcel(hashMapImprovementCharacteristicsData, apn);
 
 		objMappingPage.logout();
 		Thread.sleep(4000);
+		
 		// Step1: Login to the APAS application using the credentials passed through
 		// dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -197,7 +172,6 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,
 				hashMapOneToOneMappingData.get("Are taxes fully paid?"));
 		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapOneToOneMappingData.get("Reason code"));
-		objMappingPage.selectOptionFromDropDown(objMappingPage.parcelSizeValidation, "No");
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 
 		objMappingPage.waitForElementToBeClickable(10, objMappingPage.generateParcelButton);
@@ -215,8 +189,12 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		// Completing the work Item
 		String queryWI = "Select Id from Work_Item__c where Name = '" + WorkItemNo + "'";
 		HashMap<String, ArrayList<String>> responseWI = salesforceAPI.select(queryWI);
-		salesforceAPI.update("Work_Item__c", queryWI, "Status__c", "Submitted for Approval");
 		driver.switchTo().window(parentWindow);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ responseWI.get("Id").get(0) + "/view");
+		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.appLauncher);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+	   	objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);		
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 		
@@ -226,10 +204,9 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.appLauncher);
 		objWorkItemHomePage.completeWorkItem();
 		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.linkedItemsWI);
-		objWorkItemHomePage.logout();
-		Thread.sleep(5000);
+		Thread.sleep(2000);
 		
-		objMappingPage.login(users.RP_BUSINESS_ADMIN);
+		
 		String query = "Select Id from Parcel__c where Name = '" + childApn + "'";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
@@ -252,5 +229,4 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 
 		objWorkItemHomePage.logout();
 	}
-
 }
