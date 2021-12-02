@@ -97,8 +97,13 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objParcelsPage.logout();
 	}
 	
+	/**
+	 * This method is to Verify that audit trail is created in Characteristic and business event with linkage record created"
+	 * @param loginUser
+	 * @throws Exception
+	 */	
 	
-	@Test(description = "SMAB-T3702,SMAB-T3703:Verify that audit trail is created in Characteristica nd business event with linkage record created", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3702,SMAB-T3703:Verify that audit trail is created in Characteristica nd business event with linkage record created", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement", "ParcelAuditTrail" })
 	public void ParcelManagement_AudiTrail_Characteristics(String loginUser)
 			throws Exception {
@@ -140,7 +145,6 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		Thread.sleep(4000);
 		
 		// Step1: Login to the APAS application using the credentials passed through
-		// dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
 
 		// Step2: Opening the PARCELS page and searching the parcel to perform one to
