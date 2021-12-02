@@ -893,5 +893,40 @@ public class WorkItemHomePage extends ApasGenericPage {
 	 * 
 	 * return flag; }
 	 */
+	
+	/**
+	 * This method will check the Audit Trails record created with the Mapping type WIs on WI Linked Items screen
+	 *
+	 * @param Audit Trail Name and its Type
+	 **/	
+
+    public boolean verifyTransactionalTrailRowDatafromWebTable(String Name , String Type) {
+        
+		boolean flag = false;
+		
+		String tblWebTable = "//table//th//a[@title='"+Name+"']/ancestor::tr/"
+				+ "td[2]//span/div/lightning-base-formatted-text[text()='"+Type+"']";
+		
+		WebElement objWebTable = driver.findElementByXPath(tblWebTable);
+		
+		if(objWebTable!=null) {
+			
+			return flag =  true;
+			
+		}else {
+		
+		return flag;		
+		
+	    }
+	}
+	
+	public void clickTransactionTrailLink(String TTName) throws IOException {
+		
+		String xpathTransactionTrail = "//table//th//a[@title='"+TTName+"']";
+	    WebElement lnkTransactionTrail = driver.findElementByXPath(xpathTransactionTrail);
+	    
+	    objPageObj.Click(lnkTransactionTrail);
+	    		
+	}
 
 }
