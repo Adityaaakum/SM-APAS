@@ -295,7 +295,7 @@ public class ApasGenericPage extends Page {
 	 * @param value: Like Roof Repair or Repairs for strat code field etc.
 	 * @throws Exception
 	 */
-	public Boolean searchAndSelectOptionFromDropDown(Object element, String value) throws Exception {
+	public void searchAndSelectOptionFromDropDown(Object element, String value) throws Exception { {
         WebElement webElement;
         String xpathDropDownOption;
         if (element instanceof String) {
@@ -311,18 +311,13 @@ public class ApasGenericPage extends Page {
             		+ "contains(@class,'windowViewMode-maximized') or "
             		+ "contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
         }
-		try {
-			enter(webElement, value);
-			WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
-			waitForElementToBeVisible(drpDwnOption, 10);
-			// drpDwnOption.click();
-			Click(drpDwnOption);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-
-		}
+        
+        enter(webElement, value);
+        WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
+        waitForElementToBeVisible(drpDwnOption, 10);
+        //drpDwnOption.click();
+        Click(drpDwnOption);
+	}
     }
 
 	/**
