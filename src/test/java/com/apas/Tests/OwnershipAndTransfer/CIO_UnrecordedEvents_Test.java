@@ -1904,7 +1904,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 	public void CIO_UpdateReturnedReasonOtheWorkItemForSubmitForReview(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
-		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' and name like '134%' and id in ( select parcel__c from mail_to__c where Status__c='Active')";
+		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' and id in ( select parcel__c from mail_to__c where Status__c='Active')";
 		String activeApnId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
 
 		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData,
@@ -1919,6 +1919,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		// Step2: Opening the PARCELS page
 		driver.navigate()
 				.to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + activeApnId + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+				objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
 
 		// Step3: Create UT event perform validations
 		String timeStamp = String.valueOf(System.currentTimeMillis());

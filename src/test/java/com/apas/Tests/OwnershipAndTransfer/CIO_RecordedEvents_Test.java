@@ -4630,7 +4630,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * Update Returned Reason on CIO screen for Submit for approval flow.
 	 */
 	@Test(description = "SMAB-T3608 : Update Returned Reason on the Work Item", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
+			"Regression", "ChangeInOwnershipManagement", "RecordedEvent" }, enabled = true)
 	public void CIO_UpdateReturnedReasonOtheWorkItemFromSubmitforApproval(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
@@ -4696,12 +4696,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// STEP 8- CIO Staff submitting for approval
 		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
-		Thread.sleep(5000);
+		Thread.sleep(2000);
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
 		String currentUrl = driver.getCurrentUrl();
 		Thread.sleep(2000);
 		objCioTransfer.logout();
+		Thread.sleep(5000);
 
 		// STEP 9- Login as CIO-Supervisor and Return RAT
 		objMappingPage.login(users.CIO_SUPERVISOR);
