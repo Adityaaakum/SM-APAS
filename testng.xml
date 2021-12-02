@@ -14,9 +14,9 @@
 		</groups>
 		<classes>
 
-			 <class name="com.apas.Tests.ParcelManagement.Parcel_Management_ManyToManyAction_Tests">
+			 <class name="com.apas.Tests.WorkItemsTest.WorkIemAdministration.WorkItemAdministration_PoolAssignment_Test">
 				 <methods>
-					 <include name="ParcelManagement_VerifyManyToManyMappingActionUIValidations"/>
+					 <include name="WorkItemAdministration_UpdateNeighborhood_ValidatePoolAssignment"/>
 				 </methods>
 			 </class>
 
