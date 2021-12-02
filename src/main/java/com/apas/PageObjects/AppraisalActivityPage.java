@@ -44,14 +44,24 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	public String dorLabel ="DOR";
 	public String dovLabel ="DOV";
 	public String apnLabel ="APN";
-	public String ownerName ="Owner Name";
 	
+	public String ownerName ="Owner Name";
+	public String partofEconomicUnit ="Part of Economic Unit";
 	
 	@FindBy(xpath = "//select[@name='Rejection_Reason_PickList']")
 	public WebElement rejectionReasonList;
 	
 	@FindBy(xpath ="//*[@class='slds-modal__footer']//*[text()='Save']")
 	public WebElement calculatePenaltySaveButton;
+	
+	@FindBy(xpath ="//span[@title='Assessed Value']")
+	public WebElement assessedValueTableView;
+	
+	@FindBy(xpath ="//span[@title='Roll Entry for Parent Parcel']")
+	public WebElement rollEntryTableView;
+	
+	@FindBy(xpath ="//a[@title='Parcels']")
+	public WebElement parcelsLink;
 	
 	/*
 	 * This method is to find the xpath of the edit pencil icon.

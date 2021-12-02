@@ -243,7 +243,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		JSONObject jsonParcelObject = objMappingPage.getJsonObject();
 
 		// Fetching the Active Parcel
-		String query = "SELECT Name, Id FROM Parcel__c WHERE Status__c = 'Active' AND (Not Name like '134%') AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')";
+		String query = "SELECT Name, Id FROM Parcel__c WHERE Status__c = 'Active' AND (Not Name like '134%') AND Property_Use_Code__c = '01-SINGLE FAMILY RES' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 
 		String parcelToSearch = response.get("Name").get(0);

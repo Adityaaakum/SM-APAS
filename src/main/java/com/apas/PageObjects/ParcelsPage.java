@@ -769,8 +769,10 @@ public class ParcelsPage extends ApasGenericPage {
 	            String ownerName = objSalesforceAPI.select("SELECT id ,name  FROM Property_Ownership__c where Parcel__c='"+apnId+"'"+" and status__c='Active' order by dov_date__c ").get("Name").get(0);
 	            
 	            ReportLogger.INFO("Adding AV0 Records for APN= "+APN  );
-	            
-	            waitForElementToBeClickable(5, assessedValueOwnershipTab);
+
+	            String assessedValueId=objSalesforceAPI.select("SELECT Id FROM Assessed_BY_Values__c WHERE APN__c ='"+apnId+"'").get("Id").get(0);
+	            driver.navigate().to("https://smcacre--"+excEnv+".lightning.force.com/lightning/r/Parcel__c/"+assessedValueId+"/view");
+	            waitForElementToBeClickable(8, assessedValueOwnershipTab);
 	            Click(assessedValueOwnershipTab);
 	            waitForElementToBeClickable(5, newButton);
 	            Click(getButtonWithText(NewButton));

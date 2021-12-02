@@ -273,7 +273,13 @@ public class DataProviders {
     public Object[][] dataProviderLoginRPAppraiser() {
         return new Object[][] { { users.RP_APPRAISER }};
     }
-
+    /**
+     * Return RP Principal User
+     */
+    @DataProvider(name = "rpPrincipal")
+    public Object[][] dataProviderLoginRPPrincipal() {
+        return new Object[][] { { users.RP_PRINCIPAL }};
+    }
     /**
 	 * Return different status of composite and valuation factor tables
 	 */
