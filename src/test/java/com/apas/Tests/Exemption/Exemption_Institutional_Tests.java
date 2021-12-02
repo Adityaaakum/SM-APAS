@@ -55,7 +55,7 @@ public class Exemption_Institutional_Tests extends TestBase implements testdata,
 
 	}
 
-	// Below test case is used to validate permission access on Exemption and VA's
+	// Below test case is used to validate fields on Institutional Exemption and VA's
 	@Test(description = "SMAB-T3973,SMAB-T4284,SMAB-T4265: Verify Fields on institutional exemption and related Value adjustment tab",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","InstitutionalExemption"})
 	public void InstitutionalExemption__VerifFieldsOnExemptionAndVAs(String loginInvalidUser) throws Exception {
 		Map<String, String> exemptionndata = objUtil.generateMapFromJsonFile(exemptionFilePath, "InstitutionalExemptionData");		
