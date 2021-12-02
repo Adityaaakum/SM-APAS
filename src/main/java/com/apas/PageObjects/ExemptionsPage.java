@@ -858,6 +858,6 @@ public class ExemptionsPage extends ApasGenericPage {
         enter(ExemptionAmountUserAdjusted,"2000");
         enter(Remark,"User adjusted exemption amount is 2000.");
         saveExemptionRecord();
-        verifyElementExists(strRollYear);
+        
     }
 }
