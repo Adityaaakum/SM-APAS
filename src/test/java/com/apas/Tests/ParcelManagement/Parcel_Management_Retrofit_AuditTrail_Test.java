@@ -121,8 +121,7 @@ public class Parcel_Management_Retrofit_AuditTrail_Test extends TestBase impleme
 				// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 				objWorkItemHomePage.login(loginUser);
 
-				// Step2: Navigating to the Parcel View page				
-				
+				// Step2: Navigating to the Parcel View page								
 				String execEnv = System.getProperty("region");
 
 				driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com"
@@ -239,11 +238,12 @@ public class Parcel_Management_Retrofit_AuditTrail_Test extends TestBase impleme
 				Thread.sleep(5000);
 				ReportLogger.INFO(" Supervisor logins to close the WI ");
 				objMappingPage.login(users.MAPPING_SUPERVISOR);
-				objMappingPage.searchModule(WORK_ITEM);
-				objMappingPage.globalSearchRecords(WINumber);				
-				// refresh as the focus is getting lost
-				driver.navigate().refresh();
-				Thread.sleep(5000);
+				
+				String query = "Select Id from Work_Item__c where Name = '"+WINumber+"'";
+				HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+				driver.navigate().to("https://smcacre--"+execEnv+
+				".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
+				
 				objWorkItemHomePage.completeWorkItem();
 				
 				jsonResponse = salesforceAPI.getSelectQueryDateInJson(sqlgetTransanctionTrail);
@@ -325,8 +325,7 @@ public class Parcel_Management_Retrofit_AuditTrail_Test extends TestBase impleme
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objWorkItemHomePage.login(loginUser);
 
-		// Step2: Navigating to the Parcel View page				
-		
+		// Step2: Navigating to the Parcel View page						
 		String execEnv = System.getProperty("region");
 
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com"
@@ -446,11 +445,12 @@ public class Parcel_Management_Retrofit_AuditTrail_Test extends TestBase impleme
 		Thread.sleep(5000);
 		ReportLogger.INFO(" Supervisor logins to close the WI ");
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
-		objMappingPage.searchModule(WORK_ITEM);
-		objMappingPage.globalSearchRecords(WINumber);		
-		// refresh as the focus is getting lost
-		driver.navigate().refresh();
-		Thread.sleep(5000);
+		
+		String query = "Select Id from Work_Item__c where Name = '"+WINumber+"'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		driver.navigate().to("https://smcacre--"+execEnv+
+		".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
+				
 		objWorkItemHomePage.completeWorkItem();
 		
 		jsonResponse = salesforceAPI.getSelectQueryDateInJson(sqlgetTransanctionTrail);
