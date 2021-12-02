@@ -814,17 +814,19 @@ public class ExemptionsPage extends ApasGenericPage {
         enter(dateApplicationReceived, dataMap.get("Date Application Received"));
         Thread.sleep(1000);
     }
-    
+    /**
+     * Description: This method will enter field values in Institutional Exemption screen
+     * @param dataMap: Map that is storing values from JSON file
+     */
+
     public void createInstitutionalExemption(Map<String, String> dataMap) throws Exception {
     	Thread.sleep(2000);
-        ReportLogger.INFO("Click 'New' button to fill the following details in the Home Owner Exemption record : " + dataMap);
+        ReportLogger.INFO("Click 'New' button to fill the following details in the Institutional Exemption record : " + dataMap);
         Click(waitForElementToBeClickable(newExemptionButton));
         Thread.sleep(2000);
     	Click(institutionalExemptionRadioButton);
     	Click(exemptionRecordTypeNextButton);
-    	
-    	//Commented above code temporarily and added below code till current HOE implementation is completed 
-    	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'DoNot'";
+       	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'DoNot'";
         HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
         String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
         String apnNumber = fetchActiveAPN();
@@ -843,6 +845,9 @@ public class ExemptionsPage extends ApasGenericPage {
         ReportLogger.INFO("Click 'Save' button to save the details entered in Exemption record");
         saveExemptionRecord();
     }
+    /**
+     * Description: This method will enter field values in Value adjustment on Institutional Exemption screen
+     */
     public void createNewVAsOnInstitutionalExemption() throws Exception {
     	Thread.sleep(2000);
         ReportLogger.INFO("Click 'New' button to fill the following details in the VAs record : ");

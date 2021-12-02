@@ -1,4 +1,4 @@
-package com.apas.Tests.Exemption;
+package com.apas.Tests.OwnershipAndTransfer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import com.apas.config.testdata;
 import com.apas.config.users;
 import com.apas.Utils.SalesforceAPI;
 
-public class Exemption_Institutional_Tests extends TestBase implements testdata, modules, users{
+public class CIO_InstitutionalExemption_Tests extends TestBase implements testdata, modules, users{
 
 	private RemoteWebDriver driver;
 	Page objPage = null;
@@ -56,7 +56,7 @@ public class Exemption_Institutional_Tests extends TestBase implements testdata,
 	}
 
 	// Below test case is used to validate fields on Institutional Exemption and VA's
-	@Test(description = "SMAB-T3973,SMAB-T4284,SMAB-T4265: Verify Fields on institutional exemption and related Value adjustment tab",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","InstitutionalExemption"})
+	@Test(description = "SMAB-T3973,SMAB-T4284,SMAB-T4265: Verify Fields on institutional exemption and related Value adjustment tab",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","InstitutionalExemption","Exemption"})
 	public void InstitutionalExemption__VerifFieldsOnExemptionAndVAs(String loginInvalidUser) throws Exception {
 		Map<String, String> exemptionndata = objUtil.generateMapFromJsonFile(exemptionFilePath, "InstitutionalExemptionData");		
 		
