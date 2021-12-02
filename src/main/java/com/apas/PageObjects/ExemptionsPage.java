@@ -379,11 +379,29 @@ public class ExemptionsPage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(@class,'slds-radio topdown-radio')]//span[text()='Institutional']")
     public WebElement institutionalExemptionRadioButton;
     
-    public String createNewButton ="New";
+    @FindBy(xpath = "//button[text()='New']")
+    public WebElement creatNewVAsButton;
     
-    public String exemptionCode ="Exemption Code";
+    public String exemptionCode = "Exemption Code";
     
-    public String Penalty ="Penalty %";
+    public String Penalty = "Penalty %";
+    
+    public String rollYearSettingOnVAs = "Roll Year Settings";
+    
+    public String RPSLfieldOnVAs = "Real Property Settings Library";
+    
+    public String ExemptionAmountUserAdjusted = "Exemption Amount - User Adjusted";
+    
+    public String Remark = "Remark";
+    
+    public String filingStatus = "Filing Status";
+    
+    public String propertySqFtProrated = "Property Sq Ft Prorated %";
+    
+    public String penaltyPercentage = "Penalty Percentage";
+    
+    public String netExemptionAmount = "Net Exemption Amount";
+    
   
     
     /**
@@ -819,39 +837,27 @@ public class ExemptionsPage extends ApasGenericPage {
         enter(dateApplicationReceived, dataMap.get("DateApplicationReceived"));
         scrollToElement(getWebElementWithLabel(dateApplicationReceived));
         enter(dateApplicationReceived, dataMap.get("DateApplicationReceived"));
-        enter(dateApplicationReceived, dataMap.get("DateAquiredProperty"));
-        enter(dateApplicationReceived, dataMap.get("DateOccupyProperty"));
-
+        enter(dateAcquiredProperty, dataMap.get("DateAquiredProperty"));
+        enter(dateOccupyProperty, dataMap.get("DateOccupyProperty"));
         Thread.sleep(1000);
         ReportLogger.INFO("Click 'Save' button to save the details entered in Exemption record");
         saveExemptionRecord();
     }
-    public void createNewVaOnInstitutionalExemption(Map<String, String> dataMap) throws Exception {
+    public void createNewVAsOnInstitutionalExemption() throws Exception {
     	Thread.sleep(2000);
-        ReportLogger.INFO("Click 'New' button to fill the following details in the Home Owner Exemption record : " + dataMap);
-        Click(waitForElementToBeClickable(createNewButton));
+        ReportLogger.INFO("Click 'New' button to fill the following details in the VAs record : ");
+        Click(waitForElementToBeClickable(creatNewVAsButton));
         Thread.sleep(2000);
     	Click(institutionalExemptionRadioButton);
     	Click(exemptionRecordTypeNextButton);
-    	
-    	//Commented above code temporarily and added below code till current HOE implementation is completed 
-    	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'DoNot'";
-        HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
-        String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
-        String apnNumber = fetchActiveAPN();
-        searchAndSelectOptionFromDropDown(apn, apnNumber);
-        searchAndSelectOptionFromDropDown(claimantName, assesseeName);
-        enter(claimantSSN, dataMap.get("ClaimantSSN"));
-        selectOptionFromDropDown(exemptionCode, dataMap.get("exemptionCode"));
-        selectOptionFromDropDown(qualification, dataMap.get("Qualification"));
-        
-        scrollToElement(getWebElementWithLabel(dateApplicationReceived));
-        enter(dateApplicationReceived, dataMap.get("DateApplicationReceived"));
-        enter(dateApplicationReceived, dataMap.get("DateAquiredProperty"));
-        enter(dateApplicationReceived, dataMap.get("DateOccupyProperty"));
-
-        Thread.sleep(1000);
-        ReportLogger.INFO("Click 'Save' button to save the details entered in Exemption record");
+    	String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+    	String strRollYear = ExemptionsPage.determineRollYear(date);
+    	strRollYear = String.valueOf(Integer.parseInt(strRollYear));
+        selectOptionFromDropDown(rollYearSettingOnVAs, strRollYear);
+        selectOptionFromDropDown(RPSLfieldOnVAs, "Exemption Limits - "+strRollYear);
+        enter(ExemptionAmountUserAdjusted,"2000");
+        enter(Remark,"User adjusted exemption amount is 2000.");
         saveExemptionRecord();
+        verifyElementExists(strRollYear);
     }
 }
