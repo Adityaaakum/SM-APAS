@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
+import org.json.JSONObject;
 import org.openqa.selenium.JavascriptExecutor;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -77,8 +77,9 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 * 
 	 */
 	
-	@Test(description = "SMAB-T3637,SMAB-T3749,SMAB-T3736,SMAB-T3786,SMAB-T3738,SMAB-T3933,SMAB-T3807,SMAB-T3762,SMAB-T4317 : Verify that CIO supervisor on approval is able to create Appraisal WI for non exempted CIO transfers ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
+
+	@Test(description = "SMAB-T4154,SMAB-T3637,SMAB-T3749,SMAB-T3736,SMAB-T3786,SMAB-T3738,SMAB-T3933,SMAB-T3807,SMAB-T3762,SMAB-T4317 : Verify that CIO supervisor on approval is able to create Appraisal WI for non exempted CIO transfers ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement" ,"EconomicUnits"}, enabled = true)
 	public void OwnershipAndTransfer_CreateAppraisalActivityWorkItem(String loginUser) throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -156,7 +157,45 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				String DOR = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.dorLabel);
 				String EventCode = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.eventCodeLabel);
 				String apnLabel = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.apnLabel);
+				String getApnLabelID = salesforceAPI.select("Select Id from Parcel__c where name ='"+apnLabel+"'").get("Id").get(0);
 
+				JSONObject jsonNObject = objParcelsPage.getJsonObject();
+
+				jsonNObject.put("of_Parcels_in_Economic_Unit__c", "");
+				salesforceAPI.update("Parcel__c", getApnLabelID, jsonNObject);
+				driver.navigate().refresh();
+				String partOfEconomicUnitValueAppraisalScreen = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.partofEconomicUnit);
+
+				softAssert.assertEquals(
+						partOfEconomicUnitValueAppraisalScreen,
+						"",
+						"SMAB-T4154: Verify on the Appraisal Activity Screen, there needs to be a Field - Part of Economic Unit which is populated by the value of this field on parcel level  ");
+       
+				
+				jsonNObject.put("of_Parcels_in_Economic_Unit__c", "Yes");
+				salesforceAPI.update("Parcel__c", getApnLabelID, jsonNObject);
+
+				driver.navigate().refresh();
+				partOfEconomicUnitValueAppraisalScreen = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.partofEconomicUnit);
+
+				softAssert.assertEquals(
+						partOfEconomicUnitValueAppraisalScreen,
+						"Yes",
+						"SMAB-T4154: Verify on the Appraisal Activity Screen, there needs to be a Field - Part of Economic Unit which is populated by the value of this field on parcel level  ");
+       
+				jsonNObject.put("of_Parcels_in_Economic_Unit__c", "No");
+				salesforceAPI.update("Parcel__c", getApnLabelID, jsonNObject);
+
+				driver.navigate().refresh();
+				partOfEconomicUnitValueAppraisalScreen = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.partofEconomicUnit);
+
+				softAssert.assertEquals(
+						partOfEconomicUnitValueAppraisalScreen,
+						"No",
+						"SMAB-T4154: Verify on the Appraisal Activity Screen, there needs to be a Field - Part of Economic Unit which is populated by the value of this field on parcel level  ");
+       
+
+				
 				// Step 6- Rejecting the appraisal WI
 				
 				objCIOTransferPage.clickQuickActionButtonOnTransferActivity(null,
