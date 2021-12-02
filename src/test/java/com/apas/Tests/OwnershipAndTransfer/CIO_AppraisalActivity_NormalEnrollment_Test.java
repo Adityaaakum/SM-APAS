@@ -79,7 +79,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	
 
 	@Test(description = "SMAB-T4154,SMAB-T3637,SMAB-T3749,SMAB-T3736,SMAB-T3786,SMAB-T3738,SMAB-T3933,SMAB-T3807,SMAB-T3762,SMAB-T4317 : Verify that CIO supervisor on approval is able to create Appraisal WI for non exempted CIO transfers ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "ChangeInOwnershipManagement" ,"EconomicUnits"}, enabled = true)
 	public void OwnershipAndTransfer_CreateAppraisalActivityWorkItem(String loginUser) throws Exception {
 
 		String excEnv = System.getProperty("region");
