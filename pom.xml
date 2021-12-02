@@ -81,7 +81,7 @@
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-edge-driver</artifactId>
 			<version>3.14.0</version>
-		</dependency>
+		</dependency>		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -183,7 +183,12 @@
 		    <groupId>com.jayway.jsonpath</groupId>
 		    <artifactId>json-path</artifactId>
 		    <version>2.6.0</version>
-		</dependency>        
+		</dependency> 
+		<dependency>
+           <groupId>com.jayway.jsonpath</groupId>
+           <artifactId>json-path</artifactId>
+           <version>2.4.0</version>
+        </dependency>       
 	</dependencies>
 
 	<build>
@@ -214,16 +219,16 @@
 							</property>
 							<property>
 								<name>listener</name>
-								<value>com.apas.Listeners.SuiteListener,com.apas.Listeners.TestAnnotationListener,com.apas.Listeners.RetryListener</value>
-							</property>
-							
+								<value>com.apas.Listeners.SuiteListener,
+								       com.apas.Listeners.TestAnnotationListener,
+								       com.apas.Listeners.RetryListener</value>
+							</property>							
 						</properties>
 						<forkCount>0</forkCount>
 						<!-- <reuseForks>true</reuseForks> -->
-						<!-- <parallel>methods</parallel> 
+						<!-- <parallel>classes</parallel> 
 						<threadCount>10</threadCount> -->
-						<!-- <includes>
-						
+						<!-- <includes>						
 						         <include>BuildingPermit_Manual_Test.java</include>
 						         <include>BuildingPermitEditTest.java</include>
 					    </includes> --> 

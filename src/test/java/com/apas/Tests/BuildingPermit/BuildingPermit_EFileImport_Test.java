@@ -49,7 +49,14 @@ public class BuildingPermit_EFileImport_Test extends TestBase {
 	 2. Validation of error and imported records on review and approve screen
 	 3. Status validation of imported file on efile import transaction log screen
 	 **/
-	@Test(description = "SMAB-T362,SMAB-T363,SMAB-T315,SMAB-T417,SMAB-T360,SMAB-T458,SMAB-T459,SMAB-T619,SMAB-T621,SMAB-T624,SMAB-T625,SMAB-T456,SMAB-T457,SMAB-T549,SMAB-T435: Transaction record verification for the imported Building Permit in TXT Format", dataProvider = "loginBPPBusinessAdmin",dataProviderClass = DataProviders.class, groups = {"Smoke","Regression","BuildingPermit"}, alwaysRun = true, enabled = true)
+	@Test(description = "SMAB-T362,SMAB-T363,SMAB-T315,SMAB-T417,SMAB-T360,SMAB-T458,SMAB-T459,SMAB-T619,"
+			+ "SMAB-T621,SMAB-T624,SMAB-T625,SMAB-T456,SMAB-T457,SMAB-T549,SMAB-T435: "
+			+ "Transaction record verification for the imported Building Permit in TXT Format", 
+			dataProvider = "loginBPPBusinessAdmin",
+			dataProviderClass = DataProviders.class, 
+			groups = {"Smoke","Regression","BuildingPermit"}, 
+			alwaysRun = true, 
+			enabled = true)
 	public void BuildingPermit_DiscardAndApprove(String loginUser) throws Exception {
 
 		String athertonBuildingPermitFile = System.getProperty("user.dir") + testdata.BUILDING_PERMIT_ATHERTON + "OneValidAndTwoInvalidRecordsForPermitValue.txt";
