@@ -49,8 +49,8 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 	 */
 
 	@Test(description = "SMAB-T4280,SMAB-T4153,SMAB-T4152: Verify that RP Appraiser is able to select certain parcels and group them as economic units ", dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "EconomicUnits" }, enabled = true)
-	public void verify_EconomicUnits_GroupParcels_EcnomicUnit(String loginUser) throws Exception {
+			"Regression", "EconomicUnits" ,"ChangeInOwnershipManagement"}, enabled = true)
+	public void EconomicUnits_GroupParcelsIntoEconomicUnit(String loginUser) throws Exception {
 
 		// fetch parcels to add in economic unit
 		String getApnToAddInEconomicUNit = "Select Id,Name from Parcel__c where Status__c='Active' and PUC_Code_Lookup__c not in ( select id from puc_code__c where name like '%retire%') Limit 3";
@@ -81,8 +81,13 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 		// economic unit
 
 		objParcelsPage.login(loginUser);
-		objParcelsPage.searchModule(PARCELS);
-		objParcelsPage.globalSearchRecords(APNNameList[0]);
+		String execEnv = System.getProperty("region");
+
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/"+
+				APNIdList[0] + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+		objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		
 
 		// creating economic unit
 
@@ -114,8 +119,12 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 
 		// verify that economic unit is created properly for the second parcel
 
-		objParcelsPage.globalSearchRecords(APNNameList[1]);
 
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/"+
+				APNIdList[1] + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+		objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		
 		softAssert.assertEquals(
 				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.partOfEconomicUnit,
 						"Parcel Characteristics Summary"),
@@ -133,8 +142,11 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 
 		// verify that economic unit is created properly for the third parcel
 
-		objParcelsPage.globalSearchRecords(APNNameList[2]);
-
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/"+
+				APNIdList[2] + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+		objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		
 		softAssert.assertEquals(
 				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.partOfEconomicUnit,
 						"Parcel Characteristics Summary"),
@@ -206,8 +218,11 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 
 		// verify that economic unit still exists for first parcel
 
-		objParcelsPage.globalSearchRecords(APNNameList[0]);
-
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/"+
+				APNIdList[0] + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+		objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		
 		softAssert.assertEquals(
 				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.partOfEconomicUnit,
 						"Parcel Characteristics Summary"),
@@ -226,8 +241,11 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 
 		// verify that economic unit still exists for second parcel
 
-		objParcelsPage.globalSearchRecords(APNNameList[1]);
-
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/"+
+				APNIdList[1] + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+		objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		
 		softAssert.assertEquals(
 				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.partOfEconomicUnit,
 						"Parcel Characteristics Summary"),
