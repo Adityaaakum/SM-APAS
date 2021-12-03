@@ -114,7 +114,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		String apn = responseAPNDetails.get("Name").get(0);
 		String apnId = responseAPNDetails.get("Id").get(0);
 
-		
+		ReportLogger.INFO("Delete characteristic record");
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
 
 
@@ -131,6 +131,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 				.generateMapFromJsonFile(characteristicsRecordCreationData, "DataToCreateImprovementCharacteristics");
 
 		// Adding Characteristic record in the parcel
+		ReportLogger.INFO("Adding Characteristic record in the parcel");
 		objMappingPage.login(users.SYSTEM_ADMIN);
 
 		driver.navigate().to(
@@ -191,6 +192,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		Thread.sleep(5000);
 
 		// Completing the work Item
+		ReportLogger.INFO("Completing the work Item");
 		String queryWI = "Select Id from Work_Item__c where Name = '" + WorkItemNo + "'";
 		HashMap<String, ArrayList<String>> responseWI = salesforceAPI.select(queryWI);
 		driver.switchTo().window(parentWindow);
@@ -202,6 +204,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objWorkItemHomePage.logout();
 		Thread.sleep(5000);
 		
+		ReportLogger.INFO("mapping supervisor login");
 		objMappingPage.login(users.MAPPING_SUPERVISOR);
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ responseWI.get("Id").get(0) + "/view");
@@ -210,7 +213,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.linkedItemsWI);
 		Thread.sleep(2000);
 		
-		
+		ReportLogger.INFO("Navigate to child Apn");
 		String query = "Select Id from Parcel__c where Name = '" + childApn + "'";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
@@ -219,6 +222,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 				objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
 		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
 		objParcelsPage.Click(objParcelsPage.fetchCharacteristicsList().get(0));
+		ReportLogger.INFO("Verify Audit trail is displayed");
 		objParcelsPage.waitForElementToBeVisible(objTrailPage.businessEventCharacteristicsAuditTrail, 10);
 		softAssert.assertTrue(objMappingPage.verifyElementVisible(objTrailPage.businessEventCharacteristicsAuditTrail),
 				"SMAB-T3702: Verify that When a mapping work item is completed, Audit Trail component should be displayed at the characteristic level");
@@ -226,6 +230,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objParcelsPage.Click(objTrailPage.businessEventCharacteristicsAuditTrail);
 		objParcelsPage.waitForElementToBeVisible(objTrailPage.relatedBusinessRecords);
 		objParcelsPage.Click(objTrailPage.relatedBusinessRecords);
+		ReportLogger.INFO("verify Linked record is visible");
 		objWorkItemHomePage.waitForElementToBeVisible(20, objTrailPage.linkedRecord);
 		String trailSubject = objTrailPage.linkedRecord.getText();
 		softAssert.assertEquals(trailSubject, "Linked Record",
