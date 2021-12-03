@@ -38,6 +38,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	MappingPage objMappingPage;
 	String auditTrailData;
+	AuditTrailPage objTrailPage;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -48,6 +49,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage = new MappingPage(driver);
 		auditTrailData = testdata.AUDIT_TRAIL_DATA;
+		objTrailPage=new AuditTrailPage(driver);
 	}
 
 	@Test(description = "SMAB-T3700:Verify that user is able to create audit trail and linkage relationship should be created having EventID populated", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
@@ -93,5 +95,147 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 
 		//Step 8 : Logout
 		objParcelsPage.logout();
+	}
+	
+	/**
+	 * This method is to Verify that audit trail is created in Characteristic and business event with linkage record created"
+	 * @param loginUser
+	 * @throws Exception
+	 */	
+	
+	@Test(description = "SMAB-T3702,SMAB-T3703:Verify that audit trail is created in Characteristica nd business event with linkage record created", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "ParcelAuditTrail" })
+	public void ParcelManagement_AudiTrail_Characteristics(String loginUser)
+			throws Exception {
+
+		String executionEnv = System.getProperty("region");
+		String queryAPN = "Select Name,Id  From Parcel__c where name like '0%' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn = responseAPNDetails.get("Name").get(0);
+		String apnId = responseAPNDetails.get("Id").get(0);
+
+		ReportLogger.INFO("Delete characteristic record");
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
+
+
+		String mappingActionCreationData = testdata.ONE_TO_ONE_MAPPING_ACTION;
+		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformOneToOneMappingActionWithAllFields");
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+
+		String characteristicsRecordCreationData = testdata.CHARACTERISTICS;
+		Map<String, String> hashMapImprovementCharacteristicsData = objUtil
+				.generateMapFromJsonFile(characteristicsRecordCreationData, "DataToCreateImprovementCharacteristics");
+
+		// Adding Characteristic record in the parcel
+		ReportLogger.INFO("Adding Characteristic record in the parcel");
+		objMappingPage.login(users.SYSTEM_ADMIN);
+
+		driver.navigate().to(
+				"https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+				objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
+
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		objParcelsPage.createCharacteristicsOnParcel(hashMapImprovementCharacteristicsData, apn);
+
+		objMappingPage.logout();
+		Thread.sleep(4000);
+		
+		// Step1: Login to the APAS application using the credentials passed through
+		objMappingPage.login(loginUser);
+
+		// Step2: Opening the PARCELS page and searching the parcel to perform one to
+		// one mapping
+		driver.navigate().to(
+				"https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+				objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
+
+		// Step 3: Creating Manual work item for the Parcel
+
+		String WorkItemNo = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		// Step 4:Clicking the details tab for the work item newly created and clicking
+		// on Related Action Link
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+
+		// Clicking on Action Dropdown
+
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,
+				hashMapOneToOneMappingData.get("Action"));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,
+				hashMapOneToOneMappingData.get("Are taxes fully paid?"));
+		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapOneToOneMappingData.get("Reason code"));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+
+		objMappingPage.waitForElementToBeClickable(10, objMappingPage.generateParcelButton);
+
+		// Fetching the GRID data
+
+		HashMap<String, ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
+		String childApn = gridDataHashMap.get("APN").get(0);
+
+		// Clicking on generate parcel button
+
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		Thread.sleep(5000);
+
+		// Completing the work Item
+		ReportLogger.INFO("Completing the work Item");
+		String queryWI = "Select Id from Work_Item__c where Name = '" + WorkItemNo + "'";
+		HashMap<String, ArrayList<String>> responseWI = salesforceAPI.select(queryWI);
+		driver.switchTo().window(parentWindow);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ responseWI.get("Id").get(0) + "/view");
+		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.appLauncher);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+	   	objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);		
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		
+		ReportLogger.INFO("mapping supervisor login");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ responseWI.get("Id").get(0) + "/view");
+		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.appLauncher);
+		objWorkItemHomePage.completeWorkItem();
+		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.linkedItemsWI);
+		Thread.sleep(2000);
+		
+		ReportLogger.INFO("Navigate to child Apn");
+		String query = "Select Id from Parcel__c where Name = '" + childApn + "'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ response.get("Id").get(0) + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+				objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		objParcelsPage.Click(objParcelsPage.fetchCharacteristicsList().get(0));
+		ReportLogger.INFO("Verify Audit trail is displayed");
+		objParcelsPage.waitForElementToBeVisible(objTrailPage.businessEventCharacteristicsAuditTrail, 10);
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objTrailPage.businessEventCharacteristicsAuditTrail),
+				"SMAB-T3702: Verify that When a mapping work item is completed, Audit Trail component should be displayed at the characteristic level");
+
+		objParcelsPage.Click(objTrailPage.businessEventCharacteristicsAuditTrail);
+		objParcelsPage.waitForElementToBeVisible(objTrailPage.relatedBusinessRecords);
+		objParcelsPage.Click(objTrailPage.relatedBusinessRecords);
+		ReportLogger.INFO("verify Linked record is visible");
+		objWorkItemHomePage.waitForElementToBeVisible(20, objTrailPage.linkedRecord);
+		String trailSubject = objTrailPage.linkedRecord.getText();
+		softAssert.assertEquals(trailSubject, "Linked Record",
+				"SMAB-T3703: Verified that Related Businnes Events displays Linked Record");
+
+		objWorkItemHomePage.logout();
 	}
 }
