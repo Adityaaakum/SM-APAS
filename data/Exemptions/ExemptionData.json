@@ -241,10 +241,19 @@
 		"Qualification": "Qualified",
 		"ReasonForNotQualified":"Incorrect or Missing Information",
 		"EndRatingReason": "Deceased Veteran",
-		"EnddateOfRating": "6/30/2018"
+		"EnddateOfRating": "6/30/2018"		
+		},
 		
+		"InstitutionalExemptionData": {
+		"APN": "002-021-030",
+		"DateApplicationReceived": "12/14/2021",
+		"ClaimantSSN": "123456789",
+		"DateAquiredProperty": "12/14/2021",
+		"DateOccupyProperty": "12/14/2021",
+		"DateOfNotice": "12/14/2021",
+		"Qualification": "Qualified",
+		"exemptionCode": "WELL - Welfare Land",
+		"PenaltyPercentage": "20"
 		
-		
-		
-		}
+			}
 }

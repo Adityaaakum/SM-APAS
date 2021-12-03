@@ -276,7 +276,7 @@ public class DataProviders {
     /**
      * Return RP Principal User
      */
-    @DataProvider(name = "rpPrincipal")
+    @DataProvider(name = "RPPrincipal")
     public Object[][] dataProviderLoginRPPrincipal() {
         return new Object[][] { { users.RP_PRINCIPAL }};
     }
@@ -444,7 +444,12 @@ public class DataProviders {
 	        
 		}
 
-       
+		@DataProvider(name = "dpForAppraisalActivityAVCreation")
+		public Object[] dpTestAppraisalActivityAVCreation() {
+			return new Object[] {CIOTransferPage.CIO_EVENT_DISABLED_OWNER_TRANSFER,CIOTransferPage.CIO_EVENT_EXCLUSION,CIOTransferPage.CIO_EVENT_REASSESSMENT };
+
+			
+		}
 }
        
 
