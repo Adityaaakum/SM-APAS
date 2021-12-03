@@ -4,6 +4,7 @@
 		"ClaimantName": "Global Media",
 		"ExemptionType": "Home Owners",
 		"Exemption": "7000",
-		"Qualification?": "Qualified"
+		"Qualification?": "Qualified",
+		"Year of Filing" : "2020"
 	}
 }

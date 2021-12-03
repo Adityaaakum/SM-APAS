@@ -511,7 +511,7 @@ public class ApasGenericPage extends Page {
 
 	public void closeDefaultOpenTabs() throws Exception {
 		ReportLogger.INFO("Closing all default tabs");
-
+		Thread.sleep(1000);
 		waitForElementToBeClickable(appLauncher, 10);
     	/*Robot rb=new Robot();
     	rb.keyPress(KeyEvent.VK_SHIFT);

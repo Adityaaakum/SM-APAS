@@ -430,11 +430,11 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 
-		jsonObjectForLEOP1.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 		jsonObjectForLEOP1.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonObjectForLEOP1.put("Primary_Situs__c",primarySitusId);
 		jsonObjectForLEOP1.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
 		jsonObjectForLEOP1.put("TRA__c", responseTRADetails.get("Id").get(0));
+		jsonObjectForLEOP1.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 		salesforceAPI.update("Parcel__c", response.get("Id").get(0), jsonObjectForLEOP1);
 		
 		//Login with SYS-ADMIN
@@ -481,7 +481,9 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 		
 		//Create LEOP event after filling the required field too
 		objCIOTransferPage.enter(objCIOTransferPage.dateOfEventInputTextBox, dataToCreateUnrecordedEventMap.get("Date of Event"));
+		objCIOTransferPage.selectOptionFromDropDown(objCIOTransferPage.leopReceivedByBOE, dataToCreateUnrecordedEventMap.get("LEOP Received By BOE"));
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveAndNextButton));
+		Thread.sleep(5000);//Allows system to create the WI for further query to run fine
 		
 		//Query to fetch WI created
 		String workItemQuery = "SELECT Id, Name, Related_Action__c FROM Work_Item__c where Type__c='CIO' And Work_Pool__r.name='CIO' And Status__c='In Progress' order by createdDate desc limit 1";		
@@ -865,7 +867,7 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3366 : Verify that User is able to perform LEOP event, submit for approval and approved", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3366 : Verify that User is able to view Mail-to records from Parcel on the UT event created on it", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "LEOPEvent", "UnrecordedEvent" })
 	public void OwnershipAndTransfer_LEOP_DefaultMailToRecord(String loginUser) throws Exception {
 		

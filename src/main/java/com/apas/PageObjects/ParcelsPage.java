@@ -47,7 +47,7 @@ public class ParcelsPage extends ApasGenericPage {
 
 	public String editApnField ="APN";	
 	public String LongLegalDescriptionLabel="Long Legal Description"; 
-
+	public String traLabel="TRA";
 	public String statusDropDownLabel = "Status";
 	public String parcelRelationshipsTabLabel = "Parcel Relationships";
 	public String ownershipTabLabel = "Ownership";
@@ -59,6 +59,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createNewParcelButton="New";
 	public String editParcelButton="Edit";
 	public String parcelCharacteristics = "Characteristics";
+	public String primarySitusLabel = "Primary Situs";
 	
 
 	
@@ -259,7 +260,10 @@ public class ParcelsPage extends ApasGenericPage {
 		
 	@FindBy(xpath = "//strong[contains(normalize-space(),'Value Allocation ')]")
 	public WebElement valueAllocation;
-
+	
+	@FindBy(xpath = "//span[text() = 'Exemption']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]")
+    public WebElement editPencilIconForExemptionOnDetailPage;
+	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";

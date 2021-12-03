@@ -1,27 +1,25 @@
-	{
+{
 	"dataToCreateMailToRecordsWithIncompleteData":{
-	"Formatted Name1" : "LUKE SHAW",
-	"Start Date":"7/16/2021",
-	"End Date":"7/19/2021",
-	"Mailing Zip":"560090",
-	"Mailing State": "WY"
-	
+		"Formatted Name1" : "LUKE SHAW",
+		"Start Date":"7/16/2021",
+		"End Date":"7/19/2021",
+		"Mailing Zip":"560090",
+		"Mailing State": "WY"
 	},
+	
 	"dataToCreateMailToRecordsWithCompleteData":{
-	"Formatted Name1" : "LUKE SHAW",
-	"Start Date":"7/16/2021",
-	"Mailing Zip":"95377",
-	"Mailing State": "CA"
-	
+		"Formatted Name1" : "LUKE SHAW",
+		"Start Date":"7/16/2021",
+		"Mailing Zip":"95377",
+		"Mailing State": "CA"
 	},
+	
 	"dataToCreateGranteeWithIncompleteData":{
-	
-	"Last Name":"LUKE SHAW",
-	"Ownership Start Date":"7/16/2021",
-	"Ownership End Date":"7/19/2021",
-	"Owner Percentage":"50",
-	"IncorrectDOV" : "7/20/2051"
-	
+		"Last Name":"LUKE SHAW",
+		"Ownership Start Date":"7/16/2021",
+		"Ownership End Date":"7/19/2021",
+		"Owner Percentage":"50",
+		"IncorrectDOV" : "7/20/2051"
 	},
 	
 	"DataToCreateOwnershipRecord": {
@@ -29,7 +27,7 @@
 	    "Status": "Active",
 	    "Ownership Percentage":"100",
 	    "Ownership Start Date":"7/19/1950"
-	  },
+	},
 	  
 	"dataToCreateGranteeWithCompleteOwnership":{
 		"Last Name":"Will Smith",
@@ -37,6 +35,7 @@
 		"Ownership Start Date":"7/16/2021",
 		"Owner Percentage":"100"
 	},
+	
 	"DataToCreateRpOwnership":{
 		"RP Account":"",
  		"Type": "Owner",
@@ -44,18 +43,26 @@
 	    "Ownership Percentage":"100",
 	    "Ownership Start Date":"7/19/1950"
 	},
+	
 	"DataToCreatePenaltyRecord": {
 	    "Penalty Code": "PEN-LEOP",
 	    "Letter Code": "LEOPU",
 	    "Calculator Switch":"1",
 	    "Active":"Yes",
 	    "Release Indicator":"Yes"
-	  },
+	},
+	  
 	"dataToUpdateOrignalTransferList":{
+		"Grantor":"WILL SMITH",
+		"Grantee":"ERIKSEN"
+	},
 	
-	"Grantor":"WILL SMITH",
-	"Grantee":"ERIKSEN"
-	
-	
+	"DataToCreateGranteeToVerifyHOE":{
+		"Last Name":"Pitt",
+		"First Name":"Brad",
+		"Ownership Start Date":"7/16/2021",
+		"Ownership End Date":"7/19/2021",
+		"Owner Percentage":"100"
 	}
-	}
+
+}
