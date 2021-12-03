@@ -83,7 +83,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	
 
 	@Test(description = "SMAB-T4154,SMAB-T3637,SMAB-T3749,SMAB-T3736,SMAB-T3786,SMAB-T3738,SMAB-T3933,SMAB-T3807,SMAB-T3762,SMAB-T4317 : Verify that CIO supervisor on approval is able to create Appraisal WI for non exempted CIO transfers ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement" ,"EconomicUnits"}, enabled = true)
+			"Regression", "NormalEnrollment" ,"EconomicUnits"}, enabled = true)
 	public void OwnershipAndTransfer_CreateAppraisalActivityWorkItem(String loginUser) throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -553,7 +553,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 */
 
 	@Test(description = "SMAB-T3768,SMAB-T3782,SMAB-T3812 : Verify the fileds and calculations on those fields on the layout of different type of assesssed value records  ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "NormalEnrollment" }, enabled = true)
 	public void OwnershipAndTransfer_Verify_assessedValueRecords(String loginUser) throws Exception {
 		
 		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
@@ -750,9 +750,13 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		objAppraisalActivity.logout();
 
 	}
+	/*
+	 * @param :Transfer codes
+	 * @Description: Verify AV record creation after appraisal for different transfer codes along with read and write access on various tables on AAS screen
+	 */
 	
 	@Test(description = "SMAB-T4120,SMAB-T4121 : Verify that new AV records are generated for the given TransferCode when appraiser user appraises land and Improvement values on the appraiser screen", dataProvider = "dpForAppraisalActivityAVCreation", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "NormalEnrollment" }, enabled = true)
 	public void OwnershipAndTransfer_RelatedTablesInAppraiserActivityScreen(String eventCode) throws Exception {
 
 		String excEnv = System.getProperty("region");		
@@ -786,8 +790,10 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		objAppraisalActivity.login(APPRAISAL_SUPPORT);
 		Thread.sleep(4000);
 		String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
-
-		objAppraisalActivity.globalSearchRecords(workItemForAppraiser);
+		String query = "Select Id from Work_Item__c where Name = '"+workItemForAppraiser+"'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		driver.navigate().to("https://smcacre--"+excEnv+
+		".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
 		objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
@@ -797,17 +803,14 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
-		// STEP 3 -Updating Land and Improvement Values and saving it for appraisal		
-
+		// STEP 3 -Updating Land and Improvement Values and saving it for appraisal	
 		objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
 		String apnNoForAppraisal = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.apnLabel);
 		objAppraisalActivity
 				.Click(objAppraisalActivity.appraisalActivityEditValueButton(objAppraisalActivity.landCashValueLabel));
 		objAppraisalActivity.enter(objAppraisalActivity.landCashValueLabel, "200,000");
 		objAppraisalActivity.enter(objAppraisalActivity.improvementCashValueLabel, "200,000");
-		objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.SaveButton));
-
-		
+		objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.SaveButton));		
 		driver.navigate()
 				.to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 						+ salesforceAPI.select("Select Id from Parcel__c where name ='"
@@ -817,13 +820,11 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.clickShowMoreActionButton, 15);
 		HashMap<String, ArrayList<String>> hashMapForAssessedValueTable = objAppraisalActivity.getGridDataInHashMap();
 
-		//Step 4-Verifying the New AV and AVO record after updating Land and Improvement Values 
-		
+		//Step 4-Verifying the New AV and AVO record after updating Land and Improvement Values 		
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(0), "Retired",
 				"SMAB-T4121:Verify that earlier active AV record is getting retired  for 100% transfer");
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(1), "Active",
-				"SMAB-T4121:Verify that new  active AV record is getting created  for 100% transfer");
-		
+				"SMAB-T4121:Verify that new  active AV record is getting created  for 100% transfer");		
 		if (eventCode.equals(CIOTransferPage.CIO_EVENT_DISABLED_OWNER_TRANSFER)) {
 			softAssert.assertEquals(hashMapForAssessedValueTable.get("Assessed Value Type").get(1),
 					"Prop 19 Disabled Owner Transfer",
@@ -868,8 +869,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				hashMapForAssessedValueTable.get("Effective Start Date").get(1),
 				"SMAB-T4121:Verify that AVO of new active  AV after appraisal is created with start date as same as its associated AV record .");
 		
-		//Step 5 -Verifying the read and edit acess on appraiser staff for ownership AV and roll entry tables
-		
+		//Step 5 -Verifying the read and edit acess on appraiser staff for ownership AV and roll entry tables		
 		driver.navigate().to(
 				"https://smcacre--"+excEnv+".lightning.force.com/lightning/r/Parcel__c/"+salesforceAPI.select("Select Id from Parcel__c where name ='"+apnNoForAppraisal+"'").get("Id").get(0)+"/related/Property_Ownerships__r/view");
 		objAppraisalActivity.waitForElementToBeClickable(15,objAppraisalActivity.clickShowMoreActionButton );		
@@ -897,10 +897,13 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	
 	    objAppraisalActivity.logout();
 		
-	}	   
+	}	  
+	/*
+	 * @Description : Verify that new AV records are created for Prop 19 Intergenerational partial transfer and validating the values that it carries.
+	 */
 	
 	@Test(description = "SMAB-T4120,SMAB-T4121 : Verify that new AV records are generated for the P19P when appraiser user appraises land and Improvement values on the appraiser screen",  groups = {
-			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "NormalEnrollment" }, enabled = true)
 	public void OwnershipAndTransfer_IntergenerationalTransfer() throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -911,7 +914,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 
 		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
 				OwnershipAndTransferCreationData,
-				"dataToCreateGranteeWithIncompleteDataForIntergenerationalPartialTransfer");
+				"DataToCreateGranteeWithIncompleteDataForIntergenerationalPartialTransfer");
 
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
 				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
@@ -920,19 +923,21 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
 				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
 
-		// Step 1- Creating appraiser WI for P19P transfer event
-		
+		// Step 1- Creating appraiser WI for P19P transfer event		
 		String[] arrayForWorkItemAfterCIOSupervisorApproval = objCIOTransferPage
 				.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment",
 						CIOTransferPage.CIO_EVENT_INTERGENERATIONAL_TRANSFER, hashMapOwnershipAndTransferCreationData,
 						hashMapOwnershipAndTransferGranteeCreationData, hashMapCreateOwnershipRecordData,
 						hashMapCreateAssessedValueRecord);
+		
 		// Step 2- LOGIN with appraiser staff
-
 		objAppraisalActivity.login(APPRAISAL_SUPPORT);
 		Thread.sleep(4000);
 		String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
-		objAppraisalActivity.globalSearchRecords(workItemForAppraiser);
+		String query = "Select Id from Work_Item__c where Name = '"+workItemForAppraiser+"'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		driver.navigate().to("https://smcacre--"+excEnv+
+		".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
 		objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
@@ -943,7 +948,6 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
 		// STEP 3 -Updating Land and Improvement Values and saving it for appraisal
-
 		objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
 		String apnNoForAppraisal = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.apnLabel);
 		objAppraisalActivity
@@ -960,13 +964,11 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.clickShowMoreActionButton, 15);
 		HashMap<String, ArrayList<String>> hashMapForAssessedValueTable = objAppraisalActivity.getGridDataInHashMap();
 
-		//Step 4 -Verifying the AV generated  after updating land and improvement value on appraiser screen
-		
+		//Step 4 -Verifying the AV generated  after updating land and improvement value on appraiser screen		
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(0), "Active",
 				"SMAB-T4010:Verify that earlier active AV record is not getting retired  for Intergenerational partial Transfer");
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(1), "Active",
 				"SMAB-T4010:Verify that new active AV record is getting created  for Intergenerational partial Transfer");
-
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Assessed Value Type").get(1),
 				"Prop 19 Intergenerational Partial",
 				"SMAB-T4010:Verify that new  active AV record is getting created  for Intergeneational transfer has assessed value type of Prop 19 Intergenerational Partial .");
@@ -975,8 +977,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Improvement Value").get(1), "1,002,857",
 				"SMAB-T4010:Verify that Improvement taxable value is getting reflected at grid");
 
-		//Step 5 - Navigating to AV record
-		
+		//Step 5 - Navigating to AV record		
 		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Assessed_BY_Values__c/"
 				+ salesforceAPI.select("SELECT id  FROM Assessed_BY_Values__c where name = '"
 						+ hashMapForAssessedValueTable.get("Assessed Values ID").get(1) + "'").get("Id").get(0)
@@ -984,8 +985,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		objAppraisalActivity.waitForElementToBeVisible(objAppraisalActivity.editButton, 10);
 		javascriptexecutor.executeScript("window.scrollBy(0,800)");
 		
-		//Step 6 -Verifying values on AV record
-		
+		//Step 6 -Verifying values on AV record		
 		softAssert.assertEquals( objAppraisalActivity.getFieldValueFromAPAS( objParcelsPage.landCashValue), "5,000,000",
 				"SMAB-T4010:Verify that Land cash value is populated from Appraiser activity screen");
 		softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objParcelsPage.improvementCashValue), "2,000,000",
@@ -999,8 +999,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objParcelsPage.difference), "5,880,000",
 				"SMAB-T4010:Verify that difference Value equals full cash value -factored BYV -HPI");
 
-		//Step 7 -Navigating to AVO record
-		
+		//Step 7 -Navigating to AVO record		
 		driver.navigate().to("https://smcacre--" + excEnv
 				+ ".lightning.force.com/lightning/r/Assessed_Values_Ownership__c/"
 				+ salesforceAPI.select("SELECT id  FROM Assessed_Values_Ownership__c where assessed_values__r.name = '"
@@ -1008,8 +1007,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				+ "/view");
 		objAppraisalActivity.waitForElementToBeVisible(10, objParcelsPage.propertyOwner);
 
-		//Step 8 -Verifying fields on AVO records
-		
+		//Step 8 -Verifying fields on AVO records		
 		softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.statusLabel), "Active",
 				"SMAB-T4010:Verify that AVO of new active  AV after appraisal is created and is active.");
 		softAssert.assertEquals(
@@ -1025,8 +1023,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				hashMapPropertyId.get("Name").get(1),
 				"SMAB-T4010:Verify that AVO of child  is created after updating land and improvement values ");
 
-		//Step 9- Navigating to Old AV record 
-		
+		//Step 9- Navigating to Old AV record 		
 		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Assessed_BY_Values__c/"
 				+ salesforceAPI.select("SELECT id  FROM Assessed_BY_Values__c where name = '"
 						+ hashMapForAssessedValueTable.get("Assessed Values ID").get(0) + "'").get("Id").get(0)
@@ -1036,16 +1033,14 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		Thread.sleep(2000);
 		HashMap<String, ArrayList<String>> hashMapAVOForOldAv = objAppraisalActivity.getGridDataInHashMap();
 
-		//Step 10 -Verifying AVO's associated to the old AV records
-		
+		//Step 10 -Verifying AVO's associated to the old AV records		
 		softAssert.assertTrue(hashMapAVOForOldAv.get("DOV").size() == 2,
 				"SMAB-T4010:Verify two AVO's are present on related list");
 		softAssert.assertEquals(hashMapAVOForOldAv.get("End Date").get(0),
 				hashMapForAssessedValueTable.get("Effective Start Date").get(1),
 				"SMAB-T4010:Verify  AVO is present for 100% owner is retired with end date equals start date of the child ");
 
-		//Step 11 - Navigating TO newly  retained AVO for Father
-		
+		//Step 11 - Navigating TO newly  retained AVO for Father		
 		driver.navigate().to("https://smcacre--" + excEnv
 				+ ".lightning.force.com/lightning/r/Assessed_Values_Ownership__c/"
 				+ salesforceAPI
