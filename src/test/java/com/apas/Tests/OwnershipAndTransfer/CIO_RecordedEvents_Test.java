@@ -4693,12 +4693,14 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
 				+ recordeAPNTransferID + "/view");
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.calculateOwnershipButtonLabel);
-
+		ReportLogger.INFO("Create New grantee");
+		
 		// STEP 8- CIO Staff submitting for approval
 		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
 		Thread.sleep(2000);
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+		ReportLogger.INFO("CIO activity Submitted for Approval");
 		String currentUrl = driver.getCurrentUrl();
 		Thread.sleep(2000);
 		objCioTransfer.logout();
@@ -4714,6 +4716,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+		ReportLogger.INFO("CIO Activity Returned with Reason");
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.calculateOwnershipButtonLabel);
 		objCioTransfer.clickQuickActionButtonOnTransferActivity("Back");
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.EditButton);
@@ -4740,6 +4743,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+		ReportLogger.INFO("CIO Staff reviewed the return reason and Submitted for Approval");
 		Thread.sleep(3000);
 		objCioTransfer.logout();
 		Thread.sleep(5000);
@@ -4755,6 +4759,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.clickQuickActionButtonOnTransferActivity("Approve");
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+		ReportLogger.INFO("CIO Supervisor approved the UT event");
 		Thread.sleep(3000);
 		objCioTransfer.logout();
 		Thread.sleep(5000);

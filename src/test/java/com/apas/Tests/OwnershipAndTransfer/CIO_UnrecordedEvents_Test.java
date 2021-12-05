@@ -1961,7 +1961,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
 				+ recordeAPNTransferID + "/view");
 		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.calculateOwnershipButtonLabel);
-
+		ReportLogger.INFO("Create New grantee");
+		
 		// STEP 6- CIO Staff submitting for Review
 		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Review");
 		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.finishButtonPopUp);
@@ -1969,6 +1970,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		Thread.sleep(2000);
 		objCIOTransferPage.logout();
 		Thread.sleep(5000);
+		ReportLogger.INFO("CIO activity Submitted for Review");
 
 		// STEP 7- Login as CIO-Supervisor and Return RAT
 		objMappingPage.login(users.CIO_SUPERVISOR);
@@ -1980,6 +1982,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
 		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
+		ReportLogger.INFO("CIO Activity Returned with Reason");	
 		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.calculateOwnershipButtonLabel);
 		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Back");
 		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.EditButton);
@@ -2006,6 +2009,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
 		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
+		ReportLogger.INFO("CIO Staff reviewed the return reason and Submitted for Approval");
 		Thread.sleep(3000);
 		objCIOTransferPage.logout();
 		Thread.sleep(5000);
@@ -2021,6 +2025,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Approve");
 		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
+		ReportLogger.INFO("CIO Supervisor approved the UT event");
 		Thread.sleep(3000);
 		objCIOTransferPage.logout();
 		Thread.sleep(5000);
