@@ -43,7 +43,13 @@ public class AuditTrailPage extends ApasGenericPage {
 	public WebElement relatedBusinessRecords;
 	
 	@FindBy(xpath="//div[contains(@class,'outputLookupContainer forceOutputLookupWithPreview')]/a[@target='_blank'][.='Values Allocated']")
-	public WebElement valuesAllocated;     
+	public WebElement valuesAllocated;  
+	
+	@FindBy(xpath="//div[contains(@class,'outputLookupContainer forceOutputLookupWithPreview')]/a[@target='_blank'][.='Linked Record']")
+	public WebElement linkedRecord; 
+	
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//strong[contains(normalize-space(),'Performed Alpha')]")
+	public WebElement businessEventCharacteristicsAuditTrail; 
 	
 	
   	   

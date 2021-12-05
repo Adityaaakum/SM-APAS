@@ -45,7 +45,17 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	public String dovLabel ="DOV";
 	public String apnLabel ="APN";
 	public String ownerName ="Owner Name";
+
+	public String landCashValueLabel ="Land Cash Value";
+	public String improvementCashValueLabel ="Improvement Cash Value";
+	public String statusLabel="Status";
+	public String startDateLabel="Start Date";
 	
+	
+
+	public String partofEconomicUnit ="Part of Economic Unit";
+
+
 	
 	@FindBy(xpath = "//select[@name='Rejection_Reason_PickList']")
 	public WebElement rejectionReasonList;
@@ -53,6 +63,8 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	@FindBy(xpath ="//*[@class='slds-modal__footer']//*[text()='Save']")
 	public WebElement calculatePenaltySaveButton;
 	
+	@FindBy(xpath = "//a[contains(@class,'slds-button slds-button--icon-x-small slds-button--icon-border-filled')]")
+	public WebElement clickShowMoreActionButton;
 	/*
 	 * This method is to find the xpath of the edit pencil icon.
 	 */

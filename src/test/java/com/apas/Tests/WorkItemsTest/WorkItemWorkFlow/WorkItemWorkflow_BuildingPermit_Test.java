@@ -754,8 +754,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		// Step 16: Going to WI page and checking the status
 		objBuildingPermitPage.globalSearchRecords(editImportReviewWorkItem);
 
-		WebElement statusText = driver.findElement(By.xpath("//*[contains(text(),'Construction Completed')]"));
-		objBuildingPermitPage.waitForElementToBeVisible(statusText);
+		Thread.sleep(2000);
 		String expectedStatus=driver.findElement(By.xpath("//*[contains(@class,'slds-text-title slds-truncate') and contains(@title,'Action')]/../*[contains(@class,'fieldComponent slds-text-body--regular slds-show_inline-block slds-truncate')]")).getText();
 		softAssert.assertEquals(expectedStatus, "Construction Completed",
 				"SMAB-T2987, SMAB-T2988, SMAB-T2989:Status of the work item should be Construction completed");
@@ -889,8 +888,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		// Step 16: Going to WI page and checking the status
 		objBuildingPermitPage.globalSearchRecords(editImportReviewWorkItem);
 
-		WebElement statusText = driver.findElement(By.xpath("//*[contains(text(),'Construction Completed')]"));
-		objBuildingPermitPage.waitForElementToBeVisible(statusText);
+		Thread.sleep(2000);
 		String expectedStatus=driver.findElement(By.xpath("//*[contains(@class,'slds-text-title slds-truncate') and contains(@title,'Action')]/../*[contains(@class,'fieldComponent slds-text-body--regular slds-show_inline-block slds-truncate')]")).getText();
 		softAssert.assertEquals(expectedStatus, "Construction Completed",
 				"SMAB-T3007:Status of the work item should be Construction completed");

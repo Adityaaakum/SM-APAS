@@ -107,6 +107,10 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public static final String CIO_RESPONSE_NoChangeRequired="No Edits required";
 	public static final String CIO_RESPONS_EventCodeChangeRequired="Event Code needs to be changed";
 	public static final String APPRAISAL_NORMAL_ENROLLMENT="Normal Enrollment";
+	public static final String CIO_EVENT_DISABLED_OWNER_TRANSFER="CIO-P19D";
+	public static final String CIO_EVENT_EXCLUSION="CIO-P19E";
+	public static final String CIO_EVENT_REASSESSMENT="CIO-P19";
+	public static final String CIO_EVENT_INTERGENERATIONAL_TRANSFER="CIO-P19P";
 	
 	public String eventIDLabel = "EventID";
 	public String situsLabel = "Situs";
@@ -767,6 +771,15 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					waitForElementToBeInVisible(ApnLabel, 5);
 					String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+					salesforceApi.update("Parcel__C", "Select Id from parcel__c where name ='" + apnFromWIPage + "'",
+							"Primary_Situs__c", "");
+					salesforceApi.update("Parcel__C", "Select Id from parcel__c where name ='" + apnFromWIPage + "'",
+							"TRA__c",
+							salesforceApi.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+					salesforceApi.update("Parcel__C", "Select Id from parcel__c where name ='" + apnFromWIPage + "'",
+							"Primary_Situs__c",
+							salesforceApi.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id")
+									.get(0));
 
 					// Updating neighborhood code of parcel so Normal enrollement WI is generated
 					if (enrollmentType.equalsIgnoreCase(APPRAISAL_NORMAL_ENROLLMENT)) {
@@ -826,9 +839,10 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					objMappingPage.login(CIO_STAFF);
 					objMappingPage.waitForElementToBeClickable(objMappingPage.appLauncher, 10);
-					
-					// Selecting E-FILE intake as CIO works best with E-FILE AND APAS and there are some issues with navigation on APAS
-					
+
+					// Selecting E-FILE intake as CIO works best with E-FILE AND APAS and there are
+					// some issues with navigation on APAS
+
 					searchModule(modules.EFILE_INTAKE);
 					objMappingPage.globalSearchRecords(workItemNo);
 					Thread.sleep(5000);
@@ -850,12 +864,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 					String parentWindow = driver.getWindowHandle();
 					objWorkItemHomePage.switchToNewWindow(parentWindow);
-					softAssert.assertContains(driver.getCurrentUrl(), navigationUrL.get("Navigation_Url__c").get(0),
-							"SMAB-T3306:Validating that user navigates to CIo transfer screenafter clicking on related action hyperlink");
-
 					waitForElementToBeClickable(quickActionButtonDropdownIcon, 10);
 					ReportLogger.INFO("Add the Transfer Code");
-
 					editRecordedApnField(transferCodeLabel);
 					waitForElementToBeVisible(10, transferCodeLabel);
 					searchAndSelectOptionFromDropDown(transferCodeLabel, transferCode);
@@ -869,6 +879,13 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					HashMap<String, ArrayList<String>> granteeHashMap = getGridDataForRowString("1");
 					String granteeForMailTo = granteeHashMap.get("Grantee/Retain Owner Name").get(0);
 
+					if (transferCode.equals(CIO_EVENT_INTERGENERATIONAL_TRANSFER)) {
+						salesforceApi.update("CIO_Transfer_Grantee_New_Ownership__c",
+								"Select Id from CIO_Transfer_Grantee_New_Ownership__c where Recorded_APN_Transfer__c = '"
+										+ recordeAPNTransferID + "'",
+								"DOV__c", dateOfEvent);
+					}
+
 					// STEP 11- Performing calculate ownership to perform partial transfer
 
 					driver.navigate()
@@ -877,11 +894,13 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 									+ recordeAPNTransferID + "/view");
 					waitForElementToBeClickable(10, calculateOwnershipButtonLabel);
 
-					
-					Click(getButtonWithText(calculateOwnershipButtonLabel));
-					waitForElementToBeVisible(5, nextButton);
-					enter(calculateOwnershipRetainedFeld, "50");
-					Click(getButtonWithText(nextButton));
+					if (!hashMapOwnershipAndTransferGranteeCreationData.get("Owner Percentage").equals("100")) {
+						Click(getButtonWithText(calculateOwnershipButtonLabel));
+						waitForElementToBeVisible(5, nextButton);
+						enter(calculateOwnershipRetainedFeld, String.valueOf(100 - Integer
+								.parseInt(hashMapOwnershipAndTransferGranteeCreationData.get("Owner Percentage"))));
+						Click(getButtonWithText(nextButton));
+					}
 
 					// STEP 12-Creating copy to mail to record
 
@@ -894,14 +913,14 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 							.to("https://smcacre--" + excEnv
 									+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
 									+ recordeAPNTransferID + "/view");
-					
-					//STEP 14 - Click on submit for approval button
-					 clickQuickActionButtonOnTransferActivity(null,quickActionOptionSubmitForApproval);
-					
+
+					// STEP 14 - Click on submit for approval button
+					clickQuickActionButtonOnTransferActivity(null, quickActionOptionSubmitForApproval);
+
 					ReportLogger.INFO("CIO!! Transfer submitted for approval");
 					waitForElementToBeClickable(10, finishButton);
 					Click(getButtonWithText(finishButton));
-					
+
 					logout();
 
 					login(CIO_SUPERVISOR);
@@ -910,22 +929,20 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 							.to("https://smcacre--" + excEnv
 									+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
 									+ recordeAPNTransferID + "/view");
-					//STEP 14 - Click on submit for approval button
-					 clickQuickActionButtonOnTransferActivity(null,quickActionOptionApprove);
-					
+					// STEP 14 - Click on submit for approval button
+					clickQuickActionButtonOnTransferActivity(null, quickActionOptionApprove);
 
 					waitForElementToBeClickable(10, finishButton);
 					Click(getButtonWithText(finishButton));
 					salesforceApi.update("Recorded_APN_Transfer__c", recordeAPNTransferID, "Auto_Confirm_Start_Date__c",
 							"2021-04-07");
 					salesforceApi.generateReminderWorkItems(SalesforceAPI.CIO_AUTOCONFIRM_BATCH_JOB);
-					
 
 					// Fetching appraiser WI genrated on approval of CIO WI
 					if (enrollmentType.equalsIgnoreCase(APPRAISAL_NORMAL_ENROLLMENT)) {
-						
-						//Filtering that if type is normal enrollement and Event code is CIO-GOVT
-						
+
+						// Filtering that if type is normal enrollement and Event code is CIO-GOVT
+
 						if (transferCode.equals(CIO_EVENT_CODE_CIOGOVT)) {
 							String workItemNoForGovtCIOAppraisal = salesforceApi.select(
 									"Select Id ,Name from Work_Item__c where type__c='Govt CIO Appraisal' and sub_type__c='Appraisal Activity' order by name desc")
@@ -933,20 +950,19 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 							String[] arrayForWorkItemAfterCIOSupervisorApproval = { workItemNoForGovtCIOAppraisal };
 							logout();
 							return arrayForWorkItemAfterCIOSupervisorApproval;
-						}					
-						
+						}
+
 						String workItemNoForAppraiser = salesforceApi.select(
 								"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by name desc")
-								.get("Name").get(0);						
+								.get("Name").get(0);
 						String workItemNoForQuestionnaireCorrespondence = salesforceApi.select(
 								"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Questionnaire Correspondence' order by name desc")
-								.get("Name").get(0);						
+								.get("Name").get(0);
 						String[] arrayForWorkItemAfterCIOSupervisorApproval = { workItemNoForAppraiser,
 								workItemNoForQuestionnaireCorrespondence };
 						logout();
 						return arrayForWorkItemAfterCIOSupervisorApproval;
-					}					
-					
+					}
 
 					else {
 						String workItemNoForDirectEnrollement = salesforceApi.select(
@@ -957,7 +973,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 						return arrayForWorkItemAfterCIOSupervisorApproval;
 
 					}
-					
+
 			 }	
 			 
 		//This method will delete all the transfer activity records on the Parcel	 
