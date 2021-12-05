@@ -34,7 +34,7 @@ public class WorkItemAdministration_Report_Test extends TestBase{
 		driver = BrowserDriver.getBrowserInstance();
 		objReportsPage = new ReportsPage(driver);
 	}
-	@Test(description = "SMAB-T2520: Validation of Executive All Work Items reports ", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "WorkItem_Reports", "WorkItemAdministration"}, alwaysRun = true)
+	@Test(description = "SMAB-T2520: Validation of Executive All Work Items reports ", dataProvider = "loginBPPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "WorkItem_Reports", "WorkItemAdministration", "Reports"}, alwaysRun = true)
     public void WorkItemWorkflow_Reports_ExecutiveViewReports(String loginUser) throws Exception {
 		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		String reportName = "Executive All Work Items";
