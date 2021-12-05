@@ -295,7 +295,7 @@ public class ApasGenericPage extends Page {
 	 * @param value: Like Roof Repair or Repairs for strat code field etc.
 	 * @throws Exception
 	 */
-	public void searchAndSelectOptionFromDropDown(Object element, String value) throws Exception {
+	public void searchAndSelectOptionFromDropDown(Object element, String value) throws Exception { 
         WebElement webElement;
         String xpathDropDownOption;
         if (element instanceof String) {
@@ -317,7 +317,8 @@ public class ApasGenericPage extends Page {
         waitForElementToBeVisible(drpDwnOption, 10);
         //drpDwnOption.click();
         Click(drpDwnOption);
-    }
+	}
+    
 
 	/**
 	 * @Description: This method is to handle fields like Permit City Code or Processing Status

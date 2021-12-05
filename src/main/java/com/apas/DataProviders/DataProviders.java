@@ -438,7 +438,12 @@ public class DataProviders {
 	        
 		}
 
-       
+		@DataProvider(name = "dpForAppraisalActivityAVCreation")
+		public Object[] dpTestAppraisalActivityAVCreation() {
+			return new Object[] {CIOTransferPage.CIO_EVENT_DISABLED_OWNER_TRANSFER,CIOTransferPage.CIO_EVENT_EXCLUSION,CIOTransferPage.CIO_EVENT_REASSESSMENT };
+
+			
+		}
 }
        
 
