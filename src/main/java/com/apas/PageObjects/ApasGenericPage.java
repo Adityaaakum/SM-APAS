@@ -507,6 +507,7 @@ public class ApasGenericPage extends Page {
 		enter(objLoginPage.txtpassWord, password);
 		Click(objLoginPage.btnSubmit);
 		ReportLogger.INFO("User logged in the application");
+		Thread.sleep(2000);
 		//closeDefaultOpenTabs();
 	}
 
