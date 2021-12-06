@@ -2028,8 +2028,6 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		ReportLogger.INFO("CIO Supervisor approved the UT event");
 		Thread.sleep(3000);
 		objCIOTransferPage.logout();
-		Thread.sleep(5000);
-	  }
-		
+	  }	
 	
 }
