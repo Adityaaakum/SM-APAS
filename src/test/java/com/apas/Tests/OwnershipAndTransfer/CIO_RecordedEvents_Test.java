@@ -4762,7 +4762,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("CIO Supervisor approved the UT event");
 		Thread.sleep(3000);
 		objCioTransfer.logout();
-		Thread.sleep(5000);
+		Thread.sleep(1000);
 		
 	  }
 
