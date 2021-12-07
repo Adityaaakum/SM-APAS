@@ -20,6 +20,8 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.ApasGenericPage;
+import com.apas.PageObjects.AppraisalActivityPage;
 import com.apas.PageObjects.AuditTrailPage;
 import com.apas.PageObjects.BuildingPermitPage;
 import com.apas.PageObjects.CIOTransferPage;
@@ -55,6 +57,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	String ownershipCreationData;
 	String OwnershipAndTransferCreationData;
 	String MailtoData;
+	ApasGenericPage apasGenericObj;
+	AppraisalActivityPage objAppraisalActivity;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -72,6 +76,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		MailtoData = testdata.MAILTO_RECORD_DATA_PARCEL;
 		driver.manage().timeouts().pageLoadTimeout(15, TimeUnit.SECONDS);
+		apasGenericObj = new ApasGenericPage(driver);
+		objAppraisalActivity= new AppraisalActivityPage(driver);
+
 
 	}
 	/*
@@ -4624,6 +4631,141 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				
 		objWorkItemHomePage.logout();
 
+	}
+
+	/*
+	 * This method is used to Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile.
+	 * Users: RP Appraiser, RP Supervisor 
+	 */
+	
+	@Test(description = "SMAB-T3932, SMAB-T4271: Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile.", dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
+	public void RecorderIntegration_Composite_Value_Calculation(String loginUser) throws Exception {
+		String execEnv = System.getProperty("region");
+		
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithIncompleteDataPartTransfer");
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateRpOwnership");
+
+		Map<String, String> hashMapMailToData = objUtil.generateMapFromJsonFile(MailtoData, "createMailToData");
+
+		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecordCioPart");
+		// STEP 1 : Create Appraiser activity
+		objCioTransfer.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", "CIO-PART",
+						hashMapMailToData, hashMapOwnershipAndTransferGranteeCreationData,
+						hashMapCreateOwnershipRecordData, hashMapCreateAssessedValueRecord);
+		
+		// Step2: Login to the APAS application using the credentials passed through dataprovider (RP Appraiser)
+		objWorkItemHomePage.login(loginUser);
+
+		String workItemNoForAppraiser = salesforceAPI.select(
+				"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by createdDate desc")
+				.get("Name").get(0);						
+		objCioTransfer.globalSearchRecords(workItemNoForAppraiser);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.getFieldValueFromAPAS("APN");
+		objWorkItemHomePage.waitForElementToBeInVisible("APN", 5);
+		objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		
+		// STEP 3 - Navigating to Appraisal Activity Screen
+		ReportLogger.INFO("Navigating to Appraisal Activity Screen");
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		String appraisalActivityUrl = driver.getCurrentUrl();
+		
+		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
+		String apnOnAAS=(apasGenericObj.getFieldValueFromAPAS("APN"));
+		String DOV=(apasGenericObj.getFieldValueFromAPAS("DOV"));
+		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
+		Thread.sleep(2000);
+		
+		objCioTransfer.clickViewAll("Assessed Values for Parent Parcel");
+		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValue = objMappingPage.getGridDataInHashMap();
+		String assessedValueType = gridDataHashMapAssessedValue.get("Assessed Value Type").get(0);
+		String assessedValueStartDate = gridDataHashMapAssessedValue.get("Effective Start Date").get(0);
+		String assessedValueEndDate = gridDataHashMapAssessedValue.get("Effective End Date").get(0);
+		String assessedValueLandValue = gridDataHashMapAssessedValue.get("Land Value").get(0);
+		String assessedValueImprovementValue = gridDataHashMapAssessedValue.get("Improvement Value").get(0);
+		
+		driver.navigate().to(appraisalActivityUrl);
+		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
+		objMappingPage.Click(objAppraisalActivity.appraisalActivityEditValueButton("Land Cash Value"));
+		objMappingPage.waitForElementToBeVisible(apasGenericObj.getButtonWithText("Save"));
+		
+		apasGenericObj.enter("Land Cash Value", "200000");
+		apasGenericObj.enter("Improvement Cash Value","200000");
+		
+		apasGenericObj.Click(apasGenericObj.getButtonWithText("Save"));
+		Thread.sleep(2000);
+		
+		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
+		Thread.sleep(2000);
+		objCioTransfer.clickViewAll("Assessed Values for Parent Parcel");
+		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNew = objMappingPage.getGridDataInHashMap();
+		String assessedValueTypeFirst = gridDataHashMapAssessedValueNew.get("Assessed Value Type").get(0);
+		String assessedValueStartDateFirst = gridDataHashMapAssessedValueNew.get("Effective Start Date").get(0);
+		
+		String assessedValueLandValueFirst= gridDataHashMapAssessedValueNew.get("Land Value").get(0);
+		String assessedValueImprovementValueFirst = gridDataHashMapAssessedValueNew.get("Improvement Value").get(0);
+		String assessedValueTypeSecond = gridDataHashMapAssessedValueNew.get("Assessed Value Type").get(1);
+		String assessedValueStartDateSecond = gridDataHashMapAssessedValueNew.get("Effective Start Date").get(1);
+		String assessedValueLandValueSecond= gridDataHashMapAssessedValueNew.get("Land Value").get(1);
+		String assessedValueImprovementValueSecond = gridDataHashMapAssessedValueNew.get("Improvement Value").get(1);
+		String assessedValueEndDateFirst = gridDataHashMapAssessedValue.get("Effective End Date").get(0);
+		String assessedValueEndDateSecond = gridDataHashMapAssessedValueNew.get("Effective End Date").get(1);
+		softAssert.assertEquals(assessedValueTypeFirst,assessedValueType, "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
+		softAssert.assertEquals(assessedValueStartDateFirst,assessedValueStartDate, "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
+		softAssert.assertEquals(assessedValueLandValueFirst,assessedValueLandValue, "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+		softAssert.assertEquals(assessedValueImprovementValueFirst,assessedValueImprovementValue, "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+		softAssert.assertEquals(assessedValueEndDate,assessedValueEndDateFirst, "SMAB-T3932, SMAB-T4271:Verify That Both End Date Should Be empty.");
+	
+		softAssert.assertEquals(assessedValueTypeSecond,assessedValueType, "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
+		softAssert.assertEquals(assessedValueStartDateSecond,DOV, "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
+		softAssert.assertEquals(assessedValueLandValueSecond,"200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+		softAssert.assertEquals(assessedValueImprovementValueSecond,"200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+		softAssert.assertEquals(assessedValueEndDateSecond,assessedValueEndDateFirst, "SMAB-T3932, SMAB-T4271:Verify That Both End Date Should Be Empty.");
+	
+		
+		String queryAPN = "select Id from Parcel__c where Name='"+apnOnAAS+"'";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apnToUpdateId= responseAPNDetails.get("Id").get(0);
+		driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/" + apnToUpdateId + "/related/Roll_Entry__r/view");
+		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.parcelsLink);
+		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryNew = objMappingPage.getGridDataInHashMap();
+		
+		String rollValueTypeFirst = gridDataHashMapRollEntryNew.get("Type").get(0);
+		String rollValueYearFirst = gridDataHashMapRollEntryNew.get("Roll Year Settings").get(0);
+		String rollValueLandValueFirst= gridDataHashMapRollEntryNew.get("Land Assessed Value").get(0);
+		String rollValueImprovementValueFirst = gridDataHashMapRollEntryNew.get("Improvement Assessed Value").get(0);
+		String rollValueTypeSecond = gridDataHashMapRollEntryNew.get("Type").get(1);
+		String rollValueYearSecond = gridDataHashMapRollEntryNew.get("Roll Year Settings").get(1);
+		String rollValueLandValueSecond= gridDataHashMapRollEntryNew.get("Land Assessed Value").get(1);
+		String rollValueImprovementValueSecond = gridDataHashMapRollEntryNew.get("Improvement Assessed Value").get(1);
+		
+
+		softAssert.assertEquals(rollValueTypeFirst,"Annual", "SMAB-T3932, SMAB-T4271:Verify That Both Roll Value Type Should Be Same.");
+		softAssert.assertEquals(rollValueYearFirst,"2022", "SMAB-T3932, SMAB-T4271:Verify That year Should Be Same.");
+		softAssert.assertEquals(rollValueLandValueFirst,"$244,355", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+		softAssert.assertEquals(rollValueImprovementValueFirst,"$244,355", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+	
+		softAssert.assertEquals(rollValueTypeSecond,"Supplemental", "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
+		softAssert.assertEquals(rollValueYearSecond,"2021", "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
+		softAssert.assertEquals(rollValueLandValueSecond,"$241,936", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+		softAssert.assertEquals(rollValueImprovementValueSecond,"$241,936", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+			
+	
 	}
 
 }

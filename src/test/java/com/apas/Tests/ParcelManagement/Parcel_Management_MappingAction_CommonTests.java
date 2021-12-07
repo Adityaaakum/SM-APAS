@@ -243,7 +243,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		JSONObject jsonParcelObject = objMappingPage.getJsonObject();
 
 		// Fetching the Active Parcel
-		String query = "SELECT Name, Id FROM Parcel__c WHERE Status__c = 'Active' AND (Not Name like '134%') AND Property_Use_Code__c = '01-SINGLE FAMILY RES' AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')";
+		String query = "SELECT Name, Id FROM Parcel__c WHERE Status__c = 'Active' AND (Not Name like '134%') AND Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO')";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 
 		String parcelToSearch = response.get("Name").get(0);
@@ -252,13 +252,21 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c";
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 
 		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(
 				"SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 
-		objMappingPage.deleteCharacteristicInstanceFromParcel(parcelToSearch);
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + parcelToSearch + "'",
+				"Primary_Situs__c", "");
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + parcelToSearch + "'",
+				"TRA__c",
+				salesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + parcelToSearch + "'",
+				"Primary_Situs__c",
+				salesforceAPI.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id")
+						.get(0));
 		
 		String legalDescriptionValue = "Legal PM 85/25-260";
 		String districtValue = "District01";
@@ -269,7 +277,6 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		jsonParcelObject.put("Short_Legal_Description__c", legalDescriptionValue);
 		jsonParcelObject.put("District__c", districtValue);
 		jsonParcelObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
-		jsonParcelObject.put("TRA__c", responseTRADetails.get("Id").get(0));
 		jsonParcelObject.put("Lot_Size_SQFT__c", parcelSize);
 
 		salesforceAPI.update("Parcel__c", response.get("Id").get(0), jsonParcelObject);
@@ -357,7 +364,6 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		ReportLogger.INFO("Switch to the Mapping Action screen");
 		objWorkItemHomePage.switchToNewWindow(parentWindow1);
 
-		objMappingPage.deleteCharacteristicInstanceFromParcel(parcelToSearch1);
 		// Step 9: Now on the Mapping action page from second WI and here user will perform One to One Mapping action
 		objMappingPage.waitForElementToBeVisible(60, objMappingPage.getButtonWithText(objMappingPage.EditButton));
 		objApasGenericPage.Click(objMappingPage.getButtonWithText(objMappingPage.EditButton));
@@ -428,14 +434,11 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		// Add the parcels in a Hash Map for later use in the combine action. Those parcels will be combined.
 
 		String concatenateAPNWithDifferentMapBookMapPage = apn2 + "," + apn3;
+
 		String legalDescriptionValue2 = "Legal PM 85/25-260";
 		String districtValue2 = "District01";
 		String parcelSize1 = "200";
-		
-		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
-		objMappingPage.deleteCharacteristicInstanceFromParcel(apn3);
 
-		
 		// Creating Json Object
 
 		jsonParcelObject.put("Status__c", "Active");

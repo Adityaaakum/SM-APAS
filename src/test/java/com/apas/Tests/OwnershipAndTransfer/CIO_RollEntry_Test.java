@@ -127,7 +127,7 @@ public class CIO_RollEntry_Test  extends TestBase implements testdata, modules, 
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3932, SMAB-T4268:Verify the Quick Actions Buttons to Generate/Update Annual Roll Entry Records.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression",  "RollYearSettings" })
+			"Regression",  "ChangeInOwnershipManagement", "RollEntry" })
 	public void CIO_VerifyAnnualRollEntryRecordsButtons(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
