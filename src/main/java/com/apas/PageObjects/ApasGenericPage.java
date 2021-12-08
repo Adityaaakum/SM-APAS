@@ -644,15 +644,16 @@ public void searchModule(String moduleToSearch) throws Exception {
 			catch (Exception e) {
 				
 				String executionEnv = System.getProperty("region");
+				System.out.println(executionEnv);
 		
 				// for parcel search
 					if(searchString.length()== 11 && isSearchStringParcel(searchString)) {
 						ReportLogger.INFO("Opening parcel record: " + searchString);
 						String   query = "Select Id from Parcel__c where Name = '"+searchString+"'";
 						HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
-						driver.navigate().to("https://smcacre--"+executionEnv+
+						driver.navigate().to("https://smcacre--"+executionEnv.toLowerCase()+
 								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
-						ReportLogger.INFO("Navigating to Parcel Record - https://smcacre--"+executionEnv+
+						ReportLogger.INFO("Navigating to Parcel Record - https://smcacre--"+executionEnv.toLowerCase()+
 								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
 						Thread.sleep(15000);
 					}
@@ -661,9 +662,9 @@ public void searchModule(String moduleToSearch) throws Exception {
 						ReportLogger.INFO("Opening WI record: " + searchString);
 						String   query = "Select Id from Work_Item__c  where Name = '"+searchString+"'";
 						HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
-						driver.navigate().to("https://smcacre--"+executionEnv+
+						driver.navigate().to("https://smcacre--"+executionEnv.toLowerCase()+
 								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
-						ReportLogger.INFO("Navigating to Work Item Record - https://smcacre--"+executionEnv+
+						ReportLogger.INFO("Navigating to Work Item Record - https://smcacre--"+executionEnv.toLowerCase()+
 								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
 						Thread.sleep(15000);
 					}

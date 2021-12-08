@@ -327,8 +327,16 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// Formatting date and Pcor exist from recorded document
 
 		String[] dateOfRecordingfromHashMap = hashMapRecordedDocumentData.get("Recording_Date__c").get(0).split("-");
-		String dateofRecordingAfterConversion = dateOfRecordingfromHashMap[1].replace("0", "") + "/"
-				+ dateOfRecordingfromHashMap[2].replace("0", "") + "/" + dateOfRecordingfromHashMap[0];
+		String dateofRecordingAfterConversion ;
+		
+		
+		if (dateOfRecordingfromHashMap[1].startsWith("0")) {
+			dateofRecordingAfterConversion = dateOfRecordingfromHashMap[1].replace("0", "") + "/"
+					+ dateOfRecordingfromHashMap[2].replace("0", "") + "/" + dateOfRecordingfromHashMap[0];
+		} else {
+			dateofRecordingAfterConversion = dateOfRecordingfromHashMap[1] + "/"
+					+ dateOfRecordingfromHashMap[2].replace("0", "") + "/" + dateOfRecordingfromHashMap[0];
+		}
 		if (hashMapRecordedDocumentData.get("PCOR_Exits__c").get(0) == "true") {
 			pcorExit = "Yes";
 		} else
@@ -568,7 +576,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertContains(objCioTransfer.getElementText(objCioTransfer.calculateOwnershipPageMessage),
 				"The sum of all grantee ownership perce﻿ntage is more than 100. Please check and make the correction",
 				"SMAB-T3567: Verify user is not able to save grantee  record with combined ownership perentage of more than 100%");		
-		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.CancelButton));
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.previousButtonLabel));
 		objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "50");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
 
