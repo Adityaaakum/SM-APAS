@@ -644,7 +644,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 			catch (Exception e) {
 				
 				String executionEnv = System.getProperty("region");
-				System.out.println(executionEnv);
+			
 		
 				// for parcel search
 					if(searchString.length()== 11 && isSearchStringParcel(searchString)) {
