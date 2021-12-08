@@ -4764,9 +4764,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.logout();
 	  }
 	
-	/*
-	 * This method will test the GOVI CIO using CIO-GOVT event code.
-	 */
+   /*
+	* Validate Govt CIO Appraisal - Transfer from one Govt owner to another Govt owner
+    */
 
 	@Test(description = "SMAB-T4169, SMAB-T4172, : Govt CIO Post transfer process", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecordedEvent" })
@@ -4780,7 +4780,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
 				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
 		Map<String, String> dataToCreateUnrecordedEventMap = objUtil
-				.generateMapFromJsonFile(testdata.UNRECORDED_EVENT_DATA, "Unrecorded Event");
+				.generateMapFromJsonFile(testdata.UNRECORDED_EVENT_DATA, "UnrecordedEventCreation");
 		Map<String, String> hashMapMailToData = objUtil.generateMapFromJsonFile(MailtoData, "createMailToData");
 
 		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
@@ -4790,7 +4790,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// STEP 1 : Create Appraiser activity
 		String[] arrayForWorkItemAfterCIOSupervisorApproval = objCioTransfer
-				.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", "CIO-GOVT",
+				.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", objCioTransfer.CIO_EVENT_CODE_CIOGOVT,
 						hashMapMailToData, hashMapOwnershipAndTransferGranteeCreationData,
 						hashMapCreateOwnershipRecordData, hashMapCreateAssessedValueRecord);
 
@@ -4798,7 +4798,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Login as Appriaser user");
 		objMappingPage.login(users.RP_APPRAISER);
 		String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
-		objCioTransfer.globalSearchRecords(workItemForAppraiser);
+		String workItemQuery = "SELECT Id FROM Work_Item__c where name = '"+workItemForAppraiser+"'";
+		String workItemId = salesforceAPI.select(workItemQuery).get("Id").get(0);
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Work_Item__c/"+workItemId+"/view");
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
@@ -4828,14 +4830,14 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
 				+ "/related/Assessed_Values__r/view");
 		ReportLogger.INFO("Opened Assessed value records");
-		Thread.sleep(5000);
-
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
 		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNew = objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Land Value").get(1), "0", "SMAB-T4169: LCV for Assessed value record is 0");
 		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Improvement Value").get(1), "0",
 				"SMAB-T4169: ICV for Assessed value record ");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
 				+ "/related/Roll_Entry__r/view");
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
 		ReportLogger.INFO("Opened Roll Entry records");
 		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryValue = objMappingPage.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMapRollEntryValue.get("Land Assessed Value").get(0), "$0",
@@ -4873,6 +4875,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("CIO Activity created");
 		String currentUrlCIO = driver.getCurrentUrl();
 		objCioTransfer.logout();
+		Thread.sleep(5000);
 		
 
 		// STEP 6: Login with CIO staff and approve the CIO
@@ -4888,7 +4891,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.calculateOwnershipButtonLabel);
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
-		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-GOVT");
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, objCioTransfer.CIO_EVENT_CODE_CIOGOVT);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.calculateOwnershipButtonLabel);
 		
@@ -4940,8 +4943,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.Click(objCioTransfer.saveButtonModalWindow);
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
 				+ "/related/Assessed_Values__r/view");
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
 		ReportLogger.INFO("Navigated to Assessed value records");		
-		Thread.sleep(5000);
 		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNewTransferGovt = objMappingPage
 				.getGridDataInHashMap();
 		softAssert.assertEquals(gridDataHashMapAssessedValueNewTransferGovt.get("Land Value").get(2), "0",
@@ -4950,6 +4953,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T4169: ICV for Assessed value is 0");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
 				+ "/related/Roll_Entry__r/view");
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
 		ReportLogger.INFO("Navigated to Roll entry record");
 		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryValueGOVTTransfer = objMappingPage
 				.getGridDataInHashMap();
