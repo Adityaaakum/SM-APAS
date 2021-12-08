@@ -1361,7 +1361,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3887,SMAB-T4111:verify that user is able to create manual work item for Roll value change and able to do Roll Corrections for AV Review", dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","WorkItemAdministration", "RollValueChange", "RollCorrections" })
+			"Regression","WorkItemAdministration", "RollCorrections" })
 	public void WorkItemAdministration_Manual_RollEntryRecords_RollValueChange(String loginUser) throws Exception {
 
 		JSONObject jsonObjectAPN = objCIOTransferPage.getJsonObject();
