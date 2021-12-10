@@ -1360,7 +1360,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3887,SMAB-T4111:verify that user is able to create manual work item for Roll value change and able to do Roll Corrections for AV Review", dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3887,SMAB-T4111:verify that user is able to create manual work item for Roll value change and able to do Roll Corrections for AV Review", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","WorkItemAdministration", "RollCorrections", "ChangeInOwnershipManagement" })
 	public void WorkItemAdministration_Manual_RollEntryRecords_RollValueChange(String loginUser) throws Exception {
 

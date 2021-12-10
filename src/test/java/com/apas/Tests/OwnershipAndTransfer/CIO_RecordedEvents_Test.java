@@ -4638,7 +4638,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * Users: RP Appraiser, RP Supervisor 
 	 */
 	
-	@Test(description = "SMAB-T3932, SMAB-T4271: Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile.", dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3932, SMAB-T4271: Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile.", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void RecorderIntegration_Composite_Value_Calculation(String loginUser) throws Exception {
 		String execEnv = System.getProperty("region");
