@@ -4655,7 +4655,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
 				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecordCioPart");
 		// STEP 1 : Create Appraiser activity
-		objCioTransfer.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", "CIO-PART",
+		objCioTransfer.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", objCioTransfer.CIO_EVENT_CODE_PART,
 						hashMapMailToData, hashMapOwnershipAndTransferGranteeCreationData,
 						hashMapCreateOwnershipRecordData, hashMapCreateAssessedValueRecord);
 		
@@ -4764,7 +4764,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(rollValueYearSecond,"2021", "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
 		softAssert.assertEquals(rollValueLandValueSecond,"$241,936", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
 		softAssert.assertEquals(rollValueImprovementValueSecond,"$241,936", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
-			
+		objMappingPage.logout();	
 	
 	}
 

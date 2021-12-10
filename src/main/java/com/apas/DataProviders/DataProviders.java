@@ -269,15 +269,15 @@ public class DataProviders {
     /**
      * Return RP Appraiser User
      */
-    @DataProvider(name = "RPAppraiser")
-    public Object[][] dataProviderLoginRPAppraiser() {
+    @DataProvider(name = "loginRPAppraiser")
+    public Object[][] dpLoginRPAppraiser() {
         return new Object[][] { { users.RP_APPRAISER }};
     }
     /**
      * Return RP Principal User
      */
-    @DataProvider(name = "RPPrincipal")
-    public Object[][] dataProviderLoginRPPrincipal() {
+    @DataProvider(name = "loginRPPrincipal")
+    public Object[][] dpLoginRPPrincipal() {
         return new Object[][] { { users.RP_PRINCIPAL }};
     }
     /**
