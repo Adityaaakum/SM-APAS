@@ -352,11 +352,11 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		String executionEnv = System.getProperty("region");
 		
 		// fetching audit trail records
-		String queryAuditTrail1 = "SELECT  Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
+		String queryAuditTrail1 = "SELECT  Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
 				+ " and parcel__c!=NULL ";
 		HashMap<String, ArrayList<String>> responseAuditTrailDetails = salesforceAPI.select(queryAuditTrail1);
 		String apnId1 = responseAuditTrailDetails.get("Parcel__c").get(0);
-		String queryAuditTrail2 = "SELECT  Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
+		String queryAuditTrail2 = "SELECT Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
 				+ " and parcel__c!=NULL and parcel__c!='" + apnId1 + "'";
 
 		HashMap<String, ArrayList<String>> responseAuditTrailDetails2 = salesforceAPI.select(queryAuditTrail2);
