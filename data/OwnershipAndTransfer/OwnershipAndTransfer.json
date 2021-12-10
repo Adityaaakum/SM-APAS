@@ -57,5 +57,14 @@
 	"Grantee":"ERIKSEN"
 	
 	
+	},
+	"DataToCreateGranteeWithIncompleteDataForIntergenerationalPartialTransfer":{
+	
+	"Last Name":"ERIKSEN",
+	"Ownership Start Date":"7/16/2021",
+	"Ownership End Date":"7/19/2021",
+	"Owner Percentage":"50",
+	"IncorrectDOV" : "7/20/2051"
+	
 	}
 	}

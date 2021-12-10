@@ -688,7 +688,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		String situsStreetName = hashMapBrandNewParcelMappingData.get("Situs Street Name");
 		String situsType = hashMapBrandNewParcelMappingData.get("Situs Type");
 		String situsUnitNumber = hashMapBrandNewParcelMappingData.get("Situs Unit Number");
-		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+cityName;
+		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+"#"+situsUnitNumber+", "+cityName;
 
 		// Step1: Login to the APAS application using the credentials passed through data provider (login Mapping User)
 		objMappingPage.login(loginUser);
@@ -730,6 +730,27 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
 				"SMAB-T2663: Validation that System populates primary situs on second screen for child parcel  with the situs value that was added in first screen");
 
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL and Legacy__c ='yes' limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		String distNeigh=responseNeighborhoodDetails.get("Name").get(0);
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+		objMappingPage.Click(objMappingPage.editButtonInSeconMappingScreen);
+
+		objMappingPage.clearSelectionFromLookup("District / Neighborhood Code");
+		objMappingPage.enter(objMappingPage.parcelDistrictNeighborhood, distNeigh);
+		ReportLogger.INFO("District / Neighborhood Code:" +distNeigh);
+		boolean neighborhood = false;
+		
+		try{
+			objMappingPage.selectOptionFromDropDown(objMappingPage.parcelDistrictNeighborhood, distNeigh);
+		}
+		catch(Exception e) {
+			neighborhood= true;
+		}
+		
+		softAssert.assertTrue(neighborhood,"SMAB-T4161: Verify for all the mapping actions, lookup references for the 'district and neighborhood' should include the lookup filter where the legacy district/neighborhoods are excluded.");
+
+		
 		//Step 8 :Clicking generate parcel button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 

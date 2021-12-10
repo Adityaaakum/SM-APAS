@@ -1895,4 +1895,139 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.logout();
 
 }
+
+	/*
+	 * Update Returned Reason on CIO screen for Submit for approval flow.
+	 */
+	@Test(description = "SMAB-T3608 : Update Returned Reason on the Work Item", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
+	public void CIO_UpdateReturnedReasonOtheWorkItemForSubmitForReview(String loginUser) throws Exception {
+
+		String execEnv = System.getProperty("region");
+		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' and id in ( select parcel__c from mail_to__c where Status__c='Active')";
+		String activeApnId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+
+		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData,
+				"ExistingMHTransferventCreation");
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithCompleteOwnership");
+
+		// Step1: Login to the APAS application
+		objMappingPage.login(users.SYSTEM_ADMIN);
+
+		// Step2: Opening the PARCELS page
+		driver.navigate()
+				.to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + activeApnId + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+				objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+
+		// Step3: Create UT event perform validations
+		String timeStamp = String.valueOf(System.currentTimeMillis());
+		String description = dataToCreateUnrecordedEventMap.get("Description") + "_" + timeStamp;
+		objMappingPage
+				.waitForElementToBeClickable(objMappingPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.selectOptionDropdown);
+		objParcelsPage.selectOptionFromDropDown(objParcelsPage.selectOptionDropdown, "Create Audit Trail Record");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.nextButtonComponentsActionsModal));
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.workItemTypeDropDownComponentsActionsModal);
+		objParcelsPage.selectOptionFromDropDown("Record Type", dataToCreateUnrecordedEventMap.get("Record Type"));
+		objParcelsPage.selectOptionFromDropDown("Group", dataToCreateUnrecordedEventMap.get("Group"));
+		Thread.sleep(2000);
+		objParcelsPage.selectOptionFromDropDown("Type of Audit Trail Record?",
+				dataToCreateUnrecordedEventMap.get("Type of Audit Trail Record?"));
+		if (dataToCreateUnrecordedEventMap.get("Source") != null) {
+			objParcelsPage.selectOptionFromDropDown("Source", dataToCreateUnrecordedEventMap.get("Source"));
+		}
+		if (dataToCreateUnrecordedEventMap.get("Date of Event") != null) {
+			objParcelsPage.enter("Date of Event", dataToCreateUnrecordedEventMap.get("Date of Event"));
+		}
+		objParcelsPage.enter("Date of Recording", dataToCreateUnrecordedEventMap.get("Date of Recording"));
+		objParcelsPage.enter("Description", description);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save and Next"));
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.calculateOwnershipButtonLabel);
+		String currentUrl = driver.getCurrentUrl();
+		objCIOTransferPage.logout();
+
+		// STEP 4-Login with CIO staff
+		objMappingPage.login(loginUser);
+		driver.navigate().to(currentUrl);
+		Thread.sleep(2000);
+
+		// STEP 5-Creating the new Grantee
+		String recordeAPNTransferID = driver.getCurrentUrl().split("/")[6];
+		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+				+ recordeAPNTransferID + "/view");
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.calculateOwnershipButtonLabel);
+		ReportLogger.INFO("Create New grantee");
+		
+		// STEP 6- CIO Staff submitting for Review
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Review");
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.finishButtonPopUp);
+		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
+		Thread.sleep(2000);
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+		ReportLogger.INFO("CIO activity Submitted for Review");
+
+		// STEP 7- Login as CIO-Supervisor and Return RAT
+		objMappingPage.login(users.CIO_SUPERVISOR);
+		driver.navigate().to(currentUrl);
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.calculateOwnershipButtonLabel);
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Return");
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.returnReasonTextBox);
+		objCIOTransferPage.enter(objCIOTransferPage.returnReasonTextBox, "Returned by CIO Supervisor");
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.finishButtonPopUp);
+		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
+		ReportLogger.INFO("CIO Activity Returned with Reason");	
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.calculateOwnershipButtonLabel);
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Back");
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.EditButton);
+		objParcelsPage.openTab("Details");
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS("Returned Reason"), "Returned by CIO Supervisor",
+				"SMAB-T3608 : Validated retirned reason on work item");
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+
+		// STEP 8: Login as CIO-Staff and correct the return reason and submit for approval again
+		objMappingPage.login(users.CIO_STAFF);
+		driver.navigate().to(currentUrl);
+		Thread.sleep(3000);
+		objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objParcelsPage.openTab("Details");
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS("Returned Reason"), "Returned by CIO Supervisor",
+				"SMAB-T3608 : Validated retirned reason on work item");
+		objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow1 = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow1);
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionOptionSubmitForApproval);
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.finishButtonPopUp);
+		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
+		ReportLogger.INFO("CIO Staff reviewed the return reason and Submitted for Approval");
+		Thread.sleep(3000);
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+
+		// STEP 9:Login as supervisor and approve
+		objMappingPage.login(users.CIO_SUPERVISOR);
+		driver.navigate().to(currentUrl);
+		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-P19");
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionOptionApprove);
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Approve");
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.finishButtonPopUp);
+		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
+		ReportLogger.INFO("CIO Supervisor approved the UT event");
+		Thread.sleep(3000);
+		objCIOTransferPage.logout();
+	  }	
+	
 }

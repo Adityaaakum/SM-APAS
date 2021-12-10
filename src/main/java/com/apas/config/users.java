@@ -21,4 +21,7 @@ public interface users {
 	String CIO_SUPERVISOR = "cioSupervisor";
 	String APPRAISAL_SUPERVISOR = "appraisalSupervisor";
 	String RP_PRINCIPAL = "rpPrincipal";
+
 }
+
+
