@@ -4777,7 +4777,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
     */
 
 	@Test(description = "SMAB-T4169, SMAB-T4172, : Govt CIO Post transfer process", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "RecordedEvent" })
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void CIO_GOVTCIOPostTransferProcess(String loginUser) throws Exception {
 		
 		String execEnv = System.getProperty("region");
