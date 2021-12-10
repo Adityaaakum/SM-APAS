@@ -248,14 +248,13 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3698,SMAB-T3699,SMAB-T23708:Verify audit trail update with Parcel Transfer Allowed value", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3698,SMAB-T3699,SMAB-T3708:Verify audit trail update with Parcel Transfer Allowed value for business event audit trail", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement", "ParcelAuditTrail" })
 	public void ParcelManagement_EventLibraray_ParcelTransfer_Allowed_BusinessEvent(String loginUser) throws Exception {
 
 		// Step1: Login to the APAS application using the credentials passed through
 		// Data Provider
 		objMappingPage.login(loginUser);
-		Thread.sleep(2000);
 
 		String executionEnv = System.getProperty("region");
 		// fetching audit trail records
@@ -356,7 +355,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3698,SMAB-T3699,SMAB-T23708:Verify audit trail update with Parcel Transfer Allowed value for correspondence audit trail", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3698,SMAB-T3699,SMAB-T3708:Verify audit trail update with Parcel Transfer Allowed value for correspondence audit trail", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement", "ParcelAuditTrail" })
 	public void ParcelManagement_EventLibraray_ParcelTransfer_Allowed_Correspondence(String loginUser)
 			throws Exception {
@@ -364,7 +363,6 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		// Step1: Login to the APAS application using the credentials passed through
 		// Data Provider
 		objMappingPage.login(loginUser);
-		Thread.sleep(2000);
 
 		String executionEnv = System.getProperty("region");
 		
