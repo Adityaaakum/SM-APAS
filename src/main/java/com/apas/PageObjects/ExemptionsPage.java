@@ -375,6 +375,7 @@ public class ExemptionsPage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(@class,'slds-radio topdown-radio')]//span[text()='HOE']")
     public WebElement homeOwnerExemptionRadioButton;
   
+    public String yearOfFiling = "Year of filing";
     
     /**
      * Description: This method is to determine the Roll Year of any given date(e.g Application received date)
@@ -773,17 +774,19 @@ public class ExemptionsPage extends ApasGenericPage {
     public void enterHomeOwnerExemptionData(Map<String, String> dataMap) throws Exception {
     	Click(homeOwnerExemptionRadioButton);
     	Click(exemptionRecordTypeNextButton);
-    	
+
     	//String assesseeName = fetchAssesseeName();
-    	//Commented above code temporarily and added below code till current HOE implementation is completed 
-    	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'DoNot'";
-        HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
-        String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
-        
-        searchAndSelectOptionFromDropDown(claimantName, assesseeName);
-        selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
-        scrollToElement(getWebElementWithLabel(dateApplicationReceived));
-        enter(dateApplicationReceived, dataMap.get("Date Application Received"));
-        Thread.sleep(1000);
+    	//Commented above code temporarily and added below code till current HOE implementation is completed
+    	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'Automation'";
+    	HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
+    	String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
+
+    	searchAndSelectOptionFromDropDown(claimantName, assesseeName);
+    	enter(yearOfFiling, dataMap.get("Year of Filing"));
+    	selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
+    	scrollToElement(getWebElementWithLabel(dateApplicationReceived));
+    	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
+
+    	Thread.sleep(1000);
     }
 }
