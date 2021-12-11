@@ -135,7 +135,7 @@ public class CIO_RollEntry_Test  extends TestBase implements testdata, modules, 
 		objParcelsPage.login(loginUser);
 
 		// Step2: Navigating to the Roll Year Setting
-		objWorkItemHomePage.searchModule(ROLL_YEAR_SETTING);
+		objWorkItemHomePage.searchModule(ROLL_YEAR_SETTINGS);
 		
 		//Step 3 : Navigating to the Open Roll Year Settings
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.newButton);

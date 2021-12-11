@@ -59,6 +59,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	String MailtoData;
 	ApasGenericPage apasGenericObj;
 	AppraisalActivityPage objAppraisalActivity;
+	public String assessedValueTableName = "Assessed Values for Parent Parcel";
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -4690,8 +4691,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String DOV=(apasGenericObj.getFieldValueFromAPAS("DOV"));
 		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
 		Thread.sleep(2000);
-		
-		objCioTransfer.clickViewAll("Assessed Values for Parent Parcel");
+		objCioTransfer.clickViewAll(assessedValueTableName);
 		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValue = objMappingPage.getGridDataInHashMap();
 		String assessedValueType = gridDataHashMapAssessedValue.get("Assessed Value Type").get(0);
 		String assessedValueStartDate = gridDataHashMapAssessedValue.get("Effective Start Date").get(0);
@@ -4764,8 +4764,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(rollValueYearSecond,"2021", "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
 		softAssert.assertEquals(rollValueLandValueSecond,"$241,936", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
 		softAssert.assertEquals(rollValueImprovementValueSecond,"$241,936", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
-		objMappingPage.logout();	
-	
+
+		objCioTransfer.logout();
+
 	}
 
 }
