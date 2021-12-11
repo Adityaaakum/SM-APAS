@@ -2524,9 +2524,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id"
 				+ "  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
-				+ "where Status__c='Active') and Legacy__c = 'No' limit 1");
-		//String PUC = responsePUCDetails.get("Name").get(0);
-		//String PucId = responsePUCDetails.get("Id").get(0);	
+				+ "where Status__c='Active') and Legacy__c = 'No' limit 1");	
 		
 		//Fetching Interim parcels
 		String queryInterimAPNValue = "Select name,ID  From Parcel__c where name like '8%' "
@@ -2536,9 +2534,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String apn1Id = salesforceAPI.select(queryInterimAPNValue).get("Id").get(0);
 		String apn2 = salesforceAPI.select(queryInterimAPNValue).get("Name").get(1);
 		String apn2Id = salesforceAPI.select(queryInterimAPNValue).get("Id").get(1);
-		
-		//salesforceAPI.update("Parcel__c", apn1Id, "PUC_Code_Lookup__c", PucId);
-		//salesforceAPI.update("Parcel__c", apn2Id, "PUC_Code_Lookup__c", PucId);
 		
 		//Getting Active Non-Condo Parcel
 		String queryAPNValue = "Select name,ID  From Parcel__c where name like '0%'and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and (Not Name like '%990') and PUC_Code_Lookup__c != null and Status__c = 'Active' limit 2";
@@ -2551,9 +2546,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn3);
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn4);
-			
-		//salesforceAPI.update("Parcel__c", apn3Id, "PUC_Code_Lookup__c", PucId);
-		//salesforceAPI.update("Parcel__c", apn4Id, "PUC_Code_Lookup__c", PucId);
 		
 		//Deleting the current ownership records for all the Parcel records
 		objMappingPage.deleteOwnershipFromParcel(apn1Id);
@@ -2566,12 +2558,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 		salesforceAPI.update("Parcel__c", apn3Id, "Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
 		salesforceAPI.update("Parcel__c", apn4Id, "Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
-		
-		//Updating the status of all parcels
-		//salesforceAPI.update("Parcel__c", apn1Id, "Status__c", "Active");
-		//salesforceAPI.update("Parcel__c", apn2Id, "Status__c", "Active");
-		//salesforceAPI.update("Parcel__c", apn3Id, "Status__c", "Active");
-		//salesforceAPI.update("Parcel__c", apn4Id, "Status__c", "Active");
 		
 		String concatenateInterimAPNs = apn1+","+apn2;
 		String concatenateNonCondoAPNs = apn3+","+apn4;
@@ -2725,30 +2711,30 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T3669 :Expected error message is displayed successfully");
 
 		objParcelsPage.addParcelDetails("", "Legal", districtValue, responseNeighborhoodDetails.get("Id").get(0),
-				responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
+				"", parcelSize, gridDataHashMap, "APN");
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
 		errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : PUC. Please navigate to the mapping custom screen to provide the necessary information.",
+		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : TRA, PUC. Please navigate to the mapping custom screen to provide the necessary information.",
 				"SMAB-T3669 :Expected error message is displayed successfully");
 		
 		objParcelsPage.addParcelDetails(responsePUCDetails.get("Id").get(0), "", districtValue, responseNeighborhoodDetails.get("Id").get(0),
-				responseTRADetails.get("Id").get(0), parcelSize, gridDataHashMap, "APN");
+				"", parcelSize, gridDataHashMap, "APN");
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
 		errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description. Please navigate to the mapping custom screen to provide the necessary information.",
+		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Short Legal Description, TRA. Please navigate to the mapping custom screen to provide the necessary information.",
 				"SMAB-T3669 :Expected error message is displayed successfully");
 		
 		objParcelsPage.addParcelDetails(responsePUCDetails.get("Id").get(0), "Legal", districtValue, responseNeighborhoodDetails.get("Id").get(0),
-				responseTRADetails.get("Id").get(0),"", gridDataHashMap, "APN");
+				"","", gridDataHashMap, "APN");
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.parentParcelSizeErrorMsg);
 		errorMsg = objWorkItemHomePage.parentParcelSizeErrorMsg.getText();
 		objWorkItemHomePage.Click(objWorkItemHomePage.CloseErrorMsg);
-		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Parcel Size (SqFt). Please navigate to the mapping custom screen to provide the necessary information.",
+		softAssert.assertEquals(errorMsg,"Status: In order to submit or close the work item, the following field needs to be populated : Parcel Size (SqFt), TRA. Please navigate to the mapping custom screen to provide the necessary information.",
 				"SMAB-T2956,SMAB-T2881 :Expected error message is displayed when parcel size is missing");
 
 		objWorkItemHomePage.logout();

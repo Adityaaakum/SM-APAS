@@ -1230,7 +1230,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3385,SMAB-T3696 : Verify user is able to use the Calculate Ownership where ownership is acquired over multiple DOV's for the same owner and owner with one DOV is completely retained", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
 	public void OwnershipAndTransfer_Calculate_Ownership_SameOwnerMultipleDOV(String loginUser) throws Exception {
 
 		JSONObject jsonForCalculateOwnership = objCioTransfer.getJsonObject();
@@ -4320,7 +4320,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 */
 
 	@Test(description = "SMAB-T2995: Validate startdate and enddate on Mailto record of parcel", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "RecorderIntegration" })
+			"Regression", "RecorderIntegration", "ChangeInOwnershipManagement" })
 	public void validateStartDateAndEnddateOnMailtoRecordOfParcel(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
