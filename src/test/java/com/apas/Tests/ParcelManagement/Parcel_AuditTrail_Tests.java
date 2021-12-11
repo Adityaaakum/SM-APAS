@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.ApasGenericPage;
 import com.apas.PageObjects.AuditTrailPage;
 import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.ExemptionsPage;
@@ -39,6 +40,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 	MappingPage objMappingPage;
 	String auditTrailData;
 	AuditTrailPage objTrailPage;
+	ApasGenericPage objApasGenericPage;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -50,6 +52,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objMappingPage = new MappingPage(driver);
 		auditTrailData = testdata.AUDIT_TRAIL_DATA;
 		objTrailPage=new AuditTrailPage(driver);
+		objApasGenericPage = new ApasGenericPage(driver);
 	}
 
 	@Test(description = "SMAB-T3700:Verify that user is able to create audit trail and linkage relationship should be created having EventID populated", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
@@ -237,5 +240,221 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 				"SMAB-T3703: Verified that Related Businnes Events displays Linked Record");
 
 		objWorkItemHomePage.logout();
+	}
+	
+	/**
+	 Verify audit trail update with Parcel Transfer Allowed value for business event audit trail
+	 * 
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T3698,SMAB-T3699,SMAB-T3708:Verify audit trail update with Parcel Transfer Allowed value for business event audit trail", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "ParcelAuditTrail" })
+	public void ParcelManagement_EventLibraray_ParcelTransfer_Allowed_BusinessEvent(String loginUser) throws Exception {
+
+		// Step1: Login to the APAS application using the credentials passed through
+		// Data Provider
+		objMappingPage.login(loginUser);
+
+		String executionEnv = System.getProperty("region");
+		// fetching audit trail records
+		String queryAuditTrail1 = "SELECT Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Combined Performed'"
+				+ " and parcel__c!=NULL ";
+		HashMap<String, ArrayList<String>> responseAuditTrailDetails = salesforceAPI.select(queryAuditTrail1);
+		String apnId1 = responseAuditTrailDetails.get("Parcel__c").get(0);
+		String queryAuditTrail2 = "SELECT Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Combined Performed'"
+				+ " and parcel__c!=NULL and parcel__c!='" + apnId1 + "'";
+
+		HashMap<String, ArrayList<String>> responseAuditTrailDetails2 = salesforceAPI.select(queryAuditTrail2);
+		String auditTrail1 = responseAuditTrailDetails.get("Name").get(0);
+		String auditTrail2 = responseAuditTrailDetails2.get("Name").get(0);
+		
+		// Navigating to event library and updating field parcel Transfer allowed
+		String Eventlib="Combined Performed";
+		String queryEventLibraryID = "Select Id from Event_Library__c where Name = '" + Eventlib + "'";	
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
+				+ queryEventLibraryID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
+		
+		ReportLogger.INFO("Verify parecl Transfer Allowed field is visible");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Parcel Transfer Allowed"),
+				"SMAB-T3698: Validate that field name Parcel Transfer Allowed exists");
+
+		// set value of parcel Transfer allowed to "No"
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
+		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "No");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		// Logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		ReportLogger.INFO("Login as mapping supervisor");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+
+		// Navigate to audit trail record and editing the Related Business Event field
+		String auditTrail1ID = responseAuditTrailDetails.get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
+				+ auditTrail1ID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Related Business Event");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Business Event"));
+		objParcelsPage.clearSelectionFromLookup("Related Business Event");
+		objParcelsPage.searchAndSelectOptionFromDropDown("Related Business Event", auditTrail2);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		String ExpectedErrorMessage = "The Audit Trail record cannot be associated to an audit trail not associated to this parcel. If needed, please contact an admin to update the associated Event Library record.";
+		
+		// Verify when parcel transfer allowed is "No" the audit trail cannot be linked  to audit trail with another parcel
+		softAssert.assertEquals(objParcelsPage.getElementText(objApasGenericPage.pageError), ExpectedErrorMessage,
+				"SMAB-T3699: Verify when parcel transfer allowed is \"No\" the audit trail cannot be linked to audit trail with another parcel");
+
+       //Logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		// Login as System admin
+		objMappingPage.login(users.SYSTEM_ADMIN);
+
+		// Navigating to event library and changing the value of parcel Transfer allowed to "yes"	
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
+				+ queryEventLibraryID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
+		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		// Logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		// Login as Mapping supervisor
+		objMappingPage.login(users.MAPPING_STAFF);
+
+		// Navigating to audit trail and updating the value of Related Correspondence field	
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
+				+ auditTrail1ID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Related Business Event");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Business Event"));
+		objParcelsPage.clearSelectionFromLookup("Related Business Event");
+		objParcelsPage.searchAndSelectOptionFromDropDown("Related Business Event", auditTrail2);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		String linkedauditTrailvalue = objParcelsPage.getFieldValueFromAPAS("Related Business Event");
+
+		// Verify when parcel transfer allowed is "Yes" the audit trail can be linked to audit trail with another parcel
+		softAssert.assertEquals(linkedauditTrailvalue, auditTrail2,
+				"SMAB-T3708: Verify when parcel transfer allowed is \"Yes\" the audit trail can be linked to audit trail with another parcel");
+
+		// Logout
+		objParcelsPage.logout();
+
+	}
+
+	
+	/**
+	 Verify audit trail update with Parcel Transfer Allowed value for correspondence audit trail
+	 * 
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T3698,SMAB-T3699,SMAB-T3708:Verify audit trail update with Parcel Transfer Allowed value for correspondence audit trail", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "ParcelAuditTrail" })
+	public void ParcelManagement_EventLibraray_ParcelTransfer_Allowed_Correspondence(String loginUser)
+			throws Exception {
+
+		// Step1: Login to the APAS application using the credentials passed through
+		// Data Provider
+		objMappingPage.login(loginUser);
+
+		String executionEnv = System.getProperty("region");
+		
+		// fetching audit trail records
+		String queryAuditTrail1 = "SELECT  Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
+				+ " and parcel__c!=NULL ";
+		HashMap<String, ArrayList<String>> responseAuditTrailDetails = salesforceAPI.select(queryAuditTrail1);
+		String apnId1 = responseAuditTrailDetails.get("Parcel__c").get(0);
+		String queryAuditTrail2 = "SELECT Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
+				+ " and parcel__c!=NULL and parcel__c!='" + apnId1 + "'";
+
+		HashMap<String, ArrayList<String>> responseAuditTrailDetails2 = salesforceAPI.select(queryAuditTrail2);
+		String auditTrail1 = responseAuditTrailDetails.get("Name").get(0);
+		String auditTrail2 = responseAuditTrailDetails2.get("Name").get(0);
+
+		// Navigating to event library and updating field parcel Transfer allowed
+		String Eventlib="Correspondence Received - Mapping";
+		String queryEventLibraryID = "Select Id from Event_Library__c where Name = '" + Eventlib + "'";	
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
+				+ queryEventLibraryID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
+
+
+		ReportLogger.INFO("Verify parecl Transfer Allowed field is visible");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Parcel Transfer Allowed"),
+				"SMAB-T3698: Validate that field name Parcel Transfer Allowed exists");
+
+		// set value of parcel Transfer allowed to "No"
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
+		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "No");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		// Logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		ReportLogger.INFO("Login as mapping supervisor");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+
+		// Navigate to audit trail record and editing the Related correspondence field
+		String auditTrail1ID = responseAuditTrailDetails.get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
+				+ auditTrail1ID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Related Correspondence");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Correspondence"));
+		objParcelsPage.clearSelectionFromLookup("Related Correspondence");
+		objParcelsPage.searchAndSelectOptionFromDropDown("Related Correspondence", auditTrail2);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		// Verify when parcel transfer allowed is "No" the audit trail cannot be linked to audit trail with another parcel
+		String ExpectedErrorMessage = "The Audit Trail record cannot be associated to an audit trail not associated to this parcel. If needed, please contact an admin to update the associated Event Library record.";
+		softAssert.assertEquals(objParcelsPage.getElementText(objApasGenericPage.pageError), ExpectedErrorMessage,
+				"SMAB-T3699: Verify when parcel transfer allowed is \"No\" the audit trail cannot be linked to audit trail with another parcel");
+
+		// Logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		// Login as system admin
+		objMappingPage.login(users.SYSTEM_ADMIN);
+
+		// Navigating to event library and changing the value of parcel Transfer allowed to "yes"
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
+				+ queryEventLibraryID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
+		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		// logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		// Login as mapping supervisor
+		objMappingPage.login(users.MAPPING_STAFF);
+
+		// Navigating to audit trail and updating the value of Related Correspondence field
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
+				+ auditTrail1ID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Related Correspondence");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Correspondence"));
+		objParcelsPage.clearSelectionFromLookup("Related Correspondence");
+		objParcelsPage.searchAndSelectOptionFromDropDown("Related Correspondence", auditTrail2);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		String linkedauditTrailvalue = objParcelsPage.getFieldValueFromAPAS("Related Correspondence");
+
+		// Verify when parcel transfer allowed is "Yes" the audit trail can be linked to audit trail with another parcel
+		softAssert.assertEquals(linkedauditTrailvalue, auditTrail2,
+				"SMAB-T3708: Verify when parcel transfer allowed is \"Yes\" the audit trail can be linked to audit trail with another parcel");
+
+		// Logout
+		objParcelsPage.logout();
+
 	}
 }
