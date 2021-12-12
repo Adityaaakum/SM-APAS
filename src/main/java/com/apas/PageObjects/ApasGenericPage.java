@@ -507,6 +507,7 @@ public class ApasGenericPage extends Page {
 		enter(objLoginPage.txtpassWord, password);
 		Click(objLoginPage.btnSubmit);
 		ReportLogger.INFO("User logged in the application");
+		Thread.sleep(2000);
 		//closeDefaultOpenTabs();
 	}
 
@@ -643,15 +644,16 @@ public void searchModule(String moduleToSearch) throws Exception {
 			catch (Exception e) {
 				
 				String executionEnv = System.getProperty("region");
+			
 		
 				// for parcel search
 					if(searchString.length()== 11 && isSearchStringParcel(searchString)) {
 						ReportLogger.INFO("Opening parcel record: " + searchString);
 						String   query = "Select Id from Parcel__c where Name = '"+searchString+"'";
 						HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
-						driver.navigate().to("https://smcacre--"+executionEnv+
+						driver.navigate().to("https://smcacre--"+executionEnv.toLowerCase()+
 								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
-						ReportLogger.INFO("Navigating to Parcel Record - https://smcacre--"+executionEnv+
+						ReportLogger.INFO("Navigating to Parcel Record - https://smcacre--"+executionEnv.toLowerCase()+
 								 ".lightning.force.com/lightning/r/Parcel__c/"+response.get("Id").get(0)+"/view");
 						Thread.sleep(15000);
 					}
@@ -660,9 +662,9 @@ public void searchModule(String moduleToSearch) throws Exception {
 						ReportLogger.INFO("Opening WI record: " + searchString);
 						String   query = "Select Id from Work_Item__c  where Name = '"+searchString+"'";
 						HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);	
-						driver.navigate().to("https://smcacre--"+executionEnv+
+						driver.navigate().to("https://smcacre--"+executionEnv.toLowerCase()+
 								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
-						ReportLogger.INFO("Navigating to Work Item Record - https://smcacre--"+executionEnv+
+						ReportLogger.INFO("Navigating to Work Item Record - https://smcacre--"+executionEnv.toLowerCase()+
 								 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
 						Thread.sleep(15000);
 					}
@@ -1502,6 +1504,36 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		}
 
 	}
+	/* 
+	 * Description - This method will change the date format
+	 * Param - YYYY/MM/DD
+	 * Return - mm/dd/yyyy
+	 */
 	
+	public String changeDateFormat(String dateValue ) throws Exception {
+		final String OLD_FORMAT = "yyyy-MM-dd";
+		final String NEW_FORMAT = "MM/dd/yyyy";
+
+		// August 12, 2010
+		String oldDateString = dateValue;
+		String newDateString;
+
+		SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
+		Date d = sdf.parse(oldDateString);
+		sdf.applyPattern(NEW_FORMAT);
+		newDateString = sdf.format(d);
+		return newDateString;
+		
+	}
+	/*
+	 * Increment the date as given by user
+	 */
+	 public Date addDays(Date date, int days)
+	    {
+	        Calendar cal = Calendar.getInstance();
+	        cal.setTime(date);
+	        cal.add(Calendar.DATE, days); //minus number would decrement the days
+	        return cal.getTime();
+	    }
 }
 

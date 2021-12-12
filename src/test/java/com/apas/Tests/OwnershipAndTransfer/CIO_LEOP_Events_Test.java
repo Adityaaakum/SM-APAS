@@ -321,10 +321,10 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 		String expectedApn = objApasGenericPage.getFieldValueFromAPAS("APN");
 		String expectedEventId = objApasGenericPage.getFieldValueFromAPAS("EventID");
 		String expectedDov = objApasGenericPage.getFieldValueFromAPAS("DOV");
-		objMappingPage.Click(objAppraisalActivity.appraisalActivityEditValueButton("Land"));
+		objMappingPage.Click(objAppraisalActivity.appraisalActivityEditValueButton("Land Cash Value"));
 		objMappingPage.waitForElementToBeVisible(objApasGenericPage.getButtonWithText("Save"));
-		objApasGenericPage.enter("Land", "10000");
-		objApasGenericPage.enter("Improvement", "10000");
+		objApasGenericPage.enter("Land Cash Value", "10000");
+		objApasGenericPage.enter("Improvement Cash Value", "10000");
 
 		objApasGenericPage.Click(objApasGenericPage.getButtonWithText("Save"));
 

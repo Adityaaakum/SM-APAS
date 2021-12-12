@@ -48,7 +48,7 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 	 * and group them as economic units
 	 */
 
-	@Test(description = "SMAB-T4280,SMAB-T4153,SMAB-T4152: Verify that RP Appraiser is able to select certain parcels and group them as economic units ", dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T4280,SMAB-T4153,SMAB-T4152: Verify that RP Appraiser is able to select certain parcels and group them as economic units ", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "EconomicUnits" ,"ChangeInOwnershipManagement"}, enabled = true)
 	public void EconomicUnits_GroupParcelsIntoEconomicUnit(String loginUser) throws Exception {
 

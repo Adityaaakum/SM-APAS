@@ -794,20 +794,22 @@ public class ExemptionsPage extends ApasGenericPage {
     public void enterHomeOwnerExemptionData(Map<String, String> dataMap) throws Exception {
     	Click(homeOwnerExemptionRadioButton);
     	Click(exemptionRecordTypeNextButton);
-    	
+
     	//String assesseeName = fetchAssesseeName();
-    	//Commented above code temporarily and added below code till current HOE implementation is completed 
+    	
+    	//Commented above code temporarily and added below code till current HOE implementation is completed
     	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'Automation'";
-        HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
-        String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
-        
-        searchAndSelectOptionFromDropDown(claimantName, assesseeName);
-        enter(yearOfFiling, dataMap.get("Year of Filing"));
-        selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
-        scrollToElement(getWebElementWithLabel(dateApplicationReceived));
-        enter(dateApplicationReceived, dataMap.get("Date Application Received"));
-        
-        Thread.sleep(1000);
+    	HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
+    	String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
+
+    	searchAndSelectOptionFromDropDown(claimantName, assesseeName);
+    	enter(yearOfFiling, dataMap.get("Year of Filing"));
+    	selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
+    	scrollToElement(getWebElementWithLabel(dateApplicationReceived));
+    	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
+
+    	Thread.sleep(1000);
+
     }
     /**
      * Description: This method will enter field values in Institutional Exemption screen

@@ -3,7 +3,10 @@ package com.apas.Tests.WorkItemsTest.WorkIemAdministration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Calendar;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import org.json.JSONObject;
 import com.apas.PageObjects.*;
 import com.apas.Reports.ReportLogger;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -37,6 +40,10 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	ApasGenericPage apasGenericObj;
 	RoutingAssignmentPage objRoutingAssignmentPage;
+	MappingPage objMappingPage;
+	String unrecordedEventData;
+	CIOTransferPage objCIOTransferPage;
+	AppraisalActivityPage objAppraisalActivity;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -49,6 +56,9 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objRoutingAssignmentPage = new RoutingAssignmentPage(driver);
 		objWorkPoolPage = new WorkPoolPage(driver);
+		objMappingPage = new MappingPage(driver);
+		objCIOTransferPage = new CIOTransferPage(driver);
+		objAppraisalActivity= new AppraisalActivityPage(driver);
 	}
 
 	/**
@@ -234,10 +244,10 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		hashMapmanualWorkItemData.put("DOV","11/21/2020");
 		String workItemWithEarlierDOV = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
-//		objWorkItemHomePage.globalSearchRecords(apnValue);
 		driver.navigate().to(activeApnUrl);
 		// Step4: Creating Manual work item with Later DOV
 		hashMapmanualWorkItemData.put("DOV","11/22/2020");
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.componentActionsButtonText);
 		String workItemWithLaterDOV = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
 		//Step5:Accept the work items created above
@@ -333,14 +343,13 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		// Step3: Creating Manual work item with work item routing as "Give Work Item to Someone Else"
 		Map<String, String> hashMapGiveWorkItemToSomeoneElse = objUtil.generateMapFromJsonFile(workItemCreationData, "WorkItemRoutingGiveToSomeoneElse");
 		String workItemAssignedToSomeoneElse = objParcelsPage.createWorkItem(hashMapGiveWorkItemToSomeoneElse);
-//		objWorkItemHomePage.globalSearchRecords(apnValue);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.componentActionsButtonText)),"SMAB-T1988 : Validation that Parcel screen is displayed when work item routing option is selected as 'Give Work Item to Someone Else'");
 
 		// Step4: Creating Manual work item with work item routing as "Give Work Item to Default Work Pool"
 		Map<String, String> hashMapGiveWorkItemToDefaultWorkPool = objUtil.generateMapFromJsonFile(workItemCreationData, "WorkItemRoutingToDefaultPool");
 		String workItemDefaultToWorkPool = objParcelsPage.createWorkItem(hashMapGiveWorkItemToDefaultWorkPool);
-//		objWorkItemHomePage.globalSearchRecords(apnValue);
 		driver.navigate().to(activeApnUrl);
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.componentActionsButtonText);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.componentActionsButtonText)),"SMAB-T1989 : Validation that Parcel screen is displayed when work item routing option is selected as 'Give Work Item to Default Work Pool'");
 
 
@@ -1346,4 +1355,172 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 	}
 	
 	
+	/**
+	 * This method is to verify that user is able to create manual work item for Roll value change and able to do Roll Corrections for AV Review
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T3887,SMAB-T4111:verify that user is able to create manual work item for Roll value change and able to do Roll Corrections for AV Review", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
+			"Regression","WorkItemAdministration", "RollCorrections", "ChangeInOwnershipManagement" })
+	public void WorkItemAdministration_Manual_RollEntryRecords_RollValueChange(String loginUser) throws Exception {
+
+		JSONObject jsonObjectAPN = objCIOTransferPage.getJsonObject();
+		String execEnv = System.getProperty("region");
+		String landValue="90000";
+		String improvementValue="10000";
+
+		//Preparing data
+		String queryAPN = "select Name, Id from Parcel__c where Status__c='Active' and Primary_Situs__c !=NULL  and  id in ( select parcel__c from mail_to__c where Status__c='Active')";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apnToUpdate=responseAPNDetails.get("Name").get(0);
+		String apnToUpdateId= responseAPNDetails.get("Id").get(0);
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
+
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+
+		jsonObjectAPN.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObjectAPN.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObjectAPN.put("District__c",districtValue);
+		jsonObjectAPN.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObjectAPN);
+		
+		String ownershipCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil.generateMapFromJsonFile(ownershipCreationData,
+				"DataToCreateRpOwnership");
+	
+
+
+		
+		// STEP 1-login with SYS-ADMIN
+
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		
+		// STEP 2-delete current owners
+
+		objCIOTransferPage.deleteOwnershipFromParcel(
+				salesforceAPI.select("Select Id from parcel__c where name='" + apnToUpdate + "'").get("Id").get(0));
+
+		// STEP 3- adding owner after deleting for the new  APN
+
+		String acesseName = objMappingPage.getOwnerForMappingAction();
+		driver.navigate()
+				.to("https://smcacre--"
+						+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
+								.select("Select Id from parcel__C where name='" + apnToUpdate + "'").get("Id").get(0)
+						+ "/related/Property_Ownerships__r/view");
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.getButtonWithText("New"));
+		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
+		Thread.sleep(2000);
+		String parcelId = driver.getCurrentUrl().split("/")[6];
+		String ownershipId =  salesforceAPI
+				.select("SELECT Id FROM Property_Ownership__c WHERE Parcel__c = '" + parcelId + "'")
+				.get("Id").get(0);
+
+		// STEP 4- updating the ownership date for current owners
+		String dateOfEvent = salesforceAPI
+				.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
+				.get("Ownership_Start_Date__c").get(0);
+		JSONObject jsonObject = objCIOTransferPage.getJsonObject();
+		jsonObject.put("DOR__c", dateOfEvent);
+		jsonObject.put("DOV_Date__c", dateOfEvent);
+		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
+
+		String dovDate=apasGenericObj.changeDateFormat(dateOfEvent);
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfRollValueChange");
+		hashMapmanualWorkItemData.put("DOV", dovDate);
+
+		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
+		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
+		objParcelsPage.deleteOldAndCreateNewAssessedValuesRecords(hashMapCreateAssessedValueRecord,
+				apnToUpdate);
+		objMappingPage.logout();
+		Thread.sleep(5000);
+
+		
+			// Step5: Login to the APAS application using the credentials passed through dataprovider (RP Appraiser)
+		objWorkItemHomePage.login(loginUser);
+
+		// Step 6: Opening the APN Parcel page 
+		driver.navigate()
+		.to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnToUpdateId + "/view");
+
+
+		// Step 7: Creating Manual work item for the Parcel 
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.componentActionsButtonText);
+		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		String appraisalActivityLink = driver.getCurrentUrl();
+		objMappingPage.logout();
+		Thread.sleep(5000);
+		// Step 8: Login from RP Supervisor to approve the WI
+		ReportLogger.INFO(
+				"Now logging in as RP Supervisor to to add new Land and Improvement values fpor Roll Value Change");
+		objWorkItemHomePage.login(RP_PRINCIPAL);
+		driver.navigate().to(appraisalActivityLink);
+		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
+		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
+		Thread.sleep(2000);
+		objCIOTransferPage.clickViewAll("Assessed Values for Parent Parcel");
+		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValue = objMappingPage.getGridDataInHashMap();
+		String assessedValueType = gridDataHashMapAssessedValue.get("Assessed Value Type").get(0);
+		String assessedValueStartDate = gridDataHashMapAssessedValue.get("Effective Start Date").get(0);
+		String assessedValueEndDate = gridDataHashMapAssessedValue.get("Effective End Date").get(0);
+		softAssert.assertEquals("0"+assessedValueStartDate,dovDate, "SMAB-T3887,SMAB-T4111:First Assessed Value Start Date should be same as DOV.");
+		softAssert.assertEquals(assessedValueEndDate,"", "SMAB-T3887,SMAB-T4111:First Assessed Value End Date should be empty.");
+		softAssert.assertEquals(assessedValueType,"Assessed Value", "SMAB-T3887,SMAB-T4111:First Assessed Value Type should be Assessed Value.");
+		
+		driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/" + apnToUpdateId + "/related/Roll_Entry__r/view");
+		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.parcelsLink);
+		HashMap<String, ArrayList<String>> gridDataHashMapRollEntry = objMappingPage.getGridDataInHashMap();
+
+		driver.navigate().to(appraisalActivityLink);
+		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
+		
+		
+		//Step 9:Adding new Land & Improvement cash values with RC-DECL event code 
+		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
+		objMappingPage.Click(objAppraisalActivity.appraisalActivityEditValueButton("Land Cash Value"));
+		objMappingPage.waitForElementToBeVisible(apasGenericObj.getButtonWithText("Save"));
+		
+		apasGenericObj.enter("Land Cash Value", landValue);
+		apasGenericObj.enter("Improvement Cash Value",improvementValue );
+		apasGenericObj.searchAndSelectOptionFromDropDown("Event Code", "RC-DECL");
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		Date myDate = sdf.parse(dovDate);
+		myDate = apasGenericObj.addDays(myDate, 1);
+		String dorDate =  sdf.format(myDate); 
+		apasGenericObj.enter("DOR", dorDate);
+		apasGenericObj.Click(apasGenericObj.getButtonWithText("Save"));
+		Thread.sleep(2000);
+
+		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
+		objCIOTransferPage.clickViewAll("Assessed Values for Parent Parcel");
+		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNew = objMappingPage.getGridDataInHashMap();
+		String assessedValueTypeNew = gridDataHashMapAssessedValueNew.get("Assessed Value Type").get(1);
+		String assessedValueStartDateNew = gridDataHashMapAssessedValueNew.get("Effective Start Date").get(1);
+		String assessedValueEndDateNew = gridDataHashMapAssessedValueNew.get("Effective End Date").get(0);
+		String assessedValueLandValueNew= gridDataHashMapAssessedValueNew.get("Land Value").get(1);
+		String assessedValueImprovementValueNew = gridDataHashMapAssessedValueNew.get("Improvement Value").get(1);
+
+		
+		driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/" + apnToUpdateId + "/related/Roll_Entry__r/view");
+		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.parcelsLink);
+		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryNew = objMappingPage.getGridDataInHashMap();
+
+		softAssert.assertTrue(gridDataHashMapRollEntry.equals(gridDataHashMapRollEntryNew),"SMAB-T3887,SMAB-T4111:Roll entry records should be same before and after doing Roll Value Change.");
+		softAssert.assertEquals(assessedValueTypeNew, "Temporary Value", "SMAB-T3887,SMAB-T4111:Assessed Value Type should be Temporary Value.");
+		softAssert.assertEquals(assessedValueEndDateNew,assessedValueStartDateNew, "SMAB-T3887,SMAB-T4111:First Assessed Value End Date should be same as Start Date of second assessed value.");
+		softAssert.assertEquals(assessedValueLandValueNew,"90,000","SMAB-T3887,SMAB-T4111:Land Value should be same as entered.");
+		softAssert.assertEquals(assessedValueImprovementValueNew,"10,000","SMAB-T3887,SMAB-T4111:Improvement Value should be same as entered.");
+		objMappingPage.logout();
+	}	
+
 }

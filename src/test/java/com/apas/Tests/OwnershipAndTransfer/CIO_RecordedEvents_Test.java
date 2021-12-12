@@ -20,6 +20,8 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.ApasGenericPage;
+import com.apas.PageObjects.AppraisalActivityPage;
 import com.apas.PageObjects.AuditTrailPage;
 import com.apas.PageObjects.BuildingPermitPage;
 import com.apas.PageObjects.CIOTransferPage;
@@ -55,6 +57,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	String ownershipCreationData;
 	String OwnershipAndTransferCreationData;
 	String MailtoData;
+	ApasGenericPage apasGenericObj;
+	AppraisalActivityPage objAppraisalActivity;
+	public String assessedValueTableName = "Assessed Values for Parent Parcel";
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -72,6 +77,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		MailtoData = testdata.MAILTO_RECORD_DATA_PARCEL;
 		driver.manage().timeouts().pageLoadTimeout(15, TimeUnit.SECONDS);
+		apasGenericObj = new ApasGenericPage(driver);
+		objAppraisalActivity= new AppraisalActivityPage(driver);
+
 
 	}
 	/*
@@ -327,8 +335,16 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// Formatting date and Pcor exist from recorded document
 
 		String[] dateOfRecordingfromHashMap = hashMapRecordedDocumentData.get("Recording_Date__c").get(0).split("-");
-		String dateofRecordingAfterConversion = dateOfRecordingfromHashMap[1].replace("0", "") + "/"
-				+ dateOfRecordingfromHashMap[2].replace("0", "") + "/" + dateOfRecordingfromHashMap[0];
+		String dateofRecordingAfterConversion ;
+		
+		
+		if (dateOfRecordingfromHashMap[1].startsWith("0")) {
+			dateofRecordingAfterConversion = dateOfRecordingfromHashMap[1].replace("0", "") + "/"
+					+ dateOfRecordingfromHashMap[2].replace("0", "") + "/" + dateOfRecordingfromHashMap[0];
+		} else {
+			dateofRecordingAfterConversion = dateOfRecordingfromHashMap[1] + "/"
+					+ dateOfRecordingfromHashMap[2].replace("0", "") + "/" + dateOfRecordingfromHashMap[0];
+		}
 		if (hashMapRecordedDocumentData.get("PCOR_Exits__c").get(0) == "true") {
 			pcorExit = "Yes";
 		} else
@@ -568,7 +584,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertContains(objCioTransfer.getElementText(objCioTransfer.calculateOwnershipPageMessage),
 				"The sum of all grantee ownership perce﻿ntage is more than 100. Please check and make the correction",
 				"SMAB-T3567: Verify user is not able to save grantee  record with combined ownership perentage of more than 100%");		
-		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.CancelButton));
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.previousButtonLabel));
 		objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "50");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
 
@@ -4619,6 +4635,480 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 						"SMAB-T3962:  Validating a new WI is genrated as soon as New APN is migrated ");
 				
 		objWorkItemHomePage.logout();
+
+	}
+	
+	/*
+	 * Update Returned Reason on CIO screen for Submit for approval flow.
+	 */
+	@Test(description = "SMAB-T3608 : Update Returned Reason on the Work Item", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecordedEvent" }, enabled = true)
+	public void CIO_UpdateReturnedReasonOtheWorkItemFromSubmitforApproval(String loginUser) throws Exception {
+
+		String execEnv = System.getProperty("region");
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithCompleteOwnership");
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData, "DataToCreateOwnershipRecord");
+
+		String recordedDocumentID = salesforceAPI
+				.select(" SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1")
+				.get("Id").get(0);
+		objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
+
+		// STEP 1-login with SYS-ADMIN
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		objMappingPage.searchModule(PARCELS);
+		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
+
+		// STEP 2-Query to fetch WI
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'  And status__c='In pool' order by createdDate desc limit 1";
+		String workItemNo = salesforceAPI.select(workItemQuery).get("Id").get(0);
+		driver.navigate().to(
+				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Work_Item__c/" + workItemNo + "/view");
+		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		objCioTransfer.deleteOwnershipFromParcel(
+				salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
+
+		// STEP 3- adding owner after deleting for the recorded APN
+		String acesseName = objMappingPage.getOwnerForMappingAction();
+		driver.navigate()
+				.to("https://smcacre--"
+						+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
+								.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
+						+ "/related/Property_Ownerships__r/view");
+		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
+		objMappingPage.logout();
+		Thread.sleep(5000);
+
+		// STEP 4-Login with CIO staff
+		objMappingPage.login(loginUser);
+		driver.navigate().to(
+				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Work_Item__c/" + workItemNo + "/view");
+		Thread.sleep(5000);
+		
+		// STEP 5-Finding the recorded APN transfer id
+		String recordeAPNTransferID = driver.getCurrentUrl().split("/")[6];
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.waitForElementToBeVisible(5, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+
+		// STEP 6-Clicking on related action link
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		// STEP 7-Creating the new Grantee
+		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+				+ recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.calculateOwnershipButtonLabel);
+		ReportLogger.INFO("Create New grantee");
+		
+		// STEP 8- CIO Staff submitting for approval
+		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		Thread.sleep(2000);
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
+		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+		ReportLogger.INFO("CIO activity Submitted for Approval");
+		String currentUrl = driver.getCurrentUrl();
+		Thread.sleep(2000);
+		objCioTransfer.logout();
+		Thread.sleep(5000);
+
+		// STEP 9- Login as CIO-Supervisor and Return RAT
+		objMappingPage.login(users.CIO_SUPERVISOR);
+		driver.navigate().to(currentUrl);
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.calculateOwnershipButtonLabel);
+		objCioTransfer.clickQuickActionButtonOnTransferActivity("Return");
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.returnReasonTextBox);
+		objCioTransfer.enter(objCioTransfer.returnReasonTextBox, "Returned by CIO Supervisor");
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
+		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+		ReportLogger.INFO("CIO Activity Returned with Reason");
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.calculateOwnershipButtonLabel);
+		objCioTransfer.clickQuickActionButtonOnTransferActivity("Back");
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.EditButton);
+		objParcelsPage.openTab("Details");
+		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS("Returned Reason"), "Returned by CIO Supervisor",
+				"SMAB-T3608 : Validated retirned reason on work item");
+		objCioTransfer.logout();
+		Thread.sleep(5000);
+
+		// STEP 10: Login as CIO-Staff and correct the return reason and submit for approval
+		objMappingPage.login(users.CIO_STAFF);
+		driver.navigate().to(currentUrl);
+		Thread.sleep(3000);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objParcelsPage.openTab("Details");
+		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS("Returned Reason"), "Returned by CIO Supervisor",
+				"SMAB-T3608 : Validated returned reason on work item");
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow1 = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow1);
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.quickActionOptionSubmitForApproval);
+		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
+		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+		ReportLogger.INFO("CIO Staff reviewed the return reason and Submitted for Approval");
+		Thread.sleep(3000);
+		objCioTransfer.logout();
+		Thread.sleep(5000);
+
+		// STEP :Login as supervisor and approve
+		objMappingPage.login(users.CIO_SUPERVISOR);
+		driver.navigate().to(currentUrl);
+		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-P19");
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.quickActionOptionApprove);
+		objCioTransfer.clickQuickActionButtonOnTransferActivity("Approve");
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
+		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+		ReportLogger.INFO("CIO Supervisor approved the UT event");
+		Thread.sleep(3000);
+		objCioTransfer.logout();
+	  }
+	
+   /*
+	* Validate Govt CIO Appraisal - Transfer from one Govt owner to another Govt owner
+    */
+
+	@Test(description = "SMAB-T4169, SMAB-T4172, : Govt CIO Post transfer process", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
+	public void CIO_GOVTCIOPostTransferProcess(String loginUser) throws Exception {
+		
+		String execEnv = System.getProperty("region");
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithIncompleteData");
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
+		Map<String, String> dataToCreateUnrecordedEventMap = objUtil
+				.generateMapFromJsonFile(testdata.UNRECORDED_EVENT_DATA, "UnrecordedEventCreation");
+		Map<String, String> hashMapMailToData = objUtil.generateMapFromJsonFile(MailtoData, "createMailToData");
+
+		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
+		String timeStamp = String.valueOf(System.currentTimeMillis());
+		String description = dataToCreateUnrecordedEventMap.get("Description") + "_" + timeStamp;
+
+		// STEP 1 : Create Appraiser activity
+		String[] arrayForWorkItemAfterCIOSupervisorApproval = objCioTransfer
+				.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", objCioTransfer.CIO_EVENT_CODE_CIOGOVT,
+						hashMapMailToData, hashMapOwnershipAndTransferGranteeCreationData,
+						hashMapCreateOwnershipRecordData, hashMapCreateAssessedValueRecord);
+
+		// STEP 2 : Login as Appraiser user
+		ReportLogger.INFO("Login as Appriaser user");
+		objMappingPage.login(users.RP_APPRAISER);
+		String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
+		String workItemQuery = "SELECT Id FROM Work_Item__c where name = '"+workItemForAppraiser+"'";
+		String workItemId = salesforceAPI.select(workItemQuery).get("Id").get(0);
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Work_Item__c/"+workItemId+"/view");
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		
+		// STEP 3 - Navigating to Appraisal Activity Screen
+		ReportLogger.INFO("Navigating to Appraisal Activity Screen");
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.quickActionOptionSubmitForApproval);
+		ReportLogger.INFO("Navigated to Appraisal Activity");
+		
+		//STEP 4 : Validating Assessed value records and Roll entry record tile view values for LCV And ICV as Zero Values
+		objCioTransfer.editRecordedApnField("Land Cash Value");
+		objPage.enter("Land Cash Value", "0");
+		objPage.enter("Improvement Cash Value", "0");
+		objCioTransfer.Click(objCioTransfer.saveButtonModalWindow);
+		String apnValue = objCioTransfer.getFieldValueFromAPAS("APN");
+		String apnQuery = "SELECT Id FROM Parcel__c WHERE Name = '" + apnValue + "'";
+		String APN = salesforceAPI.select(apnQuery).get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
+				+ "/related/Assessed_Values__r/view");
+		ReportLogger.INFO("Opened Assessed value records");
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
+		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNew = objMappingPage.getGridDataInHashMap();
+		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Land Value").get(1), "0", "SMAB-T4169: LCV for Assessed value record is 0");
+		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Improvement Value").get(1), "0",
+				"SMAB-T4169: ICV for Assessed value record ");
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
+				+ "/related/Roll_Entry__r/view");
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
+		ReportLogger.INFO("Opened Roll Entry records");
+		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryValue = objMappingPage.getGridDataInHashMap();
+		softAssert.assertEquals(gridDataHashMapRollEntryValue.get("Land Assessed Value").get(0), "$0",
+				"SMAB-T4169: LCV for roll entry record is 0");
+		softAssert.assertEquals(gridDataHashMapRollEntryValue.get("Improvement Assessed Value").get(0), "$0",
+				"SMAB-T4169: ICV for roll entry record is 0");
+		objMappingPage.logout();
+		Thread.sleep(4000);
+
+		//STEP 5: Create CIO-GOVT Transfer by creating UT Event on the same parcel
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		driver.navigate().to("https://smcacre--qa.lightning.force.com/lightning/r/Parcel__c/" + APN + "/view");
+		objMappingPage.waitForElementToBeClickable(
+				objMappingPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.selectOptionDropdown);
+		objParcelsPage.selectOptionFromDropDown(objParcelsPage.selectOptionDropdown, "Create Audit Trail Record");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.nextButtonComponentsActionsModal));
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.workItemTypeDropDownComponentsActionsModal);
+		objParcelsPage.selectOptionFromDropDown("Record Type", dataToCreateUnrecordedEventMap.get("Record Type"));
+		objParcelsPage.selectOptionFromDropDown("Group", dataToCreateUnrecordedEventMap.get("Group"));
+		Thread.sleep(2000);
+		objParcelsPage.selectOptionFromDropDown("Type of Audit Trail Record?",
+				dataToCreateUnrecordedEventMap.get("Type of Audit Trail Record?"));
+		if (dataToCreateUnrecordedEventMap.get("Source") != null) {
+			objParcelsPage.selectOptionFromDropDown("Source", dataToCreateUnrecordedEventMap.get("Source"));
+		}
+		if (dataToCreateUnrecordedEventMap.get("Date of Event") != null) {
+			objParcelsPage.enter("Date of Event", dataToCreateUnrecordedEventMap.get("Date of Event"));
+		}
+		objParcelsPage.enter("Date of Recording", dataToCreateUnrecordedEventMap.get("Date of Recording"));
+		objParcelsPage.enter("Description", description);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save and Next"));
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.calculateOwnershipButtonLabel);
+		ReportLogger.INFO("CIO Activity created");
+		String currentUrlCIO = driver.getCurrentUrl();
+		objCioTransfer.logout();
+		Thread.sleep(5000);
+		
+
+		// STEP 6: Login with CIO staff and approve the CIO
+		objMappingPage.login(users.CIO_STAFF);
+		driver.navigate().to(currentUrlCIO);
+		Thread.sleep(2000);
+
+		// STEP 5-Creating the new Grantee
+		String recordeAPNTransferID = driver.getCurrentUrl().split("/")[6];
+		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
+		driver.navigate().to("https://smcacre--" + execEnv
+				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.calculateOwnershipButtonLabel);
+		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, objCioTransfer.CIO_EVENT_CODE_CIOGOVT);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.calculateOwnershipButtonLabel);
+		
+		// STEP 6- CIO Staff submitting for Review
+		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.finishButtonPopUp);
+		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+		Thread.sleep(2000);
+		objCioTransfer.logout();
+		Thread.sleep(5000);
+
+		// STEP 7- Login as CIO-Supervisor and Approve
+		objMappingPage.login(users.CIO_SUPERVISOR);
+		driver.navigate().to(currentUrlCIO);
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.quickActionOptionApprove);
+		objCioTransfer.clickQuickActionButtonOnTransferActivity("Approve");
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
+		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+     	Thread.sleep(3000);
+		objCioTransfer.logout();
+		Thread.sleep(5000);
+		
+		// STEP 8: Login as RP APPRAISER and Validate GOVT Transfer
+		objMappingPage.login(users.RP_APPRAISER);
+		String workItemNoForAppraiser = salesforceAPI.select(
+				"Select Id,Name from Work_Item__c where type__c='Govt CIO Appraisal' and sub_type__c='Appraisal Activity' order by createdDate desc")
+				.get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Work_Item__c/"
+				+ workItemNoForAppraiser + "/view");
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+
+		// STEP 9: Navigating to Appraisal Activity Screen
+		ReportLogger.INFO("Navigating to Appraisal Activity Screen");
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow1 = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow1);
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.quickActionOptionSubmitForApproval);
+		objCioTransfer.editRecordedApnField("Land Cash Value");
+		objPage.enter("Land Cash Value", "0");
+		objPage.enter("Improvement Cash Value", "0");
+		objCioTransfer.Click(objCioTransfer.saveButtonModalWindow);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
+				+ "/related/Assessed_Values__r/view");
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
+		ReportLogger.INFO("Navigated to Assessed value records");		
+		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNewTransferGovt = objMappingPage
+				.getGridDataInHashMap();
+		softAssert.assertEquals(gridDataHashMapAssessedValueNewTransferGovt.get("Land Value").get(2), "0",
+				"SMAB-T4169: LCV For Assessed value is 0");
+		softAssert.assertEquals(gridDataHashMapAssessedValueNewTransferGovt.get("Improvement Value").get(2), "0",
+				"SMAB-T4169: ICV for Assessed value is 0");
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
+				+ "/related/Roll_Entry__r/view");
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
+		ReportLogger.INFO("Navigated to Roll entry record");
+		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryValueGOVTTransfer = objMappingPage
+				.getGridDataInHashMap();
+		softAssert.assertEquals(gridDataHashMapRollEntryValueGOVTTransfer.get("Land Assessed Value").get(0), "$0",
+				"SMAB-T4169: LCV For Roll entry record is 0");
+		softAssert.assertEquals(gridDataHashMapRollEntryValueGOVTTransfer.get("Improvement Assessed Value").get(0),
+				"$0", "SMAB-T4169: ICV For Roll entry record is 0");
+		objMappingPage.logout();		
+	
+	}
+
+	/*
+	 * This method is used to Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile.
+	 * Users: RP Appraiser, RP Supervisor 
+	 */
+	
+	@Test(description = "SMAB-T3932, SMAB-T4271: Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile.", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
+	public void RecorderIntegration_Composite_Value_Calculation(String loginUser) throws Exception {
+		String execEnv = System.getProperty("region");
+		
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithIncompleteDataPartTransfer");
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateRpOwnership");
+
+		Map<String, String> hashMapMailToData = objUtil.generateMapFromJsonFile(MailtoData, "createMailToData");
+
+		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecordCioPart");
+		// STEP 1 : Create Appraiser activity
+		objCioTransfer.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", objCioTransfer.CIO_EVENT_CODE_PART,
+						hashMapMailToData, hashMapOwnershipAndTransferGranteeCreationData,
+						hashMapCreateOwnershipRecordData, hashMapCreateAssessedValueRecord);
+		
+		// Step2: Login to the APAS application using the credentials passed through dataprovider (RP Appraiser)
+		objWorkItemHomePage.login(loginUser);
+
+		String workItemNoForAppraiser = salesforceAPI.select(
+				"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by createdDate desc")
+				.get("Name").get(0);						
+		objCioTransfer.globalSearchRecords(workItemNoForAppraiser);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.getFieldValueFromAPAS("APN");
+		objWorkItemHomePage.waitForElementToBeInVisible("APN", 5);
+		objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		
+		// STEP 3 - Navigating to Appraisal Activity Screen
+		ReportLogger.INFO("Navigating to Appraisal Activity Screen");
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		String appraisalActivityUrl = driver.getCurrentUrl();
+		
+		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
+		String apnOnAAS=(apasGenericObj.getFieldValueFromAPAS("APN"));
+		String DOV=(apasGenericObj.getFieldValueFromAPAS("DOV"));
+		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
+		Thread.sleep(2000);
+		objCioTransfer.clickViewAll(assessedValueTableName);
+		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValue = objMappingPage.getGridDataInHashMap();
+		String assessedValueType = gridDataHashMapAssessedValue.get("Assessed Value Type").get(0);
+		String assessedValueStartDate = gridDataHashMapAssessedValue.get("Effective Start Date").get(0);
+		String assessedValueEndDate = gridDataHashMapAssessedValue.get("Effective End Date").get(0);
+		String assessedValueLandValue = gridDataHashMapAssessedValue.get("Land Value").get(0);
+		String assessedValueImprovementValue = gridDataHashMapAssessedValue.get("Improvement Value").get(0);
+		
+		driver.navigate().to(appraisalActivityUrl);
+		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
+		objMappingPage.Click(objAppraisalActivity.appraisalActivityEditValueButton("Land Cash Value"));
+		objMappingPage.waitForElementToBeVisible(apasGenericObj.getButtonWithText("Save"));
+		
+		apasGenericObj.enter("Land Cash Value", "200000");
+		apasGenericObj.enter("Improvement Cash Value","200000");
+		
+		apasGenericObj.Click(apasGenericObj.getButtonWithText("Save"));
+		Thread.sleep(2000);
+		
+		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
+		Thread.sleep(2000);
+		objCioTransfer.clickViewAll("Assessed Values for Parent Parcel");
+		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNew = objMappingPage.getGridDataInHashMap();
+		String assessedValueTypeFirst = gridDataHashMapAssessedValueNew.get("Assessed Value Type").get(0);
+		String assessedValueStartDateFirst = gridDataHashMapAssessedValueNew.get("Effective Start Date").get(0);
+		
+		String assessedValueLandValueFirst= gridDataHashMapAssessedValueNew.get("Land Value").get(0);
+		String assessedValueImprovementValueFirst = gridDataHashMapAssessedValueNew.get("Improvement Value").get(0);
+		String assessedValueTypeSecond = gridDataHashMapAssessedValueNew.get("Assessed Value Type").get(1);
+		String assessedValueStartDateSecond = gridDataHashMapAssessedValueNew.get("Effective Start Date").get(1);
+		String assessedValueLandValueSecond= gridDataHashMapAssessedValueNew.get("Land Value").get(1);
+		String assessedValueImprovementValueSecond = gridDataHashMapAssessedValueNew.get("Improvement Value").get(1);
+		String assessedValueEndDateFirst = gridDataHashMapAssessedValue.get("Effective End Date").get(0);
+		String assessedValueEndDateSecond = gridDataHashMapAssessedValueNew.get("Effective End Date").get(1);
+		softAssert.assertEquals(assessedValueTypeFirst,assessedValueType, "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
+		softAssert.assertEquals(assessedValueStartDateFirst,assessedValueStartDate, "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
+		softAssert.assertEquals(assessedValueLandValueFirst,assessedValueLandValue, "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+		softAssert.assertEquals(assessedValueImprovementValueFirst,assessedValueImprovementValue, "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+		softAssert.assertEquals(assessedValueEndDate,assessedValueEndDateFirst, "SMAB-T3932, SMAB-T4271:Verify That Both End Date Should Be empty.");
+	
+		softAssert.assertEquals(assessedValueTypeSecond,assessedValueType, "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
+		softAssert.assertEquals(assessedValueStartDateSecond,DOV, "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
+		softAssert.assertEquals(assessedValueLandValueSecond,"200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+		softAssert.assertEquals(assessedValueImprovementValueSecond,"200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+		softAssert.assertEquals(assessedValueEndDateSecond,assessedValueEndDateFirst, "SMAB-T3932, SMAB-T4271:Verify That Both End Date Should Be Empty.");
+	
+		
+		String queryAPN = "select Id from Parcel__c where Name='"+apnOnAAS+"'";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apnToUpdateId= responseAPNDetails.get("Id").get(0);
+		driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/" + apnToUpdateId + "/related/Roll_Entry__r/view");
+		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.parcelsLink);
+		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryNew = objMappingPage.getGridDataInHashMap();
+		
+		String rollValueTypeFirst = gridDataHashMapRollEntryNew.get("Type").get(0);
+		String rollValueYearFirst = gridDataHashMapRollEntryNew.get("Roll Year Settings").get(0);
+		String rollValueLandValueFirst= gridDataHashMapRollEntryNew.get("Land Assessed Value").get(0);
+		String rollValueImprovementValueFirst = gridDataHashMapRollEntryNew.get("Improvement Assessed Value").get(0);
+		String rollValueTypeSecond = gridDataHashMapRollEntryNew.get("Type").get(1);
+		String rollValueYearSecond = gridDataHashMapRollEntryNew.get("Roll Year Settings").get(1);
+		String rollValueLandValueSecond= gridDataHashMapRollEntryNew.get("Land Assessed Value").get(1);
+		String rollValueImprovementValueSecond = gridDataHashMapRollEntryNew.get("Improvement Assessed Value").get(1);
+		
+
+		softAssert.assertEquals(rollValueTypeFirst,"Annual", "SMAB-T3932, SMAB-T4271:Verify That Both Roll Value Type Should Be Same.");
+		softAssert.assertEquals(rollValueYearFirst,"2022", "SMAB-T3932, SMAB-T4271:Verify That year Should Be Same.");
+		softAssert.assertEquals(rollValueLandValueFirst,"$244,355", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+		softAssert.assertEquals(rollValueImprovementValueFirst,"$244,355", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+	
+		softAssert.assertEquals(rollValueTypeSecond,"Supplemental", "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
+		softAssert.assertEquals(rollValueYearSecond,"2021", "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
+		softAssert.assertEquals(rollValueLandValueSecond,"$241,936", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+		softAssert.assertEquals(rollValueImprovementValueSecond,"$241,936", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+
+		objCioTransfer.logout();
 
 	}
 

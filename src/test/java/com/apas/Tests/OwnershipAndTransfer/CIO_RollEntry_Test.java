@@ -80,6 +80,7 @@ public class CIO_RollEntry_Test  extends TestBase implements testdata, modules, 
 		objParcelsPage.enter(objParcelsPage.getWebElementWithLabel("Exemption 1(HOE)"), "2334465");
 		objParcelsPage.enter(objParcelsPage.getWebElementWithLabel("Fixtures"), "2334465");
 		objParcelsPage.Click(objParcelsPage.getWebElementWithLabel("Root"));
+		objParcelsPage.clearFieldValue("TRA");
 		objParcelsPage.javascriptClick(objParcelsPage.getButtonWithText("Save"));
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.editButton);
 
@@ -118,5 +119,38 @@ public class CIO_RollEntry_Test  extends TestBase implements testdata, modules, 
 		
 		objMappingPage.logout();
 	}
+	/*
+	 * This method is to Verify the Quick Actions Buttons to Generate/Update Annual Roll Entry Records.
+	 * 
+	 * @param loginUser
+	 * 
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T3932, SMAB-T4268:Verify the Quick Actions Buttons to Generate/Update Annual Roll Entry Records.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression",  "ChangeInOwnershipManagement", "RollEntry" })
+	public void CIO_VerifyAnnualRollEntryRecordsButtons(String loginUser) throws Exception {
+
+		String execEnv = System.getProperty("region");
+			// Step1: Login to the APAS application using the credentials passed through
+		objParcelsPage.login(loginUser);
+
+		// Step2: Navigating to the Roll Year Setting
+		objWorkItemHomePage.searchModule(ROLL_YEAR_SETTINGS);
+		
+		//Step 3 : Navigating to the Open Roll Year Settings
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.newButton);
+		String query = "SELECT Id FROM Roll_Year_Settings__c Where Status__c ='Open'";
+		HashMap<String, ArrayList<String>> responseIdRollYearSettings = salesforceAPI.select(query);
+		String openRollYear=responseIdRollYearSettings.get("Id").get(0);
+		driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Roll_Year_Settings__c/" + openRollYear + "/view");
+		objMappingPage.waitForElementToBeClickable(objMappingPage.getButtonWithText("Edit"));
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objMappingPage.getButtonWithText("Generate Annual Record")),
+				"SMAB-T3932, SMAB-T4268: Validation that Generate Annual Record Button should be visible.");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible(objMappingPage.getButtonWithText("Update Annual Record")),
+				"SMAB-T3932, SMAB-T4268: Validation that Update Annual Record Button should be visible.");		
+		
+		objMappingPage.logout();
+	}
+
 
 }

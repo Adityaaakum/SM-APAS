@@ -6,11 +6,16 @@
 	"Start Date" : "7/19/1950",
 	"Assessed Value Type" : "Assessed Value",
 	"Ownership Percentage" : "100" 
-	
-
-
 },
-
+"dataToCreateAssesedValueRecordCioPart":{
+	
+	"DOV": "7/1/1999",
+	"Land Cash Value" : "100,000",
+	"Improvement Cash Value" : "100,000" ,
+	"Start Date" : "7/1/1999",
+	"Assessed Value Type" : "Assessed Value",
+	"Ownership Percentage" : "100" 
+},
   "dataToCreateAssesedValueRecordForP19D":{
 	
 	"DOV": "7/19/1950",
@@ -30,7 +35,6 @@
 	"Assessed Value Type" : "Prop 19 Base Year Transfer",
 	 "Purchase Price" : " 500,000"
 
-
 	},
 	"dataToCreateAssesedValueRecordForP19E":{
 		
@@ -38,19 +42,5 @@
 		"Land Cash Value" : "5,000,000",
 		"Improvement Cash Value" : "250,0000" ,	
 		"Assessed Value Type" : "Prop 19 Intergenerational Exclusion"
-		 
-	
-	
 	}
-
-
-
-
-
-
-
-
-
-
-
 }
