@@ -354,11 +354,10 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 	 * Below test case will verify error message on saving Exemption when the Claimant SSN value already exist in San Mateo county with another ownership with an existing / qualified HOE record
 	 **/
 	@Test(description = "SMAB-T4293, SMAB-T4294: Verify user is able to view an error message on saving HO Exemptions when the SSN value entered in the HOE record already exist against another HOE record against another APN.",
-			dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class , groups = {"Regression", "ChangeInOwnershipManagement", "HomeOwnerExemption" })
+			dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class , groups = {"Regression", "ChangeInOwnershipManagement", "HomeOwnerExemption" })
 	public void HOE_verifyExemptionwithSSNisAlreadyInUse(String loginUser) throws Exception {
 		
 		// ----- Test data -----
-		
 		String validClaimantSSN = "999-33-9999";
 		String invalidClaimantSSN = "999-22-9999";
 		String expectedErrorMessage = "SSN Exists with a qualified HOE in this APN";	
