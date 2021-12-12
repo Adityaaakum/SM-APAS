@@ -286,7 +286,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 	 * Below test case will verify error message on saving Exemption when the Claimant SSN value already exist in San Mateo county with another ownership with an existing / qualified HOE record
 	 **/
 	@Test(description = "SMAB-T4293, SMAB-T4294: Verify user is able to view an error message on saving HO Exemptions when the SSN value entered in the HOE record already exist against another HOE record against another APN.",
-			dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class , groups = {"regression", "ChangeInOwnershipManagement", "HomeOwnerExemption" })
+			dataProvider = "RPAppraiser", dataProviderClass = DataProviders.class , groups = {"Regression", "ChangeInOwnershipManagement", "HomeOwnerExemption" })
 	public void HOE_verifyExemptionwithSSNisAlreadyInUse(String loginUser) throws Exception {
 		
 		// ----- Test data -----
@@ -295,16 +295,14 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		String invalidClaimantSSN = "999-22-9999";
 		String expectedErrorMessage = "SSN Exists with a qualified HOE in this APN";	
 		
-		// Getting an active parcel
+		// Getting two active parcels
 		String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') Limit 2";
 		String apnId = salesforceAPI.select(queryForActiveAPN).get("Id").get(0);
 		String apnId2 = salesforceAPI.select(queryForActiveAPN).get("Id").get(1);
 		
-		//Data for two HOE records
+		//Data for a HOE records
 		Map<String, String> dataToCreateHomeOwnerExemptionMap = objUtil.generateMapFromJsonFile(homeOwnerExemptionData, "NewHOECreation");
-		Map<String, String> dataToCreateHomeOwnerExemptionMap2 = objUtil.generateMapFromJsonFile(homeOwnerExemptionData, "NewHOECreation");
-		
-		
+				
 		// ----- Creating the first HOE -----
 		
 		// Login to the APAS application as SysAdmin
@@ -330,13 +328,12 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 				
 		// Getting the HOE id
 		String exemptionQuery = "SELECT Name,Id FROM Exemption__c WHERE Name='"+exemptionName+"' limit 1";
-		String exemptionID = salesforceAPI.select(exemptionQuery).get("Id").get(0);
+		String exemptionId = salesforceAPI.select(exemptionQuery).get("Id").get(0);
 		
 		// Entering the SSN 
 		objExemptionsPage.editExemptionRecord();		
 		objExemptionsPage.enter(objExemptionsPage.claimantSSNOnDetailEditPage, invalidClaimantSSN);
-		objExemptionsPage.saveRecord();
-		
+		objExemptionsPage.saveRecord();		
 		
 		// ----- Creating the second HOE -----
 		
@@ -359,21 +356,23 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 				
 		// Getting the HOE id
 		String exemptionQuery2 = "SELECT Name,Id FROM Exemption__c WHERE Name='"+exemptionName2+"' limit 1";
-		String exemptionID2 = salesforceAPI.select(exemptionQuery2).get("Id").get(0);
+		String exemptionId2 = salesforceAPI.select(exemptionQuery2).get("Id").get(0);
 				
 		// Logging out
 		objExemptionsPage.logout();
+		Thread.sleep(5000);
 		
-		
-		// ------------------------------ SMAB-T4293 ------------------------------
-		
-		//Step1: Login to the APAS application using the credentials passed through
+		// ----- Steps -----
+				
+		// Step1: Login to the APAS application using the credentials passed through
 		objExemptionsPage.login(loginUser);
 						
-		//Step2: User opens a HOExemption record
-		driver.navigate().to(("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Exemption__c/" + exemptionID2 + "/view"));
+		// Step2: User opens a HOExemption record
+		driver.navigate().to(("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Exemption__c/" + exemptionId2 + "/view"));
 						
+		
 		// Step3: User enters SSN 
+		objExemptionsPage.waitForElementToBeVisible(5,objExemptionsPage.editButton);
 		objExemptionsPage.editExemptionRecord();		
 		objExemptionsPage.enter(objExemptionsPage.claimantSSNOnDetailEditPage, invalidClaimantSSN);
 						
@@ -384,24 +383,20 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		ReportLogger.INFO("User cannot enter a SSN that already exists in another HOE");
 		softAssert.assertContains(expectedErrorMessage, errorMessage, "SMAB-T4293: Verify user is able to view an error message on saving HO Exemption when the SSN value entered already exist against another HOE record against another APN.");
 		
-		
-		// ------------------------------ SMAB-T4294 ------------------------------
-		
-		// Step3: User enters valid SSN
+		// Step5: User enters valid SSN 
 		objExemptionsPage.enter(objExemptionsPage.claimantSSNOnDetailEditPage, validClaimantSSN);
 				
-		//Step4: User clicks on save button
+		// Step6: User clicks on save button
 		objExemptionsPage.saveRecord();
 				
 		// Verify SSN was saved
 		String finalSSNvalue = objExemptionsPage.claimantSSNOnDetailPage.getText();
-		System.out.println("final SSN: " + validClaimantSSN);
 		ReportLogger.INFO("User is able to save the SSN");
 		softAssert.assertEquals(finalSSNvalue, validClaimantSSN, "SMAB-T4294: Verify the SSN data entry is allowed and saved when SNN doesn't exist in APAS previously.");
 				
 		// Logging out
 		objExemptionsPage.logout();
-		
+		Thread.sleep(5000);		
 		
 		// ------------------------------ Deleting HOE records ------------------------------
 		
@@ -409,7 +404,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		objExemptionsPage.login(users.SYSTEM_ADMIN);
 		
 		// ---- First HOE ----
-		driver.navigate().to(("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Exemption__c/" + exemptionID + "/view"));
+		driver.navigate().to(("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Exemption__c/" + exemptionId + "/view"));
 		objExemptionsPage.Click(objExemptionsPage.deleteExemption);
 		objExemptionsPage.Click(objExemptionsPage.deleteConfirmationPostDeleteAction);
 		
@@ -419,7 +414,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		softAssert.assertContains("was deleted",messageOnAlert,"First HOE was deleted correctly");
 		
 		// ---- Second HOE ----
-		driver.navigate().to(("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Exemption__c/" + exemptionID2 + "/view"));
+		driver.navigate().to(("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Exemption__c/" + exemptionId2 + "/view"));
 		objExemptionsPage.Click(objExemptionsPage.deleteExemption);
 		objExemptionsPage.Click(objExemptionsPage.deleteConfirmationPostDeleteAction);
 		
