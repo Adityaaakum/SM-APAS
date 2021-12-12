@@ -23,6 +23,15 @@
 	"IncorrectDOV" : "7/20/2051"
 	
 	},
+	"dataToCreateGranteeWithIncompleteDataPartTransfer":{
+	
+	"Last Name":"LUKE SHAW",
+	"Ownership Start Date":"9/1/2000",
+	"Ownership End Date":"9/7/2000",
+	"Owner Percentage":"50",
+	"IncorrectDOV" : "9/10/2051"
+	
+	},
 	
 	"DataToCreateOwnershipRecord": {
 	    "Type": "Owner",
@@ -30,7 +39,7 @@
 	    "Ownership Percentage":"100",
 	    "Ownership Start Date":"7/19/1950"
 	  },
-	  
+  
 	"dataToCreateGranteeWithCompleteOwnership":{
 		"Last Name":"Will Smith",
 		"First Name":"Jhones",
@@ -42,7 +51,7 @@
  		"Type": "Owner",
 	    "Status": "Active",
 	    "Ownership Percentage":"100",
-	    "Ownership Start Date":"7/19/1950"
+	    "Ownership Start Date":"7/1/1999"
 	},
 	"DataToCreatePenaltyRecord": {
 	    "Penalty Code": "PEN-LEOP",
