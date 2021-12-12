@@ -1,4 +1,4 @@
-package com.apas.Tests.ApasSettings;
+package com.apas.Tests.ParcelManagement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class TRATest extends TestBase implements testdata, modules, users {
+public class Parcel_Management_TRA_Updates_Tests extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 
 	TRAPage objTRAPage;

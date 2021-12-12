@@ -656,7 +656,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		    	  HashMapOldGrantee.get("Id").stream().forEach(Id ->{
 	    		  objSalesforceAPI.delete("CIO_Transfer_Grantee_New_Ownership__c", Id);
 	    		  ReportLogger.INFO("!!Deleted RAT transfer grantee with id= "+Id + " and grantee name "+HashMapOldGrantee.get("Last_Name__c"));
-		          } );}	 
+		          } );}	
+		        Thread.sleep(2000); 
 		 } 
 			
 
