@@ -16,11 +16,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Parcel_Management_Reports_Test extends TestBase {
 
@@ -93,4 +89,68 @@ public class Parcel_Management_Reports_Test extends TestBase {
 		}
 
 	}
+
+	@Test(description = "SMAB-T2573: Validation of parcel management RP RP Activity List reports", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "WorkItemWorkflow_Reports", "ParcelManagement_Reports" }, alwaysRun = true)
+	public void Reports_ParcelManagementRPReports(String loginUser) throws Exception {
+		String downloadLocation = testdata.DOWNLOAD_FOLDER;
+		String reportName;
+		String exportedFileName;
+		ReportLogger.INFO("Download location : " + downloadLocation);
+		String Parcelreports = testdata.PARCEL_MANAGEMENT_REPORTS;
+		Map<String, String> ParcelReportsName = objUtil.generateMapFromJsonFile(Parcelreports, "VerifyRPReportsName");
+		List<Integer> result = new ArrayList(ParcelReportsName.keySet());
+		Map<String, String> ParcelReportsfileData = objUtil.generateMapFromJsonFile(Parcelreports,
+				"VerifyRPReportsColumns");
+		// Step1: Login to the APAS application using the credentials passed through
+		// data provider
+
+		objReportsPage.login(loginUser);
+		// Step2: Opening parcel management reports and validate
+
+		for (Map.Entry<String, String> entry : ParcelReportsName.entrySet()) {
+			reportName = entry.getKey();
+			objReportsPage.searchModule(modules.REPORTS);
+			String actualReportName = objReportsPage.navigateToReport(reportName);
+
+			softAssert.assertEquals(actualReportName, reportName,
+					"SMAB-T2573: Validation of parcel management RP RP Activity List : " + actualReportName);
+
+		}
+		objReportsPage.logout();
+
+		// Step3 : export and Validate header of reports
+		for (Map.Entry<String, String> entry : ParcelReportsfileData.entrySet()) {
+			objReportsPage.login(loginUser);
+
+
+			String expectedColumnsInExportedExcel = entry.getValue().split("-")[0];
+			int rowNumber = Integer.parseInt(entry.getValue().split("-")[1]);
+
+			reportName = entry.getKey();
+			objReportsPage.searchModule(modules.REPORTS);
+
+			// Deleteing all the previously downloaded files
+			objReportsPage.deleteFilesFromFolder(downloadLocation);
+
+			// Step4: Exporting 'Parcel management' report in Formatted Mode
+			objReportsPage.exportReport(reportName, ReportsPage.FORMATTED_EXPORT);
+			File downloadedFile = Objects.requireNonNull(new File(downloadLocation).listFiles())[0];
+			exportedFileName = downloadedFile.getName();
+			softAssert.assertTrue(exportedFileName.contains(reportName),
+					"SMAB-T3444: Exported report name validation. Actual Report Name : " + exportedFileName);
+
+			// Step4: Columns validation in exported report
+			HashMap<String, ArrayList<String>> hashMapExcelData = ExcelUtils
+					.getExcelSheetData(downloadedFile.getAbsolutePath(), 0, rowNumber, 1);
+
+			softAssert.assertEquals(hashMapExcelData.keySet().toString(), expectedColumnsInExportedExcel,
+					"SMAB-T3444: Columns Validation in downloaded " + reportName + "Report.");
+			objReportsPage.logout();
+
+		}
+
+	}
+
+
 }
