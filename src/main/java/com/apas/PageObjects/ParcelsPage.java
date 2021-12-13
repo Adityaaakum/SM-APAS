@@ -138,6 +138,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String partOfEconomicUnit = "Part of Economic Unit";
 	public String numberOfParcelsEconomicUnit = "# of Parcels in Economic Unit";
 	public String listOfParcelsEconomicUnit = "List of all Parcels in Economic Unit";
+	public String eventCodeField = "Event Code";
 
 	
 	
@@ -300,6 +301,8 @@ public class ParcelsPage extends ApasGenericPage {
 		String workItemNumber;
 		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
 		
+		String eventCode = objSalesforceAPI.select("SELECT Name FROM Event_Library__c limit 1").get("Name").get(0);
+		
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
 		Thread.sleep(2000);
@@ -320,6 +323,7 @@ public class ParcelsPage extends ApasGenericPage {
 		if (dueDate != null) enter(dueDateInputTextBox, dueDate);
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
+		if(eventCode !=null) searchAndSelectOptionFromDropDown(eventCodeField,eventCode);
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
 		Thread.sleep(10000);
 
