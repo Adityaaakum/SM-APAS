@@ -472,11 +472,16 @@ public class ExemptionsPage extends ApasGenericPage {
 
     public String createNewExemptionWithMandatoryData(Map<String, String> newExemptionData) throws Exception {
 
+    	 String assesse=fetchAssesseeName();
+    	// String assesse_SSN= objSalesforceAPI.select("Select SSN__pc from Account where FirstName = '"+assesse.split(" ")[0]+"'").get("SSN__pc").get(0);
+    	 //System.out.println(assesse_SSN);
+    	 objSalesforceAPI.update("Account",objSalesforceAPI.select("SELECT ID FROM ACCOUNT WHERE where FirstName = '"+assesse.split(" ")[0]+"'").get("Id").get(0)  ,"SSN__pc", newExemptionData.get("ClaimantSSN"));
+    	
     	Click(exemptionRecordTypeNextButton);
         ReportLogger.INFO("Entering/Selecting values for New Exemption record");
         searchAndSelectOptionFromDropDown("APN", fetchActiveAPN());
         objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-        searchAndSelectOptionFromDropDown("Claimant 1 Name", fetchAssesseeName());
+        searchAndSelectOptionFromDropDown("Claimant 1 Name", assesse);
         objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
         objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
         objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));
@@ -695,7 +700,7 @@ public class ExemptionsPage extends ApasGenericPage {
         //This AssesseeName is temporarily hard coded for PreUAT environment as there is some code deference in preuat and qa
         String assesseeName = "SMtestPerson";
         if (!System.getProperty("region").toUpperCase().trim().equals("PREUAT")) {
-            String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName !=NULL";
+            String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName !=NULL ";
             HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
             assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
         }
