@@ -30,7 +30,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class WorkItemWorkFlow_WorkItemRejection_Test extends TestBase implements testdata, modules, users{
+public class WorkItemAdministration_WorkItemRejection_Test extends TestBase implements testdata, modules, users{
 	
     RemoteWebDriver driver;
 	

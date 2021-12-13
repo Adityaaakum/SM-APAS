@@ -639,7 +639,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			 if (gridName.contains("CIO Transfer Grantee & New Ownership"))updateGridName = "CIO_Transfer_Grantee_New_Ownership";
 			 if (gridName.contains("CIO Transfer Mail To"))updateGridName = "CIO_Transfer_Mail_To";
 			 if (gridName.contains("Ownership for Parent Parcel"))updateGridName = "Property_Ownerships";
-			 
+			 if (gridName.contains("Assessed Values for Parent Parcel"))updateGridName = "Assessed_Value";
 			 Thread.sleep(1000);
 			 String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'" + updateGridName + "')]//span[text() = 'View All']";		        
 		 	 WebElement fieldLocator1 = locateElement(xpathStr, 30);
@@ -656,7 +656,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		    	  HashMapOldGrantee.get("Id").stream().forEach(Id ->{
 	    		  objSalesforceAPI.delete("CIO_Transfer_Grantee_New_Ownership__c", Id);
 	    		  ReportLogger.INFO("!!Deleted RAT transfer grantee with id= "+Id + " and grantee name "+HashMapOldGrantee.get("Last_Name__c"));
-		          } );}	 
+		          } );}	
+		        Thread.sleep(2000); 
 		 } 
 			
 
