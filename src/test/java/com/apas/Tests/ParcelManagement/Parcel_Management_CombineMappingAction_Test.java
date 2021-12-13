@@ -2287,7 +2287,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2904: Verify system doesn't consider Interim parcel as lower parcel if other parcel is higher than that in series", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2904: Verify system doesn't consider Interim parcel as lower parcel if other parcel is higher than that in series", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement" })
 	public void ParcelManagement_VerifyParcelGenerationForCombineWithInterimAsLowestParcel(String loginUser) throws Exception {
 		
@@ -2339,6 +2339,23 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		
         objMappingPage.deleteCharacteristicInstanceFromParcel(apn1);
         objMappingPage.deleteCharacteristicInstanceFromParcel(apn2);
+        
+        // Adding different owners on the parent parcels
+		HashMap<String, ArrayList<String>> ownerName = salesforceAPI.select(
+				"SELECT id ,name,First_Name_f__c  FROM Property_Ownership__c where status__c='Active' and type__c ='Owner' limit 1");
+		HashMap<String, ArrayList<String>> ownerNames = salesforceAPI.select(
+				"SELECT id ,name,First_Name_f__c  FROM Property_Ownership__c where status__c='Active' and type__c ='Owner' and Name!='"
+						+ ownerName.get("Name").get(0) + "'limit 1");
+        System.out.println("yyyyyyyy"+ownerName);
+        System.out.println("yyyyyyyy"+ownerNames);
+        salesforceAPI.update("Property_Ownership__c", ownerName.get("Id").get(0), "Parcel__c",apn1Id );
+        salesforceAPI.update("Property_Ownership__c", ownerNames.get("Id").get(0), "Parcel__c",apn2Id );
+        
+    	String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		salesforceAPI.update("Parcel__c", apn1Id, "Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", apn2Id, "Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+        
 		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -2383,6 +2400,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				
 		//Step 7: Validate that user is able to move to the next screen 
 		ReportLogger.INFO("Click NEXT button");
+Thread.sleep(5000);
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"Warning: The parent parcels selected have different owners, if you choose to proceed the owner from the first parcel will be passed to the combined child parcel. Follow up with CIO if deem applicable.",
+				"error message is passed");
 		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
 		objMappingPage.waitForElementToBeVisible(6, objMappingPage.useCodeFieldSecondScreen);
@@ -2395,8 +2416,32 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertTrue(childAPNNumber.startsWith("9"),
 				"SMAB-T2904: Validate system doesn't consider Interim parcel as lower parcel if other parcel is higher than that in series");
 		
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+		
+		String childApnId = salesforceAPI.select("Select id from Parcel__c where name ='"+childAPNNumber+"'").get("Id").get(0);
+		
+		String childownerid = salesforceAPI.select("Select First_Name_f__c  From Property_Ownership__c where Parcel__c='"+childApnId+"'").get("First_Name_f__c").get(0);
+		softAssert.assertEquals(childownerid,ownerName.get("First_Name_f__c").get(0) ,
+				"SMAB-T3511: Verfiying the Related Action of WI genrated for given Recorded Document");
+		
+		softAssert.assertEquals(childownerid,ownerName.get("First_Name_f__c").get(0) ,
+				"SMAB-T3511: Verfiying the Related Action of WI genrated for given Recorded Document");
+		
+//		 int apncheck = Integer.parseInt(apn1);
+//         if(Integer.parseInt(apn1) < Integer.parseInt(apn2))
+//         {
+//        	 apncheck = Integer.parseInt(apn2);
+//         }
+		
+		
 		driver.switchTo().window(parentWindow);
 		
+		objMappingPage.searchModule(PARCELS);
+        objMappingPage.globalSearchRecords(childAPNNumber);
+        objParcelsPage.openParcelRelatedTab(objParcelsPage.ownershipTabLabel);
+        Thread.sleep(5000);
+
 		objWorkItemHomePage.logout();
 		}
 	/**
