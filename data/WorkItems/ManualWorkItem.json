@@ -176,6 +176,15 @@
     "Priority": "Urgent",
     "Work Item Routing": "Give Work Item to Default Work Pool"
   },
+  "DataToCreateWorkItemOfRollValueChange": {
+    "Work Item Type": "Roll Value Change",
+    "Actions": "Manual Roll Entry",
+    "Audit Trail": "No",
+    "Reference": "Test Roll Value Change WI",
+    "Description": "Creation of Roll Value Change work item",
+    "Priority": "Urgent",
+    "Work Item Routing": "Give Work Item to Default Work Pool"
+  },
   "DataToCreateWorkItemOfTypeCIOWithActionAPNLegalDescription": {
     "Work Item Type": "CIO",
     "Actions": "APN & Legal Description Validation",

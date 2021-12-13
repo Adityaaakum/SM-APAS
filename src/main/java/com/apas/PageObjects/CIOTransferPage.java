@@ -151,7 +151,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String activeLabel ="Active";
 	public String releaseIndicatorLabel = "Release Indicator";
 	public String verifiedValueFromPcorLabel = "Verified Value from PCOR";
-	
+	public String previousButtonLabel = "Previous";
 
 	public String useThisQuickActionButtonOnCopyTOMailTo = "Use This";
 
@@ -208,7 +208,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath =commonXpath+ "//select[@name='Formatted_Name_1']")
 	public WebElement formattedName1;
 	
-	@FindBy(xpath = commonXpath+"//input[@name='Mailing_Zip__c']")
+	@FindBy(xpath = commonXpath+"//input[@name='Mailing_Zip__c'] | //input[@name='Mailing_ZIP']")
 	public WebElement mailZipCopyToMailTo;
 	
 	@FindBy(xpath = commonXpath+"//input[@name='Please_Enter_the_Retained_Ownership_Percentage_for_this_Owner']")
@@ -505,6 +505,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		 public void createCopyToMailTo(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {		 		 
 			
 				try {
+					String execEnv = System.getProperty("region");
 					Thread.sleep(5000);
 					Click(getButtonWithText(copyToMailToButtonLabel));
 					waitForElementToDisappear(formattedName1, 5);
@@ -512,9 +513,14 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					Select select = new Select(formattedName1);
 					select.selectByVisibleText(granteeForMailTo);
 					Click(formattedName1);
-					
+					Click(mailingState);
+					Select selectMailingState = new Select(mailingState);
+					selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"));
+					Click(mailingState);
 					enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
-					Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));
+					if (execEnv.equalsIgnoreCase("QA")) {
+						Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));
+					}
 					Click(getButtonWithText(nextButton));
 					ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
 				} catch (Exception e) {
@@ -633,7 +639,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			 if (gridName.contains("CIO Transfer Grantee & New Ownership"))updateGridName = "CIO_Transfer_Grantee_New_Ownership";
 			 if (gridName.contains("CIO Transfer Mail To"))updateGridName = "CIO_Transfer_Mail_To";
 			 if (gridName.contains("Ownership for Parent Parcel"))updateGridName = "Property_Ownerships";
-			 
+			 if (gridName.contains("Assessed Values for Parent Parcel"))updateGridName = "Assessed_Value";
 			 Thread.sleep(1000);
 			 String xpathStr = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//a[contains(@href,'" + updateGridName + "')]//span[text() = 'View All']";		        
 		 	 WebElement fieldLocator1 = locateElement(xpathStr, 30);
@@ -650,7 +656,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		    	  HashMapOldGrantee.get("Id").stream().forEach(Id ->{
 	    		  objSalesforceAPI.delete("CIO_Transfer_Grantee_New_Ownership__c", Id);
 	    		  ReportLogger.INFO("!!Deleted RAT transfer grantee with id= "+Id + " and grantee name "+HashMapOldGrantee.get("Last_Name__c"));
-		          } );}	 
+		          } );}	
+		        Thread.sleep(2000); 
 		 } 
 			
 
