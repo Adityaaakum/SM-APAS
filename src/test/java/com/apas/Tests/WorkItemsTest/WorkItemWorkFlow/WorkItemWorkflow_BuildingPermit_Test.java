@@ -323,7 +323,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
     }
     
-	@Test(description = "SMAB-T3085,SMAB-T3086:Create building permit with the E-File import process with out completion date", dataProvider = "RPAppraiser",dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3085,SMAB-T3086:Create building permit with the E-File import process with out completion date", dataProvider = "loginRPAppraiser",dataProviderClass = DataProviders.class, groups = {
 			"Regression","EFileImport","WorkItemWorkflow_BuildingPermit", "BuildingPermit"}, alwaysRun = true )
 	public void EFileIntake_ApproveImportedFileWithoutCompletionDate(String loginUser) throws Exception{
 		String period = "Adhoc";
@@ -413,7 +413,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 	}
     
     
-	@Test(description = "SMAB-T3087,SMAB-T3088:Create building permit with the E-File import process with completion date", dataProvider = "RPAppraiser",dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3087,SMAB-T3088:Create building permit with the E-File import process with completion date", dataProvider = "loginRPAppraiser",dataProviderClass = DataProviders.class, groups = {
 			"Regression","EFileImport","WorkItemWorkflow_BuildingPermit", "BuildingPermit"})
 	public void EFileIntake_ApproveImportedFileWithCompletionDate(String loginUser) throws Exception{
 		String period = "Adhoc";
@@ -475,7 +475,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after creating new building permit for active parcel
      **/
    
-    @Test(description = "SMAB-T2989, SMAB-T3089: Creating manual entry for Active Parcel building permit With completion date", dataProvider = "RPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"WorkItemWorkflow_BuildingPermit","Regression","BuildingPermit"}, alwaysRun = true)
+    @Test(description = "SMAB-T2989, SMAB-T3089: Creating manual entry for Active Parcel building permit With completion date", dataProvider = "loginRPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"WorkItemWorkflow_BuildingPermit","Regression","BuildingPermit"}, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitActiveParcelWithDataValidations(String loginUser) throws Exception {
 
 		//Fetching the Active Parcel
@@ -560,7 +560,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after creating new building permit for Retired parcel
      **/
 
-	@Test(description = "SMAB-T3007 : Creating manual entry for Retired Parcel building permit with completion date.", dataProvider = "RPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups = {
+	@Test(description = "SMAB-T3007 : Creating manual entry for Retired Parcel building permit with completion date.", dataProvider = "loginRPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups = {
 			"WorkItemWorkflow_BuildingPermit", "Regression", "BuildingPermit" }, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitRetiredParcelWithDataValidations(String loginUser)
 			throws Exception {
@@ -650,7 +650,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after creating new building permit Without completion date and with completion date for Active parcel
      **/
 
-	@Test(description = "SMAB-T2987, SMAB-T2988, SMAB-T2989 : Creating manual entry for Active Parcel building permit without complition date", dataProvider = "RPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups = {
+	@Test(description = "SMAB-T2987, SMAB-T2988, SMAB-T2989 : Creating manual entry for Active Parcel building permit without complition date", dataProvider = "loginRPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups = {
 			"WorkItemWorkflow_BuildingPermit", "Regression", "BuildingPermit" }, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitActiveParcelWithoutCompletionDate(String loginUser)
 			throws Exception {
@@ -783,7 +783,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
      **/
 
     
-	@Test(description = "SMAB-T3007: Creating manual entry for building permit for retired parcel without complition date", dataProvider = "RPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups = {
+	@Test(description = "SMAB-T3007: Creating manual entry for building permit for retired parcel without complition date", dataProvider = "loginRPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups = {
 			"WorkItemWorkflow_BuildingPermit", "Regression", "BuildingPermit" }, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitRetiredParcelWithoutCompletionDate(String loginUser)
 			throws Exception {

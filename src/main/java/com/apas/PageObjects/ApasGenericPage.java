@@ -513,7 +513,7 @@ public class ApasGenericPage extends Page {
 
 	public void closeDefaultOpenTabs() throws Exception {
 		ReportLogger.INFO("Closing all default tabs");
-
+		Thread.sleep(1000);
 		waitForElementToBeClickable(appLauncher, 10);
     	/*Robot rb=new Robot();
     	rb.keyPress(KeyEvent.VK_SHIFT);
@@ -1504,6 +1504,36 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 		}
 
 	}
+	/* 
+	 * Description - This method will change the date format
+	 * Param - YYYY/MM/DD
+	 * Return - mm/dd/yyyy
+	 */
 	
+	public String changeDateFormat(String dateValue ) throws Exception {
+		final String OLD_FORMAT = "yyyy-MM-dd";
+		final String NEW_FORMAT = "MM/dd/yyyy";
+
+		// August 12, 2010
+		String oldDateString = dateValue;
+		String newDateString;
+
+		SimpleDateFormat sdf = new SimpleDateFormat(OLD_FORMAT);
+		Date d = sdf.parse(oldDateString);
+		sdf.applyPattern(NEW_FORMAT);
+		newDateString = sdf.format(d);
+		return newDateString;
+		
+	}
+	/*
+	 * Increment the date as given by user
+	 */
+	 public Date addDays(Date date, int days)
+	    {
+	        Calendar cal = Calendar.getInstance();
+	        cal.setTime(date);
+	        cal.add(Calendar.DATE, days); //minus number would decrement the days
+	        return cal.getTime();
+	    }
 }
 
