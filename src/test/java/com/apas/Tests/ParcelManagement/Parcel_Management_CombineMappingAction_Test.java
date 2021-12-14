@@ -3611,19 +3611,18 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		// Moving to the Update Characteristics Verify PUC WI
 		objParcelsPage.Click(objParcelsPage.updateCharacteristicsVerifyPUC);
 		
-//		driver.navigate().to("https://smcacre--qa.lightning.force.com/lightning/r/Work_Item__c/a0r3500000rWLJ8AAO/view");
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.reviewLink);
 		String requestType = objMappingPage.getFieldValueFromAPAS("Request Type", "Information");
 		softAssert.assertEquals(requestType, "New APN - Update Characteristics & Verify PUC",
-				"SMAB-T2717: Verify Request Type of 1 new Work Items generated that are linked to each child parcel after Split mapping action is performed and WI is completed");
+				"SMAB-T3904: Verify Request Type of 1 new Work Items generated that are linked to each child parcel after Split mapping action is performed and WI is completed");
 
-		String previousRelatedAction = objMappingPage.getFieldValueFromAPAS("Previous Related Actione",
+		String relatedAction = objMappingPage.getFieldValueFromAPAS("Related Action",
 				"Information");
 
-		softAssert.assertEquals(previousRelatedAction, "Update Characteristics & Verify PUC",
-				"SMAB-T3993:Update Characteristics & Verify PUC link is present");
+		softAssert.assertEquals(relatedAction, "Update Characteristics & Verify PUC",
+				"SMAB-T3904: Update Characteristics & Verify PUC link is present");
 		objWorkItemHomePage.waitForElementToBeVisible(40, objWorkItemHomePage.referenceDetailsLabel);
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -3637,121 +3636,122 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertTrue(
 				objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText("Parcel Map in GIS Portal")),
 				"SMAB-T3997,Verify that A link to GIS must be displayed in the custom screen");
-//		List<WebElement> childParcelsList = driver.findElements(By.xpath(objMappingPage.listOfChildParcels));
-//
-//		for (int i = 0; i < childParcelsList.size(); i++) {
-//			softAssert.assertEquals(childParcelsList.get(i).getText(), gridParcelData.get("APN").get(i),
-//					"SMAB-T3991:Child parcels are displayed in the correct order:" + childParcelsList.get(i).getText());
-//
-//		}
-//		objParcelsPage.Click(objParcelsPage.getButtonWithText("Next"));
-//
-//		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
-//		objMappingPage.Click(objMappingPage.editButtonInSeconMappingScreen);
-//		objMappingPage.clearSelectionFromLookup("PUC");
-//		objMappingPage.clearSelectionFromLookup("District / Neighborhood Code");
-//		objMappingPage.Click(objMappingPage.getButtonWithText("Save"));
-//		Thread.sleep(2000);
-//		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
-//
-//		softAssert.assertContains(objMappingPage.getErrorMessage(),
-//				"Enter valid values for PUC and District / Neighborhood for all Child Parcels.",
-//				"SMAB-T4000,SMAB-T3996: Validation that error message is displayed when  the PUC and District and Neighborhood are not populated, it will provide the following error message");
-//
-//		String[] pucAndNeighCode = objMappingPage.editActionInUpdatePucAndCharsScreen(districtAndNeighCode, puc);
-//		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
-//		ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
-//
-//		driver.switchTo().window(parentWindow);
-//		driver.navigate().refresh();
-//		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
-//		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-//		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
-//		softAssert.assertEquals(workItemStatus, "Completed",
-//				"SMAB-T3994,SMAB-T4005: Validation WI completed successfully");
-//
-//		// Moving to child APN
-//		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
-//				+ response.get("Id").get(0) + "/view");
-//
-//		// Moving to Allocate Values WI
-//		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.workItems);
-//		districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code", "Summary Values");
-//		puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
-//		softAssert.assertEquals(districtAndNeighCode, pucAndNeighCode[1],
-//				"SMAB-T3926,SMAB-T4007: District and Neighbrhood code was updated successfully");
-//		softAssert.assertEquals(puc, pucAndNeighCode[0], "SMAB-T3926,SMAB-T4007:PUC was updated successfully");
-//		objParcelsPage.Click(objParcelsPage.workItems);
-//		objParcelsPage.Click(objParcelsPage.allocateValue);
-//		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-//		String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
-//		String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
-//		softAssert.assertEquals(assignedTo,
-//				salesforceAPI
-//						.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'")
-//						.get("Name").get(0),
-//				"SMAB-T4004,SMAB-T4224:Assiged to is matched successfully");
-//		softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool,
-//				"SMAB-T4004,SMAB-T4224:workPool is matched successfully");
-//		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
-//		parentWindow = driver.getWindowHandle();
-//		objWorkItemHomePage.switchToNewWindow(parentWindow);
-//		objMappingPage.enter("Remarks", "It's a Remarks");
-//
-//		// fetching the grid values to verify the presence of expected fields
-//		gridParcelData = objMappingPage.getGridDataInHashMap();
-//
-//		softAssert.assertEquals(gridParcelData.containsKey("Parcel"), "true",
-//				"SMAB-T4221,SMAB-T4222:Verifying Parcel field is present");
-//		softAssert.assertEquals(gridParcelData.containsKey("Parcel Size (SqFt)"), "true",
-//				"SMAB-T4221,SMAB-T4222:Verifying parcel Size (SqFt) field is present");
-//		softAssert.assertEquals(gridParcelData.containsKey("Land %"), "true",
-//				"SMAB-T4221,SMAB-T4222:Verifying Land % field is persent");
-//		softAssert.assertEquals(gridParcelData.containsKey("Land (FBYV)"), "true",
-//				"SMAB-T4221,SMAB-T4222:Verifying Adjusted Land (FBYV) field is present");
-//		softAssert.assertEquals(gridParcelData.containsKey("Imp (FBYV)"), "true",
-//				"SMAB-T4221,SMAB-T4222:Verifying Imp (FBYV) field is present");
-//		softAssert.assertEquals(gridParcelData.containsKey("Total (FBYV)"), "true",
-//				"SMAB-T4221,SMAB-T4222:Verifying Total (FBYV) field is present");
-//		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
-//
-//		driver.switchTo().window(parentWindow);
-//		objWorkItemHomePage.logout();
-//		Thread.sleep(5000);
-//
-//		ReportLogger.INFO(" RP Principal logins ");
-//		objMappingPage.login(users.RP_PRINCIPAL);
-//		// Navigating to child APN
-//		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
-//				+ response.get("Id").get(0) + "/view");
-//
-//		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.workItems);
-//		objParcelsPage.Click(objParcelsPage.workItems);
-//		objParcelsPage.Click(objParcelsPage.allocateValue);
-//		objWorkItemHomePage.waitForElementToBeClickable(30, objWorkItemHomePage.detailsTab);
-//		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-//		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.previousRelatedAction);
-//
-//		previousRelatedAction = objWorkItemHomePage.previousRelatedAction.getText();
-//		softAssert.assertEquals(previousRelatedAction, "Update Characteristics & Verify PUC",
-//				"SMAB-T4167:Update Characteristics & Verify PUC link is present");
-//		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
-//
-//		// Navigating to child APN
-//		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
-//				+ response.get("Id").get(0) + "/view");
-//
-//		objWorkItemHomePage.waitForElementToBeVisible(20, objParcelsPage.valueAllocation);
-//		objParcelsPage.Click(objParcelsPage.valueAllocation);
-//		String remarksOnAuditTrails = objMappingPage.getFieldValueFromAPAS("Remarks", "");
-//		softAssert.assertEquals(remarksOnAuditTrails, "It's a Remarks",
-//				"SMAB-T4009,SMAB-T4253: Remarks added by Appraiser was saved successfully");
-//		trail.Click(trail.relatedBusinessRecords);
-//		objWorkItemHomePage.waitForElementToBeVisible(20, trail.valuesAllocated);
-//		String trailSubject = trail.valuesAllocated.getText();
-//		softAssert.assertEquals(trailSubject, "Values Allocated",
-//				"SMAB-T4009,SMAB-T4255: Verified Summary that summary is Values Allocate ");
-//		objWorkItemHomePage.logout();
+		List<WebElement> childParcelsList = driver.findElements(By.xpath(objMappingPage.listOfChildParcels));
+
+		softAssert.assertEquals(childParcelsList.get(0).getText(), gridParcelData.get("APN").get(0),
+					"SMAB-T3903: Child parcels are displayed in the correct order:" + childParcelsList.get(0).getText());
+
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Next"));
+
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+		objMappingPage.Click(objMappingPage.editButtonInSeconMappingScreen);
+		objMappingPage.clearSelectionFromLookup("PUC");
+		objMappingPage.clearSelectionFromLookup("District / Neighborhood Code");
+		objMappingPage.Click(objMappingPage.getButtonWithText("Save"));
+		Thread.sleep(2000);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
+
+		softAssert.assertContains(objMappingPage.getErrorMessage(),
+				"Enter valid values for PUC and District / Neighborhood for all Child Parcels.",
+				"SMAB-T4000,SMAB-T3996: Validation that error message is displayed when  the PUC and District and Neighborhood are not populated, it will provide the following error message");
+
+		String[] pucAndNeighCode = objMappingPage.editActionInUpdatePucAndCharsScreen(districtAndNeighCode, puc);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
+		ReportLogger.INFO("Update Characteristics Verify PUC WI Completed");
+
+		driver.switchTo().window(parentWindow);
+		driver.navigate().refresh();
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+		softAssert.assertEquals(workItemStatus, "Completed",
+				"SMAB-T3994,SMAB-T4005: Validation WI completed successfully");
+		
+		// Moving to child APN
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ response.get("Id").get(0) + "/view");
+
+		// Moving to Allocate Values WI
+		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.workItems);
+		districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code", "Summary Values");
+		puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
+		softAssert.assertEquals(districtAndNeighCode, pucAndNeighCode[1],
+				"SMAB-T3926,SMAB-T4007: District and Neighbrhood code was updated successfully");
+		softAssert.assertEquals(puc, pucAndNeighCode[0], "SMAB-T3926,SMAB-T4007:PUC was updated successfully");
+		objParcelsPage.Click(objParcelsPage.workItems);
+		objParcelsPage.Click(objParcelsPage.allocateValue);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
+		String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
+		softAssert.assertEquals(assignedTo,
+				salesforceAPI
+						.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'")
+						.get("Name").get(0),
+				"SMAB-T4004,SMAB-T4224:Assiged to is matched successfully");
+		softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool,
+				"SMAB-T4004,SMAB-T4224:workPool is matched successfully");
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objMappingPage.enter("Remarks", "It's a Remarks");
+
+		// fetching the grid values to verify the presence of expected fields
+		gridParcelData = objMappingPage.getGridDataInHashMap();
+
+		softAssert.assertEquals(gridParcelData.containsKey("Parcel"), "true",
+				"SMAB-T4221,SMAB-T4222:Verifying Parcel field is present");
+		softAssert.assertEquals(gridParcelData.containsKey("Parcel Size (SqFt)"), "true",
+				"SMAB-T4221,SMAB-T4222:Verifying parcel Size (SqFt) field is present");
+		softAssert.assertEquals(gridParcelData.containsKey("Land %"), "true",
+				"SMAB-T4221,SMAB-T4222:Verifying Land % field is persent");
+		softAssert.assertEquals(gridParcelData.containsKey("Land (FBYV)"), "true",
+				"SMAB-T4221,SMAB-T4222:Verifying Adjusted Land (FBYV) field is present");
+		softAssert.assertEquals(gridParcelData.containsKey("Imp (FBYV)"), "true",
+				"SMAB-T4221,SMAB-T4222:Verifying Imp (FBYV) field is present");
+		softAssert.assertEquals(gridParcelData.containsKey("Total (FBYV)"), "true",
+				"SMAB-T4221,SMAB-T4222:Verifying Total (FBYV) field is present");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
+
+		driver.switchTo().window(parentWindow);
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+
+		ReportLogger.INFO(" RP Principal logins ");
+		objMappingPage.login(users.RP_PRINCIPAL);
+		// Navigating to child APN
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ response.get("Id").get(0) + "/view");
+
+		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.workItems);
+		objParcelsPage.Click(objParcelsPage.workItems);
+		objParcelsPage.Click(objParcelsPage.allocateValue);
+		objWorkItemHomePage.waitForElementToBeClickable(30, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.previousRelatedAction);
+
+		String previousRelatedAction = objWorkItemHomePage.previousRelatedAction.getText();
+		softAssert.assertEquals(previousRelatedAction, "Update Characteristics & Verify PUC",
+				"SMAB-T4167:Update Characteristics & Verify PUC link is present");
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+
+		// Navigating to child APN
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ response.get("Id").get(0) + "/view");
+
+		objWorkItemHomePage.waitForElementToBeVisible(20, objParcelsPage.valueAllocation);
+		objParcelsPage.Click(objParcelsPage.valueAllocation);
+		String remarksOnAuditTrails = objMappingPage.getFieldValueFromAPAS("Remarks", "");
+		softAssert.assertEquals(remarksOnAuditTrails, "It's a Remarks",
+				"SMAB-T4009,SMAB-T4253: Remarks added by Appraiser was saved successfully");
+		trail.Click(trail.relatedBusinessRecords);
+		objWorkItemHomePage.waitForElementToBeVisible(20, trail.valuesAllocated);
+		String trailSubject = trail.valuesAllocated.getText();
+		softAssert.assertEquals(trailSubject, "Values Allocated",
+				"SMAB-T4009,SMAB-T4255: Verified Summary that summary is Values Allocate ");
+		objWorkItemHomePage.logout();
+		
+
+		
 
 	}
 
