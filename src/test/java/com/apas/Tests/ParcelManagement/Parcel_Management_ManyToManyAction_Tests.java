@@ -1568,7 +1568,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 				.select("Select id from Parcel__c where name ='" + gridDataHashMap.get("APN").get(1) + "'").get("Id")
 				.get(0);
 
-		// Navigating to the Child parcel
+		// Navigating to the 1st Child parcel
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ childApn1Id + "/view");
 		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.componentActionsButtonText);
@@ -1579,7 +1579,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 		softAssert.assertEquals(responseAssesseeDetails.get("Name").get(0), owner1Name,
 				"SMAB-T7571: Ownserhip is transferred successfully.");
 
-		// Navigating to the Child parcel
+		// Navigating to the 2nd Child parcel
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ childApn2Id + "/view");
 		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.componentActionsButtonText);
