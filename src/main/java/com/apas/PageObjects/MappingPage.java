@@ -111,7 +111,6 @@ public class MappingPage extends ApasGenericPage {
 	public String performAdditionalMappingButton = "Perform Additional Mapping Action";
 	public String userNameForRpAppraiser = CONFIG.getProperty(users.RP_APPRAISER + "UserName");
 	public String appraiserwWorkPool = "Appraiser";
-	public String listofParentParcelsOnSecondMappingScreen = "//div//*[text()='Parent APN(s): ']/following-sibling::a";
 
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
 	public WebElement editButtonInSeconMappingScreen;

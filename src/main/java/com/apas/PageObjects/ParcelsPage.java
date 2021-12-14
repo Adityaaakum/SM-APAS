@@ -139,8 +139,14 @@ public class ParcelsPage extends ApasGenericPage {
 	public String partOfEconomicUnit = "Part of Economic Unit";
 	public String numberOfParcelsEconomicUnit = "# of Parcels in Economic Unit";
 	public String listOfParcelsEconomicUnit = "List of all Parcels in Economic Unit";
-	public String eventCodeField = "Event Code";
 
+	
+	
+	
+	
+	
+	
+	
 	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
@@ -262,10 +268,6 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//span[text() = 'Exemption']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]")
     public WebElement editPencilIconForExemptionOnDetailPage;
 	
-	@FindBy(xpath = "//a[@class='displayLabel slds-truncate']/slot")
-    public WebElement ownersName;
-	
-	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";
@@ -302,8 +304,6 @@ public class ParcelsPage extends ApasGenericPage {
 		String workItemNumber;
 		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
 		
-		String eventCode = objSalesforceAPI.select("SELECT Name FROM Event_Library__c limit 1").get("Name").get(0);
-		
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
 		Thread.sleep(2000);
@@ -324,7 +324,6 @@ public class ParcelsPage extends ApasGenericPage {
 		if (dueDate != null) enter(dueDateInputTextBox, dueDate);
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
-		if(eventCode !=null) searchAndSelectOptionFromDropDown(eventCodeField,eventCode);
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
 		Thread.sleep(10000);
 
