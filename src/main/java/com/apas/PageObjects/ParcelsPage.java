@@ -142,13 +142,6 @@ public class ParcelsPage extends ApasGenericPage {
 	public String eventCodeField = "Event Code";
 
 	
-	
-	
-	
-	
-	
-	
-	
 	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
 
@@ -268,6 +261,10 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//span[text() = 'Exemption']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]")
     public WebElement editPencilIconForExemptionOnDetailPage;
+	
+	@FindBy(xpath = "//a[@class='displayLabel slds-truncate']/slot")
+    public WebElement ownersName;
+	
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
