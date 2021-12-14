@@ -803,6 +803,7 @@ public class ExemptionsPage extends ApasGenericPage {
     	String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
 
     	searchAndSelectOptionFromDropDown(claimantName, assesseeName);
+    	enter(claimantSSN, dataMap.get("ClaimantSSN"));
     	enter(yearOfFiling, dataMap.get("Year of Filing"));
     	selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
     	scrollToElement(getWebElementWithLabel(dateApplicationReceived));
@@ -851,6 +852,27 @@ public class ExemptionsPage extends ApasGenericPage {
         Click(waitForElementToBeClickable(creatNewVAsButton));
         Thread.sleep(2000);
     	Click(institutionalExemptionRadioButton);
+    	Click(exemptionRecordTypeNextButton);
+    	String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+    	String strRollYear = ExemptionsPage.determineRollYear(date);
+    	strRollYear = String.valueOf(Integer.parseInt(strRollYear));
+        selectOptionFromDropDown(rollYearSettingOnVAs, strRollYear);
+        selectOptionFromDropDown(RPSLfieldOnVAs, "Exemption Limits - "+strRollYear);
+        enter(ExemptionAmountUserAdjusted,"2000");
+        enter(Remark,"User adjusted exemption amount is 2000.");
+        saveExemptionRecord();
+        
+    }
+    
+    /**
+     * Description: This method will enter field values in Value adjustment on Home Owner Exemption screen
+     */
+    public void createNewVAsOnHOE() throws Exception {
+    	Thread.sleep(2000);
+        ReportLogger.INFO("Click 'New' button to fill the following details in the VAs record : ");
+        Click(waitForElementToBeClickable(creatNewVAsButton));
+        Thread.sleep(2000);
+    	Click(homeOwnerExemptionRadioButton);
     	Click(exemptionRecordTypeNextButton);
     	String date = DateUtil.getCurrentDate("MM/dd/yyyy");
     	String strRollYear = ExemptionsPage.determineRollYear(date);
