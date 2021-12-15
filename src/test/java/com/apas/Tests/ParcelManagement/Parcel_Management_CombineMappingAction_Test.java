@@ -3478,10 +3478,13 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @throws Exception
 	 */
 
-	@Test(description = "SMAB-T2717,SMAB-T3993,SMAB-T3999,SMAB-T3997,SMAB-T3991,SMAB-T4000,SMAB-T3996,SMAB-T3994,SMAB-T4005,SMAB-T3926,SMAB-T4007,SMAB-T4004,SMAB-T4224,SMAB-T4221,SMAB-T4222,SMAB-T4167,SMAB-T4009,SMAB-T4253,SMAB-T4255: verify that User is able to work on the with update chars and verify PUC work items along with Allocate Values work items", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3904,SMAB-T3911,SMAB-T3909,SMAB-T3903,SMAB-T3912,SMAB-T3908,SMAB-T3906"
+			+ ",SMAB-T3967,SMAB-T4047,SMAB-T4048,SMAB-T4049,SMAB-T4047,SMAB-T4128,SMAB-T4127: "
+			+ "verify that User is able to work on the with update chars and verify PUC work"
+			+ " items along with Allocate Values work items", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ParcelManagement" })
 
-	public void ParcelManagement_Verify_Combine_Mapping_Action_UpdateChars_VerifyPUC_Output(String loginUser)
+	public void ParcelManagement_Verify_Combine_Mapping_Action_UpdateChars_VerifyPUC_And_Allocate_Values_Output(String loginUser)
 			throws Exception {
 
 		JSONObject jsonForOutputValidations = objMappingPage.getJsonObject();
@@ -3632,10 +3635,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		// on the page
 		softAssert.assertTrue(
 				objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText("Parent Audit Trail")),
-				"SMAB-T3999,Verify that Link of the associated Audit Trail record original request (Mapping Request) must be displayed in the custom screen");
+				"SMAB-T3911:Verify that Link of the associated Audit Trail record original request (Mapping Request) must be displayed in the custom screen");
 		softAssert.assertTrue(
 				objMappingPage.verifyElementVisible(objMappingPage.getButtonWithText("Parcel Map in GIS Portal")),
-				"SMAB-T3997,Verify that A link to GIS must be displayed in the custom screen");
+				"SMAB-T3909:Verify that A link to GIS must be displayed in the custom screen");
 		List<WebElement> childParcelsList = driver.findElements(By.xpath(objMappingPage.listOfChildParcels));
 
 		softAssert.assertEquals(childParcelsList.get(0).getText(), gridParcelData.get("APN").get(0),
@@ -3653,7 +3656,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		softAssert.assertContains(objMappingPage.getErrorMessage(),
 				"Enter valid values for PUC and District / Neighborhood for all Child Parcels.",
-				"SMAB-T4000,SMAB-T3996: Validation that error message is displayed when  the PUC and District and Neighborhood are not populated, it will provide the following error message");
+				"SMAB-T3912,SMAB-T3908: Validation that error message is displayed when  the PUC and District and Neighborhood are not populated, it will provide the following error message");
 
 		String[] pucAndNeighCode = objMappingPage.editActionInUpdatePucAndCharsScreen(districtAndNeighCode, puc);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
@@ -3665,7 +3668,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
 		softAssert.assertEquals(workItemStatus, "Completed",
-				"SMAB-T3994,SMAB-T4005: Validation WI completed successfully");
+				"SMAB-T3906: Validation WI completed successfully");
 		
 		// Moving to child APN
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
@@ -3676,8 +3679,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		districtAndNeighCode = objMappingPage.getFieldValueFromAPAS("District / Neighborhood Code", "Summary Values");
 		puc = objMappingPage.getFieldValueFromAPAS("PUC", "Parcel Information");
 		softAssert.assertEquals(districtAndNeighCode, pucAndNeighCode[1],
-				"SMAB-T3926,SMAB-T4007: District and Neighbrhood code was updated successfully");
-		softAssert.assertEquals(puc, pucAndNeighCode[0], "SMAB-T3926,SMAB-T4007:PUC was updated successfully");
+				"SMAB-T3967: District and Neighbrhood code was updated successfully");
+		softAssert.assertEquals(puc, pucAndNeighCode[0], "SMAB-T3967:PUC was updated successfully");
 		objParcelsPage.Click(objParcelsPage.workItems);
 		objParcelsPage.Click(objParcelsPage.allocateValue);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -3687,9 +3690,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				salesforceAPI
 						.select("SELECT Name FROM User where Username ='" + objMappingPage.userNameForRpAppraiser + "'")
 						.get("Name").get(0),
-				"SMAB-T4004,SMAB-T4224:Assiged to is matched successfully");
+				"SMAB-T4047:Assiged to is matched successfully");
 		softAssert.assertEquals(workPool, objMappingPage.appraiserwWorkPool,
-				"SMAB-T4004,SMAB-T4224:workPool is matched successfully");
+				"SMAB-T4047:workPool is matched successfully");
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -3699,17 +3702,17 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		gridParcelData = objMappingPage.getGridDataInHashMap();
 
 		softAssert.assertEquals(gridParcelData.containsKey("Parcel"), "true",
-				"SMAB-T4221,SMAB-T4222:Verifying Parcel field is present");
+				"SMAB-T4048,SMAB-T4049:Verifying Parcel field is present");
 		softAssert.assertEquals(gridParcelData.containsKey("Parcel Size (SqFt)"), "true",
-				"SMAB-T4221,SMAB-T4222:Verifying parcel Size (SqFt) field is present");
+				"SMAB-T4048,SMAB-T4049:Verifying parcel Size (SqFt) field is present");
 		softAssert.assertEquals(gridParcelData.containsKey("Land %"), "true",
-				"SMAB-T4221,SMAB-T4222:Verifying Land % field is persent");
+				"SMAB-T4048,SMAB-T4049:Verifying Land % field is persent");
 		softAssert.assertEquals(gridParcelData.containsKey("Land (FBYV)"), "true",
-				"SMAB-T4221,SMAB-T4222:Verifying Adjusted Land (FBYV) field is present");
+				"SMAB-T4048,SMAB-T4049:Verifying Adjusted Land (FBYV) field is present");
 		softAssert.assertEquals(gridParcelData.containsKey("Imp (FBYV)"), "true",
-				"SMAB-T4221,SMAB-T4222:Verifying Imp (FBYV) field is present");
+				"SMAB-T4048,SMAB-T4049:Verifying Imp (FBYV) field is present");
 		softAssert.assertEquals(gridParcelData.containsKey("Total (FBYV)"), "true",
-				"SMAB-T4221,SMAB-T4222:Verifying Total (FBYV) field is present");
+				"SMAB-T4048,SMAB-T4049:Verifying Total (FBYV) field is present");
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Done"));
 
 		driver.switchTo().window(parentWindow);
@@ -3731,7 +3734,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		String previousRelatedAction = objWorkItemHomePage.previousRelatedAction.getText();
 		softAssert.assertEquals(previousRelatedAction, "Update Characteristics & Verify PUC",
-				"SMAB-T4167:Update Characteristics & Verify PUC link is present");
+				"SMAB-T4047:Update Characteristics & Verify PUC link is present");
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 
 		// Navigating to child APN
@@ -3742,12 +3745,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objParcelsPage.Click(objParcelsPage.valueAllocation);
 		String remarksOnAuditTrails = objMappingPage.getFieldValueFromAPAS("Remarks", "");
 		softAssert.assertEquals(remarksOnAuditTrails, "It's a Remarks",
-				"SMAB-T4009,SMAB-T4253: Remarks added by Appraiser was saved successfully");
+				"SMAB-T4128: Remarks added by Appraiser was saved successfully");
 		trail.Click(trail.relatedBusinessRecords);
 		objWorkItemHomePage.waitForElementToBeVisible(20, trail.valuesAllocated);
 		String trailSubject = trail.valuesAllocated.getText();
 		softAssert.assertEquals(trailSubject, "Values Allocated",
-				"SMAB-T4009,SMAB-T4255: Verified Summary that summary is Values Allocate ");
+				"SMAB-T4127: Verified Summary that summary is Values Allocate ");
 		objWorkItemHomePage.logout();
 		
 
