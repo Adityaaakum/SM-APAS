@@ -498,8 +498,8 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 	}
 	
 	// Below test case is used to validate fields on Home owner Exemption and VA's
-		@Test(description = "SMAB-T4258,SMAB-T4291: Verify Fields on Home owner Exemption and related Value adjustment tab",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","InstitutionalExemption","Exemption"})
-		public void HOE__VerifFieldsOnExemptionAndVAs(String loginUser) throws Exception {
+		@Test(description = "SMAB-T4258,SMAB-T4291: Verify Fields on Home owner Exemption and related Value adjustment tab",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","HomeOwnerExemption","Exemption"})
+		public void HOE__VerifyFieldsOnExemptionAndVAs(String loginUser) throws Exception {
 			Map<String, String> exemptionndata = objUtil.generateMapFromJsonFile(homeOwnerExemptionData, "NewHOECreation");		
 			
 			//Step1: Login to the APAS application using the credentials passed through data provider

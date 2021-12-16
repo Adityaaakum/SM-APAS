@@ -803,7 +803,6 @@ public class ExemptionsPage extends ApasGenericPage {
     	String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
 
     	searchAndSelectOptionFromDropDown(claimantName, assesseeName);
-    	enter(claimantSSN, dataMap.get("ClaimantSSN"));
     	enter(yearOfFiling, dataMap.get("Year of Filing"));
     	selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
     	scrollToElement(getWebElementWithLabel(dateApplicationReceived));
