@@ -21,6 +21,7 @@ import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.ExemptionsPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
+import com.apas.PageObjects.ValueAdjustmentsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
@@ -44,6 +45,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 	WorkItemHomePage objWorkItemHomePage;
 	String homeOwnerExemptionData;
 	String unrecordedEventData;
+	ValueAdjustmentsPage ObjValueAdjustmentPage;
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	
 	
@@ -64,6 +66,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		homeOwnerExemptionData = testdata.HOME_OWNER_EXEMPTION_DATA;
 		unrecordedEventData = testdata.UNRECORDED_EVENT_DATA;
 		objApasGenericPage.updateRollYearStatus("Closed", "2021");
+		ObjValueAdjustmentPage = new ValueAdjustmentsPage(driver);
 	}
 	
 	/**
@@ -493,4 +496,52 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		// Logging out
 		objExemptionsPage.logout();
 	}
+	
+	/* Below test case is used to validate fields on Home owner Exemption and VA's
+	 * 
+	 */
+		@Test(description = "SMAB-T4258,SMAB-T4291: Verify Fields on Home owner Exemption and related Value adjustment tab",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","HomeOwnerExemption","Exemption"})
+		public void HOE__VerifyFieldsOnExemptionAndVAs(String loginUser) throws Exception {
+			Map<String, String> exemptionndata = objUtil.generateMapFromJsonFile(homeOwnerExemptionData, "NewHOECreation");		
+			
+			//Step1: Login to the APAS application using the credentials passed through data provider
+			objExemptionsPage.login(users.SYSTEM_ADMIN);
+			// Getting active parcels
+			String queryForActiveAPN = "SELECT Name,Id FROM Parcel__c where Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') Limit 1";
+			String apnId = salesforceAPI.select(queryForActiveAPN).get("Id").get(0);
+			
+			// Navigating to the first parcel
+			String executionEnv = System.getProperty("region");
+			driver.navigate().to("https://smcacre--"+executionEnv+
+					 ".lightning.force.com/lightning/r/Parcel__c/"+apnId+"/view");			
+			
+			// Open Exemption and create HOE
+			objParcelsPage.openParcelRelatedTab(objParcelsPage.exemptionRelatedTab);
+			//Step2: creating new Home Owner exemption record
+			ReportLogger.INFO(" creating new Home Owner Exemption record");
+			
+			objExemptionsPage.createHomeOwnerExemption(exemptionndata);
+			String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
+					
+			//Step3: Verify fields on HOE record
+		    softAssert.assertTrue(objExemptionsPage.verifyElementVisible(objExemptionsPage.exemptionCode), "SMAB-T4258: Verify that exemption code is present in Home Owner Exemption");
+		    softAssert.assertTrue(objExemptionsPage.verifyElementVisible(objExemptionsPage.Penalty), "SMAB-T4258: Verify that penalty field is present in Home Owner Exemption");
+		    softAssert.assertTrue(objExemptionsPage.verifyElementVisible(objExemptionsPage.filingStatus), "SMAB-T4258: Verify that Filing Status is present in Home Owner Exemption");
+	        
+		    //Step4: Creating new Value Adjustments
+			ReportLogger.INFO("Step 4: Creating new Value Adjustments");
+			objPage.javascriptClick(ObjValueAdjustmentPage.valueAdjustmentTab);
+			objExemptionsPage.createNewVAsOnHOE();
+			
+			//Step5: Validating fields and data on Created VAs
+		    softAssert.assertTrue(objExemptionsPage.verifyElementVisible(objExemptionsPage.propertySqFtProrated), "SMAB-T4291: Verify that Property Sq Ft Prorated % is present in Home Owner Exemption");
+			softAssert.assertEquals(objExemptionsPage.getFieldValueFromAPAS(objExemptionsPage.Remark), "User adjusted exemption amount is 2000.", "");	
+			softAssert.assertEquals(objExemptionsPage.getFieldValueFromAPAS(objExemptionsPage.penaltyPercentage), "20.00%", "SMAB-T4291: Verify that The penalties % is manually entered in the Exemptions Details Page which then flows to the Value Adjustment Page .");	
+			softAssert.assertEquals(objExemptionsPage.getFieldValueFromAPAS(objExemptionsPage.ExemptionAmountUserAdjusted), "$2,000.00", "SMAB-T4291: Verify user adjueted amount is populated in user adjueted exemption amount field.");	
+			softAssert.assertEquals(objExemptionsPage.getFieldValueFromAPAS(objExemptionsPage.netExemptionAmount), "$2,000.00", "SMAB-T4291: Verify user adjueted amount is populated in net exemption amount field.");	
+
+			// Step6: Logging out of the application		
+			objExemptionsPage.logout();
+
+		}
 }
