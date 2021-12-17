@@ -46,8 +46,8 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	public String apnLabel ="APN";
 	public String ownerName ="Owner Name";
 	public String partofEconomicUnit ="Part of Economic Unit";
-
-
+	public String rollEntryStatus = "Status";
+	public String rollEntryNoticeDate = "Notice Date";
 	public String landCashValueLabel ="Land Cash Value";
 	public String improvementCashValueLabel ="Improvement Cash Value";
 	public String statusLabel="Status";

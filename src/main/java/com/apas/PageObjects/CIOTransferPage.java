@@ -173,10 +173,10 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath = commonXpath+"//div[@class='highlights slds-clearfix slds-page-header slds-page-header_record-home']//ul[@class='slds-button-group-list']//lightning-primitive-icon")
 	public WebElement quickActionButtonDropdownIcon;
 
-	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Approve']")
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Approve'] | //button[text()='Approve']")
 	public WebElement quickActionOptionApprove;
 
-	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Return']")
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Return']| //button[text()='Return']")
 	public WebElement quickActionOptionReturn;
 
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Submit for Review']")
