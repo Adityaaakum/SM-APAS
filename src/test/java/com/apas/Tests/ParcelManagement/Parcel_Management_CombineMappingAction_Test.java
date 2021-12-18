@@ -117,7 +117,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String concatenateRetireWithActiveAPN = apn3+","+retiredAPNValue;
 		String concatenateInProgressWithActiveAPN = inProgressAPNValue+","+apn3;
 		String concatenateMobileHomeWithActiveAPN = mobileHomeApn+","+apn3;
-		String legalDescriptionValue="Legal PM 85/25-260";
+		String legalDescriptionValue="Legal Description PM 85/25-280";
 		
 		salesforceAPI.update("Parcel__c", apnId1, "Short_Legal_Description__c", legalDescriptionValue);
 		
