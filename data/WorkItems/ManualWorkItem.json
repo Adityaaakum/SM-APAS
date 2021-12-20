@@ -2,6 +2,7 @@
   "DataToCreateWorkItemOfTypeRP": {
     "Work Item Type": "RP",
     "Actions": "CPI Factor",
+    "Audit Trail": "No",
     "Reference": "Test WI",
     "Description": "Creation of work item",
     "Priority": "Urgent",
@@ -66,6 +67,7 @@
   "DOVSequencing": {
     "Work Item Type": "Building Permit",
     "Actions": "Review",
+    "Audit Trail": "No",
     "Description": "DOV Sequencing Validation",
     "Reference": "DOV Sequencing Validation",
     "Priority": "Urgent",
@@ -76,6 +78,7 @@
   "WorkItemRoutingGiveToMe": {
     "Work Item Type": "Building Permit",
     "Actions": "Review",
+    "Audit Trail": "No",
     "Description": "Give Work Item to Me",
     "Reference": "Give Work Item to Me",
     "Priority": "Urgent",
@@ -86,6 +89,7 @@
   "WorkItemRoutingGiveToSomeoneElse": {
     "Work Item Type": "Building Permit",
     "Actions": "Review",
+    "Audit Trail": "No",
     "Description": "Give Work Item to Someone Else",
     "Reference": "Give Work Item to Someone Else",
     "Priority": "Urgent",
@@ -95,6 +99,7 @@
   "WorkItemRoutingToDefaultPool": {
     "Work Item Type": "Building Permit",
     "Actions": "Review",
+    "Audit Trail": "No",
     "Description": "Give Work Item to Default Work Pool",
     "Reference": "Give Work Item to Default Work Pool",
     "Priority": "Urgent",
@@ -167,6 +172,15 @@
     "Audit Trail": "No",
     "Reference": "Test WI",
     "Description": "Creation of work item",
+    "Priority": "Urgent",
+    "Work Item Routing": "Give Work Item to Default Work Pool"
+  },
+  "DataToCreateWorkItemOfRollValueChange": {
+    "Work Item Type": "Roll Value Change",
+    "Actions": "Manual Roll Entry",
+    "Audit Trail": "No",
+    "Reference": "Test Roll Value Change WI",
+    "Description": "Creation of Roll Value Change work item",
     "Priority": "Urgent",
     "Work Item Routing": "Give Work Item to Default Work Pool"
   },

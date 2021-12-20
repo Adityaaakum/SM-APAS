@@ -258,6 +258,16 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select(
 				"SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active') limit 1");
 
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + parcelToSearch + "'",
+				"Primary_Situs__c", "");
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + parcelToSearch + "'",
+				"TRA__c",
+				salesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + parcelToSearch + "'",
+				"Primary_Situs__c",
+				salesforceAPI.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id")
+						.get(0));
+		
 		String legalDescriptionValue = "Legal PM 85/25-260";
 		String districtValue = "District01";
 		String parcelSize = "1000";
@@ -267,7 +277,6 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		jsonParcelObject.put("Short_Legal_Description__c", legalDescriptionValue);
 		jsonParcelObject.put("District__c", districtValue);
 		jsonParcelObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
-		jsonParcelObject.put("TRA__c", responseTRADetails.get("Id").get(0));
 		jsonParcelObject.put("Lot_Size_SQFT__c", parcelSize);
 
 		salesforceAPI.update("Parcel__c", response.get("Id").get(0), jsonParcelObject);

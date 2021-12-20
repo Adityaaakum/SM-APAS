@@ -47,7 +47,7 @@ public class ParcelsPage extends ApasGenericPage {
 
 	public String editApnField ="APN";	
 	public String LongLegalDescriptionLabel="Long Legal Description"; 
-
+	public String traLabel="TRA";
 	public String statusDropDownLabel = "Status";
 	public String parcelRelationshipsTabLabel = "Parcel Relationships";
 	public String ownershipTabLabel = "Ownership";
@@ -59,6 +59,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createNewParcelButton="New";
 	public String editParcelButton="Edit";
 	public String parcelCharacteristics = "Characteristics";
+	public String primarySitusLabel = "Primary Situs";
 	
 
 	
@@ -135,6 +136,10 @@ public class ParcelsPage extends ApasGenericPage {
 	public String total = "Total";
 	public String fullCashValue = "Full Cash Value";
 	public String combinedFactoredandHPI = "Combined FBYV and HPI";
+	public String partOfEconomicUnit = "Part of Economic Unit";
+	public String numberOfParcelsEconomicUnit = "# of Parcels in Economic Unit";
+	public String listOfParcelsEconomicUnit = "List of all Parcels in Economic Unit";
+
 	
 	
 	
@@ -256,7 +261,16 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath ="//*[@class='actionBody']//*[text()='RP']")
 	public WebElement rpRadioButton;
-
+		
+	@FindBy(xpath = "//strong[contains(normalize-space(),'Value Allocation ')]")
+	public WebElement valueAllocation;
+	
+	@FindBy(xpath = "//span[text() = 'Exemption']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]")
+    public WebElement editPencilIconForExemptionOnDetailPage;
+	
+	@FindBy(xpath = "//a[@class='displayLabel slds-truncate']/slot")
+    public WebElement ownersName;
+	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";
@@ -766,8 +780,10 @@ public class ParcelsPage extends ApasGenericPage {
 	            String ownerName = objSalesforceAPI.select("SELECT id ,name  FROM Property_Ownership__c where Parcel__c='"+apnId+"'"+" and status__c='Active' order by dov_date__c ").get("Name").get(0);
 	            
 	            ReportLogger.INFO("Adding AV0 Records for APN= "+APN  );
-	            
-	            waitForElementToBeClickable(5, assessedValueOwnershipTab);
+
+	            String assessedValueId=objSalesforceAPI.select("SELECT Id FROM Assessed_BY_Values__c WHERE APN__c ='"+apnId+"'").get("Id").get(0);
+	            driver.navigate().to("https://smcacre--"+excEnv+".lightning.force.com/lightning/r/Parcel__c/"+assessedValueId+"/view");
+	            waitForElementToBeClickable(8, assessedValueOwnershipTab);
 	            Click(assessedValueOwnershipTab);
 	            waitForElementToBeClickable(5, newButton);
 	            Click(getButtonWithText(NewButton));

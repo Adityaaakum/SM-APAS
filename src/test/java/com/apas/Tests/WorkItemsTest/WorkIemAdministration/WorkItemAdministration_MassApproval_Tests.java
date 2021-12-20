@@ -53,7 +53,7 @@ public class WorkItemAdministration_MassApproval_Tests extends TestBase implemen
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2241: verify that work pool supervisor is able to select and approve multiple work items", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T2241,SMAB-T4383: verify that work pool supervisor is able to select and approve multiple work items", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","WorkItemAdministration" })
 	public void WorkItemAdministration_MassApproval(String loginUser) throws Exception {
 
@@ -91,10 +91,17 @@ public class WorkItemAdministration_MassApproval_Tests extends TestBase implemen
 		String querySelectWICName=response5.get("Work_Item_Configuration__c").get(0);
 
 		//Updating the value of 'Allow Supervisor Mass Approval'
+		
 		salesforceAPI.update("Work_Item_Configuration__c", querySelectWICName, "Allow_Supervisor_Mass_Approval__c", "No");
 		objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
-
-		//Step 5:-Selecting he work items
+		
+        objWorkItemHomePage.waitForElementToBeVisible(10,objWorkItemHomePage.getWebElementWithLabel(objWorkItemHomePage.dateLabel));
+        
+        //Validating that Date filter is added In 'In-Progress' tab layout 
+        
+        softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.dateLabel), "SMAB-T4383 : Verify that Date field is present on Layout of Home Page to sort WI based on DOR/DOV");
+		
+        //Step 5:-Selecting he work items
 		objWorkItemHomePage.selectWorkItemOnHomePage(workItemNumber1);
 		objWorkItemHomePage.selectWorkItemOnHomePage(workItemNumber2);
 		objWorkItemHomePage.Click(objWorkItemHomePage.btnMarkComplete);
@@ -141,6 +148,7 @@ public class WorkItemAdministration_MassApproval_Tests extends TestBase implemen
 		//Step 15:Validating the success message that Work items are Approved
 		softAssert.assertEquals(objWorkItemHomePage.getAlertMessage(), "Work item(s) processed successfully!",
 				"SMAB-T2241:Validating the success message that Work items are Approved");
+		
 		objWorkItemHomePage.logout();
 		Thread.sleep(15000);
 

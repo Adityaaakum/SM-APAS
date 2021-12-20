@@ -47,7 +47,7 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 	}
 	
 	/**
-	 * Verify that other than mapping user should not access the mapping custon screen via action link on work item
+	 * Verify that other than mapping user should not access the mapping custom screen via action link on work item
 	 * @param loginUser
 	 * @throws Exception
 	 */
@@ -64,7 +64,7 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 
-		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
+		// Step1: Login to the APAS application using the credentials passed through Data provider (RP Business Admin)
 		objMappingPage.login(loginUser);
 
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform one to one mapping
@@ -88,7 +88,7 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 		objParcelsPage.logout();
 	}
 	/**
-	 * This method is to validate system admin and mapping user should create new APN and edit apn 
+	 * This method is to validate System Admin and mapping user should create new APN and edit APN 
 	 * @param loginUser
 	 * @throws Exception
 	 */
@@ -164,7 +164,7 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3035,SMAB-T3036,SMAB-T3037,SMAB-T3038: Validate system admin and CIO user should be able to create, edit New ownership on parcel", groups = {"Regression","ParcelManagement"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
+	@Test(description = "SMAB-T3035,SMAB-T3036,SMAB-T3037,SMAB-T3038: Validate system admin and CIO user should be able to create, edit New ownership on parcel", groups = {"Regression","ParcelManagement", "SecurityAndSharing"}, dataProvider = "loginSystemAdmin", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void ParcelManagement_AccessValidationOnCreationAndEditionOfOwnership(String loginUser) throws Exception {
 		
 		String execEnv= System.getProperty("region");		
@@ -253,9 +253,10 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 	 * @throws Exception
 	 */	
 	
-	@Test(description = "SMAB-T3010: Validate New Botton on MailTo record on parcel for BPP_Admin,Mapping staff,RP Admin and CIO Staff,", dataProvider = "usersRestrictedToNewandEditButtonOnParcelMailto", dataProviderClass = DataProviders.class, groups = {
+
+	@Test(description = "SMAB-T3010,SMAB-T3280: Validate New Botton on MailTo record on parcel for BPP_Admin,Mapping staff,RP Admin and CIO Staff,", dataProvider = "usersRestrictedToNewandEditButtonOnParcelMailto", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement", "SecurityAndSharing" })
-	public void validateNewButtonOnMailToRecordForAllUsers(String loginUser) throws Exception {
+	public void ParcelManagement_validateNewButtonOnMailToRecordForAllUsers(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
 		String mailToRecordFromParcel = "SELECT Parcel__c,Id FROM Mail_To__c where status__c = 'Active' Limit 1";
@@ -283,6 +284,5 @@ public class ParcelManagement_SecurityAndSharing_Test extends TestBase implement
 
 		}
 	}
-
 	
 }

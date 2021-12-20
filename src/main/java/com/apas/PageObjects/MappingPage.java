@@ -90,6 +90,7 @@ public class MappingPage extends ApasGenericPage {
 	public String updateParcelButtonLabelName = "Update Parcel(s)";
 	public String parcelSizeColumnSecondScreen = "Parcel Size(SQFT)*";
 	public String apn = "APN";
+	public String listOfChildParcels = "//hr//following::div/div/div/c-mol_generic-hyperlink/a";
 	public String parcelSizeColumnSecondScreenWithSpace = "Parcel Size (SQFT)*";
 	public final String DOC_CERTIFICATE_OF_COMPLIANCE="CC";
 	public final String DOC_LOT_LINE_ADJUSTMENT="LL";
@@ -203,9 +204,10 @@ public class MappingPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//*[contains(@class,'NewButtonForParcel')]//div[@class='override_error']")
 	public WebElement createNewParcelErrorMessage;
-	
+
 	@FindBy(xpath = "//*[contains(@class,'message-font slds-align_absolute-center slds-text-color_success slds-m-bottom_medium slds-m-top_medium')]")
 	public WebElement createNewParcelSuccessMessage;
+
 	
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
@@ -325,7 +327,7 @@ public class MappingPage extends ApasGenericPage {
 		if (cityName != null) selectOptionFromDropDown(cityNameLabel, cityName);
 		if (situsCityCode != null) selectOptionFromDropDown(situsCityCodeLabel, situsCityCode);
 		if (situsCityName != null) enter(situsCityNameLabel, situsCityName);
-		if (direction != null)enter(directionLabel, direction);
+		if (direction != null) selectOptionFromDropDown(directionLabel, direction);
 		if (situsNumber != null) enter(situsNumberLabel, situsNumber);
 		if (situsStreetName != null) enter(situsStreetNameLabel, situsStreetName);
 		if (situsType != null) selectOptionFromDropDown(situsTypeLabel, situsType);
@@ -439,7 +441,7 @@ public class MappingPage extends ApasGenericPage {
         
     	 String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and (Not Name like '%990') and (Not Name like '1%') and (Not Name like '8%') "
     	 		+ "and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') "
-    	 		+ "and Status__c = 'Active' Limit " + numberofRecords;   	    
+    	 		+ "and TRA__c != null and Status__c = 'Active' Limit " + numberofRecords;   	    
      	return objSalesforceAPI.select(queryActiveAPNValue);
      }
      
@@ -687,4 +689,41 @@ public class MappingPage extends ApasGenericPage {
 				
 			}
 
-}
+			/**
+			 * @Description This method can be utilized to update parcel's PUC and District
+			 *              and neighbourhood Code through Puc and District WI Custom page
+			 * @param  parcelNeighCode is the current District & neighbourhood code and 
+			 *         parcelPuc is the current puc for the parcel 
+			 * @return Array of String , containing updated PUC and District neighbourhood code
+			 * @throws Exception
+			 */
+		
+			public String[] editActionInUpdatePucAndCharsScreen(String parcelNeighCode, String parcelPuc) throws Exception {
+
+				Click(mappingSecondScreenEditActionGridButton);
+				Click(editButtonInSeconMappingScreen);
+
+				String puc = objSalesforceAPI.select(
+						"SELECT Name FROM PUC_Code__c where legacy__c='no'and Name !='" + parcelPuc + "'limit 1")
+						.get("Name").get(0);
+				String distNeigh = objSalesforceAPI
+						.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL and Name!='" + parcelNeighCode
+								+ "' limit 1")
+						.get("Name").get(0);
+
+				clearSelectionFromLookup("PUC");
+				enter(parcelPUC, puc);
+				selectOptionFromDropDown(parcelPUC, puc);
+				ReportLogger.INFO("PUC:" + puc);
+
+				clearSelectionFromLookup("District / Neighborhood Code");
+				enter(parcelDistrictNeighborhood, distNeigh);
+				selectOptionFromDropDown(parcelDistrictNeighborhood, distNeigh);
+				ReportLogger.INFO("District / Neighborhood Code:" + distNeigh);
+				Click(getButtonWithText("Save"));
+				Thread.sleep(2000);
+
+				return new String[] { puc, distNeigh };
+			}
+
+		}

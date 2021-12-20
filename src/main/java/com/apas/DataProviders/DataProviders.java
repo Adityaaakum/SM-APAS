@@ -269,11 +269,17 @@ public class DataProviders {
     /**
      * Return RP Appraiser User
      */
-    @DataProvider(name = "RPAppraiser")
-    public Object[][] dataProviderLoginRPAppraiser() {
+    @DataProvider(name = "loginRPAppraiser")
+    public Object[][] dpLoginRPAppraiser() {
         return new Object[][] { { users.RP_APPRAISER }};
     }
-
+    /**
+     * Return RP Principal User
+     */
+    @DataProvider(name = "loginRPPrincipal")
+    public Object[][] dpLoginRPPrincipal() {
+        return new Object[][] { { users.RP_PRINCIPAL }};
+    }
     /**
 	 * Return different status of composite and valuation factor tables
 	 */
@@ -438,7 +444,12 @@ public class DataProviders {
 	        
 		}
 
-       
+		@DataProvider(name = "dpForAppraisalActivityAVCreation")
+		public Object[] dpTestAppraisalActivityAVCreation() {
+			return new Object[] {CIOTransferPage.CIO_EVENT_DISABLED_OWNER_TRANSFER,CIOTransferPage.CIO_EVENT_EXCLUSION,CIOTransferPage.CIO_EVENT_REASSESSMENT };
+
+			
+		}
 }
        
 
