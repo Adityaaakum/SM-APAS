@@ -1144,13 +1144,10 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 		objMappingPage.waitForElementToBeClickable(objApasGenericPage.getFieldValueFromAPAS("APN"));
 		
 		// STEP 23: Giving Land and Improvement Values
-		String apnFromAAS = objCIOTransferPage.getFieldValueFromAPAS("APN").trim();
-		System.out.println("apnFromAAS ....."+apnFromAAS);
 		String DOV = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dovLabel);
 		String DOVYear = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dovLabel).substring(5,9);
 		Integer convertedNumber = Integer.valueOf(DOVYear);	
 		int BaseYear = convertedNumber + 1;
-		System.out.println("BaseYear....."+BaseYear);	
 		objCIOTransferPage.editRecordedApnField("Land Cash Value");
 		objApasGenericPage.enter("Land Cash Value", "324567");
 		objApasGenericPage.enter("Improvement Cash Value", "456784");
@@ -1170,7 +1167,6 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Status").get(0), "Active",
 				"SMAB-T3919: Status of the assesses value record is active ");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Assessed_BY_Values__c/"+assessedValueRecordID+"/view");
-		softAssert.assertEquals(apnFromAAS, objCIOTransferPage.getFieldValueFromAPAS("APN").trim(), "SMAB-T3919: APN on AV record is equal to AAS");
 		softAssert.assertEquals("Prop 19 Intergenerational Exclusion", objCIOTransferPage.getFieldValueFromAPAS("Assessed Value Type"), "SMAB-T3919: DOV on AV record is equal to AAS");
 		
 	}

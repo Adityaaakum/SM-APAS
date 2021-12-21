@@ -5167,13 +5167,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Navigated to Appraisal Activity");
 		
 		//STEP 4 : Validating Assessed value records and Roll entry record tile view values for LCV And ICV as Zero Values
-		String apnFromAAS = objCioTransfer.getFieldValueFromAPAS("APN").trim();
-		System.out.println("apnFromAAS ....."+apnFromAAS);
 		String DOV = objCioTransfer.getFieldValueFromAPAS(objCioTransfer.dovLabel);
 		String DOVYear = objCioTransfer.getFieldValueFromAPAS(objCioTransfer.dovLabel).substring(5,9);
 		Integer convertedNumber = Integer.valueOf(DOVYear);	
 		int BaseYear = convertedNumber + 1;
-		System.out.println("BaseYear....."+BaseYear);		
 		objCioTransfer.editRecordedApnField("Land Cash Value");
 		objPage.enter("Land Cash Value", "324567");
 		objPage.enter("Improvement Cash Value", "456784");
@@ -5193,9 +5190,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Status").get(1), "Active",
 				"SMAB-T3919: Status of the assesses value record is active ");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Assessed_BY_Values__c/"+assessedValueRecordID+"/view");
-		String apnvalue = objCioTransfer.getFieldValueFromAPAS(objCioTransfer.ApnLabel);
-		System.out.println("apnvalue"+apnvalue);
-		softAssert.assertEquals(apnFromAAS, objCioTransfer.getFieldValueFromAPAS("APN").trim(), "SMAB-T3919: APN on AV record is equal to AAS");
 		softAssert.assertEquals("Prop 19 Intergenerational Exclusion", objCioTransfer.getFieldValueFromAPAS("Assessed Value Type"), "SMAB-T3919: DOV on AV record is equal to AAS");
 		
 		

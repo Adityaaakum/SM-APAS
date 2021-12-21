@@ -2148,13 +2148,10 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.quickActionOptionSubmitForApproval);
 
 		// STEP 4 : Validating Assessed value records and Roll entry record list view values for LCV And ICV as Zero Values
-		String apnFromAAS = objCIOTransferPage.getFieldValueFromAPAS("APN").trim();
-		System.out.println("apnFromAAS ....." + apnFromAAS);
 		String DOV = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dovLabel);
 		String DOVYear = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dovLabel).substring(5, 9);
 		Integer convertedNumber = Integer.valueOf(DOVYear);
 		int BaseYear = convertedNumber + 1;
-		System.out.println("BaseYear....." + BaseYear);
 		objCIOTransferPage.editRecordedApnField("Land Cash Value");
 		objCIOTransferPage.enter("Land Cash Value", "324567");
 		objCIOTransferPage.enter("Improvement Cash Value", "456784");
@@ -2179,13 +2176,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				"SMAB-T3919: Status of the assesses value record is active ");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Assessed_BY_Values__c/"
 				+ assessedValueRecordID + "/view");
-		String apnvalue = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.ApnLabel);
-		System.out.println("apnvalue" + apnvalue);
-		softAssert.assertEquals(apnFromAAS, objCIOTransferPage.getFieldValueFromAPAS("APN").trim(),
-				"SMAB-T3919: APN on AV record is equal to AAS");
-		softAssert.assertEquals("Prop 19 Intergenerational Exclusion",
+		softAssert.assertEquals("Prop 19 Intergenerational 100% Assessment",
 				objCIOTransferPage.getFieldValueFromAPAS("Assessed Value Type"),
-				"SMAB-T3919: DOV on AV record is equal to AAS");
+				"SMAB-T3919: Assessed Value Type is equal to Prop 19 Intergenerational 100% Assessment");
 		objCIOTransferPage.waitForElementToBeVisible(5, "Event ID");
 		softAssert.assertEquals(objParcelsPage.verifyElementVisible("Event ID"), "true",
 				"SMAB-T3984:Event ID is visible");
