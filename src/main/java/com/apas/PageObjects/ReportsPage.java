@@ -106,10 +106,9 @@ public class ReportsPage extends ApasGenericPage {
 		enter(searchListEditBox, reportName);
 		WebElement webElement =  driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//a[contains(@title,'" + reportName + "')]"));
 		executor.executeScript("arguments[0].click();", webElement);
-		Thread.sleep(10000);
+		Thread.sleep(2000);
 		if (reportName.equals("RP Activity List")) {
 			this.validateFilter();
-
 		}
 		driver.manage().window().maximize();
 	    int size = driver.findElements(By.tagName("iframe")).size();

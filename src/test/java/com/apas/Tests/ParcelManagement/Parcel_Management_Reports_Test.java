@@ -90,9 +90,12 @@ public class Parcel_Management_Reports_Test extends TestBase {
 
 	}
 
+	/**
+	 * Below test case will verify if a new report called "RP Activity list" exists with its respective fields
+	 **/
 	@Test(description = "SMAB-T2573: Validation of parcel management RP RP Activity List reports", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "WorkItemWorkflow_Reports", "ParcelManagement_Reports" }, alwaysRun = true)
-	public void Reports_ParcelManagementRPReports(String loginUser) throws Exception {
+			"Regression", "Reports", "ParcelManagement_Reports", "ParcelManagement" }, alwaysRun = true)
+	public void Reports_verifyRPActivityListReport(String loginUser) throws Exception {
 		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		String reportName;
 		String exportedFileName;
@@ -102,55 +105,41 @@ public class Parcel_Management_Reports_Test extends TestBase {
 		List<Integer> result = new ArrayList(ParcelReportsName.keySet());
 		Map<String, String> ParcelReportsfileData = objUtil.generateMapFromJsonFile(Parcelreports,
 				"VerifyRPReportsColumns");
-		// Step1: Login to the APAS application using the credentials passed through
-		// data provider
-
+		
+		// Step1: Login to the APAS application using the credentials passed through data provider
 		objReportsPage.login(loginUser);
+		
 		// Step2: Opening parcel management reports and validate
+		reportName = "RP Activity List";
+		objReportsPage.searchModule(modules.REPORTS);
+		String actualReportName = objReportsPage.navigateToReport(reportName);
 
-		for (Map.Entry<String, String> entry : ParcelReportsName.entrySet()) {
-			reportName = entry.getKey();
-			objReportsPage.searchModule(modules.REPORTS);
-			String actualReportName = objReportsPage.navigateToReport(reportName);
-
-			softAssert.assertEquals(actualReportName, reportName,
-					"SMAB-T2573: Validation of parcel management RP RP Activity List : " + actualReportName);
-
-		}
-		objReportsPage.logout();
+		softAssert.assertEquals(actualReportName, reportName,
+				"SMAB-T2573: Validation of parcel management RP RP Activity List : " + actualReportName);
 
 		// Step3 : export and Validate header of reports
-		for (Map.Entry<String, String> entry : ParcelReportsfileData.entrySet()) {
-			objReportsPage.login(loginUser);
+		String expectedColumnsInExportedExcel = ParcelReportsfileData.get("RP Activity List").split("-")[0];
+		int rowNumber = Integer.parseInt(ParcelReportsfileData.get("RP Activity List").split("-")[1]);
 
+		objReportsPage.searchModule(modules.REPORTS);
 
-			String expectedColumnsInExportedExcel = entry.getValue().split("-")[0];
-			int rowNumber = Integer.parseInt(entry.getValue().split("-")[1]);
+		// Deleteing all the previously downloaded files
+		objReportsPage.deleteFilesFromFolder(downloadLocation);
 
-			reportName = entry.getKey();
-			objReportsPage.searchModule(modules.REPORTS);
+		// Step4: Exporting 'Parcel management' report in Formatted Mode
+		objReportsPage.exportReport(reportName, ReportsPage.FORMATTED_EXPORT);
+		File downloadedFile = Objects.requireNonNull(new File(downloadLocation).listFiles())[0];
+		exportedFileName = downloadedFile.getName();
+		softAssert.assertTrue(exportedFileName.contains(reportName),
+				"SMAB-T3444: Exported report name validation. Actual Report Name : " + exportedFileName);
 
-			// Deleteing all the previously downloaded files
-			objReportsPage.deleteFilesFromFolder(downloadLocation);
-
-			// Step4: Exporting 'Parcel management' report in Formatted Mode
-			objReportsPage.exportReport(reportName, ReportsPage.FORMATTED_EXPORT);
-			File downloadedFile = Objects.requireNonNull(new File(downloadLocation).listFiles())[0];
-			exportedFileName = downloadedFile.getName();
-			softAssert.assertTrue(exportedFileName.contains(reportName),
-					"SMAB-T3444: Exported report name validation. Actual Report Name : " + exportedFileName);
-
-			// Step4: Columns validation in exported report
-			HashMap<String, ArrayList<String>> hashMapExcelData = ExcelUtils
-					.getExcelSheetData(downloadedFile.getAbsolutePath(), 0, rowNumber, 1);
-
-			softAssert.assertEquals(hashMapExcelData.keySet().toString(), expectedColumnsInExportedExcel,
-					"SMAB-T3444: Columns Validation in downloaded " + reportName + "Report.");
-			objReportsPage.logout();
-
-		}
-
+		// Columns validation in exported report
+		HashMap<String, ArrayList<String>> hashMapExcelData = ExcelUtils
+				.getExcelSheetData(downloadedFile.getAbsolutePath(), 0, rowNumber, 1);
+			
+		softAssert.assertEquals(hashMapExcelData.keySet().toString(), expectedColumnsInExportedExcel,
+				"SMAB-T3444: Columns Validation in downloaded " + reportName + "Report.");
+			
+		objReportsPage.logout();
 	}
-
-
 }
