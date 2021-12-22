@@ -100,10 +100,10 @@ public class Parcel_Management_Reports_Test extends TestBase {
 		String reportName;
 		String exportedFileName;
 		ReportLogger.INFO("Download location : " + downloadLocation);
-		String Parcelreports = testdata.PARCEL_MANAGEMENT_REPORTS;
-		Map<String, String> ParcelReportsName = objUtil.generateMapFromJsonFile(Parcelreports, "VerifyRPReportsName");
-		List<Integer> result = new ArrayList(ParcelReportsName.keySet());
-		Map<String, String> ParcelReportsfileData = objUtil.generateMapFromJsonFile(Parcelreports,
+		String parcelReports = testdata.PARCEL_MANAGEMENT_REPORTS;
+		Map<String, String> parcelReportsName = objUtil.generateMapFromJsonFile(parcelReports, "VerifyRPReportsName");
+		List<Integer> result = new ArrayList(parcelReportsName.keySet());
+		Map<String, String> parcelReportsfileData = objUtil.generateMapFromJsonFile(parcelReports,
 				"VerifyRPReportsColumns");
 		
 		// Step1: Login to the APAS application using the credentials passed through data provider
@@ -118,12 +118,12 @@ public class Parcel_Management_Reports_Test extends TestBase {
 				"SMAB-T2573: Validation of parcel management RP RP Activity List : " + actualReportName);
 
 		// Step3 : export and Validate header of reports
-		String expectedColumnsInExportedExcel = ParcelReportsfileData.get("RP Activity List").split("-")[0];
-		int rowNumber = Integer.parseInt(ParcelReportsfileData.get("RP Activity List").split("-")[1]);
+		String expectedColumnsInExportedExcel = parcelReportsfileData.get("RP Activity List").split("-")[0];
+		int rowNumber = Integer.parseInt(parcelReportsfileData.get("RP Activity List").split("-")[1]);
 
 		objReportsPage.searchModule(modules.REPORTS);
 
-		// Deleteing all the previously downloaded files
+		// Deleting all the previously downloaded files
 		objReportsPage.deleteFilesFromFolder(downloadLocation);
 
 		// Step4: Exporting 'Parcel management' report in Formatted Mode
