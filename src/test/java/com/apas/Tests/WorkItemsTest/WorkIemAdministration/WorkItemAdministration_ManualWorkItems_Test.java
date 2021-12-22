@@ -1417,8 +1417,10 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
 		Thread.sleep(2000);
 		String parcelId = driver.getCurrentUrl().split("/")[6];
+		System.out.println("parcelId :- "+ parcelId);
+		System.out.println("apnToUpdateId :- "+ apnToUpdateId);
 		String ownershipId =  salesforceAPI
-				.select("SELECT Id FROM Property_Ownership__c WHERE Parcel__c = '" + parcelId + "'")
+				.select("SELECT Id FROM Property_Ownership__c WHERE Parcel__c = '" + apnToUpdateId + "'")
 				.get("Id").get(0);
 
 		// STEP 4- updating the ownership date for current owners
@@ -1431,6 +1433,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonObject);
 
 		String dovDate=apasGenericObj.changeDateFormat(dateOfEvent);
+		System.out.println("dovDate :- "+dovDate);
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfRollValueChange");
@@ -1472,6 +1475,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValue = objMappingPage.getGridDataInHashMap();
 		String assessedValueType = gridDataHashMapAssessedValue.get("Assessed Value Type").get(0);
 		String assessedValueStartDate = gridDataHashMapAssessedValue.get("Effective Start Date").get(0);
+		System.out.println("assessedValueStartDate :- "+ assessedValueStartDate);
 		String assessedValueEndDate = gridDataHashMapAssessedValue.get("Effective End Date").get(0);
 		softAssert.assertEquals("0"+assessedValueStartDate,dovDate, "SMAB-T3887,SMAB-T4111:First Assessed Value Start Date should be same as DOV.");
 		softAssert.assertEquals(assessedValueEndDate,"", "SMAB-T3887,SMAB-T4111:First Assessed Value End Date should be empty.");

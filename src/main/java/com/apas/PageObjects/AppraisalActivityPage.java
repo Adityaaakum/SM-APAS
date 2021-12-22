@@ -52,6 +52,7 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	public String improvementCashValueLabel ="Improvement Cash Value";
 	public String statusLabel="Status";
 	public String startDateLabel="Start Date";
+	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 
 	
 	@FindBy(xpath = "//select[@name='Rejection_Reason_PickList']")
@@ -69,6 +70,11 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	@FindBy(xpath ="//a[@title='Parcels']")
 	public WebElement parcelsLink;
 	
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Approve'] | //button[text()='Approve']")
+	public WebElement quickActionOptionApprove;
+	
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Return']| //button[text()='Return']")
+	public WebElement quickActionOptionReturn;
 
 	@FindBy(xpath = "//a[contains(@class,'slds-button slds-button--icon-x-small slds-button--icon-border-filled')]")
 	public WebElement clickShowMoreActionButton;

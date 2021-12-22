@@ -5045,7 +5045,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.clickViewAll(assessedValueTableName);
 		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValue = objMappingPage.getGridDataInHashMap();
 		String assessedValueType = gridDataHashMapAssessedValue.get("Assessed Value Type").get(0);
-		String assessedValueStartDate = gridDataHashMapAssessedValue.get("Effective Start Date").get(0);
+//		String assessedValueStartDate = gridDataHashMapAssessedValue.get("Effective Start Date").get(0);
 		String assessedValueEndDate = gridDataHashMapAssessedValue.get("Effective End Date").get(0);
 		String assessedValueLandValue = gridDataHashMapAssessedValue.get("Land Value").get(0);
 		String assessedValueImprovementValue = gridDataHashMapAssessedValue.get("Improvement Value").get(0);
@@ -5059,6 +5059,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		//Step 6: Adding Land and Improvement Values
 		apasGenericObj.enter("Land Cash Value", "200000");
 		apasGenericObj.enter("Improvement Cash Value","200000");
+		apasGenericObj.enter("DOR","7/1/1999");
+		String assessedValueStartDate= "7/1/1999";
+		apasGenericObj.enter("DOV","7/1/1999");
 		
 		apasGenericObj.Click(apasGenericObj.getButtonWithText("Save"));
 		Thread.sleep(2000);
@@ -5085,7 +5088,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(assessedValueEndDate,assessedValueEndDateFirst, "SMAB-T3932, SMAB-T4271:Verify That Both End Date Should Be empty.");
 	
 		softAssert.assertEquals(assessedValueTypeSecond,assessedValueType, "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
-		softAssert.assertEquals(assessedValueStartDateSecond,DOV, "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
+		softAssert.assertEquals(assessedValueStartDateSecond,assessedValueStartDate, "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
 		softAssert.assertEquals(assessedValueLandValueSecond,"200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
 		softAssert.assertEquals(assessedValueImprovementValueSecond,"200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
 		softAssert.assertEquals(assessedValueEndDateSecond,assessedValueEndDateFirst, "SMAB-T3932, SMAB-T4271:Verify That Both End Date Should Be Empty.");
@@ -5131,18 +5134,20 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
 
 		objCioTransfer.logout();
+		Thread.sleep(5000);
 
 		// Step 10: Login from RP Supervisor to Return the WI
 		objWorkItemHomePage.login(RP_PRINCIPAL);
 		driver.navigate().to(appraisalActivityUrl);
-		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionReturn);
-		objCioTransfer.Click(objCioTransfer.quickActionOptionReturn);
+		objCioTransfer.waitForElementToBeClickable(objAppraisalActivity.quickActionOptionReturn);
+		objCioTransfer.Click(objAppraisalActivity.quickActionOptionReturn);
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.returnReasonTextBox);
 		objCioTransfer.enter(objCioTransfer.returnReasonTextBox, "Returned by RP Principal.");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
 		objCioTransfer.logout();
+		Thread.sleep(5000);
 
 		// Step 11: Login from RP appraiser to make changes to the WI
 		objWorkItemHomePage.login(loginUser);
@@ -5227,13 +5232,14 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
 
 		objCioTransfer.logout();
+		Thread.sleep(5000);
 
 		// Step 18: Login from RP Supervisor to approve the WI
 		objWorkItemHomePage.login(RP_PRINCIPAL);
 		driver.navigate().to(appraisalActivityUrl);
 
-		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionApprove);
-		objCioTransfer.Click(objCioTransfer.quickActionOptionApprove);
+		objCioTransfer.waitForElementToBeClickable(objAppraisalActivity.quickActionOptionApprove);
+		objCioTransfer.Click(objAppraisalActivity.quickActionOptionApprove);
 		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.finishButtonPopUp);
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
 
@@ -5242,11 +5248,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Appraisal Activity!!  Approved");
 		
 		driver.navigate().to(supplementalUrl);
-		driver.navigate().refresh();
 		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
 		String statusValueApproved = objParcelsPage.getFieldValueFromAPAS("Status");
 		softAssert.assertEquals(statusValueApproved,"Approved", "SMAB-T4196, SMAB-T7535, SMAB-T7536:Verify That status Should Be Ready for Early Release.");
 
+		objCioTransfer.logout();
 	}
 
 }

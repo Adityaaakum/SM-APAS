@@ -173,10 +173,10 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath = commonXpath+"//div[@class='highlights slds-clearfix slds-page-header slds-page-header_record-home']//ul[@class='slds-button-group-list']//lightning-primitive-icon")
 	public WebElement quickActionButtonDropdownIcon;
 
-	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Approve'] | //button[text()='Approve']")
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Approve']")
 	public WebElement quickActionOptionApprove;
 
-	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Return']| //button[text()='Return']")
+	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Return']")
 	public WebElement quickActionOptionReturn;
 
 	@FindBy(xpath = commonXpath + "//*[@class='slds-truncate' and text()='Submit for Review']")
@@ -759,7 +759,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					Thread.sleep(5000);
 					searchModule(EFILE_INTAKE_VIEW);
 					String recordedDocumentID = salesforceApi.select(
-							"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=0")
+//							"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=0")
+							"SELECT id from recorded_document__c where recorder_doc_type__c='DE'")
 							.get("Id").get(0);
 
 					deleteRecordedApnFromRecordedDocument(recordedDocumentID);
