@@ -216,7 +216,7 @@ public class ReportsPage extends ApasGenericPage {
 		date = calDate.getTime();
 		String endDate = dateFormat.format(date);
 		ReportLogger.INFO("Previous day date is " + endDate);
-		Thread.sleep(10000);
+		Thread.sleep(1000);
 		driver.switchTo().frame(0);
 		Click(filterIcon);
 		Click(CreatedDatelabel);
