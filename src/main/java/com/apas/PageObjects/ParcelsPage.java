@@ -306,6 +306,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String workItemOwner= dataMap.get("Work Item Owner");
 		String workItemNumber;
 		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
+		String eventCode= dataMap.get("Event Code");;
 		
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
@@ -319,6 +320,8 @@ public class ParcelsPage extends ApasGenericPage {
 		selectOptionFromDropDown(actionsDropDownLabel, actions);
 	
 		if(verifyElementExists(auditTrailElementPath)) selectOptionFromDropDown(auditTrailRecordDropDownComponentsActionsModal, auditTrail);
+		
+		if(verifyElementExists(eventCode)) searchAndSelectOptionFromDropDown("Event Code", eventCode);
 
 		if (reference != null)enter(referenceInputTextBoxComponentActionModal, reference);
 		enter(descriptionInputTextBoxComponentActionModal, description);
