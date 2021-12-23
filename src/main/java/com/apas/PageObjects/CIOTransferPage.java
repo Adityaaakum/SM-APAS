@@ -759,8 +759,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					Thread.sleep(5000);
 					searchModule(EFILE_INTAKE_VIEW);
 					String recordedDocumentID = salesforceApi.select(
-//							"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=0")
-							"SELECT id from recorded_document__c where recorder_doc_type__c='DE'")
+							"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=0")
 							.get("Id").get(0);
 
 					deleteRecordedApnFromRecordedDocument(recordedDocumentID);

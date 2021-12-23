@@ -5045,7 +5045,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.clickViewAll(assessedValueTableName);
 		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValue = objMappingPage.getGridDataInHashMap();
 		String assessedValueType = gridDataHashMapAssessedValue.get("Assessed Value Type").get(0);
-//		String assessedValueStartDate = gridDataHashMapAssessedValue.get("Effective Start Date").get(0);
 		String assessedValueEndDate = gridDataHashMapAssessedValue.get("Effective End Date").get(0);
 		String assessedValueLandValue = gridDataHashMapAssessedValue.get("Land Value").get(0);
 		String assessedValueImprovementValue = gridDataHashMapAssessedValue.get("Improvement Value").get(0);
