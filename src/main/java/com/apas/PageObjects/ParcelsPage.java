@@ -44,6 +44,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String workItemRoutingDropDownComponentsActionsModal = "Work Item Routing";
 	public String workItemOwnerSearchBox = "Work Item Owner (if someone other than you)";
 	public String auditTrailRecordDropDownComponentsActionsModal = "Is this Audit Trail Record linked to any Existing Audit Trail Record?";
+	public String eventCodeComponentsActionsModal = "Event Code";
 
 	public String editApnField ="APN";	
 	public String LongLegalDescriptionLabel="Long Legal Description"; 
@@ -306,7 +307,7 @@ public class ParcelsPage extends ApasGenericPage {
 		String workItemOwner= dataMap.get("Work Item Owner");
 		String workItemNumber;
 		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
-		String eventCode= dataMap.get("Event Code");;
+		String eventCode = dataMap.get("Event Code");
 		
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
@@ -320,8 +321,6 @@ public class ParcelsPage extends ApasGenericPage {
 		selectOptionFromDropDown(actionsDropDownLabel, actions);
 	
 		if(verifyElementExists(auditTrailElementPath)) selectOptionFromDropDown(auditTrailRecordDropDownComponentsActionsModal, auditTrail);
-		
-		if(verifyElementExists(eventCode)) searchAndSelectOptionFromDropDown("Event Code", eventCode);
 
 		if (reference != null)enter(referenceInputTextBoxComponentActionModal, reference);
 		enter(descriptionInputTextBoxComponentActionModal, description);
@@ -330,6 +329,8 @@ public class ParcelsPage extends ApasGenericPage {
 		if (dueDate != null) enter(dueDateInputTextBox, dueDate);
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
+		if (eventCode != null) searchAndSelectOptionFromDropDown(eventCodeComponentsActionsModal,eventCode);
+
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
 		Thread.sleep(10000);
 
