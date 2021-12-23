@@ -116,7 +116,8 @@ public class Parcel_Management_Reports_Test extends TestBase {
 
 		softAssert.assertEquals(actualReportName, reportName,
 				"SMAB-T2573: Validation of parcel management RP RP Activity List : " + actualReportName);
-
+		Thread.sleep(5000);
+		
 		// Step3 : export and Validate header of reports
 		String expectedColumnsInExportedExcel = parcelReportsfileData.get("RP Activity List").split("-")[0];
 		int rowNumber = Integer.parseInt(parcelReportsfileData.get("RP Activity List").split("-")[1]);
@@ -131,14 +132,14 @@ public class Parcel_Management_Reports_Test extends TestBase {
 		File downloadedFile = Objects.requireNonNull(new File(downloadLocation).listFiles())[0];
 		exportedFileName = downloadedFile.getName();
 		softAssert.assertTrue(exportedFileName.contains(reportName),
-				"SMAB-T3444: Exported report name validation. Actual Report Name : " + exportedFileName);
+				"SMAB-T2573: Exported report name validation. Actual Report Name : " + exportedFileName);
 
 		// Columns validation in exported report
 		HashMap<String, ArrayList<String>> hashMapExcelData = ExcelUtils
 				.getExcelSheetData(downloadedFile.getAbsolutePath(), 0, rowNumber, 1);
 			
 		softAssert.assertEquals(hashMapExcelData.keySet().toString(), expectedColumnsInExportedExcel,
-				"SMAB-T3444: Columns Validation in downloaded " + reportName + "Report.");
+				"SMAB-T2573: Columns Validation in downloaded " + reportName + "Report.");
 			
 		objReportsPage.logout();
 	}
