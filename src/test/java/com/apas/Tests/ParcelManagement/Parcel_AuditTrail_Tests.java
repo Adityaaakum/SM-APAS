@@ -512,10 +512,6 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 				+ EventLibraryID + "/view");
 		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
 
-		ReportLogger.INFO("Verify parecl Transfer Allowed field is visible");
-		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Parcel Transfer Allowed"),
-				"SMAB-T3698: Validate that field name Parcel Transfer Allowed exists");
-
 		// set value of parcel Transfer allowed to "Yes"
 		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
 		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
@@ -600,10 +596,6 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
 				+ EventLibraryID + "/view");
 		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
-
-		ReportLogger.INFO("Verify parecl Transfer Allowed field is visible");
-		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Parcel Transfer Allowed"),
-				"SMAB-T3698: Validate that field name Parcel Transfer Allowed exists");
 
 		// set value of parcel Transfer allowed to "Yes"
 		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
