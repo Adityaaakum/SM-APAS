@@ -629,24 +629,24 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 
 		driver.navigate().to("https://smcacre--" + executionEnv
 				+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrail2ID + "/view");
-		String ApnOfAuditTrail2 = objParcelsPage.getFieldValueFromAPAS("APN");
-		String RequestOriginOfAuditTrail2 = objParcelsPage.getFieldValueFromAPAS("Request Origin");
-		String EventIdOfAuditTrail2 = objParcelsPage.getFieldValueFromAPAS("Event ID");
+		String apnOfLinkedCorrespondenceAuditTrail = objParcelsPage.getFieldValueFromAPAS("APN");
+		String requestOriginOfLinkedCorrespondenceAuditTrail = objParcelsPage.getFieldValueFromAPAS("Request Origin");
+		String eventIdOfLinkedCorrespondenceAuditTrail = objParcelsPage.getFieldValueFromAPAS("Event ID");
 
 		driver.navigate().to("https://smcacre--" + executionEnv
 				+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrail1ID + "/view");
 
-		String ApnOfAuditTrail1 = objParcelsPage.getFieldValueFromAPAS("APN");
-		String RequestOriginOfAuditTrail1 = objParcelsPage.getFieldValueFromAPAS("Request Origin");
-		String EventIdOfAuditTrail1 = objParcelsPage.getFieldValueFromAPAS("Event ID");
+		String apnOfCurrentAuditTrail = objParcelsPage.getFieldValueFromAPAS("APN");
+		String requestOriginOfCurretAuditTrail = objParcelsPage.getFieldValueFromAPAS("Request Origin");
+		String eventIdOfCurrentAuditTrail = objParcelsPage.getFieldValueFromAPAS("Event ID");
 
-		softAssert.assertEquals(ApnOfAuditTrail2, ApnOfAuditTrail1,
+		softAssert.assertEquals(apnOfLinkedCorrespondenceAuditTrail, apnOfCurrentAuditTrail,
 				"SMAB-T3380: Verify upon updating the audit trail record with new related event APN value should be updated with new audit trail values");
 
-		softAssert.assertEquals(RequestOriginOfAuditTrail2, RequestOriginOfAuditTrail1,
+		softAssert.assertEquals(requestOriginOfLinkedCorrespondenceAuditTrail, requestOriginOfCurretAuditTrail,
 				"SMAB-T3380: Verify upon updating the audit trail record with new related event Request Origin value should be updated with new audit trail values");
 
-		softAssert.assertEquals(EventIdOfAuditTrail2, EventIdOfAuditTrail1,
+		softAssert.assertEquals(eventIdOfLinkedCorrespondenceAuditTrail, eventIdOfCurrentAuditTrail,
 				"SMAB-T3380: Verify upon updating the audit trail record with new related event Event Id value should be updated with new audit trail values");
 
 		String queryAPN = "Select Name,Id  From Parcel__c where name like '0%' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
