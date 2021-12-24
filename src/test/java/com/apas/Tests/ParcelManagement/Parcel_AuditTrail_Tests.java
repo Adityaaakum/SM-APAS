@@ -516,7 +516,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Parcel Transfer Allowed"),
 				"SMAB-T3698: Validate that field name Parcel Transfer Allowed exists");
 
-		// set value of parcel Transfer allowed to "No"
+		// set value of parcel Transfer allowed to "Yes"
 		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
 		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
@@ -605,7 +605,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Parcel Transfer Allowed"),
 				"SMAB-T3698: Validate that field name Parcel Transfer Allowed exists");
 
-		// set value of parcel Transfer allowed to "No"
+		// set value of parcel Transfer allowed to "Yes"
 		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
 		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
