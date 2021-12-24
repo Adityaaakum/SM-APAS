@@ -503,10 +503,13 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		String auditTrailBusiness2 = responseAuditTrailDetailsBusiness2.get("Name").get(0);
 
 		// Navigating to event library and updating field parcel Transfer allowed
-		String Eventlib = "Correspondence Received - Mapping";
+		String Eventlib = "Correspondence Received Mapping";
 		String queryEventLibraryID = "Select Id from Event_Library__c where Name = '" + Eventlib + "'";
+		HashMap<String, ArrayList<String>> responseEventLibrary = salesforceAPI
+				.select(queryEventLibraryID);
+		String EventLibraryID=responseEventLibrary.get("Id").get(0);
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
-				+ queryEventLibraryID + "/view");
+				+ EventLibraryID + "/view");
 		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
 
 		ReportLogger.INFO("Verify parecl Transfer Allowed field is visible");
@@ -529,7 +532,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		String auditTrail1ID = responseAuditTrailDetailsCorrespondence.get("Id").get(0);
 		driver.navigate().to("https://smcacre--" + executionEnv
 				+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrail1ID + "/view");
-		objParcelsPage.waitForElementToBeVisible(10, "Related Correspondence");
+		objParcelsPage.waitForElementToBeVisible(80, "Related Correspondence");
 		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Correspondence"));
 		objParcelsPage.clearSelectionFromLookup("Related Correspondence");
 		objParcelsPage.searchAndSelectOptionFromDropDown("Related Correspondence", auditTrailCorrespondence2);
@@ -548,10 +551,12 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 
 		// Verify related correspondence and related business record cannot be updated
 		// at the same time
-		String ExpectedErrorMessage = "Either the \"Related Correspondence Event\" or \"Related Business Event\" can be populated, Please check.";
-		softAssert.assertEquals(objParcelsPage.getElementText(objApasGenericPage.pageError), ExpectedErrorMessage,
+		String ExpectedErrorMessage = "Close error dialog We hit a snag. Review the errors on this page. Either the \"Related Correspondence Event\" or \"Related Business Event\" can be populated, Please check.";
+		softAssert.assertEquals((objParcelsPage.getElementText(objApasGenericPage.pageError).trim()), ExpectedErrorMessage.trim(),
 				"SMAB-T2935: Verify related correspondence and related business record cannot be updated at the same time");
 
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Cancel"));
+		
 		// Logout
 		objParcelsPage.logout();
 
@@ -587,10 +592,13 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		String auditTrail2 = responseAuditTrailDetails2.get("Name").get(0);
 
 		// Navigating to event library and updating field parcel Transfer allowed
-		String Eventlib = "Correspondence Received - Mapping";
+		String Eventlib = "Correspondence Received Mapping";
 		String queryEventLibraryID = "Select Id from Event_Library__c where Name = '" + Eventlib + "'";
+		HashMap<String, ArrayList<String>> responseEventLibrary = salesforceAPI
+				.select(queryEventLibraryID);
+		String EventLibraryID=responseEventLibrary.get("Id").get(0);
 		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
-				+ queryEventLibraryID + "/view");
+				+ EventLibraryID + "/view");
 		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
 
 		ReportLogger.INFO("Verify parecl Transfer Allowed field is visible");
