@@ -503,8 +503,8 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		String auditTrailBusiness2 = responseAuditTrailDetailsBusiness2.get("Name").get(0);
 
 		// Navigating to event library and updating field parcel Transfer allowed
-		String Eventlib = "Correspondence Received Mapping";
-		String queryEventLibraryID = "Select Id from Event_Library__c where Name = '" + Eventlib + "'";
+		String EventLib = "Correspondence Received Mapping";
+		String queryEventLibraryID = "Select Id from Event_Library__c where Name = '" + EventLib + "'";
 		HashMap<String, ArrayList<String>> responseEventLibrary = salesforceAPI
 				.select(queryEventLibraryID);
 		String EventLibraryID=responseEventLibrary.get("Id").get(0);
@@ -516,6 +516,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
 		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		Thread.sleep(1000);
 
 		// Logout
 		objParcelsPage.logout();
@@ -533,17 +534,19 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objParcelsPage.clearSelectionFromLookup("Related Correspondence");
 		objParcelsPage.searchAndSelectOptionFromDropDown("Related Correspondence", auditTrailCorrespondence2);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		Thread.sleep(1000);
 
-		String linkedauditTrailvalue = objParcelsPage.getFieldValueFromAPAS("Related Correspondence");
+		String linkedAuditTrailvalue = objParcelsPage.getFieldValueFromAPAS("Related Correspondence");
 
 		// Verify related correspondence field can be updated
-		softAssert.assertEquals(linkedauditTrailvalue, auditTrailCorrespondence2,
+		softAssert.assertEquals(linkedAuditTrailvalue, auditTrailCorrespondence2,
 				"SMAB-T2993: Verify realted correspondence field can be updated");
 
 		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Business Event"));
 		objParcelsPage.clearSelectionFromLookup("Related Business Event");
 		objParcelsPage.searchAndSelectOptionFromDropDown("Related Business Event", auditTrailBusiness2);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		Thread.sleep(1000);
 
 		// Verify related correspondence and related business record cannot be updated
 		// at the same time
@@ -574,6 +577,8 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objMappingPage.login(loginUser);
 
 		String executionEnv = System.getProperty("region");
+		String userNameForMappingStaff = CONFIG.getProperty(users.MAPPING_STAFF + "UserName");
+		String userNameForMappingSupervisor = CONFIG.getProperty(users.MAPPING_SUPERVISOR + "UserName");
 
 		// fetching audit trail records
 		String queryAuditTrail1 = "SELECT  Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
@@ -588,8 +593,8 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		String auditTrail2 = responseAuditTrailDetails2.get("Name").get(0);
 
 		// Navigating to event library and updating field parcel Transfer allowed
-		String Eventlib = "Correspondence Received Mapping";
-		String queryEventLibraryID = "Select Id from Event_Library__c where Name = '" + Eventlib + "'";
+		String EventLib = "Correspondence Received Mapping";
+		String queryEventLibraryID = "Select Id from Event_Library__c where Name = '" + EventLib + "'";
 		HashMap<String, ArrayList<String>> responseEventLibrary = salesforceAPI
 				.select(queryEventLibraryID);
 		String EventLibraryID=responseEventLibrary.get("Id").get(0);
@@ -601,6 +606,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
 		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		Thread.sleep(1000);
 
 		// Logout
 		objParcelsPage.logout();
@@ -619,6 +625,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objParcelsPage.clearSelectionFromLookup("Related Correspondence");
 		objParcelsPage.searchAndSelectOptionFromDropDown("Related Correspondence", auditTrail2);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		Thread.sleep(1000);
 
 		driver.navigate().to("https://smcacre--" + executionEnv
 				+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrail2ID + "/view");
@@ -679,13 +686,10 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		// navigating to business event audit trail
 		objWorkItemHomePage.scrollToElement(objWorkItemHomePage.firstRelatedBuisnessEvent);
 		objWorkItemHomePage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
-		String processedBy = objWorkItemHomePage.getFieldValueFromAPAS("Processed By");
-		String finalApprover = objWorkItemHomePage.getFieldValueFromAPAS("Final Approver");
 
-		softAssert.assertEquals(processedBy, "mapping staffAUT",
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Processed By", "Additional Information"), salesforceAPI.select("SELECT Name FROM User where Username ='" + userNameForMappingStaff + "'").get("Name").get(0),
 				"SMAB-T3381: Verify when work item is completed processed By are updated");
-
-		softAssert.assertEquals(finalApprover, "mapping supervisorAUT",
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Final Approver", "Additional Information"), salesforceAPI.select("SELECT Name FROM User where Username ='" + userNameForMappingSupervisor + "'").get("Name").get(0),
 				"SMAB-T3381: Verify when work item is completed final Approver are updated");
 
 		// Logout
