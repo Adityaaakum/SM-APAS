@@ -516,7 +516,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
 		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 
 		// Logout
 		objParcelsPage.logout();
@@ -546,7 +546,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objParcelsPage.clearSelectionFromLookup("Related Business Event");
 		objParcelsPage.searchAndSelectOptionFromDropDown("Related Business Event", auditTrailBusiness2);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 
 		// Verify related correspondence and related business record cannot be updated
 		// at the same time
@@ -606,7 +606,7 @@ public class Parcel_AuditTrail_Tests extends TestBase implements testdata, modul
 		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
 		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 
 		// Logout
 		objParcelsPage.logout();
