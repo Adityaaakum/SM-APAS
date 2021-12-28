@@ -5152,6 +5152,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.login(loginUser);
 		
 		driver.navigate().to(rollEntryUrl);
+		ReportLogger.INFO("RP Appraiser will change the status to On Hold.");
 		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.parcelsLink);
 		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryfinal = objMappingPage.getGridDataInHashMap();		
 		String rollEntryRecordName;
@@ -5162,6 +5163,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 				String rollName = response.get("Id").get(0);
 				driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Roll_Entry__c/"+rollName+"/view");
+				objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
 				break;
 			}	
 		}
@@ -5204,6 +5206,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.SaveButton);
 		objParcelsPage.selectOptionFromDropDown(objAppraisalActivity.rollEntryStatus, "Ready for Early Release");
 		objMappingPage.Click(objAppraisalActivity.getButtonWithText("Save"));
+		ReportLogger.INFO("RP Appraiser changed the status to Ready for early release.");
 		Thread.sleep(2000);
 		String statusValueEarlyRelease = objParcelsPage.getFieldValueFromAPAS("Status");
 		softAssert.assertEquals(statusValueEarlyRelease,"Ready for Early Release", "SMAB-T4196, SMAB-T7535, SMAB-T7536:Verify That status Should Be Ready for Early Release.");
@@ -5219,8 +5222,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
 		String statusValueReleased = objParcelsPage.getFieldValueFromAPAS("Status");
 		softAssert.assertEquals(statusValueReleased,"Released to Controller", "SMAB-T4196, SMAB-T7535, SMAB-T7536:Verify That status Should Be Ready for Early Release.");
-
-		//Step 17: Navigating to appraisal activity screen to submt record for approval
+		ReportLogger.INFO("After Batch Run status got changed to Released to Controller.");
+		//Step 17: Navigating to appraisal activity screen to submit record for approval
 		driver.navigate().to(appraisalActivityUrl);
 		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
 

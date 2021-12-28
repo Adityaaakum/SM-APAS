@@ -408,7 +408,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 	       WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + importReviewWorkItem2 + "')]"));
 		   String expectedWI=completedWorkItem.getText();
 		   softAssert.assertEquals(expectedWI, importReviewWorkItem2, "SMAB-T3085,SMAB-T3086:Status of the work item should be Construction completed");
-	      
+		   objWorkItemHomePage.logout();
 	    
 	}
     
@@ -466,7 +466,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + importReviewWorkItem + "')]"));
 		String expectedWI=completedWorkItem.getText();
 		softAssert.assertEquals(expectedWI, importReviewWorkItem, "SMAB-T3087,SMAB-T3088 : Status of the workitem should be Final review");
-	    
+		objWorkItemHomePage.logout();
 
 	}
 	
@@ -553,7 +553,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         Thread.sleep(2000);
         objWorkItemHomePage.findWorkItemInProgress(importReviewWorkItem);
         ReportLogger.INFO("Found Work Item! Mission Completed.");
-
+        objWorkItemHomePage.logout();
     }
         
     /**
@@ -642,7 +642,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		Thread.sleep(2000);
 		objWorkItemHomePage.findWorkItemInProgress(importReviewWorkItem);
 		ReportLogger.INFO("Found Work Item! Mission Completed.");
-
+		objWorkItemHomePage.logout();
 	}
 
     /**
@@ -774,7 +774,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		Thread.sleep(1000);
 		objWorkItemHomePage.findWorkItemInProgress(editImportReviewWorkItem);
 		ReportLogger.INFO("Found Work Item! Mission Completed.");
-
+		objWorkItemHomePage.logout();
 	}
     /**
      * This test case is to validate work item creation functionality and the work item flow after creating new building permit Without completion date and with completion date for Retired parcel
@@ -905,7 +905,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		Thread.sleep(2000);
 		objWorkItemHomePage.findWorkItemInProgress(editImportReviewWorkItem);
 		ReportLogger.INFO("Found Work Item! Mission Completed.");
-
+		objWorkItemHomePage.logout();
 	}
 
 }
