@@ -5152,15 +5152,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 		// Step 2: User clicks on "COS Document Summary" button
 		objParcelsPage.waitUntilPageisReady(driver);
-		//objParcelsPage.waitForElementToBeClickable(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
 		
 		// Step 3: User clicks on the recorded document
 		objParcelsPage.Click(objParcelsPage.lastItemInCosDocumentSummary);
-		String parentWindow3 = driver.getWindowHandle();
-		objParcelsPage.switchToNewWindow(parentWindow3);
+		String parentWindow = driver.getWindowHandle();
+		objParcelsPage.switchToNewWindow(parentWindow);
 		objParcelsPage.waitUntilPageisReady(driver);
-		//objParcelsPage.waitForElementToBeVisible(objCioTransfer.recordedDocumentTitle);
 		
 		String currentRecordedDocumentName = objCioTransfer.getFieldValueFromAPAS("Recorded Document Name");
 		softAssert.assertEquals(recordedDocumentName, currentRecordedDocumentName, "SMAB-T4388: Verify the Recorded Document column in COS Doc Summary has a linked URL , navigating to the recorded document record");
