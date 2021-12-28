@@ -5111,5 +5111,61 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.logout();
 
 	}
+	
+	/*
+	 * Verify the Recorded Document column in COS Doc Summary has a linked URL , navigating to the recorded document record
+	 */
+	@Test(description = "SMAB-T4388: Verify user is able to navigate to the recorded document through the COS Doc Summary linked Document column", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
+	public void CIO_RecordedEvent_EventIDInCOSDocumentSummary(String loginUser) throws Exception {
+		
+		// ----- Data set up -----
+		
+		// Get a recorded document 
+		String recordedDocumentQuery = "SELECT Id, Name FROM recorded_document__c WHERE recorder_doc_type__c='DE' and xAPN_count__c=1 limit 1"; 
+		String recordedDocumentId = salesforceAPI.select(recordedDocumentQuery).get("Id").get(0);
+		String recordedDocumentName = salesforceAPI.select(recordedDocumentQuery).get("Name").get(0);
+		objCioTransfer.deleteRecordedApnFromRecordedDocument(recordedDocumentId);
+		
+		// Login as SysAdmin
+		objMappingPage.login(loginUser);
+		Thread.sleep(3000);
+				
+		objCioTransfer.addRecordedApn(recordedDocumentId, 1);		
+		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentId);
+		
+		// Query to fetch WI
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO' And status__c='In pool' order by createdDate desc limit 1";
+		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
+		objMappingPage.globalSearchRecords(workItemNo);
+		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		
+		// ----- Steps -----
+		
+		// Step 1:  User navigates to a parcel with a recorded document associated
+		String executionEnv = System.getProperty("region");
+		driver.navigate().to("https://smcacre--"
+				+ executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
+						.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
+				+ "/view");
+		Thread.sleep(3000);
+		
+		// Step 2: User clicks on "COS Document Summary" button
+		objParcelsPage.waitUntilPageisReady(driver);
+		//objParcelsPage.waitForElementToBeClickable(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
+		
+		// Step 3: User clicks on the recorded document
+		objParcelsPage.Click(objParcelsPage.lastItemInCosDocumentSummary);
+		String parentWindow3 = driver.getWindowHandle();
+		objParcelsPage.switchToNewWindow(parentWindow3);
+		objParcelsPage.waitUntilPageisReady(driver);
+		//objParcelsPage.waitForElementToBeVisible(objCioTransfer.recordedDocumentTitle);
+		
+		String currentRecordedDocumentName = objCioTransfer.getFieldValueFromAPAS("Recorded Document Name");
+		softAssert.assertEquals(recordedDocumentName, currentRecordedDocumentName, "SMAB-T4388: Verify the Recorded Document column in COS Doc Summary has a linked URL , navigating to the recorded document record");
+		
+		objParcelsPage.logout();
+	}
 
 }

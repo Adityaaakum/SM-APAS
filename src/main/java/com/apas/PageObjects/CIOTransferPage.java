@@ -162,7 +162,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public WebElement relatedListTab;
 
 	@FindBy(xpath = "//button[@name='New'][1]")
-	public WebElement NewRecordedAPNsButton;
+	public WebElement NewRecordedAPNsButton;		
 
 	@FindBy(xpath = "//*[@class='flexipage-tabset']//a[1]")
 	public WebElement RelatedTab;
@@ -328,6 +328,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 							enter(ApnLabel, Name);
 							selectOptionFromDropDown(ApnLabel, Name);
 							Click(getButtonWithText(SaveButton));
+							Thread.sleep(1000);
 							driver.navigate().back();
 							driver.navigate().back();
 							ReportLogger.INFO("Recorded APN Name added "+Name);
