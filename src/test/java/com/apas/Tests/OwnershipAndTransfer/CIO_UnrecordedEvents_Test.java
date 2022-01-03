@@ -2030,4 +2030,63 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.logout();
 	  }	
 	
+	/*
+	 * Verify the Unrecorded Document Number column in COS Doc Summary has a linked URL , navigating to theAudit Trail Record
+	 */
+	@Test(description = "SMAB-T4389: Verify user is able to navigate to the Audit Trail through the COS Doc Summary linked Document column", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
+	public void CIO_UnrecordedEvent_EventIDInCOSDocumentSummary(String loginUser) throws Exception {
+		
+		// ----- Data set up -----
+		
+		String queryAPNValue = "select Id from Parcel__c where Status__c='Active' limit 1";
+		String parcelId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+		String execEnv = System.getProperty("region");
+		
+		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
+		
+		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select("SELECT id FROM PUC_Code__c where Name in ('101- Single Family Home','105 - Apartment') limit 1");
+		salesforceAPI.update("Parcel__c", parcelId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+		
+		// Login to the APAS application
+		objMappingPage.login(loginUser);
+
+		// Opening the parcel's page
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
+		objParcelsPage.waitForElementToBeVisible(5,objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		
+		// Create UT event
+		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
+		objCIOTransferPage.waitUntilPageisReady(driver);
+		
+		// Step4: Edit the Transfer activity and update the Transfer Code
+		ReportLogger.INFO("Add the Transfer Code");
+		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, CIOTransferPage.CIO_EVENT_CODE_SALE);
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+				
+		String eventID = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel);
+		
+		// ----- Steps -----
+		
+		// Step 1:  User navigates to a parcel with an unrecorded document associated
+		objCIOTransferPage.Click(objCIOTransferPage.apnOnTransferActivityLabel);
+		
+		// Step 2: User clicks on "COS Document Summary" button
+		objParcelsPage.waitUntilPageisReady(driver);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
+		
+		// Step 3: User clicks on the recorded document
+		objParcelsPage.Click(objParcelsPage.lastItemInCosDocumentSummary);
+		String parentWindow = driver.getWindowHandle();
+		objParcelsPage.switchToNewWindow(parentWindow);
+		objParcelsPage.waitUntilPageisReady(driver);
+				
+		String currentEventID = trail.getFieldValueFromAPAS(trail.eventNumberLabel);
+		softAssert.assertEquals(eventID, currentEventID, "SMAB-T4389: Verify the Unecorded Document column in COS Doc Summary has a linked URL , navigating to the audit trail record");
+		
+		objParcelsPage.logout();
+	}
+	
 }
