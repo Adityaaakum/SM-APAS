@@ -111,6 +111,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public static final String CIO_EVENT_EXCLUSION="CIO-P19E";
 	public static final String CIO_EVENT_REASSESSMENT="CIO-P19";
 	public static final String CIO_EVENT_INTERGENERATIONAL_TRANSFER="CIO-P19P";
+	public static final String CIO_EVENT_SALE="CIO-SALE";
+
 	
 	public String eventIDLabel = "EventID";
 	public String situsLabel = "Situs";
@@ -748,7 +750,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			  * @param hashMapCreateAssessedValueRecord : Data to create acessed value record
 			  */
 	
-			 public String[] createAppraisalActivityWorkItemForRecordedCIOTransfer(String enrollmentType,String transferCode,Map<String, String> hashMapOwnershipAndTransferMailToCreationData,Map<String, String> hashMapOwnershipAndTransferGranteeCreationData,Map<String, String> hashMapCreateOwnershipRecordData,Map<String, String> hashMapCreateAssessedValueRecord) throws Exception {
+			 public String[] createAppraisalActivityWorkItemForRecordedCIOTransfer(String enrollmentType,String transferCode,Map<String, String> hashMapOwnershipAndTransferMailToCreationData,Map<String, String> hashMapOwnershipAndTransferGranteeCreationData,Map<String, String> hashMapCreateOwnershipRecordData,Map<String, String> hashMapCreateAssessedValueRecord, int... supplementalsCount ) throws Exception {
 
 					String excEnv = System.getProperty("region");
 
@@ -865,6 +867,18 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 					objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
 
+					if(supplementalsCount[0]==1)
+					{	
+					
+					JSONObject jsonForUpdateDOVRAT = getJsonObject();
+					jsonForUpdateDOVRAT.put("xDOV__c", "2021-06-30");
+					jsonForUpdateDOVRAT.put("DOR__c", "2021-06-30");
+					jsonForUpdateDOVRAT.put("xDOE__c", "2021-06-30");
+	
+
+					salesforceApi.update("Recorded_APN_Transfer__c", recordeAPNTransferID, jsonForUpdateDOVRAT);
+						
+					}
 					// STEP 7-Clicking on related action link
 
 					objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
@@ -892,6 +906,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 								"DOV__c", dateOfEvent);
 					}
 
+					
 					// STEP 11- Performing calculate ownership to perform partial transfer
 
 					driver.navigate()

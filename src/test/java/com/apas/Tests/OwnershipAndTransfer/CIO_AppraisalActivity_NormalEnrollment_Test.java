@@ -1062,4 +1062,62 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		objAppraisalActivity.logout();
 	}
 	
+	@Test(description = "SMAB-T4125: RP Roll Management- Verify One supplemental roll entry record is created from AAS when land and improvement types are entered for AV type \"Assessed value\" for DOV >= 30June", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "NormalEnrollment"}, enabled = true)
+	public void RollManagementVerifyOneSupplementalRollEntryCreation(String loginUser) throws Exception {
+
+		String excEnv = System.getProperty("region");
+		
+		 
+		//fetching the test data for partial transfer of ownership
+		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferCreationData, "dataToCreateMailToRecordsWithIncompleteData");
+
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithIncompleteData");
+
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
+
+		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
+		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
+      
+		    //STEP 1- Create appraisal WI through CIO Transfer WI approval
+		
+		String[] arrayForWorkItemAfterCIOSupervisorApproval = objCIOTransferPage
+				.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment",
+						objCIOTransferPage.CIO_EVENT_SALE, hashMapOwnershipAndTransferCreationData,
+						hashMapOwnershipAndTransferGranteeCreationData, hashMapCreateOwnershipRecordData,
+						hashMapCreateAssessedValueRecord,1);
+		   //Step 2- LOGIN with appraiser staff 
+		
+		      objAppraisalActivity.login(APPRAISAL_SUPPORT);
+		      Thread.sleep(4000);
+
+				String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
+
+				objAppraisalActivity.globalSearchRecords(workItemForAppraiser);
+				objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+				objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+				objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+				objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+				
+				
+				//STEP 4 -Navigating to appraisal activity screen
+				
+				objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+				String parentWindow = driver.getWindowHandle();
+				objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+				//STEP 5 -Validating the status and owner name  of appraiser activity 
+				
+				objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+				
+				
+	}
+
 }
