@@ -5129,7 +5129,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 		// Login as SysAdmin
 		objMappingPage.login(loginUser);
-		Thread.sleep(3000);
 				
 		objCioTransfer.addRecordedApn(recordedDocumentId, 1);		
 		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentId);
@@ -5148,10 +5147,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
 						.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
 				+ "/view");
-		Thread.sleep(3000);
+		objParcelsPage.waitUntilPageisReady(driver);
 		
 		// Step 2: User clicks on "COS Document Summary" button
-		objParcelsPage.waitUntilPageisReady(driver);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
 		
 		// Step 3: User clicks on the recorded document

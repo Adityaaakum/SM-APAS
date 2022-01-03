@@ -2039,20 +2039,21 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		
 		// ----- Data set up -----
 		
-		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Retired' limit 2";
-		String retiredApn = salesforceAPI.select(queryAPNValue).get("Name").get(1);
-		String retiredApnId = salesforceAPI.select(queryAPNValue).get("Id").get(1);
+		String queryAPNValue = "select Id from Parcel__c where Status__c='Active' limit 1";
+		String parcelId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+		String execEnv = System.getProperty("region");
 		
 		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
 		
 		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select("SELECT id FROM PUC_Code__c where Name in ('101- Single Family Home','105 - Apartment') limit 1");
-		salesforceAPI.update("Parcel__c", retiredApnId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+		salesforceAPI.update("Parcel__c", parcelId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 		
 		// Login to the APAS application
 		objMappingPage.login(loginUser);
 
-		// Opening the parcel page
-		objMappingPage.globalSearchRecords(retiredApn);
+		// Opening the parcel's page
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
+		objParcelsPage.waitForElementToBeVisible(5,objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
 		
 		// Create UT event
 		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
@@ -2062,7 +2063,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		ReportLogger.INFO("Add the Transfer Code");
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
-		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-SALE");
+		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, CIOTransferPage.CIO_EVENT_CODE_SALE);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
 				
 		String eventID = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel);
