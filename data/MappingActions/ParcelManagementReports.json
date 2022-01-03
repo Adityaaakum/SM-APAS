@@ -3,13 +3,20 @@
       "No. of new condo parcels(current year)": "[APN: APN, Work Item: Request Type, APN: Primary Situs: Situs Name, APN: TRA: TRA Number, APN: Status, APN: PUC: Name, APN: District / Neighborhood Code: District / Neighborhood Code]-12",
       "Completed Work Items by Origin Source": "[Action, Work Item: Work Item Number, APN, Name, Work Pool, Request Type, Value, Assigned To, Remarks, Age(Days)]-10",
       "No. of Rejected Parcel by Request Type": "[Work Item: Request Type, APN: APN, Work Item: Rejection Reason, Work Item: Rejection Comments, APN: Primary Situs: Situs Name, APN: TRA: TRA Number, APN: Status, APN: PUC: Name, APN: District / Neighborhood Code: District / Neighborhood Code]-11"
-     },
+   },
    "VerifyReportsName":{
       "No of new mobile homes(current year)": "No of new mobile homes(current year)",
       "Retired Parcels during Current Year": "Retired Parcels during Current Year",
       "No. of Parcels Created Per Origin Source": "No. of Parcels Created Per Origin Source",
-      "Newly Created Parcels per Current Year": "Newly Created Parcels per Current Year", 
+      "Newly Created Parcels per Current Year": "Newly Created Parcels per Current Year",
       "Unassigned Work Items by Origin Source": "Unassigned Work Items by Origin Source",
-      "Incomplete Assigned WI by Origin Source": "Incomplete Assigned WI by Origin Source"  
+      "Incomplete Assigned WI by Origin Source": "Incomplete Assigned WI by Origin Source"
+   },
+   "VerifyRPReportsColumns": {
+      "RP Activity List": "[Work Item: Assigned To: Full Name, APN: District / Neighborhood Code: District / Neighborhood Code, APN: APN, Work Item: Use Code, Business Event: Event Library: Name, Business Event: Name, Business Event: Created Date, Business Event: Date of Value, Business Event: Final Completed/Approval Date, Business Event: Last Modified Date, Work Item: Value, Business Event: Remarks, APN: Primary Situs: Situs Number, APN: Primary Situs: Situs Street Name, APN: Primary Situs: Situs Unit Number, APN: Primary Situs: Situs City Name]-9"
+   },
+   "VerifyRPReportsName":{
+      "RP Activity List": "RP Activity List"
+
    }
- }
+}
