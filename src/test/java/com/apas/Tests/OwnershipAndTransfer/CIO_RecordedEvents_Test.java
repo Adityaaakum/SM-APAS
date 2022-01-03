@@ -2039,7 +2039,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Navigate to Work Item and open Transfer activity record");
 		driver.navigate().to("https://smcacre--"+execEnv+
 				".lightning.force.com/lightning/r/Work_Item__c/"+responseWI.get("Id").get(0)+"/view");
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.detailsTab);
 		Thread.sleep(1000); // Allows the WI to load completely to avoid regression failure
 		
 		//Get the APN Name and Id
@@ -2058,11 +2058,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		//Open WI again and navigate to CIO screen
 		driver.navigate().to("https://smcacre--"+execEnv+
 				".lightning.force.com/lightning/r/Work_Item__c/"+responseWI.get("Id").get(0)+"/view");
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.detailsTab);
 		Thread.sleep(1000); // Allows the WI to load completely to avoid regression failure
 		
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(10, objWorkItemHomePage.referenceDetailsLabel);
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
@@ -2164,7 +2164,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Validate the Mail-To record on the parcel");
 		objCioTransfer.globalSearchRecords(activeApn1);
 		objParcelsPage.openParcelRelatedTab("Mail-To");
-		objCioTransfer.waitForElementToBeVisible(10, objParcelsPage.numberOfMailToOnParcelLabel);
+		objCioTransfer.waitForElementToBeVisible(20, objParcelsPage.numberOfMailToOnParcelLabel);
 		String numOfMailToRecordOnParcel = objCioTransfer.getElementText(objParcelsPage.numberOfMailToOnParcelLabel);
 
 		if (!numOfMailToRecordOnParcel.equals("(0)")) {
@@ -2175,7 +2175,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 			driver.navigate().to("https://smcacre--" + execEnv
 					+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-			objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.numberOfGrantorLabel);
+			objCioTransfer.waitForElementToBeVisible(20, objCioTransfer.numberOfGrantorLabel);
 			objCioTransfer.scrollToBottom();
 			objCioTransfer.clickViewAll("CIO Transfer Mail To");
 
@@ -4250,7 +4250,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 	@Test(description = "SMAB-T2995: Validate startdate and enddate on Mailto record of parcel", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "RecorderIntegration", "ChangeInOwnershipManagement" })
-	public void validateStartDateAndEnddateOnMailtoRecordOfParcel(String loginUser) throws Exception {
+	public void RecorderIntegration_ValidateStartDateAndEnddateOnMailtoRecordOfParcel(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
 		String mailToRecordFromParcel = "SELECT Parcel__c,Id FROM Mail_To__c where status__c = 'Active' Limit 1";
@@ -5023,6 +5023,58 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objCioTransfer.logout();
 
+	}
+	
+	/*
+	 * Verify the Recorded Document column in COS Doc Summary has a linked URL , navigating to the recorded document record
+	 */
+	@Test(description = "SMAB-T4388: Verify user is able to navigate to the recorded document through the COS Doc Summary linked Document column", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" }, enabled = true)
+	public void CIO_RecordedEvent_EventIDInCOSDocumentSummary(String loginUser) throws Exception {
+		
+		// ----- Data set up -----
+		
+		// Get a recorded document 
+		String recordedDocumentQuery = "SELECT Id, Name FROM recorded_document__c WHERE recorder_doc_type__c='DE' and xAPN_count__c=1 limit 1"; 
+		String recordedDocumentId = salesforceAPI.select(recordedDocumentQuery).get("Id").get(0);
+		String recordedDocumentName = salesforceAPI.select(recordedDocumentQuery).get("Name").get(0);
+		objCioTransfer.deleteRecordedApnFromRecordedDocument(recordedDocumentId);
+		
+		// Login as SysAdmin
+		objMappingPage.login(loginUser);
+				
+		objCioTransfer.addRecordedApn(recordedDocumentId, 1);		
+		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentId);
+		
+		// Query to fetch WI
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO' And status__c='In pool' order by createdDate desc limit 1";
+		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
+		objMappingPage.globalSearchRecords(workItemNo);
+		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		
+		// ----- Steps -----
+		
+		// Step 1:  User navigates to a parcel with a recorded document associated
+		String executionEnv = System.getProperty("region");
+		driver.navigate().to("https://smcacre--"
+				+ executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
+						.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
+				+ "/view");
+		objParcelsPage.waitUntilPageisReady(driver);
+		
+		// Step 2: User clicks on "COS Document Summary" button
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
+		
+		// Step 3: User clicks on the recorded document
+		objParcelsPage.Click(objParcelsPage.lastItemInCosDocumentSummary);
+		String parentWindow = driver.getWindowHandle();
+		objParcelsPage.switchToNewWindow(parentWindow);
+		objParcelsPage.waitUntilPageisReady(driver);
+		
+		String currentRecordedDocumentName = objCioTransfer.getFieldValueFromAPAS("Recorded Document Name");
+		softAssert.assertEquals(recordedDocumentName, currentRecordedDocumentName, "SMAB-T4388: Verify the Recorded Document column in COS Doc Summary has a linked URL , navigating to the recorded document record");
+		
+		objParcelsPage.logout();
 	}
 
 }
