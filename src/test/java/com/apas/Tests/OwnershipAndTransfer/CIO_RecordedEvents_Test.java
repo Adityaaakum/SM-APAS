@@ -4978,11 +4978,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	}
 
 	/*
-	 * This method is used to Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile.
+	 * This method is used to Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile.Also When the appraisal supervisor returns an Appraisal WI, the staff will rework on the feedback provided and the new records created should overwrite the previous records in AV and Roll Entry objects.
 	 * Users: RP Appraiser, RP Supervisor 
 	 */
 	
-	@Test(description = "SMAB-T3932, SMAB-T4271: Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile.", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3932, SMAB-T4271, SMAB-T4196, SMAB-T7535, SMAB-T7536: Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile. Also When the appraisal supervisor returns an Appraisal WI, the staff will rework on the feedback provided and the new records created should overwrite the previous records in AV and Roll Entry objects", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void RecorderIntegration_Composite_Value_Calculation(String loginUser) throws Exception {
 		String execEnv = System.getProperty("region");
@@ -5011,9 +5011,14 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				.get("Name").get(0);						
 		objCioTransfer.globalSearchRecords(workItemNoForAppraiser);
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
-		
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		String apnNumber=objCioTransfer.getFieldValueFromAPAS("APN");
+		String getQuery ="SELECT Id FROM Parcel__c WHERE Name = '" +apnNumber+"'";
+	  	  HashMap<String, ArrayList<String>> getResponse = salesforceAPI.select(getQuery);
+	  	String apnId = getResponse.get("Id").get(0);
+	  	objCioTransfer.deleteRollEntryFromParcel(apnId);
+		
 		objWorkItemHomePage.getFieldValueFromAPAS("APN");
 		objWorkItemHomePage.waitForElementToBeInVisible("APN", 5);
 		objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
@@ -5027,6 +5032,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Navigating to Appraisal Activity Screen");
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		
 		String appraisalActivityUrl = driver.getCurrentUrl();
 		
 		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
@@ -5034,25 +5040,31 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String DOV=(apasGenericObj.getFieldValueFromAPAS("DOV"));
 		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
 		Thread.sleep(2000);
+		
+		//Step 4: Clicking on Assessed Value view all icon and navigating to the new page.
 		objCioTransfer.clickViewAll(assessedValueTableName);
 		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValue = objMappingPage.getGridDataInHashMap();
 		String assessedValueType = gridDataHashMapAssessedValue.get("Assessed Value Type").get(0);
-		String assessedValueStartDate = gridDataHashMapAssessedValue.get("Effective Start Date").get(0);
 		String assessedValueEndDate = gridDataHashMapAssessedValue.get("Effective End Date").get(0);
 		String assessedValueLandValue = gridDataHashMapAssessedValue.get("Land Value").get(0);
 		String assessedValueImprovementValue = gridDataHashMapAssessedValue.get("Improvement Value").get(0);
 		
+		//Step 5: Navigating to Appraisal Activity Screen page
 		driver.navigate().to(appraisalActivityUrl);
 		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
 		objMappingPage.Click(objAppraisalActivity.appraisalActivityEditValueButton("Land Cash Value"));
 		objMappingPage.waitForElementToBeVisible(apasGenericObj.getButtonWithText("Save"));
 		
+		//Step 6: Adding Land and Improvement Values
 		apasGenericObj.enter("Land Cash Value", "200000");
 		apasGenericObj.enter("Improvement Cash Value","200000");
+		apasGenericObj.enter("DOR","7/1/1999");
+		String assessedValueStartDate= "7/1/1999";
+		apasGenericObj.enter("DOV","7/1/1999");
 		
 		apasGenericObj.Click(apasGenericObj.getButtonWithText("Save"));
 		Thread.sleep(2000);
-		
+		//Step 7: Going to Assessed Value view all page and verifying the chages
 		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
 		Thread.sleep(2000);
 		objCioTransfer.clickViewAll("Assessed Values for Parent Parcel");
@@ -5075,41 +5087,174 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(assessedValueEndDate,assessedValueEndDateFirst, "SMAB-T3932, SMAB-T4271:Verify That Both End Date Should Be empty.");
 	
 		softAssert.assertEquals(assessedValueTypeSecond,assessedValueType, "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
-		softAssert.assertEquals(assessedValueStartDateSecond,DOV, "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
+		softAssert.assertEquals(assessedValueStartDateSecond,assessedValueStartDate, "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
 		softAssert.assertEquals(assessedValueLandValueSecond,"200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
 		softAssert.assertEquals(assessedValueImprovementValueSecond,"200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
 		softAssert.assertEquals(assessedValueEndDateSecond,assessedValueEndDateFirst, "SMAB-T3932, SMAB-T4271:Verify That Both End Date Should Be Empty.");
 	
-		
 		String queryAPN = "select Id from Parcel__c where Name='"+apnOnAAS+"'";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apnToUpdateId= responseAPNDetails.get("Id").get(0);
+		
+		//Step 8: Navigating to the Roll Entry view all page
 		driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/" + apnToUpdateId + "/related/Roll_Entry__r/view");
+		String rollEntryUrl = driver.getCurrentUrl();
 		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.parcelsLink);
 		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryNew = objMappingPage.getGridDataInHashMap();
 		
 		String rollValueTypeFirst = gridDataHashMapRollEntryNew.get("Type").get(0);
-		String rollValueYearFirst = gridDataHashMapRollEntryNew.get("Roll Year Settings").get(0);
+		String rollValueYearFirst = gridDataHashMapRollEntryNew.get("Roll Year - Seq#").get(0);
 		String rollValueLandValueFirst= gridDataHashMapRollEntryNew.get("Land Assessed Value").get(0);
 		String rollValueImprovementValueFirst = gridDataHashMapRollEntryNew.get("Improvement Assessed Value").get(0);
 		String rollValueTypeSecond = gridDataHashMapRollEntryNew.get("Type").get(1);
-		String rollValueYearSecond = gridDataHashMapRollEntryNew.get("Roll Year Settings").get(1);
+		String rollValueYearSecond = gridDataHashMapRollEntryNew.get("Roll Year - Seq#").get(1);
 		String rollValueLandValueSecond= gridDataHashMapRollEntryNew.get("Land Assessed Value").get(1);
 		String rollValueImprovementValueSecond = gridDataHashMapRollEntryNew.get("Improvement Assessed Value").get(1);
 		
 
 		softAssert.assertEquals(rollValueTypeFirst,"Annual", "SMAB-T3932, SMAB-T4271:Verify That Both Roll Value Type Should Be Same.");
-		softAssert.assertEquals(rollValueYearFirst,"2022", "SMAB-T3932, SMAB-T4271:Verify That year Should Be Same.");
-		softAssert.assertEquals(rollValueLandValueFirst,"$244,355", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
-		softAssert.assertEquals(rollValueImprovementValueFirst,"$244,355", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+		softAssert.assertEquals(rollValueYearFirst,"2000 - 1", "SMAB-T3932, SMAB-T4271:Verify That year Should Be Same.");
+		softAssert.assertEquals(rollValueLandValueFirst,"$200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+		softAssert.assertEquals(rollValueImprovementValueFirst,"$200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
 	
 		softAssert.assertEquals(rollValueTypeSecond,"Supplemental", "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
-		softAssert.assertEquals(rollValueYearSecond,"2021", "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
-		softAssert.assertEquals(rollValueLandValueSecond,"$241,936", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
-		softAssert.assertEquals(rollValueImprovementValueSecond,"$241,936", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+		softAssert.assertEquals(rollValueYearSecond,"1999 - 2", "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
+		softAssert.assertEquals(rollValueLandValueSecond,"$200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+		softAssert.assertEquals(rollValueImprovementValueSecond,"$200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+
+		//Step 9: Navigating to Appraisal Activity screen and submitting for approval to supervisor
+		driver.navigate().to(appraisalActivityUrl);
+		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
+		
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(null, objCioTransfer.quickActionOptionSubmitForApproval);
+
+		ReportLogger.INFO("CIO!! Transfer submitted for approval");
+		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.finishButton);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
 
 		objCioTransfer.logout();
+		Thread.sleep(5000);
 
+		// Step 10: Login from RP Supervisor to Return the WI
+		objWorkItemHomePage.login(RP_PRINCIPAL);
+		driver.navigate().to(appraisalActivityUrl);
+		objCioTransfer.waitForElementToBeClickable(objAppraisalActivity.quickActionOptionReturn);
+		objCioTransfer.Click(objAppraisalActivity.quickActionOptionReturn);
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.returnReasonTextBox);
+		objCioTransfer.enter(objCioTransfer.returnReasonTextBox, "Returned by RP Principal.");
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
+		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+		objCioTransfer.logout();
+		Thread.sleep(5000);
+
+		// Step 11: Login from RP appraiser to make changes to the WI
+		objWorkItemHomePage.login(loginUser);
+		
+		driver.navigate().to(rollEntryUrl);
+		ReportLogger.INFO("RP Appraiser will change the status to On Hold.");
+		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.parcelsLink);
+		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryfinal = objMappingPage.getGridDataInHashMap();		
+		String rollEntryRecordName;
+		for (int i = 1; i < gridDataHashMapRollEntryfinal.get("Type").size(); i++) {
+			if(gridDataHashMapRollEntryfinal.get("Type").get(i).equalsIgnoreCase("Supplemental")) {
+			 rollEntryRecordName=gridDataHashMapRollEntryfinal.get("Roll Entry Name").get(i);
+			 String query = "SELECT Id FROM Roll_Entry__c where Name='"+rollEntryRecordName+"'";
+				HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+				String rollName = response.get("Id").get(0);
+				driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Roll_Entry__c/"+rollName+"/view");
+				objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
+				break;
+			}	
+		}
+
+		String supplementalUrl = driver.getCurrentUrl();
+
+		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
+		objMappingPage.Click(objAppraisalActivity.getButtonWithText("Edit"));
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.SaveButton);
+	
+		//Step 12: Changing the status of Supplemental record to On Hold/Wait
+		objParcelsPage.selectOptionFromDropDown(objAppraisalActivity.rollEntryStatus, "On Hold/Wait");
+		String dovDate=objParcelsPage.getFieldValueFromAPAS("DOV");
+		objParcelsPage.enter(objAppraisalActivity.rollEntryNoticeDate, dovDate);
+		objMappingPage.Click(objAppraisalActivity.getButtonWithText("Save"));
+		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
+		String statusValue = objParcelsPage.getFieldValueFromAPAS("Status");
+		softAssert.assertEquals(statusValue,"On Hold/Wait", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+		driver.navigate().to(appraisalActivityUrl);
+		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
+
+		objMappingPage.Click(objAppraisalActivity.appraisalActivityEditValueButton("Improvement Cash Value"));
+		objMappingPage.waitForElementToBeVisible(apasGenericObj.getButtonWithText("Save"));
+		
+		//Step 13: Changing values
+		apasGenericObj.enter("Land Cash Value", "200001");
+		apasGenericObj.enter("Improvement Cash Value","200001");
+		
+		apasGenericObj.Click(apasGenericObj.getButtonWithText("Save"));
+		Thread.sleep(2000);
+		
+		//Step 14: Navigating to supplemental record to check the status and after that changing the status
+		driver.navigate().to(supplementalUrl);
+		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
+		String statusValueNewDraft = objParcelsPage.getFieldValueFromAPAS("Status");
+		softAssert.assertEquals(statusValueNewDraft,"Draft", "SMAB-T4196, SMAB-T7535, SMAB-T7536:Verify That status should be draft.");
+		driver.navigate().to(supplementalUrl);
+		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
+		objMappingPage.Click(objAppraisalActivity.getButtonWithText("Edit"));
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.SaveButton);
+		objParcelsPage.selectOptionFromDropDown(objAppraisalActivity.rollEntryStatus, "Ready for Early Release");
+		objMappingPage.Click(objAppraisalActivity.getButtonWithText("Save"));
+		ReportLogger.INFO("RP Appraiser changed the status to Ready for early release.");
+		Thread.sleep(2000);
+		String statusValueEarlyRelease = objParcelsPage.getFieldValueFromAPAS("Status");
+		softAssert.assertEquals(statusValueEarlyRelease,"Ready for Early Release", "SMAB-T4196, SMAB-T7535, SMAB-T7536:Verify That status Should Be Ready for Early Release.");
+		
+		//Step 15: Running the Batch to process Roll records
+		salesforceAPI.generateReminderWorkItems(SalesforceAPI.ROLLENTRY_UPDATE_BATCH_JOB);
+		//this wait is needed because sometimes status takes times to be updated. 
+		Thread.sleep(5000);
+		
+		//Step 16; Navigating to supplemental record to check the status
+		driver.navigate().to(supplementalUrl);
+		driver.navigate().refresh();
+		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
+		String statusValueReleased = objParcelsPage.getFieldValueFromAPAS("Status");
+		softAssert.assertEquals(statusValueReleased,"Released to Controller", "SMAB-T4196, SMAB-T7535, SMAB-T7536:Verify That status Should Be Ready for Early Release.");
+		ReportLogger.INFO("After Batch Run status got changed to Released to Controller.");
+		//Step 17: Navigating to appraisal activity screen to submit record for approval
+		driver.navigate().to(appraisalActivityUrl);
+		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
+
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(null, objCioTransfer.quickActionOptionSubmitForApproval);
+
+		ReportLogger.INFO("CIO!! Transfer submitted for approval");
+		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.finishButton);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
+
+		objCioTransfer.logout();
+		Thread.sleep(5000);
+
+		// Step 18: Login from RP Supervisor to approve the WI
+		objWorkItemHomePage.login(RP_PRINCIPAL);
+		driver.navigate().to(appraisalActivityUrl);
+
+		objCioTransfer.waitForElementToBeClickable(objAppraisalActivity.quickActionOptionApprove);
+		objCioTransfer.Click(objAppraisalActivity.quickActionOptionApprove);
+		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.finishButtonPopUp);
+		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+
+		Thread.sleep(2000);
+		// Allow the screen to appear completely
+		ReportLogger.INFO("Appraisal Activity!!  Approved");
+		
+		driver.navigate().to(supplementalUrl);
+		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
+		String statusValueApproved = objParcelsPage.getFieldValueFromAPAS("Status");
+		softAssert.assertEquals(statusValueApproved,"Approved", "SMAB-T4196, SMAB-T7535, SMAB-T7536:Verify That status Should Be Ready for Early Release.");
+
+		objCioTransfer.logout();
 	}
 	
 	/*

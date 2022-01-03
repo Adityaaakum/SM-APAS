@@ -37,6 +37,7 @@ public class SalesforceAPI extends TestBase {
     public static String REMINDER_WI_CODE_BPP_EFILE = "new+BPPTrendsImportReminderWorkItemService().createReminderWorkItemsForEFile(ApexUtility.getCurrentRollYear());";
     public static String RECORDER_WORKITEM="DataBase.executeBatch(new+RecorderIntegrationBatch('Pending',true),3);";
     public static final String CIO_AUTOCONFIRM_BATCH_JOB="CIOTransferAutoConfirmScheduler.triggerAutoConfirmation();"; 
+    public static final String ROLLENTRY_UPDATE_BATCH_JOB="DataBase.executeBatch(new+RollEntryUpdateBatch());";
     /**
      * This method will create HTTP Post connection with Salesforce
      @return Http Post Connection
