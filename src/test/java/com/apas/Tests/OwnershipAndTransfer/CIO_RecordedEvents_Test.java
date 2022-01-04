@@ -4895,7 +4895,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * Users: RP Appraiser, RP Supervisor 
 	 */
 	
-	@Test(description = "SMAB-T3932, SMAB-T4271, SMAB-T4196, SMAB-T7535, SMAB-T7536: Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile. Also When the appraisal supervisor returns an Appraisal WI, the staff will rework on the feedback provided and the new records created should overwrite the previous records in AV and Roll Entry objects", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3932, SMAB-T4271, SMAB-T4196, SMAB-T7535, SMAB-T7536, SMAB-T7929,SMAB-T7630: Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile. Also When the appraisal supervisor returns an Appraisal WI, the staff will rework on the feedback provided and the new records created should overwrite the previous records in AV and Roll Entry objects", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void RecorderIntegration_Composite_Value_Calculation(String loginUser) throws Exception {
 		String execEnv = System.getProperty("region");
@@ -5015,6 +5015,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.parcelsLink);
 		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryNew = objMappingPage.getGridDataInHashMap();
 		
+		
 		String rollValueTypeFirst = gridDataHashMapRollEntryNew.get("Type").get(0);
 		String rollValueYearFirst = gridDataHashMapRollEntryNew.get("Roll Year - Seq#").get(0);
 		String rollValueLandValueFirst= gridDataHashMapRollEntryNew.get("Land Assessed Value").get(0);
@@ -5034,6 +5035,69 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(rollValueYearSecond,"1999 - 2", "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
 		softAssert.assertEquals(rollValueLandValueSecond,"$200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
 		softAssert.assertEquals(rollValueImprovementValueSecond,"$200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+
+		String annualRollEntryRecordName;
+		for (int i = 1; i < gridDataHashMapRollEntryNew.get("Type").size(); i++) {
+			if(gridDataHashMapRollEntryNew.get("Type").get(i).equalsIgnoreCase("Annual")) {
+				annualRollEntryRecordName=gridDataHashMapRollEntryNew.get("Roll Entry Name").get(i);
+			 String query = "SELECT Id FROM Roll_Entry__c where Name='"+annualRollEntryRecordName+"'";
+				HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+				String rollName = response.get("Id").get(0);
+				driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Roll_Entry__c/"+rollName+"/view");
+				objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
+				break;
+			}	
+		}
+
+		String baseYear= objCioTransfer.getFieldValueFromAPAS("Base Years");
+		String appraiserActivity = objCioTransfer.getFieldValueFromAPAS("Appraiser Activity");
+		String assessmentValue = objCioTransfer.getFieldValueFromAPAS("Assessment Year");
+		String apnValue = objCioTransfer.getFieldValueFromAPAS("APN");
+		String businessArea = objCioTransfer.getFieldValueFromAPAS("Business Area");
+		String rollYearSettings = objCioTransfer.getFieldValueFromAPAS("Roll Year Settings");
+		String assessementYear = objCioTransfer.getFieldValueFromAPAS("Assessment Year");
+		String pucValue = objCioTransfer.getFieldValueFromAPAS("Property Use Code");
+		String dovValue = objCioTransfer.getFieldValueFromAPAS("DOV");
+		String dorValue=objCioTransfer.getFieldValueFromAPAS("DOR");
+		String eventId = objCioTransfer.getFieldValueFromAPAS("Event ID");
+		String lastTransection = objCioTransfer.getFieldValueFromAPAS("Last Transaction");
+		String rollType = objCioTransfer.getFieldValueFromAPAS("Roll Type");
+		String cpiFactor = objCioTransfer.getFieldValueFromAPAS("CPI Factor");
+		String ownerName = objCioTransfer.getFieldValueFromAPAS("Owner Name 1");
+		String situsStreetName = objCioTransfer.getFieldValueFromAPAS("Situs Street Name");
+		
+		softAssert.assertTrue(!baseYear.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that Base Year field is not empty");
+		softAssert.assertTrue(!appraiserActivity.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that Appraiser Activity field is not empty");
+		softAssert.assertTrue(!assessmentValue.isEmpty(),
+	   			"SMAB-T7929, SMAB-T7630: Validate that Assessment Year field is not empty");
+		softAssert.assertTrue(!apnValue.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that APN field is not empty");
+		softAssert.assertTrue(!businessArea.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that Bussiness Area field is not empty");
+		softAssert.assertTrue(!rollYearSettings.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that Roll Year Settings field is not empty");
+		softAssert.assertTrue(!assessementYear.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that Assessement Year field is not empty");
+		softAssert.assertTrue(!pucValue.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that PUC field is not empty");
+		softAssert.assertTrue(!dovValue.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that DOV field is not empty");
+		softAssert.assertTrue(!eventId.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that Event ID field is not empty");
+		softAssert.assertTrue(!dorValue.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that DOR field is not empty");
+		softAssert.assertTrue(!lastTransection.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that Last Transection field is not empty");
+		softAssert.assertTrue(!cpiFactor.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that CPI Factor field is not empty");
+		softAssert.assertTrue(!ownerName.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that Owner Name field is not empty");
+		softAssert.assertTrue(!situsStreetName.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that Situs Street Name field is not empty");
+		softAssert.assertTrue(!rollType.isEmpty(),
+	   			"SMAB-T7929,SMAB-T7630: Validate that Roll Type field is not empty");
 
 		//Step 9: Navigating to Appraisal Activity screen and submitting for approval to supervisor
 		driver.navigate().to(appraisalActivityUrl);
