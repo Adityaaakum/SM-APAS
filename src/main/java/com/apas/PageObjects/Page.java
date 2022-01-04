@@ -738,7 +738,7 @@ public class Page extends TestBase {
 				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//span[@class='slds-col'] | " + //this condition was observed on Mapping Action screen for Parent APN(s) field
 				commonPath + "//label[text()=\"" + label + "\"]/..//textarea | "+//this condition was added to handle webelements of type textarea
 				commonPath + "//span[text()=\"" + label + "\"]/../following-sibling::input | "+
-				commonPath + "//label[text()=\"" + label + "\"]/following-sibling::div/input[@name='Owner_Applying_SSN__c']";	
+				commonPath + "//label[text()=\"" + label + "\"]/following-sibling::div/input[@name='Owner_Applying_SSN__c']";	//this condition is added to handle claiment name xpath on exemption page
 		waitUntilElementIsPresent(xpath, 10);
 		return driver.findElement(By.xpath(xpath));
 	}

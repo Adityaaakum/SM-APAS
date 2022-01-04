@@ -49,7 +49,8 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	 Below test case will validate that 
 	 1. user is able to create Real Property Settings Library for Fututre Roll Year
 	 2. User is not able to create duplicate Exemption limit record for any random roll year
-	 3. User is not able to create duplicate Exemption limit record for a roll year whose entry already exists	 
+	 3. User is not able to create duplicate Exemption limit record for a roll year whose entry already exists	
+	 Note :- disabling this test case because this functionality is not exists. 
 	 **/
 	@Test(description = "SMAB-T536,SMAB-T540,SMAB-T541:Test Creation of Future Real Property Settings & duplicate creation", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"Regression","DisabledVeteran"}, enabled=false)
 	public void DisabledVeteran_verifyFututreRPSLCreation(String loginUser) throws Exception {
