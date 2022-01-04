@@ -51,7 +51,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 	 2. User is not able to create duplicate Exemption limit record for any random roll year
 	 3. User is not able to create duplicate Exemption limit record for a roll year whose entry already exists	 
 	 **/
-	@Test(description = "SMAB-T536,SMAB-T540,SMAB-T541:Test Creation of Future Real Property Settings & duplicate creation", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"Regression","DisabledVeteran"})
+	@Test(description = "SMAB-T536,SMAB-T540,SMAB-T541:Test Creation of Future Real Property Settings & duplicate creation", dataProvider = "loginExemptionSupportStaff", dataProviderClass = DataProviders.class , groups = {"Regression","DisabledVeteran"}, enabled=false)
 	public void DisabledVeteran_verifyFututreRPSLCreation(String loginUser) throws Exception {
 		String strSuccessAlertMessage;
 		
@@ -232,7 +232,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		Map<String, String> createRPSLdataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToCreateFututreRPSLEntry");
 		String date = DateUtil.getCurrentDate("MM/dd/yyyy");
 		String strRollYear = ExemptionsPage.determineRollYear(date);
-		int futureRollYear = Integer.parseInt(strRollYear)+2;
+		int futureRollYear = Integer.parseInt(strRollYear);
 		String strRPSL = String.valueOf(futureRollYear);
 		
 		//Step4: Clicking on 'New' button & entering the details
@@ -269,7 +269,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		Map<String, String> createRPSLdataMap = objUtils.generateMapFromJsonFile(manualEntryData, "DataToCreateRPSLEntryWithZeroAmt");
 		String date = DateUtil.getCurrentDate("MM/dd/yyyy");
 		String strRollYear = ExemptionsPage.determineRollYear(date);
-		int futureRollYear = Integer.parseInt(strRollYear)+2;
+		int futureRollYear = Integer.parseInt(strRollYear);
 		String strRPSL = String.valueOf(futureRollYear);
 		
 		//Step4: Adding a new record
