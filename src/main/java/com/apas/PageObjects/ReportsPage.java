@@ -14,6 +14,9 @@ import org.openqa.selenium.support.PageFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,6 +65,18 @@ public class ReportsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//input[@placeholder='Search all reports...']")
 	public WebElement searchListEditBox;
+
+	@FindBy(xpath = "//label[text()='Start Date']//parent::div//following-sibling::div/input")
+	public WebElement startDateEditBox;
+
+	@FindBy(xpath = "//label[text()='End Date']//parent::div//following-sibling::div/input")
+	public WebElement endDateEditBox;
+
+	@FindBy(xpath = "//span[text()='Created Date']")
+	public WebElement CreatedDatelabel;
+
+	@FindBy(xpath = "//a[text()='Customize']")
+	public WebElement customizeLink;
 	
 
 	public String linkBuildingPermitNumber = "//table[contains(@class,'data-grid-full-table')]//tbody//tr//th[@data-row-index='2']/../td[@data-column-index='2']//a[contains(@href,'')]";
@@ -91,8 +106,10 @@ public class ReportsPage extends ApasGenericPage {
 		enter(searchListEditBox, reportName);
 		WebElement webElement =  driver.findElement(By.xpath("//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container')]//a[contains(@title,'" + reportName + "')]"));
 		executor.executeScript("arguments[0].click();", webElement);
-		
-		Thread.sleep(10000);
+		Thread.sleep(2000);
+		if (reportName.equals("RP Activity List")) {
+			this.validateFilter();
+		}
 		driver.manage().window().maximize();
 	    int size = driver.findElements(By.tagName("iframe")).size();
 		
@@ -182,5 +199,32 @@ public class ReportsPage extends ApasGenericPage {
 	    if (removeEntry.length() == 8) enter(dateLocator, removeEntry.substring(0, 4).concat(updateRollYear));
 	    Click(filterApply);
 	    Thread.sleep(5000);	
-	}	
+	}
+
+	/**
+	 * Description: This method will update the filters with start data and end date
+
+	 */
+
+	public void validateFilter() throws InterruptedException, IOException {
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		Date date = new Date();
+		Calendar calDate = Calendar.getInstance();
+		calDate.setTime(date);
+		calDate.add(Calendar.DATE, -1);
+		date = calDate.getTime();
+		String endDate = dateFormat.format(date);
+		ReportLogger.INFO("Previous day date is " + endDate);
+		Thread.sleep(1000);
+		driver.switchTo().frame(0);
+		Click(filterIcon);
+		Click(CreatedDatelabel);
+		Click(customizeLink);
+		startDateEditBox.sendKeys(endDate);
+		endDateEditBox.sendKeys(endDate);
+		Click(filterApply);
+		driver.switchTo().defaultContent();
+
+	}
 }
