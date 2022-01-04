@@ -515,14 +515,15 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					Select select = new Select(formattedName1);
 					select.selectByVisibleText(granteeForMailTo);
 					Click(formattedName1);
-					Click(mailingState);
-					Select selectMailingState = new Select(mailingState);
-					selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"));
-					Click(mailingState);
-					enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
-					if (execEnv.equalsIgnoreCase("QA")) {
-						Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));
-					}
+					
+					/*
+					 * Click(mailingState); Select selectMailingState = new Select(mailingState);
+					 * selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"
+					 * )); Click(mailingState);
+					 */ enter(mailZipCopyToMailTo,
+					  dataToCreateMailTo.get("Mailing Zip"));
+					 
+						Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));				
 					Click(getButtonWithText(nextButton));
 					ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
 				} catch (Exception e) {
@@ -591,7 +592,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
 		 {
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(8000);
 					String execEnv = System.getProperty("region");
 					driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/"
 							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
@@ -761,7 +762,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					Thread.sleep(5000);
 					searchModule(EFILE_INTAKE_VIEW);
 					String recordedDocumentID = salesforceApi.select(
-							"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=0")
+							"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c in (0,1,2,3,4)")
 							.get("Id").get(0);
 
 					deleteRecordedApnFromRecordedDocument(recordedDocumentID);
