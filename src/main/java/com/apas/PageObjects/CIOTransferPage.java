@@ -315,7 +315,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath=commonXpath+"//*[@id=\"wrapper-body\"]//span[text() = 'Care of']/../../..//input")
 	public WebElement careOfInCopyToMailTo;
 	
-	
+
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
