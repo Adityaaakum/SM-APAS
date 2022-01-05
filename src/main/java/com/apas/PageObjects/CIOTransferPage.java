@@ -85,6 +85,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String saveButton ="Save";
 	public String finishButton ="Finish";
 	public String nextButton="Next";
+	public String validateMailingAddressButton="Validate Mailing Address";
 	public String cioTransferScreenSectionlabels= "//*[@class='slds-card slds-card_boundary']//span[@class='slds-truncate slds-m-right--xx-small']";
 	public String remarksLabel = "Remarks";
 	public String fieldsInCalculateOwnershipModal="//*[@id='wrapper-body']//flowruntime-screen-field//p";
@@ -154,6 +155,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String verifiedValueFromPcorLabel = "Verified Value from PCOR";
 	public String previousButtonLabel = "Previous";
 
+	public String validateWithUSPSButtonOnCopyToMailTo = "Validate with USPS";
+	public String updateMailToButton = "Update";	
+	public String useThisInformationButtonOnCopyToMailTo = "Use This Information";
 	public String useThisQuickActionButtonOnCopyTOMailTo = "Use This";
 
 	public String saveAndNextButtonCaption = commonXpath + "//button[text()='Save and Next']";
@@ -301,6 +305,16 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	
 	@FindBy(xpath=commonXpath+"//div[text()='New']")
 	public WebElement newButtonMailToListViewScreen;
+	
+	@FindBy(xpath=commonXpath+"//label[text()='Address ']/..//input")
+	public WebElement addressInCopyToMailTo;
+	
+	@FindBy(xpath=commonXpath+"//label[text()='Zip Code']/..//input")
+	public WebElement zipCodeInCopyToMailTo;	
+	
+	@FindBy(xpath=commonXpath+"//*[@id=\"wrapper-body\"]//span[text() = 'Care of']/../../..//input")
+	public WebElement careOfInCopyToMailTo;
+	
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
@@ -529,7 +543,36 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE ADDED THROUGH COPY TO MAIL TO ACTION BUTTON");
 				}
 			}
-
+		 
+		 /*
+		  * This method creates mail to record with ZIP code validation using USPS integration by clicking on copy to mail to action button on CIO transfer screen 
+		  */
+		 public void createCopyToMailToZipCodeValidation(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {
+			 try {
+				 waitUntilPageisReady(driver);
+				 // Click on "Copy to Mail to" button
+				 Click(getButtonWithText(copyToMailToButtonLabel));
+				 waitForElementToDisappear(formattedName1, 5);
+				 Click(formattedName1);
+				 Select select = new Select(formattedName1);
+				 select.selectByVisibleText(granteeForMailTo);
+				 Click(formattedName1);
+				 // Fill the form
+				 enter(addressInCopyToMailTo,dataToCreateMailTo.get("Address"));
+				 enter(zipCodeInCopyToMailTo,dataToCreateMailTo.get("Zip code"));
+				 enter(careOfInCopyToMailTo,dataToCreateMailTo.get("Care of"));
+				 // Validate with USPS
+				 Click(getButtonWithText(validateWithUSPSButtonOnCopyToMailTo));
+				 Click(getButtonWithText(useThisInformationButtonOnCopyToMailTo));
+				 Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));
+				 // Click on "Next" button
+				 Click(getButtonWithText(nextButton));
+				 ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
+				
+			} catch (Exception e) {
+				ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE ADDED THROUGH COPY TO MAIL TO ACTION BUTTON");
+			}
+		 }
 		 
 		 
 		 /*
