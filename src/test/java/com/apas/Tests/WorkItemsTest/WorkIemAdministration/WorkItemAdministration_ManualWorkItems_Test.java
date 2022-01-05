@@ -1418,7 +1418,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		Thread.sleep(2000);
 		String parcelId = driver.getCurrentUrl().split("/")[6];
 		String ownershipId =  salesforceAPI
-				.select("SELECT Id FROM Property_Ownership__c WHERE Parcel__c = '" + parcelId + "'")
+				.select("SELECT Id FROM Property_Ownership__c WHERE Parcel__c = '" + apnToUpdateId + "'")
 				.get("Id").get(0);
 
 		// STEP 4- updating the ownership date for current owners
