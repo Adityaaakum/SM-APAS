@@ -60,7 +60,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2583, SMAB-T2585, SMAB-T2581, SMAB-T2586, SMAB-T2590:Verify the UI validations for \"Split\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","ManyToManyAction" })
 	public void ParcelManagement_VerifyManyToManyMappingActionUIValidations(String loginUser) throws Exception {
 		//Fetching Assessee records
 		String queryAssesseeRecord = "SELECT Id, Name FROM Account Limit 1";
@@ -338,7 +338,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3051,SMAB-T2587, SMAB-T2594, SMAB-T2595, SMAB-T2596, SMAB-T2626, SMAB-T2582:Verify the Parent APN validations for \"Many To Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","ManyToManyAction","ManyToManyAction" })
 	public void ParcelManagement_VerifyParentAPNValidationsForManyToManyMappingAction(String loginUser) throws Exception {
 
 		JSONObject jsonObj = objMappingPage.getJsonObject();
@@ -842,7 +842,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2730,SMAB-T2903,SMAB-T3244:Verify the Output validations for \"Many to Many\" mapping action and validation on lower APN value", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","ManyToManyAction" })
 	public void ParcelManagement_VerifyCondoManyToManyMappingActionOutputValidations(String loginUser) throws Exception {
 
 		JSONObject jsonObject = objMappingPage.getJsonObject();
@@ -1181,7 +1181,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3451,SMAB-T3459,SMAB-T3452,SMAB-T2660:Parcel Management- Verify that User is able to update a Situs of child parcel from the Parcel mapping screen for  \"Many to Many\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","ManyToManyAction" })
 	public void ParcelManagement_UpdateChildParcelSitus_ManyToManyMappingAction(String loginUser) throws Exception {
 		//Fetching parcels that are Active with no Ownership record
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '8%')"
@@ -1349,7 +1349,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2683,SMAB-T7571,SMAB-T7570,SMAB-T7569:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"ManyToMany\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
+			"Regression", "ParcelManagement","ManyToManyAction" })
 	public void ParcelManagement_ReturnToCustomScreen_ManyToManyMappingAction_NoPrimarySitusTRA(String loginUser)
 			throws Exception {
 
@@ -1598,7 +1598,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2683,SMAB-T2668,SMAB-T2765,SMAB-T2910,SMAB-T3473:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"ManyToMany\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","ManyToManyAction" })
 	public void ParcelManagement_ReturnToCustomScreen_ManyToManyMappingAction_WithPrimarySitusTRA(String loginUser) throws Exception {
 
 		String  childAPNPUC;
@@ -1862,7 +1862,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 
 	}
 	@Test(description = "SMAB-T2673,SMAB-T2683:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"ManyToMany\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","ManyToManyAction" })
 	public void ParcelManagement_ReturnToCustomScreen_ManyToManyMappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 
 		String  childAPNPUC;
@@ -2023,7 +2023,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2836,SMAB-T2841:I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels.", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","ManyToManyAction" })
 	public void ParcelManagement_VerifyManyToManyParcelEditAction(String loginUser) throws Exception {
 
 		//Fetching parcels that are Active with no Ownership record
@@ -2192,7 +2192,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	}
 }
 
-	@Test(description = "SMAB-T3471,SMAB-T3472,SMAB-T3602: Verify independent o/p for Many to many mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+	@Test(description = "SMAB-T3471,SMAB-T3472,SMAB-T3602: Verify independent o/p for Many to many mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement","ManyToManyAction" })
 
 	public void ParcelManagement_VerifyIndependentlManyToManyMappingAction(String loginUser) throws Exception {
 
@@ -2443,7 +2443,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @throws Exception
 	 */	
 	@Test(description = "SMAB-T3803,SMAB-T3804,SMAB-T3805,SMAB-T3806,SMAB-T3777,SMAB-T3787,SMAB-T3788,SMAB-T3854,SMAB-T3888,SMAB-T3855,SMAB-T3889,SMAB-T3813:Verify that User is able to perform a \"Many to Many\" mapping action for a Parcel   from a work item and verify output with update chars and verify PUC", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" }, enabled = true)
+			"Regression", "ParcelManagement","ManyToManyAction" }, enabled = true)
 	public void ParcelManagement_Verify_ManyToMany_Mapping_Action_UpdateChars_VerifyPUC_Output(String loginUser)
 			throws Exception {
 
