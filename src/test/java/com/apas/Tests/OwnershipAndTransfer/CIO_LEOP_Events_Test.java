@@ -211,6 +211,11 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
 		ReportLogger.INFO("CIO!! Transfer submitted for approval");
@@ -651,7 +656,12 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 		//Submit the transfer activity for approval
 		ReportLogger.INFO("Submit the transfer activity for approval");
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionButtonDropdownIcon);
-		objCIOTransferPage.clickQuickActionButtonOnTransferActivity(null,objCIOTransferPage.quickActionOptionSubmitForApproval);	
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity(null,objCIOTransferPage.quickActionOptionSubmitForApproval);
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
 		objCIOTransferPage.waitForElementToBeVisible(20, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);	
 		Thread.sleep(2000); //Allows the record to save properly
@@ -771,6 +781,11 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 		//Transfer resubmit for approval by staff
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
 		objCIOTransferPage.waitForElementToBeVisible(20, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
 		Thread.sleep(2000);

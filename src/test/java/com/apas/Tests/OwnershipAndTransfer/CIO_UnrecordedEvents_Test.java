@@ -350,6 +350,13 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			// STEP 16-Clicking on submit for approval quick action button
 			objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionSubmitForApproval);
 			objCIOTransferPage.clickQuickActionButtonOnTransferActivity(null,objCIOTransferPage.quickActionOptionSubmitForApproval);
+			
+			if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+			{
+				objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+				objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+			}
+			
 			ReportLogger.INFO("CIO!! Transfer submitted for approval");
 			objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5));
 			softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5)),
@@ -949,6 +956,13 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{	
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
+		
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
 		Thread.sleep(2000);
@@ -1689,6 +1703,13 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
+		
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
 		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5)),
 				"Work Item has been submitted for Approval.",
@@ -1931,6 +1952,12 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objWorkItemHomePage.switchToNewWindow(parentWindow1);
 		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
 		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
 		ReportLogger.INFO("CIO Staff reviewed the return reason and Submitted for Approval");
