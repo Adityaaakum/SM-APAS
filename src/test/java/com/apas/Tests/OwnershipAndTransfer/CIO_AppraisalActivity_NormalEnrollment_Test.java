@@ -1,7 +1,11 @@
 package com.apas.Tests.OwnershipAndTransfer;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -1068,6 +1072,20 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 
 		String excEnv = System.getProperty("region");
 		
+		/*HashMap<Integer,Double> mapCPIFactors=new HashMap<Integer,Double>();
+		mapCPIFactors.put(2017, 1.02);
+		mapCPIFactors.put(2018, 1.0295);
+		mapCPIFactors.put(2019, 1.0234);
+		mapCPIFactors.put(2020, 1.02);
+		mapCPIFactors.put(2021, 1.02);
+		mapCPIFactors.put(2022, 1.02);
+
+
+		
+		HashMap<String, Long> factorForwardedValue=objAppraisalActivity.performFactorForwarding("2017-05-01",2018,2019,mapCPIFactors,100000,350000,50);
+		System.out.print(factorForwardedValue);
+		*/
+		objAppraisalActivity.calculateSupplementalRollEntryRecord("1/2/2021","a0b35000001aucXAAQ");
 		 
 		//fetching the test data for partial transfer of ownership
 		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
@@ -1084,6 +1102,11 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
 		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
 				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
+		
+		hashMapCreateAssessedValueRecord.put("DOV", "3/19/2017");
+		hashMapCreateAssessedValueRecord.put("Start Date", "3/19/2017");
+
+		
       
 		    //STEP 1- Create appraisal WI through CIO Transfer WI approval
 		
@@ -1092,6 +1115,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 						objCIOTransferPage.CIO_EVENT_SALE, hashMapOwnershipAndTransferCreationData,
 						hashMapOwnershipAndTransferGranteeCreationData, hashMapCreateOwnershipRecordData,
 						hashMapCreateAssessedValueRecord,1);
+		
 		   //Step 2- LOGIN with appraiser staff 
 		
 		      objAppraisalActivity.login(APPRAISAL_SUPPORT);
@@ -1109,6 +1133,22 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				//STEP 4 -Navigating to appraisal activity screen
 				
 				objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+				
+				objWorkItemHomePage.waitForElementToBeInVisible(objCIOTransferPage.ApnLabel, 5);
+				String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+				String parcelId=
+						salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0);
+				
+				String query ="SELECT  id FROM Roll_Entry__c where APN__c='" +parcelId+"' and type__c='Supplemental' ";
+			  	  HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+			  	  
+			  	  if(!response.isEmpty())
+			  	  {
+			  		  response.get("Id").stream().forEach(Id ->{
+			  			salesforceAPI.delete("Roll_Entry__c", Id);
+			  			  
+			  		  });      	    				  
+			  	  }
 				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 				String parentWindow = driver.getWindowHandle();
 				objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -1116,6 +1156,79 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				//STEP 5 -Validating the status and owner name  of appraiser activity 
 				
 				objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+				
+				String appraisalScreenId = driver.getCurrentUrl().split("/")[6];
+				String dovForAppraisal = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.dovLabel);
+				String apnNoForAppraisal = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.apnLabel);
+			  	Date dovDAte=new SimpleDateFormat("MM/dd/yyyy").parse(dovForAppraisal);  
+				
+				Calendar calendar = new GregorianCalendar();
+				calendar.setTime(dovDAte);
+				Integer dovYear = calendar.get(Calendar.YEAR);
+				
+				String queryForRollYearId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '"+dovYear.toString()+"'";
+				HashMap<String, ArrayList<String>> rollYearId = salesforceAPI.select(queryForRollYearId);
+				String dovYearCPIFactor = salesforceAPI.select("SELECT CPI_Factor__c FROM CPI_Factor__c  Where Roll_Year__c ='"+rollYearId.get("Id").get(0)+"' ").get("CPI_Factor__c").get(0);
+				
+
+				// STEP 3 -Updating Land and Improvement Values and saving it for appraisal	
+				objAppraisalActivity
+						.Click(objAppraisalActivity.appraisalActivityEditValueButton(objAppraisalActivity.landCashValueLabel));
+				objAppraisalActivity.enter(objAppraisalActivity.landCashValueLabel, "300,000");
+				objAppraisalActivity.enter(objAppraisalActivity.improvementCashValueLabel, "50000");
+				objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.SaveButton));
+				
+				//verifying that only one  supplemental roll entry record is created
+				
+				String supplementalQuery ="SELECT  count(id) FROM Roll_Entry__c where APN__c='" +parcelId+"' and type__c='Supplemental' ";
+			  	String countSupplementalRecords = salesforceAPI.select(supplementalQuery).get("expr0").get(0);
+			  	  
+			  	objAppraisalActivity.calculateSupplementalRollEntryRecord(dovForAppraisal,parcelId);
+			  	
+			  	softAssert.assertEquals(countSupplementalRecords,1,
+						"SMAB-T4125:verify that One supplemental roll entry record is created from AAS when land and improvement types are entered for AV type \"Assessed value\" for DOV >= 30June");
+
+				//verifying the   supplemental roll entry record that is created
+
+				driver.navigate().to(
+						"https://smcacre--"+excEnv+".lightning.force.com/lightning/r/Parcel__c/"+parcelId+"/related/Roll_Entry__r/view?ws=/lightning/r/Appraiser_Activity__c/"+appraisalScreenId+"/view");
+				
+				HashMap<String, ArrayList<String>> HashMapSupplementalRollEntryRecord = objAppraisalActivity.getGridDataInHashMap();
+				
+				softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("DOV").get(0),dovForAppraisal,
+						"SMAB-T4125:verifying that DOV field in supplemental created is DOV of Appraisal activity screen  ");
+								
+				softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Type").get(0),"Supplemental",
+						"SMAB-T4125:verifying that type field in supplemental created is Supplemental ");
+								
+				softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Roll Year - Seq#").get(0),dovYear.toString()+" - 2",
+						"SMAB-T4125:verifying that Roll Year - Seq# field in supplemental created is correct ");
+					
+				softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(0),"Draft",
+						"SMAB-T4125:verifying that Status field in supplemental created is Draft ");
+					
+				softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("CPI Factor").get(0),dovYearCPIFactor,
+						"SMAB-T4125:verifying that CPI Factor field in supplemental created is correct ");
+					
+				softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Land Assessed Value").get(0),"",
+						"SMAB-T4125:verifying that Land Assessed Value field in supplemental created is correct ");
+				
+				softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Improvement Assessed Value").get(0),"",
+						"SMAB-T4125:verifying that Improvement Assessed Value field in supplemental created is correct ");
+				
+				softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Total Assessed Value").get(0),"",
+						"SMAB-T4125:verifying that Total Assessed Value field in supplemental created is correct ");
+				
+
+				
+				
+				objAppraisalActivity.waitForElementToBeClickable(15,objAppraisalActivity.clickShowMoreActionButton );		;
+				objAppraisalActivity.Click(objAppraisalActivity.clickShowMoreActionButton);
+				
+				softAssert.assertTrue(!objAppraisalActivity.verifyElementVisible(objAppraisalActivity.EditButton),
+						"SMAB-4120:Verify that edit quick access is not visible on roll entry table for the appraiser staff");
+			
+			
 				
 				
 	}
