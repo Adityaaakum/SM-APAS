@@ -212,6 +212,14 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+		
+		
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{	
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
+		
 		objCioTransfer.waitForElementToBeVisible(objCioTransfer.confirmationMessageOnTranferScreen);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButtonLabel));
 		ReportLogger.INFO("WI Submitted  for approval successfully");
@@ -350,6 +358,13 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+		
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{	
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
+		
 		objCioTransfer.waitForElementToBeVisible(30, objCioTransfer.confirmationMessageOnTranferScreen);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButtonLabel));
 		ReportLogger.INFO("WI Submitted  for approval successfully");
@@ -392,6 +407,13 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+		
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{	
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
+		
 		objCioTransfer.waitForElementToBeVisible(30, objCioTransfer.confirmationMessageOnTranferScreen);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButtonLabel));
 		ReportLogger.INFO("WI Submitted  for approval successfully");

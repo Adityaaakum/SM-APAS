@@ -302,6 +302,10 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath=commonXpath+"//div[text()='New']")
 	public WebElement newButtonMailToListViewScreen;
 	
+	@FindBy(xpath=commonXpath+"//input[contains(@value,'Yes2')]")
+	public WebElement yesRadioButtonRetainMailToWindow;
+	
+	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
