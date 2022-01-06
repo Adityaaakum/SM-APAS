@@ -97,23 +97,23 @@ public class CIO_RollEntry_Test  extends TestBase implements testdata, modules, 
 		softAssert.assertEquals(exemptionValue, expectedValue, "SMAB-T3766: Validation that Exemption 1(HOE) Value is equal to expected value.");
 		softAssert.assertEquals(fixturesValue, expectedValue, "SMAB-T3766: Validation that Fixtures Value is equal to expected value.");
 		softAssert.assertTrue(
-				!(objMappingPage.verifyElementVisible(
+				(objMappingPage.verifyElementVisible(
 						objParcelsPage.getFieldValueFromAPAS("Information", "Land Assessed Value"))),
 				"SMAB-T3766: Validation that Land Assessed Value is visible");
 		softAssert.assertTrue(
-				!(objMappingPage.verifyElementVisible(
+				(objMappingPage.verifyElementVisible(
 						objParcelsPage.getFieldValueFromAPAS("Information", "Improvement Assessed Value"))),
 				"SMAB-T3766: Validation that Improvement Assessed Value is visible");
 		softAssert.assertTrue(
-				!(objMappingPage.verifyElementVisible(
+				(objMappingPage.verifyElementVisible(
 						objParcelsPage.getFieldValueFromAPAS("Information", "Personal Property Assessed Value"))),
 				"SMAB-T3766: Validation that Personal Property Assessed Value is visible");
 		softAssert.assertTrue(
-				!(objMappingPage
+				(objMappingPage
 						.verifyElementVisible(objParcelsPage.getFieldValueFromAPAS("Information", "Exemption 1(HOE)"))),
 				"SMAB-T3766: Validation that Exemption 1(HOE) is visible");
 		softAssert.assertTrue(
-				!(objMappingPage.verifyElementVisible(objParcelsPage.getFieldValueFromAPAS("Information", "Fixtures"))),
+				(objMappingPage.verifyElementVisible(objParcelsPage.getFieldValueFromAPAS("Information", "Fixtures"))),
 				"SMAB-T3766: Validation that Fixtures is visible");		
 		ReportLogger.INFO("Roll Entry Details Page Validation Completed.");
 		

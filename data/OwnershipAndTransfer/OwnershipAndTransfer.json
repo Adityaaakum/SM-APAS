@@ -81,7 +81,6 @@
 		"Owner Percentage":"50",
 		"IncorrectDOV" : "7/20/2051"
 	},
-<<<<<<< HEAD
 
 	"dataToCreateGranteeWithMailTo":{
 		"Last Name":"David",
@@ -92,14 +91,12 @@
 		"Zip code":"91123",
 		"Care of":"Test"
 	},
-=======
 	"DataToCreateOwnershipRecordForP19": {
 	    "Type": "Owner",
 	    "Status": "Active",
 	    "Ownership Percentage":"100",
 	    "Ownership Start Date":"7/19/1999"
-	}
->>>>>>> 6b4094fc15288344abea0d96c77b820aeccd6185
+	},
 
 	"dataToCreateMailToRecord":{
 		"Address": "700 NW 111TH PL",

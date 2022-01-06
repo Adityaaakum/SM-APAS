@@ -306,7 +306,6 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath=commonXpath+"//div[text()='New']")
 	public WebElement newButtonMailToListViewScreen;
 	
-<<<<<<< HEAD
 	@FindBy(xpath=commonXpath+"//label[text()='Address ']/..//input")
 	public WebElement addressInCopyToMailTo;
 	
@@ -317,8 +316,6 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public WebElement careOfInCopyToMailTo;
 	
 
-=======
->>>>>>> 6b4094fc15288344abea0d96c77b820aeccd6185
 	@FindBy(xpath=commonXpath+"//input[contains(@value,'Yes2')]")
 	public WebElement yesRadioButtonRetainMailToWindow;
 	

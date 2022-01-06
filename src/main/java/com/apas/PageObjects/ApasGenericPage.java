@@ -1400,7 +1400,28 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
   	  }
 
     }
-    
+
+    /**
+     *  This method will delete existing Roll Entry records for the Parcel
+     * @param apn-Apn whose records needs to be deleted
+     * @return
+     * @throws Exception
+     */
+    public void deleteRollEntryFromParcel(String apnId)
+    {
+  	  String query ="SELECT Id FROM Roll_Entry__c WHERE APN__c ='" +apnId+"'";
+  	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+  	  
+  	  if(!response.isEmpty())
+  	  {
+  		  response.get("Id").stream().forEach(Id ->{
+  			  objSalesforceAPI.delete("Roll_Entry__c", Id);
+  			  
+  		  });      	    				  
+  	  }
+
+    }
+
     /**
      *  This method will edit the particular field  by clicking on pencil icon
      * @param field name whose value needs to be edited
