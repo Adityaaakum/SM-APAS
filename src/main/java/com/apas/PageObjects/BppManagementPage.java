@@ -53,6 +53,8 @@ public class BppManagementPage extends ApasGenericPage {
 	public String improvementPILabel = "PI Improvement %";
 	public String landPILabel = "PI Land %";
 	public String salesTaxLabel = "Sales Tax %";
+	public String viewFileNetDocumentsButton = "View FileNet Documents";
+	
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//*[text()='New']")
 	public WebElement newButton;
