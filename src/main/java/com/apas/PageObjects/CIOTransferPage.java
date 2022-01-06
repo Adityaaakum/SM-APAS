@@ -302,6 +302,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath=commonXpath+"//div[text()='New']")
 	public WebElement newButtonMailToListViewScreen;
 	
+	@FindBy(xpath=commonXpath+"//input[contains(@value,'Yes2')]")
+	public WebElement yesRadioButtonRetainMailToWindow;
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
@@ -925,6 +927,11 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					// STEP 14 - Click on submit for approval button
 					clickQuickActionButtonOnTransferActivity(null, quickActionOptionSubmitForApproval);
+					if (waitForElementToBeVisible(7,yesRadioButtonRetainMailToWindow))
+					{
+					Click(yesRadioButtonRetainMailToWindow);
+					Click(getButtonWithText(nextButton));
+					}
 
 					ReportLogger.INFO("CIO!! Transfer submitted for approval");
 					waitForElementToBeClickable(10, finishButton);

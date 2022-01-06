@@ -617,6 +617,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForApproval);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
 		ReportLogger.INFO("CIO!! Transfer submitted for approval");
 
 		// STEP 17- Since new ownership records are created we are validating them
@@ -800,6 +805,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionOptionSubmitForApproval);
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
 
 		// STEP 11-Clicking on submit for approval quick action button		
 		ReportLogger.INFO("CIO!! Transfer submitted for Approval");
@@ -849,6 +859,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			// Step 15 : Submitting for approval
 			objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
 			objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionOptionSubmitForApproval);
+			if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+			{
+			objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+			}
 
 			// STEP 16-Clicking on submit for approval quick action button			
 			ReportLogger.INFO("CIO!! Transfer submitted for approval");
@@ -1052,7 +1067,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 			objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForApproval);
 			objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionOptionSubmitForApproval);
-			ReportLogger.INFO("CIO!! Transfer submitted for review");
+			if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+			{
+			objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+			}
+			ReportLogger.INFO("CIO!! Transfer submitted for approval");
 			objCioTransfer.waitForElementToBeVisible(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5),5);
 			softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5)),
 					"Work Item has been submitted for Approval.",
@@ -1411,6 +1431,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Submitting the WI for approval");
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
 		objCioTransfer.waitForElementToBeVisible(30,objCioTransfer.confirmationMessageOnTranferScreen);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.confirmationMessageOnTranferScreen),"Work Item has been submitted for Approval.","SMAB-T3696: Validation that proper mesage is displayed after submit for approval");
 
@@ -3265,6 +3290,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
 		objCioTransfer.waitForElementToBeVisible(objCioTransfer.confirmationMessageOnTranferScreen);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5)),
 				"Work Item has been submitted for Approval.",
@@ -4622,6 +4652,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 		// STEP 8- CIO Staff submitting for approval
 		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
 		Thread.sleep(2000);
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
