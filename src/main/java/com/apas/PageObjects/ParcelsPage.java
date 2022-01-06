@@ -114,6 +114,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String originFcv = "Origin FCV";
 	public String apn = "APN";
 	public String parcelAncestry = "Parcel Ancestry";
+	public String dorLabel = "DOR";
 	
 
 	/** Added to identify fields, dropdowns for Assessed value and AVO functionality **/	
@@ -781,6 +782,8 @@ public class ParcelsPage extends ApasGenericPage {
 		            enter(salesPrice, hashMapToCreateAssessedValueRecords.get("Sales Price"));}
 	            if( hashMapToCreateAssessedValueRecords.get("Purchase Price")!=null) {
 		            enter(purchasePrice, hashMapToCreateAssessedValueRecords.get("Purchase Price"));}
+	            if( hashMapToCreateAssessedValueRecords.get("DOR")!=null) {
+		            enter(dorLabel, hashMapToCreateAssessedValueRecords.get("DOR"));}
 	            waitForElementToBeClickable(10, SaveButton);
 	            Click(getButtonWithText(SaveButton));
 	            Thread.sleep(4000);            
