@@ -306,7 +306,6 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public WebElement yesRadioButtonRetainMailToWindow;
 	
 
-	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
