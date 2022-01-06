@@ -76,12 +76,16 @@ public class BPP_FileNetIntegration_Test extends TestBase {
 			"Regression", "FileNetIntegration", "BPPManagement" })
 	public void BPP_ValidateFileNetDocument(String loginUser) throws Exception {
 
-		String execEnv = System.getProperty("region");
+		String execEnv = System.getProperty("region");		
+		
+		//STEP 1: Login as loginUser
 		ReportLogger.INFO("Login as Appriaser user");
 		objBppManagementPage.login(loginUser);
 		String propertyStamentQuery = "SELECT Account_Number__c,id FROM Property_Statement__c where Account_Number__c!=null";
 		String propertyStamentID = objSalesforceAPI.select(propertyStamentQuery).get("Id").get(0);
 		String accountNumber = objSalesforceAPI.select(propertyStamentQuery).get("Account_Number__c").get(0);
+		
+		//STEP 2: Navigate to property statement record
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Property_Statement__c/"
 				+ propertyStamentID + "/view");
 		ReportLogger.INFO("Navigated to Property statement record");
@@ -92,6 +96,8 @@ public class BPP_FileNetIntegration_Test extends TestBase {
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		String currentUrl = driver.getCurrentUrl();
+		
+		//STEP 3: Validate FinetDocument link
 		softAssert.assertContains(currentUrl, "acrefncndev.smcare.org:", "SMAB-T4219: Navigated to FilenetDocument");
 		softAssert.assertContains(currentUrl, accountNumber, "SMAB-T4219: Navigated to FilenetDocument");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Property_Statement__c/"
