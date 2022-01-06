@@ -2033,6 +2033,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.calculateOwnershipButtonLabel);
 		String currentUrl = driver.getCurrentUrl();
 		objCIOTransferPage.logout();
+		Thread.sleep(5000);
 
 		// STEP 4-Login with CIO staff
 		objMappingPage.login(loginUser);
@@ -2072,6 +2073,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		ReportLogger.INFO("CIO Supervisor approved the UT event");
 		Thread.sleep(3000);
 		objCIOTransferPage.logout();
+		Thread.sleep(5000);
 
 		// STEP 2 : Login as Appraiser user
 		ReportLogger.INFO("Login as Appriaser user");
@@ -2140,6 +2142,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		softAssert.assertEquals(objParcelsPage.verifyElementVisible("Root"), "true", "SMAB-T3984:Root is visible");
 		softAssert.assertEquals(objParcelsPage.verifyElementVisible("Mine/Mineral"), "true",
 				"SMAB-T3984:Mine/Mineral is visible");
+		objParcelsPage.logout();
 	}
 	
 	/*

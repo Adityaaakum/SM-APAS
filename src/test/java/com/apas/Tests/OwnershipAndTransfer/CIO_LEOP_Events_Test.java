@@ -940,7 +940,7 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 	 *Validate Assessed value record for LEOP Event
 	 */
 	@Test(description = "SMAB-T3918:Verify that User is able to perform LEOP event on component actions and calculate penalty on appraisal activity screen.", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "LEOPEvent", "UnrecordedEvent" })
+			"Regression", "LEOPEvent", "ChangeInOwnershipManagement", "UnrecordedEvent" })
 	public void CIO_ValidateAssesedValuerecordForLEOP(String loginUser) throws Exception {
 		String execEnv = System.getProperty("region");
 		JSONObject jsonObject = objMappingPage.getJsonObject();
@@ -1183,7 +1183,7 @@ public class CIO_LEOP_Events_Test extends TestBase implements testdata, modules,
 				"SMAB-T3919: Status of the assesses value record is active ");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Assessed_BY_Values__c/"+assessedValueRecordID+"/view");
 		softAssert.assertEquals("Prop 19 Intergenerational Exclusion", objCIOTransferPage.getFieldValueFromAPAS("Assessed Value Type"), "SMAB-T3919: DOV on AV record is equal to AAS");
-		
+		objCIOTransferPage.logout();
 	}
 	
 	

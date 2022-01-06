@@ -5326,7 +5326,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
     */
 
 	@Test(description = "SMAB-T3919, SMAB-T4172, : Govt CIO Post transfer process", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "RecordedEvent" })
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void CIO_ValidateAssesedValuerecord(String loginUser) throws Exception {
 		
 		String execEnv = System.getProperty("region");
@@ -5400,7 +5400,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3919: Status of the assesses value record is active ");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Assessed_BY_Values__c/"+assessedValueRecordID+"/view");
 		softAssert.assertEquals("Prop 19 Intergenerational Exclusion", objCioTransfer.getFieldValueFromAPAS("Assessed Value Type"), "SMAB-T3919: DOV on AV record is equal to AAS");
-		
+		objWorkItemHomePage.logout();
 		
 	}
 
