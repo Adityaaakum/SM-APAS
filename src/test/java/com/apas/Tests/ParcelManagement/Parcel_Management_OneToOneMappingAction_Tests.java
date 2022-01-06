@@ -1692,18 +1692,13 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			String apn = responseAPNDetails.get("Name").get(0);
 			String apnId = responseAPNDetails.get("Id").get(0);
 			
-			String apn1 = responseAPNDetails.get("Name").get(1);
-			String apnId1 = responseAPNDetails.get("Id").get(1);
-
-			objMappingPage.deleteParcelSitusFromParcel(apn);
-			objMappingPage.deleteParcelSitusFromParcel(apn1);
+			bjMappingPage.deleteParcelSitusFromParcel(apn);
 			
 			objMappingPage.deleteOwnershipFromParcel(apnId);
-			objMappingPage.deleteOwnershipFromParcel(apnId1);
 
 
 			salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), "Lot_Size_SQFT__c", "100");
-			salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "Lot_Size_SQFT__c", "100");
+			
 
 			String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL and legacy__c ='No' limit 1";
 			HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
@@ -1724,18 +1719,14 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			jsonForOutputValidations.put("TRA__c", responseTRADetails.get("Id").get(0));
 
 			salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonForOutputValidations);
-			salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonForOutputValidations);
-
-			String concatenateAPN = apn+","+apn1;
-			ReportLogger.INFO("Parent APNs : " + concatenateAPN);
 			
 			String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 			Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 					"DataToCreateWorkItemOfTypeParcelManagement");
 
-			String mappingActionCreationData = testdata.COMBINE_MAPPING_ACTION;
-			Map<String, String> hashMapCombineActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-					"DataToPerformCombineMappingAction");
+			String mappingActionCreationData = testdata.ONE_TO_ONE_MAPPING_ACTION;
+			Map<String, String> hashMapOneToOneActionMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+					"DataToPerformOneToOneMappingActionWithoutAllFields");
 
 			// Step1: Login to the APAS application using the credentials passed through
 			// dataprovider (RP Business Admin)
@@ -1759,11 +1750,10 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			// Step 5: Selecting Action as 'Split' & Taxes Paid fields value as 'N/A'
 			objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
 			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
-			objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateAPN);
-			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+			
 
 			// Step 6: entering correct data in mandatory fields
-			objMappingPage.fillMappingActionForm(hashMapCombineActionMappingData);
+			objMappingPage.fillMappingActionForm(hashMapOneToOneActionMappingData);
 			objMappingPage.waitForElementToBeVisible(10, objMappingPage.generateParcelButton);
 
 			// Step 7: Click Split Parcel Button
