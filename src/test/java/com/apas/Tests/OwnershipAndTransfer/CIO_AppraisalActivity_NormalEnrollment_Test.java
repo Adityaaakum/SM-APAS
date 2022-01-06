@@ -1127,7 +1127,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.clickShowMoreActionButton, 15);
 		HashMap<String, ArrayList<String>> hashMapForAssessedValueTable = objAppraisalActivity.getGridDataInHashMap();
 
-		//Step 4 -Verifying the AV generated  after updating land and improvement value on appraiser screen		
+		//Step 3 -Verifying the AV generated  after updating land and improvement value on appraiser screen		
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(0), "Retired",
 				"SMAB-T4387:Verify that earlier active AV record is  getting retired  for P19 100% Reassessement");
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(1), "Active",
@@ -1148,7 +1148,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				+ "/view");
 		objAppraisalActivity.waitForElementToBeVisible(10, objParcelsPage.propertyOwner);
 
-		//Step 8 -Verifying fields on AVO records		
+		//Step 4 -Verifying fields on AVO records		
 		softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.statusLabel), "Active",
 				"SMAB-T4387:Verify that AVO of new active  AV after appraisal is created and is active.");
 		softAssert.assertEquals(
