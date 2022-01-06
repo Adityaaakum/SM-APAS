@@ -124,7 +124,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath="//a[@data-label='In Progress']")
 	public WebElement lnkTABInProgress;
 
-	@FindBy(xpath="//a[@data-label='In Pool']")
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@data-label='In Pool']")
 	public WebElement lnkTABInPool;
 
 	@FindBy(xpath="//a[@data-label='Submitted for Approval']")

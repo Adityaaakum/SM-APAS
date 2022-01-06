@@ -30,6 +30,7 @@ public class ParcelsPage extends ApasGenericPage {
 	}
 
 	public String componentActionsButtonText = "Component Actions";
+	public String cosDocumentSummaryText = "COS Document Summary";
 	public String nextButtonComponentsActionsModal = "Next";
 	public String parcelMapInGISPortal = "Parcel Map in GIS Portal";
 
@@ -271,6 +272,9 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//a[@class='displayLabel slds-truncate']/slot")
     public WebElement ownersName;
+	
+	@FindBy(xpath = "//c-org_cos-document-summary//table/tbody/tr[last()]//a")
+    public WebElement lastItemInCosDocumentSummary;
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";

@@ -97,6 +97,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String componentActionsButtonText = "Component Actions";
 	public String workItemTypeDropDownComponentsActionsModal = "Work Item Type";
    
+	public static final String CIO_EVENT_CODE_SALE="CIO-SALE";
 	public static final String CIO_EVENT_CODE_COPAL="CIO-COPAL";
 	public static final String CIO_EVENT_CODE_GLEASM="CIO-GLEASM";
 	public static final String CIO_EVENT_CODE_PART="CIO-PART";
@@ -162,7 +163,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public WebElement relatedListTab;
 
 	@FindBy(xpath = "//button[@name='New'][1]")
-	public WebElement NewRecordedAPNsButton;
+	public WebElement newRecordedAPNsButton;		
 
 	@FindBy(xpath = "//*[@class='flexipage-tabset']//a[1]")
 	public WebElement RelatedTab;
@@ -301,6 +302,10 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath=commonXpath+"//div[text()='New']")
 	public WebElement newButtonMailToListViewScreen;
 	
+	@FindBy(xpath=commonXpath+"//input[contains(@value,'Yes2')]")
+	public WebElement yesRadioButtonRetainMailToWindow;
+	
+	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
@@ -324,10 +329,11 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	          hashMapRecordedApn.get("Name").stream().forEach(Name->{
 	        		
 						try {
-							Click(NewRecordedAPNsButton);
+							Click(newRecordedAPNsButton);
 							enter(ApnLabel, Name);
 							selectOptionFromDropDown(ApnLabel, Name);
 							Click(getButtonWithText(SaveButton));
+							Thread.sleep(1000);
 							driver.navigate().back();
 							driver.navigate().back();
 							ReportLogger.INFO("Recorded APN Name added "+Name);
@@ -513,14 +519,15 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					Select select = new Select(formattedName1);
 					select.selectByVisibleText(granteeForMailTo);
 					Click(formattedName1);
-					Click(mailingState);
-					Select selectMailingState = new Select(mailingState);
-					selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"));
-					Click(mailingState);
-					enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));
-					if (execEnv.equalsIgnoreCase("QA")) {
-						Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));
-					}
+					
+					/*
+					 * Click(mailingState); Select selectMailingState = new Select(mailingState);
+					 * selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"
+					 * )); Click(mailingState);
+					 */ enter(mailZipCopyToMailTo,
+					  dataToCreateMailTo.get("Mailing Zip"));
+					 
+						Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));				
 					Click(getButtonWithText(nextButton));
 					ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
 				} catch (Exception e) {
@@ -589,7 +596,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		 public void createNewGranteeRecords(String recordeAPNTransferID,Map<String, String>dataToCreateGrantee ) throws Exception
 		 {
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(8000);
 					String execEnv = System.getProperty("region");
 					driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/"
 							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
@@ -759,7 +766,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					Thread.sleep(5000);
 					searchModule(EFILE_INTAKE_VIEW);
 					String recordedDocumentID = salesforceApi.select(
-							"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=0")
+							"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c in (0,1,2,3,4)")
 							.get("Id").get(0);
 
 					deleteRecordedApnFromRecordedDocument(recordedDocumentID);
