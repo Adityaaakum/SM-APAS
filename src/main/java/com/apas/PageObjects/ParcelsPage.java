@@ -307,8 +307,10 @@ public class ParcelsPage extends ApasGenericPage {
 		String workItemOwner= dataMap.get("Work Item Owner");
 		String workItemNumber;
 		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
-		String eventCode = dataMap.get("Event Code");
 		
+		String eventCode = objSalesforceAPI.select("SELECT Name FROM Event_Library__c limit 1").get("Name").get(0);
+
+
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
 		Thread.sleep(2000);
