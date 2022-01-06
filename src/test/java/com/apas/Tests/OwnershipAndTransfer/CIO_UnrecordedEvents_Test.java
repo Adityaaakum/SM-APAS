@@ -2118,7 +2118,6 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objParcelsPage.waitUntilPageisReady(driver);
 		
 		// Create UT event
-		objParcelsPage.waitForElementToBeVisible(objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
 		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
 		objCIOTransferPage.waitUntilPageisReady(driver);
 		
@@ -2166,6 +2165,11 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		// Submit for approval
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
 		ReportLogger.INFO("WI Submitted  for approval successfully");
