@@ -2098,8 +2098,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 	public void CIO_UnrecordedEvent_ZipCodeTransformationToNineDigits(String loginUser) throws Exception {
 		
 		// ----- Data set up -----
-		String queryAPNValue = "select Id from Parcel__c where Status__c='Active' limit 3";
-		String parcelId = salesforceAPI.select(queryAPNValue).get("Id").get(2);
+		String queryAPNValue = "select Id from Parcel__c where Status__c='Active' limit 1";
+		String parcelId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
 		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		String execEnv = System.getProperty("region");		
 		
@@ -2140,7 +2140,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");
 		HashMap<String, ArrayList<String>> granteeHashMap  = objCIOTransferPage.getGridDataForRowString("1");
 		String granteeForMailTo= granteeHashMap.get("Grantee/Retain Owner Name").get(0);
-		objCIOTransferPage.logout(); 
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
 		
 		// Step 1: Login as CIO staff
 		objCIOTransferPage.login(loginUser);
@@ -2160,6 +2161,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		
 		// Open transfer activity 
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCIOTransferPage.waitUntilPageisReady(driver);
 		
 		// Submit for approval
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
