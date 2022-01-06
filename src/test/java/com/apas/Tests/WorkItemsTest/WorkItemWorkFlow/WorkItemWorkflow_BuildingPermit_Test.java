@@ -408,7 +408,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 	       WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + importReviewWorkItem2 + "')]"));
 		   String expectedWI=completedWorkItem.getText();
 		   softAssert.assertEquals(expectedWI, importReviewWorkItem2, "SMAB-T3085,SMAB-T3086:Status of the work item should be Construction completed");
-	      
+		   objWorkItemHomePage.logout();
 	    
 	}
     
@@ -466,7 +466,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
         WebElement completedWorkItem = driver.findElement(By.xpath("//a[contains(text(),'" + importReviewWorkItem + "')]"));
 		String expectedWI=completedWorkItem.getText();
 		softAssert.assertEquals(expectedWI, importReviewWorkItem, "SMAB-T3087,SMAB-T3088 : Status of the workitem should be Final review");
-	    
+		objWorkItemHomePage.logout();
 
 	}
 	
@@ -514,7 +514,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
 
         //Step8: "Import Review" Work Item generation validation after file is imported
-        String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%" + "Building Permit - Construction Completed - Manual Entry" + "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
+        String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%Construction Completed - Manual Entry%' AND AGE__C=0 ORDER By Name Desc";
         String importReviewWorkItem = objSalesforceAPI.select(queryWorkItem).get("Name").get(0);
         ReportLogger.INFO("Created Work Item : " + importReviewWorkItem);
         
@@ -545,15 +545,15 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
         objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
-        
-        
+        Thread.sleep(2000);
         objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
         objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
         objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
         objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
+        Thread.sleep(2000);
         objWorkItemHomePage.findWorkItemInProgress(importReviewWorkItem);
         ReportLogger.INFO("Found Work Item! Mission Completed.");
-
+        objWorkItemHomePage.logout();
     }
         
     /**
@@ -600,9 +600,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 
 		// Step8: "Import Review" Work Item generation validation after file is imported
-		String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%"
-				+ "Building Permit - Construction Completed - Manual Entry"
-				+ "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
+		String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%Construction Completed - Manual Entry%' AND AGE__C=0 ORDER By Name Desc";
 		String importReviewWorkItem = objSalesforceAPI.select(queryWorkItem).get("Name").get(0);
 		ReportLogger.INFO("Created Work Item : " + importReviewWorkItem);
 
@@ -623,7 +621,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		objBuildingPermitPage.waitForElementToBeVisible(statusText);
 		String expectedStatus = statusText.getText();
 
-		softAssert.assertEquals(expectedStatus, "Building Permit - Construction Completed - Manual Entry",
+		softAssert.assertEquals(expectedStatus, "Construction Completed",
 				"SMAB-T3007:Status of the work item should be Construction completed");
 
 //    Step11: Going to Home Page and then In Pool Tab to Accept the work item & Going to Tab In Progress to verify the work item moved to in progress tab.
@@ -636,14 +634,15 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
 		objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
-
+		Thread.sleep(2000);
 		objWorkItemHomePage.acceptWorkItem(importReviewWorkItem);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
 		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
 		objBuildingPermitPage.waitForElementToBeClickable(importReviewWorkItem);
+		Thread.sleep(2000);
 		objWorkItemHomePage.findWorkItemInProgress(importReviewWorkItem);
 		ReportLogger.INFO("Found Work Item! Mission Completed.");
-
+		objWorkItemHomePage.logout();
 	}
 
     /**
@@ -689,10 +688,10 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.TAB_IN_POOL, 20);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 
+		objBuildingPermitPage.waitForElementToBeClickable(objWorkItemHomePage.ageDays);
+		
 		// Step8: "Import Review" Work Item generation validation after file is imported
-		String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%"
-				+ "Building Permit - Construction In Progress - Manual Entry"
-				+ "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
+		String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%Construction In Progress - Manual Entry%' AND AGE__C=0 ORDER By Name Desc";
 		String importReviewWorkItem = objSalesforceAPI.select(queryWorkItem).get("Name").get(0);
 		ReportLogger.INFO("Created Work Item : " + importReviewWorkItem);
 
@@ -734,9 +733,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
 		// Step14: "Import Review" Work Item generation validation after file is
 		// imported
-		String editQueryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%"
-				+ "Building Permit - Construction Completed - Manual Entry"
-				+ "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
+		String editQueryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%Construction Completed - Manual Entry%' AND AGE__C=0 ORDER By Name Desc";
 		String editImportReviewWorkItem = objSalesforceAPI.select(editQueryWorkItem).get("Name").get(0);
 		ReportLogger.INFO("Created Work Item : " + editImportReviewWorkItem);
 
@@ -769,14 +766,15 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
 		objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
-
+		Thread.sleep(1000);
 		objWorkItemHomePage.acceptWorkItem(editImportReviewWorkItem);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
 		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
 		objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
+		Thread.sleep(1000);
 		objWorkItemHomePage.findWorkItemInProgress(editImportReviewWorkItem);
 		ReportLogger.INFO("Found Work Item! Mission Completed.");
-
+		objWorkItemHomePage.logout();
 	}
     /**
      * This test case is to validate work item creation functionality and the work item flow after creating new building permit Without completion date and with completion date for Retired parcel
@@ -823,9 +821,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 
 		// Step8: "Import Review" Work Item generation validation after file is imported
-		String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%"
-				+ "Building Permit - Construction In Progress - Manual Entry"
-				+ "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
+		String queryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%Construction In Progress - Manual Entry%' AND AGE__C=0 ORDER By Name Desc";
 
 		String importReviewWorkItem = objSalesforceAPI.select(queryWorkItem).get("Name").get(0);
 		ReportLogger.INFO("Created Work Item : " + importReviewWorkItem);
@@ -868,9 +864,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
 		// Step14: "Import Review" Work Item generation validation after file is imported
 		 
-		String editQueryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%"
-				+ "Building Permit - Construction Completed - Manual Entry"
-				+ "%' AND AGE__C=0 ORDER By Name Desc LIMIT 1";
+		String editQueryWorkItem = "SELECT Id, Name FROM Work_Item__c where Request_Type__c like '%Construction Completed - Manual Entry%' AND AGE__C=0 ORDER By Name Desc";
 		String editImportReviewWorkItem = objSalesforceAPI.select(editQueryWorkItem).get("Name").get(0);
 		ReportLogger.INFO("Created Work Item : " + editImportReviewWorkItem);
 
@@ -903,14 +897,15 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
 		objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
-
+		Thread.sleep(2000);
 		objWorkItemHomePage.acceptWorkItem(editImportReviewWorkItem);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
 		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
 		objBuildingPermitPage.waitForElementToBeClickable(editImportReviewWorkItem);
+		Thread.sleep(2000);
 		objWorkItemHomePage.findWorkItemInProgress(editImportReviewWorkItem);
 		ReportLogger.INFO("Found Work Item! Mission Completed.");
-
+		objWorkItemHomePage.logout();
 	}
 
 }
