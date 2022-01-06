@@ -1692,7 +1692,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			String apn = responseAPNDetails.get("Name").get(0);
 			String apnId = responseAPNDetails.get("Id").get(0);
 			
-			bjMappingPage.deleteParcelSitusFromParcel(apn);
+			objMappingPage.deleteParcelSitusFromParcel(apn);
 			
 			objMappingPage.deleteOwnershipFromParcel(apnId);
 
