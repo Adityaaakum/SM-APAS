@@ -1672,11 +1672,13 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		}
 		
+
+		// This test method will generate WI for updateChars and Verify PUC and Allocate Value
 		
 		@Test(description = "SMAB-T4031,SMAB-T4032,SMAB-T4012,SMAB-T4013,SMAB-T4014,SMAB-T4015,SMAB-T4011,SMAB-T3978,SMAB-T3942,SMAB-T3941,SMAB-T3946,SMAB-T3947: "
 				+ "verify that User is able to work on the with update chars and verify PUC work"
 				+ " items along with Allocate Values work items", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-				"Regression", "ParcelManagement" })
+				"Regression", "ParcelManagement"})
 
 		public void ParcelManagement_Verify_oneToOne_Mapping_Action_UpdateChars_VerifyPUC_And_Allocate_Values_Output(String loginUser)
 				throws Exception {
