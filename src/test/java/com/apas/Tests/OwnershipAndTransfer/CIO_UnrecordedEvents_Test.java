@@ -2263,7 +2263,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		// Steps 2-7: Creating copy to mail to record
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		objCIOTransferPage.waitUntilPageisReady(driver);
-		objCIOTransferPage.createCopyToMailToZipCodeValidation(granteeForMailTo, hashMapOwnershipAndTransferGranteeCreationData);
+		objCIOTransferPage.createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferGranteeCreationData);
 		objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
 				
 		// Verify ZIP code is stored as [5]-[4] digits format

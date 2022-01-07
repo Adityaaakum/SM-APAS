@@ -534,50 +534,33 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					select.selectByVisibleText(granteeForMailTo);
 					Click(formattedName1);
 					
-					/*
-					 * Click(mailingState); Select selectMailingState = new Select(mailingState);
-					 * selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"
-					 * )); Click(mailingState);
-					 */ enter(mailZipCopyToMailTo,
-					  dataToCreateMailTo.get("Mailing Zip"));
-					 
-						Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));				
+					// Use USPS validation
+					if(dataToCreateMailTo.get("Address")!=null && dataToCreateMailTo.get("Zip code")!=null && dataToCreateMailTo.get("Care of")!=null) 
+					{
+						 // Fill the form
+						 enter(addressInCopyToMailTo,dataToCreateMailTo.get("Address"));
+						 enter(zipCodeInCopyToMailTo,dataToCreateMailTo.get("Zip code"));
+						 enter(careOfInCopyToMailTo,dataToCreateMailTo.get("Care of"));
+						 // Validate with USPS
+						 Click(getButtonWithText(validateWithUSPSButtonOnCopyToMailTo));
+						 Click(getButtonWithText(useThisInformationButtonOnCopyToMailTo));
+						 Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));
+					}
+					else 
+					{
+						Click(mailingState); Select selectMailingState = new Select(mailingState);
+						selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"));
+						Click(mailingState);					 
+						enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));					 
+						Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));
+					}
+					// Click on "Next" button 
 					Click(getButtonWithText(nextButton));
 					ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
 				} catch (Exception e) {
 					ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE ADDED THROUGH COPY TO MAIL TO ACTION BUTTON");
 				}
 			}
-		 
-		 /*
-		  * This method creates mail to record with ZIP code validation using USPS integration by clicking on copy to mail to action button on CIO transfer screen 
-		  */
-		 public void createCopyToMailToZipCodeValidation(String granteeForMailTo,Map<String, String> dataToCreateMailTo) throws IOException, Exception {
-			 try {
-				 waitUntilPageisReady(driver);
-				 // Click on "Copy to Mail to" button
-				 Click(getButtonWithText(copyToMailToButtonLabel));
-				 waitForElementToDisappear(formattedName1, 5);
-				 Click(formattedName1);
-				 Select select = new Select(formattedName1);
-				 select.selectByVisibleText(granteeForMailTo);
-				 Click(formattedName1);
-				 // Fill the form
-				 enter(addressInCopyToMailTo,dataToCreateMailTo.get("Address"));
-				 enter(zipCodeInCopyToMailTo,dataToCreateMailTo.get("Zip code"));
-				 enter(careOfInCopyToMailTo,dataToCreateMailTo.get("Care of"));
-				 // Validate with USPS
-				 Click(getButtonWithText(validateWithUSPSButtonOnCopyToMailTo));
-				 Click(getButtonWithText(useThisInformationButtonOnCopyToMailTo));
-				 Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));
-				 // Click on "Next" button
-				 Click(getButtonWithText(nextButton));
-				 ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
-				
-			} catch (Exception e) {
-				ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE ADDED THROUGH COPY TO MAIL TO ACTION BUTTON");
-			}
-		 }
 		 
 		 
 		 /*
