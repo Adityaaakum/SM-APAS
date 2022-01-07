@@ -43,7 +43,6 @@ public class BPP_FileNetIntegration_Test extends TestBase {
 	EFileImportLogsPage objEFileImportLogPage;
 	Util objUtil;
 	SoftAssertion softAssert;
-	CIOTransferPage objCIOTransferPage;
 	String rollYear;
 	SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 	WorkItemHomePage objWorkItemHomePage;
@@ -61,7 +60,6 @@ public class BPP_FileNetIntegration_Test extends TestBase {
 		objEfileHomePage = new EFileImportPage(driver);
 		objEFileImportLogPage=new EFileImportLogsPage(driver);
 		objUtil = new Util();
-		objCIOTransferPage = new CIOTransferPage(driver);
 		softAssert = new SoftAssertion();
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objEfileHomePage.updateRollYearStatus("Open", rollYear);
@@ -91,7 +89,7 @@ public class BPP_FileNetIntegration_Test extends TestBase {
 		ReportLogger.INFO("Navigated to Property statement record");
 		objBppManagementPage.waitForElementToBeClickable(20, objBppManagementPage.viewFileNetDocumentsButton);
 		objWorkItemHomePage
-				.Click(objCIOTransferPage.getButtonWithText(objBppManagementPage.viewFileNetDocumentsButton));
+				.Click(objWorkItemHomePage.getButtonWithText(objBppManagementPage.viewFileNetDocumentsButton));
 		ReportLogger.INFO("Clicked on View File Net Documents Button");
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -102,7 +100,7 @@ public class BPP_FileNetIntegration_Test extends TestBase {
 		softAssert.assertContains(currentUrl, accountNumber, "SMAB-T4219: Navigated to FilenetDocument");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Property_Statement__c/"
 				+ propertyStamentID + "/view");
-		Thread.sleep(3000);
+		objBppManagementPage.waitForElementToBeClickable(20, objBppManagementPage.viewFileNetDocumentsButton);
 		objBppManagementPage.logout();
 
 	}
