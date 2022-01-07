@@ -41,7 +41,7 @@ public class Parcel_Management_AuditTrail_Tests extends TestBase implements test
 	MappingPage objMappingPage;
 	String auditTrailData;
 	AuditTrailPage objTrailPage;
-	ApasGenericPage objApasGenericPage;
+	//ApasGenericPage objApasGenericPage;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -720,7 +720,7 @@ public class Parcel_Management_AuditTrail_Tests extends TestBase implements test
 		String ExpectedErrorMessage = "The Audit Trail record cannot be associated to an audit trail not associated to this parcel. If needed, please contact an admin to update the associated Event Library record.";
 		
 		// Verify when parcel transfer allowed is "No" the audit trail cannot be linked  to audit trail with another parcel
-		softAssert.assertEquals(objParcelsPage.getElementText(objApasGenericPage.pageError), ExpectedErrorMessage,
+		softAssert.assertEquals(objParcelsPage.getElementText(objMappingPage.pageError), ExpectedErrorMessage,
 				"SMAB-T3699: Verify when parcel transfer allowed is \"No\" the audit trail cannot be linked to audit trail with another parcel");
 
       //Logout
@@ -830,7 +830,7 @@ public class Parcel_Management_AuditTrail_Tests extends TestBase implements test
 
 		// Verify when parcel transfer allowed is "No" the audit trail cannot be linked to audit trail with another parcel
 		String ExpectedErrorMessage = "The Audit Trail record cannot be associated to an audit trail not associated to this parcel. If needed, please contact an admin to update the associated Event Library record.";
-		softAssert.assertEquals(objParcelsPage.getElementText(objApasGenericPage.pageError), ExpectedErrorMessage,
+		softAssert.assertEquals(objParcelsPage.getElementText(objMappingPage.pageError), ExpectedErrorMessage,
 				"SMAB-T3699: Verify when parcel transfer allowed is \"No\" the audit trail cannot be linked to audit trail with another parcel");
 
 		// Logout
@@ -967,7 +967,7 @@ public class Parcel_Management_AuditTrail_Tests extends TestBase implements test
 		// Verify related correspondence and related business record cannot be updated
 		// at the same time
 		String ExpectedErrorMessage = "Close error dialog We hit a snag. Review the errors on this page. Either the \"Related Correspondence Event\" or \"Related Business Event\" can be populated, Please check.";
-		softAssert.assertEquals((objParcelsPage.getElementText(objApasGenericPage.pageError).trim()), ExpectedErrorMessage.trim(),
+		softAssert.assertEquals((objParcelsPage.getElementText(objMappingPage.pageError).trim()), ExpectedErrorMessage.trim(),
 				"SMAB-T2935: Verify related correspondence and related business record cannot be updated at the same time");
 
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Cancel"));

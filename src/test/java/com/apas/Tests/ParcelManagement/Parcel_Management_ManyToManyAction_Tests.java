@@ -338,7 +338,7 @@ public class Parcel_Management_ManyToManyAction_Tests extends TestBase implement
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3051,SMAB-T2587, SMAB-T2594, SMAB-T2595, SMAB-T2596, SMAB-T2626, SMAB-T2582:Verify the Parent APN validations for \"Many To Many\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement","ManyToManyAction","ManyToManyAction" })
+			"Regression","ParcelManagement","ManyToManyAction" })
 	public void ParcelManagement_VerifyParentAPNValidationsForManyToManyMappingAction(String loginUser) throws Exception {
 
 		JSONObject jsonObj = objMappingPage.getJsonObject();
