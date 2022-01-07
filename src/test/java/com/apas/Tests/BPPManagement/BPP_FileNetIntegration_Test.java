@@ -97,7 +97,7 @@ public class BPP_FileNetIntegration_Test extends TestBase {
 		
 		//STEP 3: Validate FinetDocument link
 		softAssert.assertContains(currentUrl, "acrefncndev.smcare.org:", "SMAB-T4219: Navigated to FilenetDocument");
-		softAssert.assertContains(currentUrl, accountNumber, "SMAB-T4219: Navigated to FilenetDocument");
+		softAssert.assertContains(currentUrl, accountNumber, "SMAB-T4219: Account Number is Matching");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Property_Statement__c/"
 				+ propertyStamentID + "/view");
 		objBppManagementPage.waitForElementToBeClickable(20, objBppManagementPage.viewFileNetDocumentsButton);
