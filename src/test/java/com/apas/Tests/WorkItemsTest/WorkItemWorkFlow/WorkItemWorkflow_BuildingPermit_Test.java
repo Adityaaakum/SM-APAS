@@ -74,7 +74,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after file is approved
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and RP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1890, SMAB-T1892, SMAB-T1900, SMAB-T1901, SMAB-T1902,SMAB-T2081,SMAB-T2121,SMAB-T2122,SMAB-T1903: Validation for work item generation after building permit file import and approve", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "WorkItemWorkflow_BuildingPermit", "BuildingPermit"}, alwaysRun = true)
+    @Test(description = "SMAB-T1890, SMAB-T1892, SMAB-T1900, SMAB-T1901, SMAB-T1902,SMAB-T2081,SMAB-T2121,SMAB-T2122,SMAB-T1903: Validation for work item generation after building permit file import and approve", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "WorkItemWorkflow_BuildingPermit", "BuildingPermit", "WorkItemWorkflow"}, alwaysRun = true)
     public void WorkItemWorkflow_BuildingPermit_ReviewAndFinalReviewWorkItem_ImportAndApprove(String loginUser) throws Exception {
 
         String downloadLocation = testdata.DOWNLOAD_FOLDER;
@@ -250,7 +250,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after file is reverted
      * Pre-Requisite: Work Pool, Work Item Configuration, Routing Assignment and RP-WI Management permission configuration should exist
      **/
-    @Test(description = "SMAB-T1890, SMAB-T1899: Validation for work item generation after building permit file import and revert", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "WorkItemWorkflow_BuildingPermit", "BuildingPermit"}, alwaysRun = true)
+    @Test(description = "SMAB-T1890, SMAB-T1899: Validation for work item generation after building permit file import and revert", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {"Smoke", "Regression", "WorkItemWorkflow_BuildingPermit", "BuildingPermit", "WorkItemWorkflow"}, alwaysRun = true)
     public void WorkItemWorkflow_BuildingPermit_ReviewWorkItem_ImportAndRevert(String loginUser) throws Exception {
 
         //Creating a temporary copy of the file to be processed to create unique name
@@ -324,7 +324,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
     }
     
 	@Test(description = "SMAB-T3085,SMAB-T3086:Create building permit with the E-File import process with out completion date", dataProvider = "loginRPAppraiser",dataProviderClass = DataProviders.class, groups = {
-			"Regression","EFileImport","WorkItemWorkflow_BuildingPermit", "BuildingPermit"}, alwaysRun = true )
+			"Regression","EFileImport","WorkItemWorkflow_BuildingPermit", "BuildingPermit", "WorkItemWorkflow"}, alwaysRun = true )
 	public void EFileIntake_ApproveImportedFileWithoutCompletionDate(String loginUser) throws Exception{
 		String period = "Adhoc";
 		String fileType="Building Permit";
@@ -414,7 +414,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
     
     
 	@Test(description = "SMAB-T3087,SMAB-T3088:Create building permit with the E-File import process with completion date", dataProvider = "loginRPAppraiser",dataProviderClass = DataProviders.class, groups = {
-			"Regression","EFileImport","WorkItemWorkflow_BuildingPermit", "BuildingPermit"})
+			"Regression","EFileImport","WorkItemWorkflow_BuildingPermit", "BuildingPermit", "WorkItemWorkflow"})
 	public void EFileIntake_ApproveImportedFileWithCompletionDate(String loginUser) throws Exception{
 		String period = "Adhoc";
 		String fileType="Building Permit";
@@ -475,7 +475,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
      * This test case is to validate work item creation functionality and the work item flow after creating new building permit for active parcel
      **/
    
-    @Test(description = "SMAB-T2989, SMAB-T3089: Creating manual entry for Active Parcel building permit With completion date", dataProvider = "loginRPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"WorkItemWorkflow_BuildingPermit","Regression","BuildingPermit"}, alwaysRun = true)
+    @Test(description = "SMAB-T2989, SMAB-T3089: Creating manual entry for Active Parcel building permit With completion date", dataProvider = "loginRPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups={"WorkItemWorkflow_BuildingPermit","Regression","BuildingPermit", "WorkItemWorkflow"}, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitActiveParcelWithDataValidations(String loginUser) throws Exception {
 
 		//Fetching the Active Parcel
@@ -561,7 +561,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
      **/
 
 	@Test(description = "SMAB-T3007 : Creating manual entry for Retired Parcel building permit with completion date.", dataProvider = "loginRPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups = {
-			"WorkItemWorkflow_BuildingPermit", "Regression", "BuildingPermit" }, alwaysRun = true)
+			"WorkItemWorkflow_BuildingPermit", "Regression", "BuildingPermit", "WorkItemWorkflow" }, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitRetiredParcelWithDataValidations(String loginUser)
 			throws Exception {
 
@@ -650,7 +650,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
      **/
 
 	@Test(description = "SMAB-T2987, SMAB-T2988, SMAB-T2989 : Creating manual entry for Active Parcel building permit without complition date", dataProvider = "loginRPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups = {
-			"WorkItemWorkflow_BuildingPermit", "Regression", "BuildingPermit" }, alwaysRun = true)
+			"WorkItemWorkflow_BuildingPermit", "Regression", "BuildingPermit", "WorkItemWorkflow" }, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitActiveParcelWithoutCompletionDate(String loginUser)
 			throws Exception {
 
@@ -782,7 +782,7 @@ public class WorkItemWorkflow_BuildingPermit_Test extends TestBase {
 
     
 	@Test(description = "SMAB-T3007: Creating manual entry for building permit for retired parcel without complition date", dataProvider = "loginRPAppraiser", dataProviderClass = com.apas.DataProviders.DataProviders.class, groups = {
-			"WorkItemWorkflow_BuildingPermit", "Regression", "BuildingPermit" }, alwaysRun = true)
+			"WorkItemWorkflow_BuildingPermit", "Regression", "BuildingPermit", "WorkItemWorkflow" }, alwaysRun = true)
 	public void BuildingPermit_ManualCreateNewBuildingPermitRetiredParcelWithoutCompletionDate(String loginUser)
 			throws Exception {
 

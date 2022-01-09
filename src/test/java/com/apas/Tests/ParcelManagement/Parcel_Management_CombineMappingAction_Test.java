@@ -67,7 +67,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2356, SMAB-2570, SMAB-2568,SMAB-T2955: Verify user is able to view error messages on the Mapping screen during combine process", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement", "CombineAction" })
 	public void ParcelManagement_VerifyErrorMessageOnFirstScreenForParcelCombineMappingAction(String loginUser) throws Exception {
 		
 		//Getting parcel that is Retired 
