@@ -553,4 +553,14 @@ public class SalesforceAPI extends TestBase {
         String queryBPPAnnualSettings = "SELECT Id FROM BPP_Annual_Setting__c where Roll_Year_Settings__r.name = '" + rollYear  + "'";
         delete(queryBPPAnnualSettings);
     }
+    
+    /**
+     * This method will delete Aircraft Listing WIs for the roll year passed in the parameter
+     * @param rollYear : Roll Year data to be deleted
+     */
+    public void deleteAircraftListingWIs(String rollYear){
+        String queryAircraftListingWI = "Select Id from Work_Item__c where Work_Pool__r.Name='Aircraft Work Pool' And Roll_Year_Settings__r.name = '" + rollYear  + "'";
+        delete(queryAircraftListingWI);
+    }
+    
 }
