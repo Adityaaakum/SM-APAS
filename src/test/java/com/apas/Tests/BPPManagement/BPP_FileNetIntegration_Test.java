@@ -37,13 +37,9 @@ public class BPP_FileNetIntegration_Test extends TestBase {
 
 	RemoteWebDriver driver;
 	Page objPage;
-	EFileImportTransactionsPage objEfileImportTransactionsPage;
 	BppManagementPage objBppManagementPage;
-	EFileImportPage objEfileHomePage;
-	EFileImportLogsPage objEFileImportLogPage;
 	Util objUtil;
 	SoftAssertion softAssert;
-	String rollYear;
 	SalesforceAPI objSalesforceAPI = new SalesforceAPI();
 	WorkItemHomePage objWorkItemHomePage;
 	
@@ -56,13 +52,9 @@ public class BPP_FileNetIntegration_Test extends TestBase {
 		
 		objPage = new Page(driver);
 		objBppManagementPage = new BppManagementPage(driver);
-		objEfileImportTransactionsPage = new EFileImportTransactionsPage(driver);
-		objEfileHomePage = new EFileImportPage(driver);
-		objEFileImportLogPage=new EFileImportLogsPage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
 		objWorkItemHomePage = new WorkItemHomePage(driver);
-		objEfileHomePage.updateRollYearStatus("Open", rollYear);
 
 	}
 	
