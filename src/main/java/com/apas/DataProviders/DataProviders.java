@@ -450,6 +450,15 @@ public class DataProviders {
 
 			
 		}
+		
+		/**
+		 * Below function will be used to login to application with appraisal support user
+		 * @returns: Return the user appraisal support
+		 **/
+	    @DataProvider(name = "loginBPPAppraisalUser")
+	    public Object[][] dpLoginBPPAppraisalUser() {
+	        return new Object[][] { { users.BPP_APPRAISER } };
+	    }
 }
        
 

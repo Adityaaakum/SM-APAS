@@ -36,5 +36,6 @@ public interface modules {
 	String ROUTING_ASSIGNMENTS = "Routing Assignments";
 	String PUC = "PUCs";
 	String TRA = "TRA";
+	String BPP_ANNUAL_SETTINGS = "BPP Annual Settings";
 }
 

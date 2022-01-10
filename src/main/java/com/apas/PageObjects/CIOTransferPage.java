@@ -524,10 +524,12 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					 * Click(mailingState); Select selectMailingState = new Select(mailingState);
 					 * selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"
 					 * )); Click(mailingState);
-					 */ enter(mailZipCopyToMailTo,
-					  dataToCreateMailTo.get("Mailing Zip"));
+					 */ 
+					
+					enter(mailZipCopyToMailTo,
+					dataToCreateMailTo.get("Mailing Zip"));
 					 
-						Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));				
+					Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));				
 					Click(getButtonWithText(nextButton));
 					ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
 				} catch (Exception e) {

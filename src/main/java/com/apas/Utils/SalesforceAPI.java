@@ -37,6 +37,9 @@ public class SalesforceAPI extends TestBase {
     public static String REMINDER_WI_CODE_BPP_EFILE = "new+BPPTrendsImportReminderWorkItemService().createReminderWorkItemsForEFile(ApexUtility.getCurrentRollYear());";
     public static String RECORDER_WORKITEM="DataBase.executeBatch(new+RecorderIntegrationBatch('Pending',true),3);";
     public static final String CIO_AUTOCONFIRM_BATCH_JOB="CIOTransferAutoConfirmScheduler.triggerAutoConfirmation();"; 
+    public static final String ROLLENTRY_UPDATE_BATCH_JOB="DataBase.executeBatch(new+RollEntryUpdateBatch());";
+    public static String REMINDER_WI_CODE_BPP_AIRCRAFT_ANNUAL_SETTINGS = "new+BPPAircraftAnnualFactorWorkItemService().createBppAircraftAnnualFactorsWI(ApexUtility.getCurrentRollYear());";
+    
     /**
      * This method will create HTTP Post connection with Salesforce
      @return Http Post Connection
@@ -540,5 +543,14 @@ public class SalesforceAPI extends TestBase {
     public void deleteWorkItemsBasedOnAge(int age){
         String queryToDeleteWorkItems = "SELECT id FROM Work_Item__c where age__c > " + age ;
         delete(queryToDeleteWorkItems);
+    }
+    
+    /**
+     * This method will delete BPP Annual Settings for the roll year passed in the parameter
+     * @param rollYear : Roll Year data to be deleted
+     */
+    public void deleteBPPAnnualSettings(String rollYear){
+        String queryBPPAnnualSettings = "SELECT Id FROM BPP_Annual_Setting__c where Roll_Year_Settings__r.name = '" + rollYear  + "'";
+        delete(queryBPPAnnualSettings);
     }
 }

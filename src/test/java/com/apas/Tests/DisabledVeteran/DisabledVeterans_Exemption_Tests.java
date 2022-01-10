@@ -152,7 +152,11 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			//Step3: selecting mandatory details before verifying error message
 			objApasGenericPage.searchAndSelectOptionFromDropDown("APN",businessValidationdata.get("APN"));
 			objPage.enter(exemptionPageObj.dateApplicationReceived,businessValidationdata.get("DateApplicationReceived"));
+
 			objApasGenericPage.searchAndSelectOptionFromDropDown("Claimant 1 Name",businessValidationdata.get("ClaimantName"));
+
+			objApasGenericPage.searchAndSelectOptionFromDropDown(exemptionPageObj.claimantName,businessValidationdata.get("ClaimantName"));
+
 			objPage.enter(exemptionPageObj.claimantSSN, businessValidationdata.get("ClaimantSSN"));
 			objPage.enter(exemptionPageObj.veteranName, businessValidationdata.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 			objPage.enter(exemptionPageObj.dateAquiredProperty,businessValidationdata.get("DateAquiredProperty"));
@@ -430,8 +434,8 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
       
       Map<String, String> fieldData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData1");
       fieldData.put("ClaimantName", exemptionPageObj.fetchAssesseeName());       
-      String queryRetiredAPN = "SELECT Name,Status__c FROM Parcel__c where Status__c='Retired' and PUC_Code_Lookup__r.name='999 - Retired' Limit 1";
-      String queryPUCAPN="SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('000- Vacant Land (Migrated)','000B Vacant Land - Brush, Barren','00-VACANT LAND','06-HOTEL','08-BOARDING HOUSE','09-MOBILEHOME PARK','11-STORE','14-SUPERMARKET') Limit 1";
+      String queryRetiredAPN = "SELECT Name,Status__c FROM Parcel__c where Status__c='Retired' Limit 1";
+      String queryPUCAPN="SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('000- Vacant Land (Migrated)','000B Vacant Land - Brush', Barren','00-VACANT LAND','06-HOTEL','08-BOARDING HOUSE','09-MOBILEHOME PARK','11-STORE','14-SUPERMARKET') Limit 1";
       HashMap<String, ArrayList<String>> response  = salesforceAPI.select(queryRetiredAPN);
       String retiredAPNName= response.get("Name").get(0);       
       HashMap<String, ArrayList<String>> response1  = salesforceAPI.select(queryPUCAPN);
@@ -453,10 +457,11 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	       softAssert.assertTrue(objParcel.exemptionRelatedList.isDisplayed(), "SMAB-T580:Verify that user is able to see 'Exemption related List' and related fields on Parcel details page");
 	       objPage.Click(objParcel.exemptionRelatedList); 
 	       objPage.Click(exemptionPageObj.newExemptionRelatedButton);
+	       objPage.Click(exemptionPageObj.exemptionRecordTypeNextButton);
 	       
-	   //Step3: Selecting mandatory details before verifying error message
+	       //Step3: Selecting mandatory details before verifying error message
 	       objPage.enter(exemptionPageObj.dateApplicationReceived,fieldData.get("DateApplicationReceived"));
-	       objApasGenericPage.searchAndSelectOptionFromDropDown("Claimant's Name",fieldData.get("ClaimantName"));
+	       objApasGenericPage.searchAndSelectOptionFromDropDown("Claimant 1 Name",fieldData.get("ClaimantName"));
 	       objPage.enter(exemptionPageObj.claimantSSN, fieldData.get("ClaimantSSN"));
 	       objPage.enter(exemptionPageObj.veteranName, fieldData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 	       objPage.enter(exemptionPageObj.veteranSSN, fieldData.get("VeteranSSN"));
@@ -484,6 +489,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	       
 	       ReportLogger.INFO("Verifying Exemption should not be created for Parcel::"+parcel);
 	       objPage.Click(exemptionPageObj.newExemptionButton);
+	       objPage.Click(exemptionPageObj.exemptionRecordTypeNextButton);
 	       objPage.enter(exemptionPageObj.apn, parcel);
 	       objPage.enter(exemptionPageObj.dateApplicationReceived,fieldData.get("DateApplicationReceived"));
 	       objPage.Click(ExemptionsPage.saveButton);
