@@ -38,7 +38,7 @@ public class CIO_Reports_Test extends TestBase {
 	}
 	
 	/**
-	 * Below test case will verify if a new report called "RP Activity list" exists with its respective fields
+	 * Below test case will verify if a new report called "MCL report 1" exists with its respective fields
 	 **/
 	@Test(description = "SMAB-T4063: Validation of MCL report 1 in reports", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "Reports" }, alwaysRun = true)
