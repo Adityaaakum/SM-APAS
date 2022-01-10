@@ -144,17 +144,14 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			objApasGenericPage.login(loginUser);
 			
 			//Step2: Opening the Exemption Module
-			objApasGenericPage.searchModule(EXEMPTIONS);
-			
+			objApasGenericPage.searchModule(EXEMPTIONS);			
 			objPage.Click(exemptionPageObj.newExemptionButton);
 			objPage.Click(exemptionPageObj.exemptionRecordTypeNextButton);
 			
 			//Step3: selecting mandatory details before verifying error message
 			objApasGenericPage.searchAndSelectOptionFromDropDown("APN",businessValidationdata.get("APN"));
 			objPage.enter(exemptionPageObj.dateApplicationReceived,businessValidationdata.get("DateApplicationReceived"));
-
 			objApasGenericPage.searchAndSelectOptionFromDropDown("Claimant 1 Name",businessValidationdata.get("ClaimantName"));
-
 			objApasGenericPage.searchAndSelectOptionFromDropDown(exemptionPageObj.claimantName,businessValidationdata.get("ClaimantName"));
 
 			objPage.enter(exemptionPageObj.claimantSSN, businessValidationdata.get("ClaimantSSN"));
