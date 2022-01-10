@@ -30,6 +30,7 @@ public class ParcelsPage extends ApasGenericPage {
 	}
 
 	public String componentActionsButtonText = "Component Actions";
+	public String cosDocumentSummaryText = "COS Document Summary";
 	public String nextButtonComponentsActionsModal = "Next";
 	public String parcelMapInGISPortal = "Parcel Map in GIS Portal";
 
@@ -44,6 +45,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String workItemRoutingDropDownComponentsActionsModal = "Work Item Routing";
 	public String workItemOwnerSearchBox = "Work Item Owner (if someone other than you)";
 	public String auditTrailRecordDropDownComponentsActionsModal = "Is this Audit Trail Record linked to any Existing Audit Trail Record?";
+	public String eventCodeComponentsActionsModal = "Event Code";
 
 	public String editApnField ="APN";	
 	public String LongLegalDescriptionLabel="Long Legal Description"; 
@@ -112,6 +114,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String originFcv = "Origin FCV";
 	public String apn = "APN";
 	public String parcelAncestry = "Parcel Ancestry";
+	public String dorLabel = "DOR";
 	
 
 	/** Added to identify fields, dropdowns for Assessed value and AVO functionality **/	
@@ -271,6 +274,9 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//a[@class='displayLabel slds-truncate']/slot")
     public WebElement ownersName;
 	
+	@FindBy(xpath = "//c-org_cos-document-summary//table/tbody/tr[last()]//a")
+    public WebElement lastItemInCosDocumentSummary;
+	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";
@@ -307,6 +313,9 @@ public class ParcelsPage extends ApasGenericPage {
 		String workItemNumber;
 		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
 		
+		String eventCode = objSalesforceAPI.select("SELECT Name FROM Event_Library__c limit 1").get("Name").get(0);
+
+
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
 		Thread.sleep(2000);
@@ -327,6 +336,8 @@ public class ParcelsPage extends ApasGenericPage {
 		if (dueDate != null) enter(dueDateInputTextBox, dueDate);
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
+		if (eventCode != null) searchAndSelectOptionFromDropDown(eventCodeComponentsActionsModal,eventCode);
+
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
 		Thread.sleep(10000);
 
@@ -771,6 +782,8 @@ public class ParcelsPage extends ApasGenericPage {
 		            enter(salesPrice, hashMapToCreateAssessedValueRecords.get("Sales Price"));}
 	            if( hashMapToCreateAssessedValueRecords.get("Purchase Price")!=null) {
 		            enter(purchasePrice, hashMapToCreateAssessedValueRecords.get("Purchase Price"));}
+	            if( hashMapToCreateAssessedValueRecords.get("DOR")!=null) {
+		            enter(dorLabel, hashMapToCreateAssessedValueRecords.get("DOR"));}
 	            waitForElementToBeClickable(10, SaveButton);
 	            Click(getButtonWithText(SaveButton));
 	            Thread.sleep(4000);            

@@ -62,7 +62,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2294, SMAB-T2295, SMAB-T2428, SMAB-T2296, SMAB-T2314, SMAB-T2613:Verify the UI validations for \"Split\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","SplitAction" })
 	public void ParcelManagement_VerifySplitMappingActionUIValidations(String loginUser) throws Exception {
 		String apn = objMappingPage.fetchActiveAPN();
 
@@ -267,7 +267,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2313, SMAB-T2292, SMAB-T2613:Verify the Parent APN validations for \"Split\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","SplitAction" })
 	public void ParcelManagement_VerifyParentAPNValidationsForSplitMappingAction(String loginUser) throws Exception {
 		String apn = objMappingPage.fetchActiveAPN();
 
@@ -347,7 +347,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2296, SMAB-T2613:Verify the UI validations for \"Split\" mapping action for a Parcel (Active) from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","SplitAction" })
 	public void ParcelManagement_VerifySplitMappingActionManualOverwriteValidations(String loginUser) throws Exception {
 		
 		JSONObject jsonForManualOverwrite =objMappingPage.getJsonObject();
@@ -508,7 +508,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2613, SMAB-T2614:Verify that parcel can be split into any number of parcels", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","SplitAction" })
 	public void ParcelManagement_VerifySplitMappingActionNoOfParcelsValidations(String loginUser) throws Exception {
 		String apn = objMappingPage.fetchActiveAPN();
 
@@ -569,7 +569,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3453,SMAB-T2541, SMAB-T2550, SMAB-T2551,SMAB-T3245:Verify the Output Validations for Split Mapping Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","SplitAction" })
 	public void ParcelManagement_VerifySplitMappingActionOutputValidations(String loginUser) throws Exception {
 
 		JSONObject jsonForOutputValidations = objMappingPage.getJsonObject();
@@ -815,7 +815,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T2661:Parcel Management- Verify that User is able to update Situs of child parcels from the Parcel mapping screen for \"Split\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+	@Test(description = "SMAB-T2661:Parcel Management- Verify that User is able to update Situs of child parcels from the Parcel mapping screen for \"Split\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement","SplitAction" })
 	public void ParcelManagement_UpdateChildParcelSitus_SplitMappingAction(String loginUser) throws Exception {
 
 		JSONObject jsonForChildParcelSitus = objMappingPage.getJsonObject();
@@ -959,7 +959,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2682,SMAB-T3121:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Split\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","SplitAction" })
 	public void ParcelManagement_ReturnToCustomScreen_SplitMappingAction_NoPrimarySitusTRA(String loginUser) throws Exception {
 		String childAPNPUC;
 
@@ -1090,7 +1090,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2682:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Split\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","SplitAction" })
 	public void ParcelManagement_ReturnToCustomScreen_SplitMappingAction__WithPrimarySitusTRA(String loginUser) throws Exception {
 
 		String childAPNPUC;
@@ -1213,7 +1213,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objWorkItemHomePage.logout();
 	}
 	@Test(description = "SMAB-T2830,SMAB-T2682:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"Split\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","SplitAction" })
 	public void ParcelManagement_ReturnToCustomScreen_SplitMappingAction__IndependentMappingActionWI(String loginUser) throws Exception {
 
 		String childAPNPUC;
@@ -1315,7 +1315,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3451,SMAB-T3459,SMAB-T3452,SMAB-T2838, SMAB-T2843:I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels.", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","SplitAction" })
 	public void  ParcelManagement_VerifySplitParcelEditAction(String loginUser) throws Exception {
 
 		JSONObject jsonForEditAction = objMappingPage.getJsonObject();
@@ -1493,7 +1493,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 */
 	
 	@Test(description = "SMAB-T3464:Verify the Output validations for \"Split\" mapping action for a Parcel (retired) after rejected the work item ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","SplitAction" })
 	public void ParcelManagement_VerifyWIRejectionAfterPerformSplitMappingAction(String loginUser) throws Exception {
 
 		JSONObject jsonForWIRejection = objMappingPage.getJsonObject();
@@ -1607,7 +1607,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	@Test(description = "SMAB-T3385,SMAB-T3601,SMAB-T3465,SMAB-T3469,SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-			groups = {"Regression","ParcelManagement","RecorderIntegration" },enabled=true)
+			groups = {"Regression","ParcelManagement","RecorderIntegration","SplitAction" },enabled=true)
 	public void ParcelManagement_VerifyNewWICondominiumPlansGeneratedfromRecorderIntegrationAndSplitMappingAction(String loginUser) throws Exception {
 
 		JSONObject jsonObject = objMappingPage.getJsonObject();
@@ -1888,7 +1888,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2882, SMAB-T2895, SMAB-T3826: Verify generation of Interim Parcels for Split Mapping Action and validation around it", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","SplitAction" })
 	public void ParcelManagement_VerifyGenerationOfInterimParcelForSplitMappingAction(String loginUser) throws Exception {
 		
 		//Fetching Interim parcels
@@ -2059,7 +2059,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	@Test(description = "SMAB-T4390,SMAB-T4034,SMAB-T3310,SMAB-T3311,SMAB-T3312,SMAB-T3313,"
 			+ "SMAB-T3314,SMAB-T3282:Verify that user is able to perform Split mapping action "
 			+ "having Divided Interest parcel as Parent APN ", dataProvider = "loginMappingUser", 
-			dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+			dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement","SplitAction" })
 	public void  ParcelManagement_VerifySplitDividedInterestParcelGeneration(String loginUser) throws Exception {
 
 		JSONObject jsonDividedInterestObject= new JSONObject();
@@ -2267,7 +2267,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3975,SMAB-T3974,SMAB-T3728,SMAB-T3816,SMAB-T3727,SMAB-T3647: Verify many to many audit trail", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+	@Test(description = "SMAB-T3975,SMAB-T3974,SMAB-T3728,SMAB-T3816,SMAB-T3727,SMAB-T3647: Verify many to many audit trail", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement","SplitAction" })
 
 	public void ParcelManagement_VerifyAuditTrailForSplitMappingAction(String loginUser) throws Exception {
 
@@ -2420,7 +2420,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		}
 	
 
-	@Test(description = "SMAB-T2955,SMAB-T2880,SMAB-T2878,SMAB-T2953,SMAB-T2952,SMAB-T2877,SMAB-T2954,SMAB-T2879,SMAB-T2951,SMAB-T2876,SMAB-T2950,SMAB-T2814SMAB-T2956,SMAB-T2881: Verify Parcel size validations for Split mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+	@Test(description = "SMAB-T2955,SMAB-T2880,SMAB-T2878,SMAB-T2953,SMAB-T2952,SMAB-T2877,SMAB-T2954,SMAB-T2879,SMAB-T2951,SMAB-T2876,SMAB-T2950,SMAB-T2814SMAB-T2956,SMAB-T2881: Verify Parcel size validations for Split mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement","SplitAction"})
 
 	public void ParcelManagement_VerifyParcelSizeValidationsForSplitMappingAction(String loginUser) throws Exception {
 
@@ -2621,7 +2621,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 	 */
 
 	@Test(description = "SMAB-T2717,SMAB-T3993,SMAB-T3999,SMAB-T3997,SMAB-T3991,SMAB-T4000,SMAB-T3996,SMAB-T3994,SMAB-T4005,SMAB-T3926,SMAB-T4007,SMAB-T4004,SMAB-T4224,SMAB-T4221,SMAB-T4222,SMAB-T4167,SMAB-T4009,SMAB-T4253,SMAB-T4255: verify that User is able to work on the with update chars and verify PUC work items along with Allocate Values work items", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
+			"Regression", "ParcelManagement","SplitAction" })
 
 	public void ParcelManagement_Verify_Split_Mapping_Action_UpdateChars_VerifyPUC_Output(String loginUser)
 			throws Exception {

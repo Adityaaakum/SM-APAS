@@ -112,7 +112,8 @@
     "Reference": "Test WI",
     "Description": "Creation of work item",
     "Priority": "Urgent",
-    "Work Item Routing": "Give Work Item to Me"
+    "Work Item Routing": "Give Work Item to Me",
+    "Event Code": "Combined Performed"
   },
   "DataToCreateWorkItemOfTypeBuildingPermitBurlingameFileUpload": {
     "Work Item Type": "Building Permit",

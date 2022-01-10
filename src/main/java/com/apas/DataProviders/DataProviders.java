@@ -424,8 +424,8 @@ public class DataProviders {
        
 		@DataProvider(name = "dpForCioAutoConfirm")
 		public Object[][] dpTestCioAutoConfirm() {
-			return new Object[][] { { CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART, CIOTransferPage.CIO_RESPONSE_NoChangeRequired },
-					{ CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART, CIOTransferPage.CIO_RESPONS_EventCodeChangeRequired }
+			return new Object[][] { { CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART, CIOTransferPage.CIO_RESPONS_EventCodeChangeRequired},
+					
 
 			};
 		}
@@ -450,6 +450,23 @@ public class DataProviders {
 
 			
 		}
+		
+		/**
+		 * Below function will be used to login to application with appraisal support user
+		 * @returns: Return the user appraisal support
+		 **/
+	    @DataProvider(name = "loginBPPAppraisalUser")
+	    public Object[][] dpLoginBPPAppraisalUser() {
+	        return new Object[][] { { users.BPP_APPRAISER } };
+	    }
+	    
+	    @DataProvider(name = "BPPAdminAndPrincipalAndAppraisalSupport")
+	    public Object[][] dataBPPAdminAndPricipalUserAndAppraisalSupport() {
+	        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+	            return new Object[][] { { users.PRINCIPAL_USER }};
+	        else
+	            return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_BUSINESS_ADMIN},{ users.APPRAISAL_SUPPORT }};
+	    }
 }
        
 
