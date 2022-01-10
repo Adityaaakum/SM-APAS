@@ -152,7 +152,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			//Step3: selecting mandatory details before verifying error message
 			objApasGenericPage.searchAndSelectOptionFromDropDown("APN",businessValidationdata.get("APN"));
 			objPage.enter(exemptionPageObj.dateApplicationReceived,businessValidationdata.get("DateApplicationReceived"));
-			objApasGenericPage.searchAndSelectOptionFromDropDown("Claimant's Name",businessValidationdata.get("ClaimantName"));
+			objApasGenericPage.searchAndSelectOptionFromDropDown("Claimant 1 Name",businessValidationdata.get("ClaimantName"));
 			objPage.enter(exemptionPageObj.claimantSSN, businessValidationdata.get("ClaimantSSN"));
 			objPage.enter(exemptionPageObj.veteranName, businessValidationdata.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 			objPage.enter(exemptionPageObj.dateAquiredProperty,businessValidationdata.get("DateAquiredProperty"));
