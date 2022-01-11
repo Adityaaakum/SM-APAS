@@ -50,7 +50,7 @@ public class Parcel_Management_Parcel_Detail_Validation_Tests extends TestBase i
 	@Test(description = "SMAB-T3543: Verify that when a Parcel Situs record is created/updated,"
 			+ " the system should automatically populate the Primary Situs field on the Parcel record",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-					"Regression","ParcelManagement" })
+					"Regression","ParcelManagement","ParcelSitusManagement" })
 	public void ParcelManagement_VerifyPrimarySitusOnParcelDetail(String loginUser) throws Exception {
 
 		String execEnv= System.getProperty("region");		

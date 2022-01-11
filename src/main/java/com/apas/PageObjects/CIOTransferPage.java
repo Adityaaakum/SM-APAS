@@ -534,27 +534,23 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					select.selectByVisibleText(granteeForMailTo);
 					Click(formattedName1);
 					
-					// Use USPS validation
-					if(dataToCreateMailTo.get("Address")!=null && dataToCreateMailTo.get("Zip code")!=null && dataToCreateMailTo.get("Care of")!=null) 
-					{
-						 // Fill the form
-						 enter(addressInCopyToMailTo,dataToCreateMailTo.get("Address"));
-						 enter(zipCodeInCopyToMailTo,dataToCreateMailTo.get("Zip code"));
-						 enter(careOfInCopyToMailTo,dataToCreateMailTo.get("Care of"));
-						 // Validate with USPS
-						 Click(getButtonWithText(validateWithUSPSButtonOnCopyToMailTo));
-						 Click(getButtonWithText(useThisInformationButtonOnCopyToMailTo));
-						 Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));
-					}
-					else 
-					{
-						Click(mailingState); Select selectMailingState = new Select(mailingState);
-						selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"));
-						Click(mailingState);					 
-						enter(mailZipCopyToMailTo, dataToCreateMailTo.get("Mailing Zip"));					 
-						Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));
-					}
-					// Click on "Next" button 
+					/*
+					 * Click(mailingState); Select selectMailingState = new Select(mailingState);
+					 * selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"
+					 * )); Click(mailingState);
+					 */ 
+										
+					enter(mailZipCopyToMailTo,
+					dataToCreateMailTo.get("Mailing Zip"));
+					
+					// Using USPS ZIP code validation
+					if (dataToCreateMailTo.get("Address") != null) enter(addressInCopyToMailTo, dataToCreateMailTo.get("Address"));
+                    if (dataToCreateMailTo.get("Zip code") != null) enter(zipCodeInCopyToMailTo, dataToCreateMailTo.get("Zip code"));
+                    if (dataToCreateMailTo.get("Care of") != null) enter(careOfInCopyToMailTo, dataToCreateMailTo.get("Care of"));
+                    if(verifyElementEnabled(getButtonWithText(validateWithUSPSButtonOnCopyToMailTo))) Click(getButtonWithText(validateWithUSPSButtonOnCopyToMailTo));
+                    if(verifyElementEnabled(getButtonWithText(useThisInformationButtonOnCopyToMailTo))) Click(getButtonWithText(useThisInformationButtonOnCopyToMailTo));;
+					
+					Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));			
 					Click(getButtonWithText(nextButton));
 					ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
 				} catch (Exception e) {

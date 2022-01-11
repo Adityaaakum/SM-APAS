@@ -56,7 +56,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3527:Verify the UI validations that There are open CIO work items against the parent parcel. The mapping action is not allowed to be performed until the CIO activities have been completed.", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","ManyToManyAction", "CombineAction" })
 	public void ParcelManagement_VerifyMappingActionUIValidations(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') AND Status__c='Active' limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -114,7 +114,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3529:Verify the UI validations for all mapping action that 'The Net Land Loss cannot be greater than the total size of the parent parcel(s).'", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","ManyToManyAction", "CombineAction"})
 	public void ParcelManagement_ValidationForNetLandLossValueOnAllMappingAction(String loginUser) throws Exception {
 		String queryActiveAPNValue = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryActiveAPNValue);
@@ -170,6 +170,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 				"The Net Land Loss cannot be greater than the total size of the parent parcel(s).",
 						"SMAB-T3529:Validating Error message on mapping custom screen.");		
 		}	    
+	  objMappingPage.logout();
 	}
 	
 	/**
@@ -178,7 +179,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3529:Verify that In order to proceed with a the mapping action selected, the parent APN(s) must have the same ownership and ownership allocation.", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","ManyToManyAction", "CombineAction" })
 	public void ParcelManagement_ValidationOfOwnershipOnMappingAction(String loginUser) throws Exception {
 		String queryAPN = "SELECT Name, Id from parcel__c where Id NOT in (Select parcel__c FROM Property_Ownership__c) and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' Limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -229,7 +230,8 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 						"- In order to proceed with a parcel combine action, the parent APN(s) must have the same ownership and ownership allocation.",
 								"SMAB-T3528:Validating Error message on mapping custom screen.");
 	    }	    
-	}
+	    objMappingPage.logout();
+	  	}
 	
 	/*
 	 * Parcel Management Retrofit - Verify that when user performs multiple mapping
@@ -237,7 +239,7 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 	 */
 
 	@Test(description = "SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124:Parcel Management Retrofit - Verify that when user performs multiple mapping actions, the work item gets rejected then all the WI's will be deleted.", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
+			"Regression", "ParcelManagement","SplitAction", "CombineAction" })
 	public void ParcelManagement_VerifyMultipleChildWorkItemsForMappingActions(String loginUser) throws Exception {
 
 		JSONObject jsonParcelObject = objMappingPage.getJsonObject();
@@ -547,6 +549,8 @@ public class Parcel_Management_MappingAction_CommonTests extends TestBase implem
 		softAssert.assertTrue(situsNullValue,
 				"SMAB-T4064,SMAB-T4065,SMAB-T4066,SMAB-T4123,SMAB-T4124 : Situs should be Null");
 		ReportLogger.INFO("Story Completed. Validation Done.");
+		objMappingPage.logout();
 	}
+  
+		}
 
-}
