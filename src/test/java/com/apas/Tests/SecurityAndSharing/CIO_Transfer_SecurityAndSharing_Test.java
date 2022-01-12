@@ -171,6 +171,11 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		ReportLogger.INFO("Submitting the WI for approval");
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		
+		
+		objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		
 		objCIOTransferPage.waitForElementToBeVisible(20,objCIOTransferPage.confirmationMessageOnTranferScreen);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
 		ReportLogger.INFO("WI Submitted  for approval successfully");
@@ -252,8 +257,8 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 	 * @param loginUser
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3390,SMAB-T3468 : Verify that When CIO users navigates to quick action dropdown button different CIO users are able to view different dropdown buttons", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" },enabled=true)
+	@Test(description = "SMAB-T3390,SMAB-T3468 : Verify that When CIO users navigates to quick action dropdown button different CIO users are able to view different dropdown buttons",dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "SecurityAndSharing" },enabled=false)
 	public void QuickActionButtonsValidation_CIOTransferScreen_SubmitForReview(String loginUser) throws Exception {
 
 		String OwnershipAndTransferGranteeCreationData =  testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
