@@ -71,7 +71,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 	 * and restriction of creation of duplicate Annual Settings record
 	 */
 	
-	@Test(description = "SMAB-T3840,SMAB-T3985: Verify creation of Aircraft Annual Settings Work Item and restriction of creation of duplicate Annual Settings record", dataProvider = "loginBPPAppraisalUser", dataProviderClass = DataProviders.class, groups = {"Regression", "GeneralAircraft", "BPPManagement"})
+	@Test(description = "SMAB-T3840,SMAB-T3985: Verify creation of Aircraft Annual Settings Work Item and restriction of creation of duplicate Annual Settings record", dataProvider = "loginBPPAppraisalUser", dataProviderClass = DataProviders.class, enabled=false,groups = {"Regression", "GeneralAircraft", "BPPManagement"})
 	public void BPP_GeneralAircraft_AircraftAnnualSettings(String loginUser) throws Exception {
 		
 		//Delete BPP Annual Settings
