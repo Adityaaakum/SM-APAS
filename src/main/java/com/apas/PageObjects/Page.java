@@ -234,7 +234,24 @@ public class Page extends TestBase {
 	public void enter(Object element, String value) throws Exception {
 		WebElement elem;
 		if (element instanceof String) {
-			elem = getWebElementWithLabel(element.toString());
+			String label=element.toString();
+			
+			
+			
+			String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody') or contains(@class,'slds-form-element')]";
+			String xpath = commonPath + "//label[text()=\"" + label + "\"]/..//input | " +
+					commonPath + "//input[@name=\"" + label + "\"] | " + //this condition was observed on manual work item creation pop up for edit boxes
+					commonPath + "//*[(@class='inputHeader' or @class='uiBlock') and contains(.,\"" + label + "\")]/..//Select |"+ //This condition was observed for few drop downs of Select Type
+					commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//a | " + //this condition was observed on Mapping Action screen for Assessor' Map label
+					commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//span[@class='slds-col'] | " + //this condition was observed on Mapping Action screen for Parent APN(s) field
+					commonPath + "//label[text()=\"" + label + "\"]/..//textarea | "+//this condition was added to handle webelements of type textarea
+					commonPath + "//span[text()=\"" + label + "\"]/../following-sibling::input | "+	
+					
+					commonPath + "//label[text()=\"" + label + "\"]//following::div[@class='slds-form-element__control'] " ;			
+			waitUntilElementIsPresent(xpath, 10);
+			elem =  driver.findElement(By.xpath(xpath));
+			
+			
 		} else
 			elem = (WebElement) element;
 
@@ -738,8 +755,9 @@ public class Page extends TestBase {
 				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//span[@class='slds-col'] | " + //this condition was observed on Mapping Action screen for Parent APN(s) field
 				commonPath + "//label[text()=\"" + label + "\"]/..//textarea | "+//this condition was added to handle webelements of type textarea
 				commonPath + "//span[text()=\"" + label + "\"]/../following-sibling::input | "+	
-				commonPath+"//a[@title=\""+label+"\"]";
-			
+				
+			commonPath+  "//label[text()=\"" + label + "\"]//following::button[contains(@class,'slds-combobox__input slds-input_faux')]";
+		
 		waitUntilElementIsPresent(xpath, 10);
 		return driver.findElement(By.xpath(xpath));
 	}
