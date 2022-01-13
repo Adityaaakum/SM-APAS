@@ -60,7 +60,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	 */
 
 	@Test(description = "SMAB-T3049,SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2663,SMAB-T2263,SMAB-T2521,SMAB-T2522,SMAB-T2537,SMAB-T2547:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" },enabled= true)
+			"Regression","ParcelManagement","BrandNewAction" },enabled= true)
 	public void ParcelManagement_VerifyBrandNewParcelMappingActionNonCondoParcel(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where (Not Name like '1%') and (Not Name like '8%')AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -178,7 +178,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2523,SMAB-T2524,SMAB-T2525,SMAB-T2527:Validation on the Brand New parcel Mapping Action can only be performed on Active Parcels ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Smoke","Regression","ParcelManagement" },enabled = true)
+			"Smoke","Regression","ParcelManagement","BrandNewAction" },enabled = true)
 	public void ParcelManagement_VerifyFirstNonCondoFieldOnBrandNewparcelAction(String loginUser) throws Exception {
 		String queryAPN = "Select name From Parcel__c where Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -280,7 +280,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3620,SMAB-T2642,SMAB-T2643,SMAB-T2644,SMAB-T3243,SMAB-T3771,SMAB-T3926,SMAB-T3928,SMAB-T3927,SMAB-T4251,SMAB-T4165,SMAB-T4166,SMAB-T4167,SMAB-T4250:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel   from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" }, enabled = true)
+			"Regression", "ParcelManagement","BrandNewAction" }, enabled = true)
 	public void ParcelManagement_Verify_Brand_NewParcel_Mapping_Action(String loginUser) throws Exception {
 		
 		JSONObject jsonObject = objMappingPage.getJsonObject();
@@ -550,7 +550,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	 */
 	
 	@Test(description = "SMAB-T2646: Once the parcel creation has been approved, the user will not be allowed to change the APN allocated.", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" },enabled = true)
+			"Regression","ParcelManagement","BrandNewAction" },enabled = true)
 	public void ParcelManagement_Verify_NoTAllowed_ToChange_NewAPN(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -616,7 +616,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	 */
 	
 	@Test(description = "SMAB-T2647: The update legal and short legal description should be visible in parcel if added while creating the parcel and these fields should be editable after the parcel is approved", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" },enabled =true)
+			"Regression","ParcelManagement","BrandNewAction" },enabled =true)
 	public void ParcelManagement_VerifyLegalDescIsEditable(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -668,7 +668,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2663: Verify that User is able to update Situs from the Parcel mapping screen for \"Brand New Parcel\" mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" },enabled= true)
+			"Regression","ParcelManagement","BrandNewAction" },enabled= true)
 	public void ParcelManagement_UpdateChildParcelSitusFirstScreen_BrandNewMappingAction(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and Status__c = 'Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -688,7 +688,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		String situsStreetName = hashMapBrandNewParcelMappingData.get("Situs Street Name");
 		String situsType = hashMapBrandNewParcelMappingData.get("Situs Type");
 		String situsUnitNumber = hashMapBrandNewParcelMappingData.get("Situs Unit Number");
-		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+situsUnitNumber+", "+cityName;
+		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+"#"+situsUnitNumber+", "+cityName;
 
 		// Step1: Login to the APAS application using the credentials passed through data provider (login Mapping User)
 		objMappingPage.login(loginUser);
@@ -730,6 +730,27 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
 				"SMAB-T2663: Validation that System populates primary situs on second screen for child parcel  with the situs value that was added in first screen");
 
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL and Legacy__c ='yes' limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		String distNeigh=responseNeighborhoodDetails.get("Name").get(0);
+		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+		objMappingPage.Click(objMappingPage.editButtonInSeconMappingScreen);
+
+		objMappingPage.clearSelectionFromLookup("District / Neighborhood Code");
+		objMappingPage.enter(objMappingPage.parcelDistrictNeighborhood, distNeigh);
+		ReportLogger.INFO("District / Neighborhood Code:" +distNeigh);
+		boolean neighborhood = false;
+		
+		try{
+			objMappingPage.selectOptionFromDropDown(objMappingPage.parcelDistrictNeighborhood, distNeigh);
+		}
+		catch(Exception e) {
+			neighborhood= true;
+		}
+		
+		softAssert.assertTrue(neighborhood,"SMAB-T4161: Verify for all the mapping actions, lookup references for the 'district and neighborhood' should include the lookup filter where the legacy district/neighborhoods are excluded.");
+
+		
 		//Step 8 :Clicking generate parcel button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 
@@ -754,7 +775,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
      */
     
     @Test(description = "SMAB-T2632,SMAB-T2693 : Verify Parent APN field cannot be greyed except if mapping action is brand new parcel ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
-  		  ,groups = {"Regression","ParcelManagement"},enabled =true)
+  		  ,groups = {"Regression","ParcelManagement","BrandNewAction"},enabled =true)
     public void ParcelManagment_verify_BrandNewParcel_ParentParcel_Greyed_BrandNewMappingAction(String loginUser) throws Exception
     {
   	  String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL limit 2";
@@ -828,7 +849,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2716,SMAB-T3669:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"brand new parcel\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","BrandNewAction" })
 	public void ParcelManagement_ReturnToCustomScreen_BrandNewParcelMappingAction_NoPrimarySitusTRA(String loginUser) throws Exception {
 		String childAPNPUC;
 		
@@ -988,7 +1009,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2716:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"brand new parcel\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","BrandNewAction" })
 	public void ParcelManagement_ReturnToCustomScreen_BrandNewParcel_MappingAction_WithPrimarySitusTRA(String loginUser) throws Exception {
 
 		String childAPNPUC;
@@ -1089,7 +1110,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		objWorkItemHomePage.logout();
 	}
 	@Test(description = "SMAB-T2831,SMAB-T2716,SMAB-T3633,SMAB-T3634,SMAB-T3635:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"brand new parcel\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","BrandNewAction" })
 	public void ParcelManagement_ReturnToCustomScreen_BrandNewParcel_MappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 
 		String childAPNPUC;
@@ -1220,7 +1241,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		 * @throws Exception
 		 */
 		@Test(description = "SMAB-T2835,SMAB-T2840,SMAB-T2669,SMAB-T3121: I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels. ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-				"Smoke","Regression","ParcelManagement" },enabled = true)
+				"Smoke","Regression","ParcelManagement","BrandNewAction" },enabled = true)
 		public void ParcelManagement_VerifyBrandNewParcelEditAction(String loginUser) throws Exception {
 			String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and (Not Name like '134%') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and  Status__c = 'Active' Limit 1";
 			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
@@ -1430,7 +1451,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		 * @throws Exception
 		 */
 		@Test(description = "SMAB-T2946:Verify the type of WI system creates for different recorded document types for a recorded document with one APN ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-				"Smoke","Regression","ParcelManagement","RecorderIntegration" },enabled=true)
+				"Smoke","Regression","ParcelManagement","RecorderIntegration","BrandNewAction" },enabled=true)
 		public void ParcelManagement_VerifyNewWIgenratedfromRecorderIntegrationAndBrandNewMappingAction(String loginUser) throws Exception {
 					
 			

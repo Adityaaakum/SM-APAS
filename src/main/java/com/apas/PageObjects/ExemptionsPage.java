@@ -374,8 +374,29 @@ public class ExemptionsPage extends ApasGenericPage {
     /** Locators for Home Owner Exemptions **/
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(@class,'slds-radio topdown-radio')]//span[text()='HOE']")
     public WebElement homeOwnerExemptionRadioButton;
-  
+   
+    public String yearOfFiling = "Year of filing";
     
+
+    /** Locators for Institution Exemptions **/
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(@class,'slds-radio topdown-radio')]//span[text()='Institutional']")
+    public WebElement institutionalExemptionRadioButton;
+    
+    @FindBy(xpath = "//button[text()='New']")
+    public WebElement creatNewVAsButton;
+    
+    public String exemptionCode = "Exemption Code";
+    public String Penalty = "Penalty %";
+    public String rollYearSettingOnVAs = "Roll Year Settings";
+    public String RPSLfieldOnVAs = "Real Property Settings Library";
+    public String ExemptionAmountUserAdjusted = "Exemption Amount - User Adjusted";
+    public String Remark = "Remark";
+    public String filingStatus = "Filing Status";
+    public String propertySqFtProrated = "Property Sq Ft Prorated %";
+    public String penaltyPercentage = "Penalty Percentage";
+    public String netExemptionAmount = "Net Exemption Amount";
+    
+
     /**
      * Description: This method is to determine the Roll Year of any given date(e.g Application received date)
      *
@@ -773,17 +794,93 @@ public class ExemptionsPage extends ApasGenericPage {
     public void enterHomeOwnerExemptionData(Map<String, String> dataMap) throws Exception {
     	Click(homeOwnerExemptionRadioButton);
     	Click(exemptionRecordTypeNextButton);
-    	
+
     	//String assesseeName = fetchAssesseeName();
-    	//Commented above code temporarily and added below code till current HOE implementation is completed 
-    	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'DoNot'";
+    	
+    	//Commented above code temporarily and added below code till current HOE implementation is completed
+    	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'Automation'";
+    	HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
+    	String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
+
+    	searchAndSelectOptionFromDropDown(claimantName, assesseeName);
+    	enter(yearOfFiling, dataMap.get("Year of Filing"));
+    	selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
+    	scrollToElement(getWebElementWithLabel(dateApplicationReceived));
+    	enter(dateApplicationReceived, dataMap.get("Date Application Received"));
+
+    	Thread.sleep(1000);
+
+    }
+    /**
+     * Description: This method will enter field values in Institutional Exemption screen
+     * @param dataMap: Map that is storing values from JSON file
+     */
+
+    public void createInstitutionalExemption(Map<String, String> dataMap) throws Exception {
+    	Thread.sleep(2000);
+        ReportLogger.INFO("Click 'New' button to fill the following details in the Institutional Exemption record : " + dataMap);
+        Click(waitForElementToBeClickable(newExemptionButton));
+        Thread.sleep(2000);
+    	Click(institutionalExemptionRadioButton);
+    	Click(exemptionRecordTypeNextButton);
+       	String queryForID = "SELECT FirstName, LastName FROM Account WHERE Type In('Person','Business') and FirstName = 'DoNot'";
         HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(queryForID);
         String assesseeName = response.get("FirstName").get(0) + " " + response.get("LastName").get(0);
-        
+        String apnNumber = fetchActiveAPN();
+        searchAndSelectOptionFromDropDown(apn, apnNumber);
         searchAndSelectOptionFromDropDown(claimantName, assesseeName);
-        selectOptionFromDropDown(qualification, dataMap.get("Qualification?"));
+        enter(claimantSSN, dataMap.get("ClaimantSSN"));
+        selectOptionFromDropDown(exemptionCode, dataMap.get("exemptionCode"));
+        enter(Penalty, dataMap.get("PenaltyPercentage"));
+        selectOptionFromDropDown(qualification, dataMap.get("Qualification"));
+        enter(dateApplicationReceived, dataMap.get("DateApplicationReceived"));
         scrollToElement(getWebElementWithLabel(dateApplicationReceived));
-        enter(dateApplicationReceived, dataMap.get("Date Application Received"));
+        enter(dateApplicationReceived, dataMap.get("DateApplicationReceived"));
+        enter(dateAcquiredProperty, dataMap.get("DateAquiredProperty"));
+        enter(dateOccupyProperty, dataMap.get("DateOccupyProperty"));
         Thread.sleep(1000);
+        ReportLogger.INFO("Click 'Save' button to save the details entered in Exemption record");
+        saveExemptionRecord();
+    }
+    /**
+     * Description: This method will enter field values in Value adjustment on Institutional Exemption screen
+     */
+    public void createNewVAsOnInstitutionalExemption() throws Exception {
+    	Thread.sleep(2000);
+        ReportLogger.INFO("Click 'New' button to fill the following details in the VAs record : ");
+        Click(waitForElementToBeClickable(creatNewVAsButton));
+        Thread.sleep(2000);
+    	Click(institutionalExemptionRadioButton);
+    	Click(exemptionRecordTypeNextButton);
+    	String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+    	String strRollYear = ExemptionsPage.determineRollYear(date);
+    	strRollYear = String.valueOf(Integer.parseInt(strRollYear));
+        selectOptionFromDropDown(rollYearSettingOnVAs, strRollYear);
+        selectOptionFromDropDown(RPSLfieldOnVAs, "Exemption Limits - "+strRollYear);
+        enter(ExemptionAmountUserAdjusted,"2000");
+        enter(Remark,"User adjusted exemption amount is 2000.");
+        saveExemptionRecord();
+        
+    }
+    
+    /**
+     * Description: This method will enter field values in Value adjustment on Home Owner Exemption screen
+     */
+    public void createNewVAsOnHOE() throws Exception {
+    	Thread.sleep(2000);
+        ReportLogger.INFO("Click 'New' button to fill the following details in the VAs record : ");
+        Click(waitForElementToBeClickable(creatNewVAsButton));
+        Thread.sleep(2000);
+    	Click(homeOwnerExemptionRadioButton);
+    	Click(exemptionRecordTypeNextButton);
+    	String date = DateUtil.getCurrentDate("MM/dd/yyyy");
+    	String strRollYear = ExemptionsPage.determineRollYear(date);
+    	strRollYear = String.valueOf(Integer.parseInt(strRollYear));
+        selectOptionFromDropDown(rollYearSettingOnVAs, strRollYear);
+        selectOptionFromDropDown(RPSLfieldOnVAs, "Exemption Limits - "+strRollYear);
+        enter(ExemptionAmountUserAdjusted,"2000");
+        enter(Remark,"User adjusted exemption amount is 2000.");
+        saveExemptionRecord();
+        
     }
 }

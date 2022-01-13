@@ -1,0 +1,1115 @@
+package com.apas.Tests.ParcelManagement;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONObject;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import com.apas.Assertions.SoftAssertion;
+import com.apas.BrowserDriver.BrowserDriver;
+import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.ApasGenericPage;
+import com.apas.PageObjects.AuditTrailPage;
+import com.apas.PageObjects.CIOTransferPage;
+import com.apas.PageObjects.ExemptionsPage;
+import com.apas.PageObjects.MappingPage;
+import com.apas.PageObjects.ParcelsPage;
+import com.apas.PageObjects.WorkItemHomePage;
+import com.apas.Reports.ReportLogger;
+import com.apas.TestBase.TestBase;
+import com.apas.Utils.DateUtil;
+import com.apas.Utils.SalesforceAPI;
+import com.apas.Utils.Util;
+import com.apas.config.modules;
+import com.apas.config.testdata;
+import com.apas.config.users;
+import com.jayway.jsonpath.JsonPath;
+
+public class Parcel_Management_AuditTrail_Tests extends TestBase implements testdata, modules, users {
+	private RemoteWebDriver driver;
+
+	ParcelsPage objParcelsPage;
+	WorkItemHomePage objWorkItemHomePage;
+	Util objUtil = new Util();
+	SoftAssertion softAssert = new SoftAssertion();
+	SalesforceAPI salesforceAPI = new SalesforceAPI();
+	MappingPage objMappingPage;
+	String auditTrailData;
+	AuditTrailPage objTrailPage;
+	//ApasGenericPage objApasGenericPage;
+
+	@BeforeMethod(alwaysRun = true)
+	public void beforeMethod() throws Exception {
+		driver = null;
+		setupTest();
+		driver = BrowserDriver.getBrowserInstance();
+		objParcelsPage = new ParcelsPage(driver);
+		objWorkItemHomePage = new WorkItemHomePage(driver);
+		objMappingPage = new MappingPage(driver);
+		auditTrailData = testdata.AUDIT_TRAIL_DATA;
+		objTrailPage=new AuditTrailPage(driver);
+	}
+
+	@Test(description = "SMAB-T3700:Verify that user is able to create audit trail and linkage relationship should be created having EventID populated", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "ParcelAuditTrail" })
+	public void Parcel_AuditTrailUpdatesViaComponentActions(String loginUser) throws Exception {
+
+		String activeApn = objParcelsPage.fetchActiveAPN();
+		Map<String, String> dataToCreateAuditTrailRecord = objUtil.generateMapFromJsonFile(auditTrailData,
+				"DataToCreateAuditTrail");
+		
+		Map<String, String> dataToCreateAuditTrailRecordToLinkWithParent = objUtil.generateMapFromJsonFile(auditTrailData,
+				"DataToCreateAuditTrailToLinkWithParent");
+
+		// Step 1: Login to the APAS application
+		objMappingPage.login(loginUser);
+
+		// Step 2: Opening the PARCELS page
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(activeApn);
+
+		// Step 3: Create audit Trail
+		objParcelsPage.createUnrecordedEvent(dataToCreateAuditTrailRecord);
+
+		//Step 4: Add the Event Id and get Event Title value
+		String eventID = "1234Test";
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Event ID"));
+		objParcelsPage.enter(objParcelsPage.getWebElementWithLabel("Event ID"), eventID);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		
+
+		// Step 5: Opening the PARCELS page
+		objMappingPage.searchModule(PARCELS);
+		objMappingPage.globalSearchRecords(activeApn);
+
+		// Step 6: Create audit trail to link with parent audit trail
+		objParcelsPage.createUnrecordedEvent(dataToCreateAuditTrailRecordToLinkWithParent);
+
+		String eventIdChild = objParcelsPage.getFieldValueFromAPAS("Event ID");
+
+		//Step 7: Verify that the audit trail is linked to parent audit trail as Event Id would be auto populated
+		softAssert.assertEquals(eventIdChild, eventID,
+				"SMAB-T3700: Verify that user is able to create audit trail and linkage relationship should be created having EventID populated");
+
+		//Step 8 : Logout
+		objParcelsPage.logout();
+	}
+	
+	/**
+	 * This method is to Verify that audit trail is created in Characteristic and business event with linkage record created"
+	 * @param loginUser
+	 * @throws Exception
+	 */	
+	
+	@Test(description = "SMAB-T3702,SMAB-T3703:Verify that audit trail is created in Characteristica nd business event with linkage record created", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "ParcelAuditTrail" })
+	public void ParcelManagement_AudiTrail_Characteristics(String loginUser)
+			throws Exception {
+
+		String executionEnv = System.getProperty("region");
+		String queryAPN = "Select Name,Id  From Parcel__c where name like '0%' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn = responseAPNDetails.get("Name").get(0);
+		String apnId = responseAPNDetails.get("Id").get(0);
+
+		ReportLogger.INFO("Delete characteristic record");
+		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
+
+
+		String mappingActionCreationData = testdata.ONE_TO_ONE_MAPPING_ACTION;
+		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformOneToOneMappingActionWithAllFields");
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+
+		String characteristicsRecordCreationData = testdata.CHARACTERISTICS;
+		Map<String, String> hashMapImprovementCharacteristicsData = objUtil
+				.generateMapFromJsonFile(characteristicsRecordCreationData, "DataToCreateImprovementCharacteristics");
+
+		// Adding Characteristic record in the parcel
+		ReportLogger.INFO("Adding Characteristic record in the parcel");
+		objMappingPage.login(users.SYSTEM_ADMIN);
+
+		driver.navigate().to(
+				"https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+				objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
+
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		objParcelsPage.createCharacteristicsOnParcel(hashMapImprovementCharacteristicsData, apn);
+
+		objMappingPage.logout();
+		Thread.sleep(4000);
+		
+		// Step1: Login to the APAS application using the credentials passed through
+		objMappingPage.login(loginUser);
+
+		// Step2: Opening the PARCELS page and searching the parcel to perform one to
+		// one mapping
+		driver.navigate().to(
+				"https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+				objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
+
+		// Step 3: Creating Manual work item for the Parcel
+
+		String WorkItemNo = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		// Step 4:Clicking the details tab for the work item newly created and clicking
+		// on Related Action Link
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.getFieldValueFromAPAS("Reference", "Information");
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+
+		// Clicking on Action Dropdown
+
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,
+				hashMapOneToOneMappingData.get("Action"));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,
+				hashMapOneToOneMappingData.get("Are taxes fully paid?"));
+		objMappingPage.enter(objMappingPage.reasonCodeTextBoxLabel, hashMapOneToOneMappingData.get("Reason code"));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+
+		objMappingPage.waitForElementToBeClickable(10, objMappingPage.generateParcelButton);
+
+		// Fetching the GRID data
+
+		HashMap<String, ArrayList<String>> gridDataHashMap = objMappingPage.getGridDataInHashMap();
+		String childApn = gridDataHashMap.get("APN").get(0);
+
+		// Clicking on generate parcel button
+
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		Thread.sleep(5000);
+
+		// Completing the work Item
+		ReportLogger.INFO("Completing the work Item");
+		String queryWI = "Select Id from Work_Item__c where Name = '" + WorkItemNo + "'";
+		HashMap<String, ArrayList<String>> responseWI = salesforceAPI.select(queryWI);
+		driver.switchTo().window(parentWindow);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ responseWI.get("Id").get(0) + "/view");
+		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.appLauncher);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+	   	objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);		
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		
+		ReportLogger.INFO("mapping supervisor login");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ responseWI.get("Id").get(0) + "/view");
+		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.appLauncher);
+		objWorkItemHomePage.completeWorkItem();
+		objMappingPage.waitForElementToBeVisible(10, objWorkItemHomePage.linkedItemsWI);
+		Thread.sleep(2000);
+		
+		ReportLogger.INFO("Navigate to child Apn");
+		String query = "Select Id from Parcel__c where Name = '" + childApn + "'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ response.get("Id").get(0) + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+				objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
+		objParcelsPage.openParcelRelatedTab(objParcelsPage.parcelCharacteristics);
+		objParcelsPage.Click(objParcelsPage.fetchCharacteristicsList().get(0));
+		ReportLogger.INFO("Verify Audit trail is displayed");
+		objParcelsPage.waitForElementToBeVisible(objTrailPage.businessEventCharacteristicsAuditTrail, 10);
+		softAssert.assertTrue(objMappingPage.verifyElementVisible(objTrailPage.businessEventCharacteristicsAuditTrail),
+				"SMAB-T3702: Verify that When a mapping work item is completed, Audit Trail component should be displayed at the characteristic level");
+
+		objParcelsPage.Click(objTrailPage.businessEventCharacteristicsAuditTrail);
+		objParcelsPage.waitForElementToBeVisible(objTrailPage.relatedBusinessRecords);
+		objParcelsPage.Click(objTrailPage.relatedBusinessRecords);
+		ReportLogger.INFO("verify Linked record is visible");
+		objWorkItemHomePage.waitForElementToBeVisible(20, objTrailPage.linkedRecord);
+		String trailSubject = objTrailPage.linkedRecord.getText();
+		softAssert.assertEquals(trailSubject, "Linked Record",
+				"SMAB-T3703: Verified that Related Businnes Events displays Linked Record");
+
+		objWorkItemHomePage.logout();
+	}
+	
+	/**
+	* This method is to Parcel Management-Verify that When an Internal/External Request mapping work item is created, 
+	* the system will create two audit trail records against the parcel associated to the request
+	* @param loginUser
+	* @throws Exception
+	*/
+	@Test(description = "SMAB-T3653,SMAB-T3655,SMAB-T3657:Parcel Management - Verify that When an Internal Mapping Request work item is created, "
+			+ "the system will create two audit trail records against the parcel associated to the request ", 
+			dataProvider = "loginMappingUser", 
+			dataProviderClass = DataProviders.class, 
+			groups = {"Regression","ParcelManagement","ParcelAuditTrail" })
+	public void ParcelManagement_VerifyAuditTrailsCreatedOnInternalMappingRequestWI(String loginUser) throws Exception {
+		
+		//Fetching parcel that are Active
+				String queryApnDetails ="SELECT Id,Name FROM Parcel__c where primary_situs__c != NULL and "
+						+ "Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where "
+						+ "type__c='CIO') and (Not Name like '100%') and (Not Name like '800%') "
+						+ "and (Not Name like '%990') and (Not Name like '134%') Limit 2";
+				
+				JSONObject jsonObject = objMappingPage.getJsonObject();
+				HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryApnDetails);
+				String apn1=responseAPNDetails.get("Name").get(0);
+				String apn2=responseAPNDetails.get("Name").get(1);
+				String apnId1=responseAPNDetails.get("Id").get(0);
+				String apnId2=responseAPNDetails.get("Id").get(1);
+				
+				objMappingPage.deleteOwnershipFromParcel(apnId1);
+				objMappingPage.deleteOwnershipFromParcel(apnId2);
+				
+				String concatenateCondoWithNonCondo = apn1+","+apn2;
+						
+				String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+				HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+				String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+				HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+		        
+				String queryPUC = "SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+						+ "where Status__c='Active') limit 1";
+				HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select(queryPUC);
+				
+				String legalDescriptionValue="Legal PM 85/25-260";
+				String districtValue="District01";
+				String parcelSize	= "200";
+
+				jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+				jsonObject.put("Status__c","Active");
+				jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+				jsonObject.put("District__c",districtValue);
+				jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+				jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+				jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+		   
+				salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+
+				String workItemCreationData =  testdata.MANUAL_WORK_ITEMS;
+				Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+						"DataToCreateWorkItemOfTypeMappingWithActionInternalRequestCombine");
+		        
+				String mappingActionCreationData = testdata.COMBINE_MAPPING_ACTION;
+				Map<String, String> hashMapCombineMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+						"DataToPerformCombineMappingAction");
+				
+				// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
+				objWorkItemHomePage.login(loginUser);
+
+				// Step2: Navigating to the Parcel View page								
+				String execEnv = System.getProperty("region");
+
+				driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com"
+						+ "/lightning/r/Parcel__c/"
+						+ apnId1 + "/view");
+						objParcelsPage.waitForElementToBeVisible(20, 
+								objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));								
+				
+				// Step 3: Creating Manual work item for the Parcel 
+				String WINumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+				driver.navigate().refresh();						
+		        
+				String sqlgetTransanctionTrail ="SELECT Business_Event__r.name , Business_Event__r.Type__c, Business_Event__r.Event_Type__c "
+						+ "FROM Work_Item_Linkage__c where work_item__r.name = '"+WINumber+"'";
+					
+				String jsonResponse = salesforceAPI.getSelectQueryDateInJson(sqlgetTransanctionTrail);		
+		        
+				String jsonPathName_1 = "$.records[0].Business_Event__r.Name";
+				String TransactionTrailName_1 = JsonPath.read(jsonResponse, jsonPathName_1);
+				String jsonPathType_1 = "$.records[0].Business_Event__r.Type__c";
+				String TransactionTrailType_1 = JsonPath.read(jsonResponse, jsonPathType_1);
+				String jsonPathEventType_1 = "$.records[0].Business_Event__r.Event_Type__c";
+				String TransactionalTrailEventType_1 = JsonPath.read(jsonResponse, jsonPathEventType_1);
+				
+				boolean flag = objWorkItemHomePage.verifyTransactionalTrailRowDatafromWebTable(TransactionTrailName_1,TransactionTrailType_1);
+				
+				softAssert.assertTrue(flag, "SMAB-T2733: "
+						+ "Transactional trail created successfully : "+TransactionTrailName_1 
+						+ " with Type: "+TransactionTrailType_1);
+										
+				
+				String jsonPathName_2 = "$.records[1].Business_Event__r.Name";
+				String TransactionTrailName_2 = JsonPath.read(jsonResponse, jsonPathName_2);
+				String jsonPathType_2 = "$.records[1].Business_Event__r.Type__c";
+				String TransactionTrailType_2 = JsonPath.read(jsonResponse, jsonPathType_2);
+				String jsonPathEventType_2 = "$.records[1].Business_Event__r.Event_Type__c";
+				String TransactionalTrailEventType_2 = JsonPath.read(jsonResponse, jsonPathEventType_2);
+				
+				flag = objWorkItemHomePage.verifyTransactionalTrailRowDatafromWebTable(TransactionTrailName_2,TransactionTrailType_2);
+				
+				softAssert.assertTrue(flag, "SMAB-T3653: "
+						+ "Transactional trail created successfully : "+TransactionTrailName_2 
+						+ " with Type: "+TransactionTrailType_2);								
+				
+				
+				objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+				
+				String EventID = objWorkItemHomePage.getFieldValueFromAPAS("Event ID","Information");
+				
+				objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsTab);
+				
+				objWorkItemHomePage.clickTransactionTrailLink(TransactionTrailName_1);
+				
+				String TTEventID_1 = objMappingPage.getFieldValueFromAPAS("Event ID");
+				
+				softAssert.assertEquals(EventID, TTEventID_1, "SMAB-T3655: The Event ID of the Work Item will be "
+						+ "passed to Audit trail record");
+				
+				String expectedEventType_1 = objMappingPage.getFieldValueFromAPAS("Event Type");
+				
+				softAssert.assertEquals(TransactionalTrailEventType_1, expectedEventType_1, "SMAB-T2733: "
+						+ "Transactional trail Event Type:"+TransactionalTrailEventType_1);				
+				
+				driver.navigate().back();
+				
+				objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsTab);
+				
+				objWorkItemHomePage.clickTransactionTrailLink(TransactionTrailName_2);
+				
+		        String TTEventID_2 = objMappingPage.getFieldValueFromAPAS("Event ID");
+				
+				softAssert.assertEquals(EventID, TTEventID_2, "SMAB-T3655: The Event ID of the Work Item will be "
+						+ "passed to Audit trail record");
+				
+				String expectedEventType_2 = objMappingPage.getFieldValueFromAPAS("Event Type");
+				
+				softAssert.assertEquals(TransactionalTrailEventType_2, expectedEventType_2, "SMAB-T3653: "
+						+ "Transactional trail Event Type:"+TransactionalTrailEventType_2);
+				
+				driver.navigate().back();				
+				
+				objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+				
+				String parentWindow = driver.getWindowHandle();
+				ReportLogger.INFO("Switch to the Mapping Action screen");
+				objWorkItemHomePage.switchToNewWindow(parentWindow);					
+				
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+				objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateCondoWithNonCondo);
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+				
+				objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapCombineMappingData.get("Action"));
+				objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
+						
+				Thread.sleep(5000);	
+						
+				String actualResonCode = objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value");
+				
+				softAssert.assertEquals(EventID, actualResonCode, "SMAB-T3655: The Event ID of the Work Item will be "
+						+ "passed to Reason Code field on Mapping screen");
+				
+				objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel2,apn1);
+				objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));				
+				
+				objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+				
+				driver.switchTo().window(parentWindow);
+				
+				objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+				Thread.sleep(5000);
+				objWorkItemHomePage.logout();
+				Thread.sleep(5000);
+				ReportLogger.INFO(" Supervisor logins to close the WI ");
+				objMappingPage.login(users.MAPPING_SUPERVISOR);
+				
+				String query = "Select Id from Work_Item__c where Name = '"+WINumber+"'";
+				HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+				driver.navigate().to("https://smcacre--"+execEnv+
+				".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
+				
+				objWorkItemHomePage.completeWorkItem();
+				
+				jsonResponse = salesforceAPI.getSelectQueryDateInJson(sqlgetTransanctionTrail);
+				jsonPathEventType_2 = "$.records[1].Business_Event__r.Event_Type__c";
+				TransactionalTrailEventType_2 = JsonPath.read(jsonResponse, jsonPathEventType_2);
+				objWorkItemHomePage.clickTransactionTrailLink(TransactionTrailName_2);
+				
+		        expectedEventType_2 = objMappingPage.getFieldValueFromAPAS("Event Type");
+				
+				softAssert.assertEquals(TransactionalTrailEventType_2, expectedEventType_2,"SMAB-T3657: Parcel Management - Verify that When a "
+						+ "mapping work item is completed, the draft audit trail record will be updated "
+						+ "with the Request ID and the correct audit trail label activity based on the mapping action performed");
+				
+				objWorkItemHomePage.logout();
+	}
+	
+	/**
+	* This method is to Parcel Management-Verify that When an Internal/External Request mapping work item is created, 
+	* the system will create two audit trail records against the parcel associated to the request
+	* @param loginUser
+	* @throws Exception
+	*/
+	@Test(description = "SMAB-T3672,SMAB-T3673,SMAB-3675:Parcel Management - Verify that When an Internal Mapping Request work item is created, "
+			+ "the system will create two audit trail records against the parcel associated to the request ", 
+			dataProvider = "loginMappingUser", 
+			dataProviderClass = DataProviders.class, 
+			groups = {"Regression","ParcelManagement","ParcelAuditTrail" })
+	public void ParcelManagement_VerifyAuditTrailsCreatedOnExternalMappingRequestWI(String loginUser) throws Exception {
+		
+		//Fetching parcel that are Active
+		String queryApnDetails ="SELECT Id,Name FROM Parcel__c where primary_situs__c != NULL and "
+				+ "Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where "
+				+ "type__c='CIO') and (Not Name like '1%') and (Not Name like '8%') "
+				+ "and (Not Name like '%990') and (Not Name like '134%') Limit 2";
+		
+		JSONObject jsonObject = objMappingPage.getJsonObject();
+		
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryApnDetails);
+		String apn1=responseAPNDetails.get("Name").get(0);
+		String apn2=responseAPNDetails.get("Name").get(1);
+		String apnId1=responseAPNDetails.get("Id").get(0);
+		String apnId2=responseAPNDetails.get("Id").get(1);
+		
+		objMappingPage.deleteOwnershipFromParcel(apnId1);
+		objMappingPage.deleteOwnershipFromParcel(apnId2);
+		
+		String concatenateCondoWithNonCondo = apn1+","+apn2;
+				
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+        
+		String queryPUC = "SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				+ "where Status__c='Active') limit 1";
+		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select(queryPUC);
+		
+		String legalDescriptionValue="Legal PM 85/25-260";
+		String districtValue="District01";
+		String parcelSize	= "200";
+
+		jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
+		jsonObject.put("Status__c","Active");
+		jsonObject.put("Short_Legal_Description__c",legalDescriptionValue);
+		jsonObject.put("District__c",districtValue);
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
+		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		jsonObject.put("Lot_Size_SQFT__c",parcelSize);
+   
+		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+
+		String workItemCreationData =  testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeMappingWithActionCustomerRequestCombine");
+        
+		String mappingActionCreationData = testdata.COMBINE_MAPPING_ACTION;
+		Map<String, String> hashMapCombineMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
+				"DataToPerformCombineMappingAction");
+		
+		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
+		objWorkItemHomePage.login(loginUser);
+
+		// Step2: Navigating to the Parcel View page						
+		String execEnv = System.getProperty("region");
+
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com"
+				+ "/lightning/r/Parcel__c/"
+				+ apnId1 + "/view");
+				objParcelsPage.waitForElementToBeVisible(20, 
+						objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));								
+
+		
+		// Step 3: Creating Manual work item for the Parcel 
+		String WINumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+		driver.navigate().refresh();
+		Thread.sleep(5000);		
+        
+		String sqlgetTransanctionTrail ="SELECT Business_Event__r.name , Business_Event__r.Type__c, Business_Event__r.Event_Type__c "
+				+ "FROM Work_Item_Linkage__c where work_item__r.name = '"+WINumber+"'";
+			
+		String jsonResponse = salesforceAPI.getSelectQueryDateInJson(sqlgetTransanctionTrail);		
+        
+		String jsonPathName_1 = "$.records[0].Business_Event__r.Name";
+		String TransactionTrailName_1 = JsonPath.read(jsonResponse, jsonPathName_1);
+		String jsonPathType_1 = "$.records[0].Business_Event__r.Type__c";
+		String TransactionTrailType_1 = JsonPath.read(jsonResponse, jsonPathType_1);
+		String jsonPathEventType_1 = "$.records[0].Business_Event__r.Event_Type__c";
+		String TransactionalTrailEventType_1 = JsonPath.read(jsonResponse, jsonPathEventType_1);
+		
+		boolean flag = objWorkItemHomePage.verifyTransactionalTrailRowDatafromWebTable(TransactionTrailName_1,TransactionTrailType_1);
+		
+		softAssert.assertTrue(flag, "SMAB-T3673: "
+				+ "Transactional trail created successfully : "+TransactionTrailName_1 
+				+ " with Type: "+TransactionTrailType_1);
+								
+		
+		String jsonPathName_2 = "$.records[1].Business_Event__r.Name";
+		String TransactionTrailName_2 = JsonPath.read(jsonResponse, jsonPathName_2);
+		String jsonPathType_2 = "$.records[1].Business_Event__r.Type__c";
+		String TransactionTrailType_2 = JsonPath.read(jsonResponse, jsonPathType_2);
+		String jsonPathEventType_2 = "$.records[1].Business_Event__r.Event_Type__c";
+		String TransactionalTrailEventType_2 = JsonPath.read(jsonResponse, jsonPathEventType_2);
+		
+		flag = objWorkItemHomePage.verifyTransactionalTrailRowDatafromWebTable(TransactionTrailName_2,TransactionTrailType_2);
+		
+		softAssert.assertTrue(flag, "SMAB-T3673: "
+				+ "Transactional trail created successfully : "+TransactionTrailName_2 
+				+ " with Type: "+TransactionTrailType_2);								
+		
+		
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		
+		String EventID = objWorkItemHomePage.getFieldValueFromAPAS("Event ID","Information");
+		
+		objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsTab);
+		
+		objWorkItemHomePage.clickTransactionTrailLink(TransactionTrailName_1);
+		
+		String TTEventID_1 = objMappingPage.getFieldValueFromAPAS("Event ID");
+		
+		softAssert.assertEquals(EventID, TTEventID_1, "SMAB-T3672: The Event ID of the Work Item will be "
+				+ "passed to Audit trail record");
+		
+		String expectedEventType_1 = objMappingPage.getFieldValueFromAPAS("Event Type");
+		
+		softAssert.assertEquals(TransactionalTrailEventType_1, expectedEventType_1, "SMAB-T2733: "
+				+ "Transactional trail Event Type:"+TransactionalTrailEventType_1);				
+		
+		driver.navigate().back();
+		
+		objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsTab);
+		
+		objWorkItemHomePage.clickTransactionTrailLink(TransactionTrailName_2);
+		
+        String TTEventID_2 = objMappingPage.getFieldValueFromAPAS("Event ID");
+		
+		softAssert.assertEquals(EventID, TTEventID_2, "SMAB-T3655: The Event ID of the Work Item will be "
+				+ "passed to Audit trail record");
+		
+		String expectedEventType_2 = objMappingPage.getFieldValueFromAPAS("Event Type");
+		
+		softAssert.assertEquals(TransactionalTrailEventType_2, expectedEventType_2, "SMAB-T3672: "
+				+ "Transactional trail Event Type:"+TransactionalTrailEventType_2);
+		
+		driver.navigate().back();		
+		
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		
+		String parentWindow = driver.getWindowHandle();
+		ReportLogger.INFO("Switch to the Mapping Action screen");
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		Thread.sleep(2000);			
+		
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
+		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel,concatenateCondoWithNonCondo);
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		
+		objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapCombineMappingData.get("Action"));
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel,"Yes");
+				
+		Thread.sleep(2000);	
+				
+		String actualResonCode = objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value");
+		
+		softAssert.assertEquals(EventID, actualResonCode, "SMAB-T3672: The Event ID of the Work Item will be "
+				+ "passed to Reason Code field on Mapping screen");
+		
+		objMappingPage.enter(objMappingPage.firstNonCondoTextBoxLabel2,apn1);
+		objMappingPage.scrollToElement(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));				
+		
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+		
+		driver.switchTo().window(parentWindow);
+		
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		
+		ReportLogger.INFO(" Supervisor logins to close the WI ");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+		
+		String query = "Select Id from Work_Item__c where Name = '"+WINumber+"'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		driver.navigate().to("https://smcacre--"+execEnv+
+		".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
+				
+		objWorkItemHomePage.completeWorkItem();
+		
+		jsonResponse = salesforceAPI.getSelectQueryDateInJson(sqlgetTransanctionTrail);
+		jsonPathEventType_2 = "$.records[1].Business_Event__r.Event_Type__c";
+		TransactionalTrailEventType_2 = JsonPath.read(jsonResponse, jsonPathEventType_2);
+		objWorkItemHomePage.clickTransactionTrailLink(TransactionTrailName_2);
+		
+        expectedEventType_2 = objMappingPage.getFieldValueFromAPAS("Event Type");
+		
+		softAssert.assertEquals(TransactionalTrailEventType_2, expectedEventType_2,"SMAB-T3657: Parcel Management - Verify that When a "
+				+ "mapping work item is completed, the draft audit trail record will be updated "
+				+ "with the Request ID and the correct audit trail label activity based on the mapping action performed");
+		
+		objWorkItemHomePage.logout();
+		
+		
+	}
+	
+	/**
+	 Verify audit trail update with Parcel Transfer Allowed value for business event audit trail
+	 * 
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T3698,SMAB-T3699,SMAB-T3708:Verify audit trail update with Parcel Transfer Allowed value for business event audit trail", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "ParcelAuditTrail" })
+	public void ParcelManagement_EventLibraray_ParcelTransfer_Allowed_BusinessEvent(String loginUser) throws Exception {
+
+		// Step1: Login to the APAS application using the credentials passed through
+		// Data Provider
+		objMappingPage.login(loginUser);
+
+		String executionEnv = System.getProperty("region");
+		// fetching audit trail records
+		String queryAuditTrail1 = "SELECT Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Combined Performed'"
+				+ " and parcel__c!=NULL ";
+		HashMap<String, ArrayList<String>> responseAuditTrailDetails = salesforceAPI.select(queryAuditTrail1);
+		String apnId1 = responseAuditTrailDetails.get("Parcel__c").get(0);
+		String queryAuditTrail2 = "SELECT Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Combined Performed'"
+				+ " and parcel__c!=NULL and parcel__c!='" + apnId1 + "'";
+
+		HashMap<String, ArrayList<String>> responseAuditTrailDetails2 = salesforceAPI.select(queryAuditTrail2);
+		String auditTrail1 = responseAuditTrailDetails.get("Name").get(0);
+		String auditTrail2 = responseAuditTrailDetails2.get("Name").get(0);
+		
+		// Navigating to event library and updating field parcel Transfer allowed
+		String Eventlib="Combined Performed";
+		String queryEventLibraryID = "Select Id from Event_Library__c where Name = '" + Eventlib + "'";	
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
+				+ queryEventLibraryID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
+		
+		ReportLogger.INFO("Verify parecl Transfer Allowed field is visible");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Parcel Transfer Allowed"),
+				"SMAB-T3698: Validate that field name Parcel Transfer Allowed exists");
+
+		// set value of parcel Transfer allowed to "No"
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
+		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "No");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		// Logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		ReportLogger.INFO("Login as mapping supervisor");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+
+		// Navigate to audit trail record and editing the Related Business Event field
+		String auditTrail1ID = responseAuditTrailDetails.get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
+				+ auditTrail1ID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Related Business Event");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Business Event"));
+		objParcelsPage.clearSelectionFromLookup("Related Business Event");
+		objParcelsPage.searchAndSelectOptionFromDropDown("Related Business Event", auditTrail2);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		String ExpectedErrorMessage = "The Audit Trail record cannot be associated to an audit trail not associated to this parcel. If needed, please contact an admin to update the associated Event Library record.";
+		
+		// Verify when parcel transfer allowed is "No" the audit trail cannot be linked  to audit trail with another parcel
+		softAssert.assertEquals(objParcelsPage.getElementText(objMappingPage.pageError), ExpectedErrorMessage,
+				"SMAB-T3699: Verify when parcel transfer allowed is \"No\" the audit trail cannot be linked to audit trail with another parcel");
+
+      //Logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		// Login as System admin
+		objMappingPage.login(users.SYSTEM_ADMIN);
+
+		// Navigating to event library and changing the value of parcel Transfer allowed to "yes"	
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
+				+ queryEventLibraryID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
+		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		// Logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		// Login as Mapping supervisor
+		objMappingPage.login(users.MAPPING_STAFF);
+
+		// Navigating to audit trail and updating the value of Related Correspondence field	
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
+				+ auditTrail1ID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Related Business Event");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Business Event"));
+		objParcelsPage.clearSelectionFromLookup("Related Business Event");
+		objParcelsPage.searchAndSelectOptionFromDropDown("Related Business Event", auditTrail2);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		String linkedauditTrailvalue = objParcelsPage.getFieldValueFromAPAS("Related Business Event");
+
+		// Verify when parcel transfer allowed is "Yes" the audit trail can be linked to audit trail with another parcel
+		softAssert.assertEquals(linkedauditTrailvalue, auditTrail2,
+				"SMAB-T3708: Verify when parcel transfer allowed is \"Yes\" the audit trail can be linked to audit trail with another parcel");
+
+		// Logout
+		objParcelsPage.logout();
+
+	}
+
+	
+	/**
+	 Verify audit trail update with Parcel Transfer Allowed value for correspondence audit trail
+	 * 
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T3698,SMAB-T3699,SMAB-T3708:Verify audit trail update with Parcel Transfer Allowed value for correspondence audit trail", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "ParcelAuditTrail" })
+	public void ParcelManagement_EventLibraray_ParcelTransfer_Allowed_Correspondence(String loginUser)
+			throws Exception {
+
+		// Step1: Login to the APAS application using the credentials passed through
+		// Data Provider
+		objMappingPage.login(loginUser);
+
+		String executionEnv = System.getProperty("region");
+		
+		// fetching audit trail records
+		String queryAuditTrail1 = "SELECT  Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
+				+ " and parcel__c!=NULL ";
+		HashMap<String, ArrayList<String>> responseAuditTrailDetails = salesforceAPI.select(queryAuditTrail1);
+		String apnId1 = responseAuditTrailDetails.get("Parcel__c").get(0);
+		String queryAuditTrail2 = "SELECT Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
+				+ " and parcel__c!=NULL and parcel__c!='" + apnId1 + "'";
+
+		HashMap<String, ArrayList<String>> responseAuditTrailDetails2 = salesforceAPI.select(queryAuditTrail2);
+		String auditTrail1 = responseAuditTrailDetails.get("Name").get(0);
+		String auditTrail2 = responseAuditTrailDetails2.get("Name").get(0);
+
+		// Navigating to event library and updating field parcel Transfer allowed
+		String Eventlib="Correspondence Received - Mapping";
+		String queryEventLibraryID = "Select Id from Event_Library__c where Name = '" + Eventlib + "'";	
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
+				+ queryEventLibraryID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
+
+
+		ReportLogger.INFO("Verify parecl Transfer Allowed field is visible");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Parcel Transfer Allowed"),
+				"SMAB-T3698: Validate that field name Parcel Transfer Allowed exists");
+
+		// set value of parcel Transfer allowed to "No"
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
+		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "No");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		// Logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		ReportLogger.INFO("Login as mapping supervisor");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+
+		// Navigate to audit trail record and editing the Related correspondence field
+		String auditTrail1ID = responseAuditTrailDetails.get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
+				+ auditTrail1ID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Related Correspondence");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Correspondence"));
+		objParcelsPage.clearSelectionFromLookup("Related Correspondence");
+		objParcelsPage.searchAndSelectOptionFromDropDown("Related Correspondence", auditTrail2);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		// Verify when parcel transfer allowed is "No" the audit trail cannot be linked to audit trail with another parcel
+		String ExpectedErrorMessage = "The Audit Trail record cannot be associated to an audit trail not associated to this parcel. If needed, please contact an admin to update the associated Event Library record.";
+		softAssert.assertEquals(objParcelsPage.getElementText(objMappingPage.pageError), ExpectedErrorMessage,
+				"SMAB-T3699: Verify when parcel transfer allowed is \"No\" the audit trail cannot be linked to audit trail with another parcel");
+
+		// Logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		// Login as system admin
+		objMappingPage.login(users.SYSTEM_ADMIN);
+
+		// Navigating to event library and changing the value of parcel Transfer allowed to "yes"
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
+				+ queryEventLibraryID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
+		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+
+		// logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		// Login as mapping supervisor
+		objMappingPage.login(users.MAPPING_STAFF);
+
+		// Navigating to audit trail and updating the value of Related Correspondence field
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Transaction_Trail__c/"
+				+ auditTrail1ID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Related Correspondence");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Correspondence"));
+		objParcelsPage.clearSelectionFromLookup("Related Correspondence");
+		objParcelsPage.searchAndSelectOptionFromDropDown("Related Correspondence", auditTrail2);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		String linkedauditTrailvalue = objParcelsPage.getFieldValueFromAPAS("Related Correspondence");
+
+		// Verify when parcel transfer allowed is "Yes" the audit trail can be linked to audit trail with another parcel
+		softAssert.assertEquals(linkedauditTrailvalue, auditTrail2,
+				"SMAB-T3708: Verify when parcel transfer allowed is \"Yes\" the audit trail can be linked to audit trail with another parcel");
+
+		// Logout
+		objParcelsPage.logout();
+
+	}
+	
+	/**
+	 * Verify audit trail manual relationship
+	 * 
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T2933,SMAB-T2935:Verify audit trail manual relationship", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "ParcelAuditTrail" })
+	public void ParcelManagement_AuditTrailManualRelationship(String loginUser) throws Exception {
+
+		// Step1: Login to the APAS application using the credentials passed through
+		// Data Provider
+		objMappingPage.login(loginUser);
+
+		String executionEnv = System.getProperty("region");
+
+		// fetching audit trail records
+		String queryAuditTrailCorrespondence1 = "SELECT  Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
+				+ " and parcel__c!=NULL ";
+		HashMap<String, ArrayList<String>> responseAuditTrailDetailsCorrespondence = salesforceAPI
+				.select(queryAuditTrailCorrespondence1);
+		String apnId1 = responseAuditTrailDetailsCorrespondence.get("Parcel__c").get(0);
+		String queryAuditTrailCorrespondence2 = "SELECT Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
+				+ " and parcel__c!=NULL and parcel__c!='" + apnId1 + "'";
+
+		HashMap<String, ArrayList<String>> responseAuditTrailDetailsCorrespondence2 = salesforceAPI
+				.select(queryAuditTrailCorrespondence2);
+		String auditTrailCorrespondence1 = responseAuditTrailDetailsCorrespondence.get("Name").get(0);
+		String auditTrailCorrespondence2 = responseAuditTrailDetailsCorrespondence2.get("Name").get(0);
+
+		// fetching audit trail records
+		String queryAuditTrailBusiness1 = "SELECT Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Combined Performed'"
+				+ " and parcel__c!=NULL ";
+		HashMap<String, ArrayList<String>> responseAuditTrailDetailsBusiness = salesforceAPI
+				.select(queryAuditTrailBusiness1);
+		String apnIdBusiness1 = responseAuditTrailDetailsBusiness.get("Parcel__c").get(0);
+		String queryAuditTrailBusiness2 = "SELECT Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Combined Performed'"
+				+ " and parcel__c!=NULL and parcel__c!='" + apnIdBusiness1 + "'";
+
+		HashMap<String, ArrayList<String>> responseAuditTrailDetailsBusiness2 = salesforceAPI
+				.select(queryAuditTrailBusiness2);
+		String auditTrailBusiness1 = responseAuditTrailDetailsBusiness.get("Name").get(0);
+		String auditTrailBusiness2 = responseAuditTrailDetailsBusiness2.get("Name").get(0);
+
+		// Navigating to event library and updating field parcel Transfer allowed
+		String EventLib = "Correspondence Received Mapping";
+		String queryEventLibraryID = "Select Id from Event_Library__c where Name = '" + EventLib + "'";
+		HashMap<String, ArrayList<String>> responseEventLibrary = salesforceAPI
+				.select(queryEventLibraryID);
+		String EventLibraryID=responseEventLibrary.get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
+				+ EventLibraryID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
+
+		// set value of parcel Transfer allowed to "Yes"
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
+		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		Thread.sleep(2000);
+
+		// Logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		ReportLogger.INFO("Login as mapping supervisor");
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+
+		// Navigate to audit trail record and editing the Related correspondence field
+		String auditTrail1ID = responseAuditTrailDetailsCorrespondence.get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + executionEnv
+				+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrail1ID + "/view");
+		objParcelsPage.waitForElementToBeVisible(80, "Related Correspondence");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Correspondence"));
+		objParcelsPage.clearSelectionFromLookup("Related Correspondence");
+		objParcelsPage.searchAndSelectOptionFromDropDown("Related Correspondence", auditTrailCorrespondence2);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		Thread.sleep(1000);
+
+		String linkedAuditTrailvalue = objParcelsPage.getFieldValueFromAPAS("Related Correspondence");
+
+		// Verify related correspondence field can be updated
+		softAssert.assertEquals(linkedAuditTrailvalue, auditTrailCorrespondence2,
+				"SMAB-T2993: Verify realted correspondence field can be updated");
+
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Business Event"));
+		objParcelsPage.clearSelectionFromLookup("Related Business Event");
+		objParcelsPage.searchAndSelectOptionFromDropDown("Related Business Event", auditTrailBusiness2);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		Thread.sleep(2000);
+
+		// Verify related correspondence and related business record cannot be updated
+		// at the same time
+		String ExpectedErrorMessage = "Close error dialog We hit a snag. Review the errors on this page. Either the \"Related Correspondence Event\" or \"Related Business Event\" can be populated, Please check.";
+		softAssert.assertEquals((objParcelsPage.getElementText(objMappingPage.pageError).trim()), ExpectedErrorMessage.trim(),
+				"SMAB-T2935: Verify related correspondence and related business record cannot be updated at the same time");
+
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Cancel"));
+		
+		// Logout
+		objParcelsPage.logout();
+
+	}
+	
+	
+	/**
+	 * Verify audit trail event id automation
+	 * 
+	 * @param loginUser
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T3380,SMAB-T3381:Verify audit trail event id automation", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ParcelManagement", "ParcelAuditTrail" })
+	public void ParcelManagement_AuditTrailEventId(String loginUser) throws Exception {
+
+		// Step1: Login to the APAS application using the credentials passed through
+		// Data Provider
+		objMappingPage.login(loginUser);
+
+		String executionEnv = System.getProperty("region");
+		String userNameForMappingStaff = CONFIG.getProperty(users.MAPPING_STAFF + "UserName");
+		String userNameForMappingSupervisor = CONFIG.getProperty(users.MAPPING_SUPERVISOR + "UserName");
+
+		// fetching audit trail records
+		String queryAuditTrail1 = "SELECT  Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
+				+ " and parcel__c!=NULL ";
+		HashMap<String, ArrayList<String>> responseAuditTrailDetails = salesforceAPI.select(queryAuditTrail1);
+		String apnId1 = responseAuditTrailDetails.get("Parcel__c").get(0);
+		String queryAuditTrail2 = "SELECT Id, Name, Parcel__c FROM Transaction_Trail__c WHERE Event_Type__c='Correspondence Received - Mapping'"
+				+ " and parcel__c!=NULL and parcel__c!='" + apnId1 + "'";
+
+		HashMap<String, ArrayList<String>> responseAuditTrailDetails2 = salesforceAPI.select(queryAuditTrail2);
+		String auditTrail1 = responseAuditTrailDetails.get("Name").get(0);
+		String auditTrail2 = responseAuditTrailDetails2.get("Name").get(0);
+
+		// Navigating to event library and updating field parcel Transfer allowed
+		String EventLib = "Correspondence Received Mapping";
+		String queryEventLibraryID = "Select Id from Event_Library__c where Name = '" + EventLib + "'";
+		HashMap<String, ArrayList<String>> responseEventLibrary = salesforceAPI
+				.select(queryEventLibraryID);
+		String EventLibraryID=responseEventLibrary.get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Event_Library__c/"
+				+ EventLibraryID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Parcel Transfer Allowed");
+
+		// set value of parcel Transfer allowed to "Yes"
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Parcel Transfer Allowed"));
+		objParcelsPage.selectOptionFromDropDown("Parcel Transfer Allowed", "Yes");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		Thread.sleep(2000);
+
+		// Logout
+		objParcelsPage.logout();
+		Thread.sleep(5000);
+
+		ReportLogger.INFO("Login as mapping staff");
+		objMappingPage.login(users.MAPPING_STAFF);
+
+		// Navigate to audit trail record and editing the Related correspondence field
+		String auditTrail1ID = responseAuditTrailDetails.get("Id").get(0);
+		String auditTrail2ID = responseAuditTrailDetails2.get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + executionEnv
+				+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrail1ID + "/view");
+		objParcelsPage.waitForElementToBeVisible(10, "Related Correspondence");
+		objParcelsPage.Click(objParcelsPage.editFieldButton("Related Correspondence"));
+		objParcelsPage.clearSelectionFromLookup("Related Correspondence");
+		objParcelsPage.searchAndSelectOptionFromDropDown("Related Correspondence", auditTrail2);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
+		Thread.sleep(1000);
+
+		driver.navigate().to("https://smcacre--" + executionEnv
+				+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrail2ID + "/view");
+		String apnOfLinkedCorrespondenceAuditTrail = objParcelsPage.getFieldValueFromAPAS("APN");
+		String requestOriginOfLinkedCorrespondenceAuditTrail = objParcelsPage.getFieldValueFromAPAS("Request Origin");
+		String eventIdOfLinkedCorrespondenceAuditTrail = objParcelsPage.getFieldValueFromAPAS("Event ID");
+
+		driver.navigate().to("https://smcacre--" + executionEnv
+				+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrail1ID + "/view");
+
+		String apnOfCurrentAuditTrail = objParcelsPage.getFieldValueFromAPAS("APN");
+		String requestOriginOfCurretAuditTrail = objParcelsPage.getFieldValueFromAPAS("Request Origin");
+		String eventIdOfCurrentAuditTrail = objParcelsPage.getFieldValueFromAPAS("Event ID");
+
+		softAssert.assertEquals(apnOfLinkedCorrespondenceAuditTrail, apnOfCurrentAuditTrail,
+				"SMAB-T3380: Verify upon updating the audit trail record with new related event APN value should be updated with new audit trail values");
+
+		softAssert.assertEquals(requestOriginOfLinkedCorrespondenceAuditTrail, requestOriginOfCurretAuditTrail,
+				"SMAB-T3380: Verify upon updating the audit trail record with new related event Request Origin value should be updated with new audit trail values");
+
+		softAssert.assertEquals(eventIdOfLinkedCorrespondenceAuditTrail, eventIdOfCurrentAuditTrail,
+				"SMAB-T3380: Verify upon updating the audit trail record with new related event Event Id value should be updated with new audit trail values");
+
+		String queryAPN = "Select Name,Id  From Parcel__c where name like '0%' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apn = responseAPNDetails.get("Name").get(0);
+		String apnId = responseAPNDetails.get("Id").get(0);
+
+		driver.navigate().to(
+				"https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId + "/view");
+
+		objParcelsPage.waitForElementToBeVisible(20,
+				objParcelsPage.getButtonWithText(objParcelsPage.parcelMapInGISPortal));
+
+		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+				"DataToCreateWorkItemOfTypeParcelManagement");
+
+		// Creating Manual work item for the Parcel
+		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+
+		objMappingPage.login(users.MAPPING_SUPERVISOR);
+
+		String query = "Select Id from Work_Item__c where Name = '" + workItemNumber + "'";
+		HashMap<String, ArrayList<String>> responseWI = salesforceAPI.select(query);
+		driver.navigate().to("https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+				+ responseWI.get("Id").get(0) + "/view");
+		objParcelsPage.waitForElementToBeVisible(20, objWorkItemHomePage.linkedItemsWI);
+		// Completing the workItem
+		objWorkItemHomePage.completeWorkItem();
+		objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);
+
+		// navigating to business event audit trail
+		objWorkItemHomePage.scrollToElement(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		objWorkItemHomePage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Processed By", "Additional Information"), salesforceAPI.select("SELECT Name FROM User where Username ='" + userNameForMappingStaff + "'").get("Name").get(0),
+				"SMAB-T3381: Verify when work item is completed processed By are updated");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Final Approver", "Additional Information"), salesforceAPI.select("SELECT Name FROM User where Username ='" + userNameForMappingSupervisor + "'").get("Name").get(0),
+				"SMAB-T3381: Verify when work item is completed final Approver are updated");
+
+		// Logout
+		objParcelsPage.logout();
+
+	}
+}

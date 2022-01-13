@@ -112,7 +112,8 @@
     "Reference": "Test WI",
     "Description": "Creation of work item",
     "Priority": "Urgent",
-    "Work Item Routing": "Give Work Item to Me"
+    "Work Item Routing": "Give Work Item to Me",
+    "Event Code": "Combined Performed"
   },
   "DataToCreateWorkItemOfTypeBuildingPermitBurlingameFileUpload": {
     "Work Item Type": "Building Permit",
@@ -172,6 +173,15 @@
     "Audit Trail": "No",
     "Reference": "Test WI",
     "Description": "Creation of work item",
+    "Priority": "Urgent",
+    "Work Item Routing": "Give Work Item to Default Work Pool"
+  },
+  "DataToCreateWorkItemOfRollValueChange": {
+    "Work Item Type": "Roll Value Change",
+    "Actions": "Manual Roll Entry",
+    "Audit Trail": "No",
+    "Reference": "Test Roll Value Change WI",
+    "Description": "Creation of Roll Value Change work item",
     "Priority": "Urgent",
     "Work Item Routing": "Give Work Item to Default Work Pool"
   },

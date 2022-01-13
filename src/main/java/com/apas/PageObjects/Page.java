@@ -238,7 +238,7 @@ public class Page extends TestBase {
 		} else
 			elem = (WebElement) element;
 
-		waitForElementToBeClickable(15, elem);
+		 waitForElementToBeClickable(15, elem);
 		((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid green'", elem);
 		elem.clear();
 		elem.sendKeys(Keys.chord(Keys.CONTROL, "a"));
@@ -730,14 +730,16 @@ public class Page extends TestBase {
 	 * @return : webelement against the label
 	 */
 	public WebElement getWebElementWithLabel(String label) throws Exception {
-		String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody')]";
+		String commonPath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain') or contains(@class,'flowruntimeBody') or contains(@class,'slds-form-element')]";
 		String xpath = commonPath + "//label[text()=\"" + label + "\"]/..//input | " +
 				commonPath + "//input[@name=\"" + label + "\"] | " + //this condition was observed on manual work item creation pop up for edit boxes
 				commonPath + "//*[(@class='inputHeader' or @class='uiBlock') and contains(.,\"" + label + "\")]/..//Select |"+ //This condition was observed for few drop downs of Select Type
 				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//a | " + //this condition was observed on Mapping Action screen for Assessor' Map label
 				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//span[@class='slds-col'] | " + //this condition was observed on Mapping Action screen for Parent APN(s) field
 				commonPath + "//label[text()=\"" + label + "\"]/..//textarea | "+//this condition was added to handle webelements of type textarea
-				commonPath + "//span[text()=\"" + label + "\"]/../following-sibling::input";
+				commonPath + "//span[text()=\"" + label + "\"]/../following-sibling::input | "+	
+				commonPath+"//a[@title=\""+label+"\"]";
+			
 		waitUntilElementIsPresent(xpath, 10);
 		return driver.findElement(By.xpath(xpath));
 	}

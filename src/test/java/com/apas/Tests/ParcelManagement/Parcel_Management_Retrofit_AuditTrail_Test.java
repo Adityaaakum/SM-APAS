@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
-import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;

@@ -30,6 +30,7 @@ public class ParcelsPage extends ApasGenericPage {
 	}
 
 	public String componentActionsButtonText = "Component Actions";
+	public String cosDocumentSummaryText = "COS Document Summary";
 	public String nextButtonComponentsActionsModal = "Next";
 	public String parcelMapInGISPortal = "Parcel Map in GIS Portal";
 
@@ -44,10 +45,11 @@ public class ParcelsPage extends ApasGenericPage {
 	public String workItemRoutingDropDownComponentsActionsModal = "Work Item Routing";
 	public String workItemOwnerSearchBox = "Work Item Owner (if someone other than you)";
 	public String auditTrailRecordDropDownComponentsActionsModal = "Is this Audit Trail Record linked to any Existing Audit Trail Record?";
+	public String eventCodeComponentsActionsModal = "Event Code";
 
 	public String editApnField ="APN";	
 	public String LongLegalDescriptionLabel="Long Legal Description"; 
-
+	public String traLabel="TRA";
 	public String statusDropDownLabel = "Status";
 	public String parcelRelationshipsTabLabel = "Parcel Relationships";
 	public String ownershipTabLabel = "Ownership";
@@ -59,6 +61,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createNewParcelButton="New";
 	public String editParcelButton="Edit";
 	public String parcelCharacteristics = "Characteristics";
+	public String primarySitusLabel = "Primary Situs";
 	
 
 	
@@ -111,6 +114,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String originFcv = "Origin FCV";
 	public String apn = "APN";
 	public String parcelAncestry = "Parcel Ancestry";
+	public String dorLabel = "DOR";
 	
 
 	/** Added to identify fields, dropdowns for Assessed value and AVO functionality **/	
@@ -135,6 +139,10 @@ public class ParcelsPage extends ApasGenericPage {
 	public String total = "Total";
 	public String fullCashValue = "Full Cash Value";
 	public String combinedFactoredandHPI = "Combined FBYV and HPI";
+	public String partOfEconomicUnit = "Part of Economic Unit";
+	public String numberOfParcelsEconomicUnit = "# of Parcels in Economic Unit";
+	public String listOfParcelsEconomicUnit = "List of all Parcels in Economic Unit";
+
 	
 	
 	
@@ -259,7 +267,16 @@ public class ParcelsPage extends ApasGenericPage {
 		
 	@FindBy(xpath = "//strong[contains(normalize-space(),'Value Allocation ')]")
 	public WebElement valueAllocation;
-
+	
+	@FindBy(xpath = "//span[text() = 'Exemption']//parent::div/following-sibling::div//button[contains(@class, 'inline-edit-trigger')]")
+    public WebElement editPencilIconForExemptionOnDetailPage;
+	
+	@FindBy(xpath = "//a[@class='displayLabel slds-truncate']/slot")
+    public WebElement ownersName;
+	
+	@FindBy(xpath = "//c-org_cos-document-summary//table/tbody/tr[last()]//a")
+    public WebElement lastItemInCosDocumentSummary;
+	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";
@@ -296,6 +313,9 @@ public class ParcelsPage extends ApasGenericPage {
 		String workItemNumber;
 		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
 		
+		String eventCode = objSalesforceAPI.select("SELECT Name FROM Event_Library__c limit 1").get("Name").get(0);
+
+
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
 		Thread.sleep(2000);
@@ -316,6 +336,8 @@ public class ParcelsPage extends ApasGenericPage {
 		if (dueDate != null) enter(dueDateInputTextBox, dueDate);
 		if (dov != null) enter(dovInputTextBox, dov);
 		if (workItemOwner != null) searchAndSelectOptionFromDropDown(workItemOwnerSearchBox,workItemOwner);
+		if (eventCode != null) searchAndSelectOptionFromDropDown(eventCodeComponentsActionsModal,eventCode);
+
 		Click(getButtonWithText(nextButtonComponentsActionsModal));
 		Thread.sleep(10000);
 
@@ -760,6 +782,8 @@ public class ParcelsPage extends ApasGenericPage {
 		            enter(salesPrice, hashMapToCreateAssessedValueRecords.get("Sales Price"));}
 	            if( hashMapToCreateAssessedValueRecords.get("Purchase Price")!=null) {
 		            enter(purchasePrice, hashMapToCreateAssessedValueRecords.get("Purchase Price"));}
+	            if( hashMapToCreateAssessedValueRecords.get("DOR")!=null) {
+		            enter(dorLabel, hashMapToCreateAssessedValueRecords.get("DOR"));}
 	            waitForElementToBeClickable(10, SaveButton);
 	            Click(getButtonWithText(SaveButton));
 	            Thread.sleep(4000);            
@@ -769,8 +793,10 @@ public class ParcelsPage extends ApasGenericPage {
 	            String ownerName = objSalesforceAPI.select("SELECT id ,name  FROM Property_Ownership__c where Parcel__c='"+apnId+"'"+" and status__c='Active' order by dov_date__c ").get("Name").get(0);
 	            
 	            ReportLogger.INFO("Adding AV0 Records for APN= "+APN  );
-	            
-	            waitForElementToBeClickable(5, assessedValueOwnershipTab);
+
+	            String assessedValueId=objSalesforceAPI.select("SELECT Id FROM Assessed_BY_Values__c WHERE APN__c ='"+apnId+"'").get("Id").get(0);
+	            driver.navigate().to("https://smcacre--"+excEnv+".lightning.force.com/lightning/r/Parcel__c/"+assessedValueId+"/view");
+	            waitForElementToBeClickable(8, assessedValueOwnershipTab);
 	            Click(assessedValueOwnershipTab);
 	            waitForElementToBeClickable(5, newButton);
 	            Click(getButtonWithText(NewButton));

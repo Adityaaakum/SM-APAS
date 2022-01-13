@@ -269,11 +269,17 @@ public class DataProviders {
     /**
      * Return RP Appraiser User
      */
-    @DataProvider(name = "RPAppraiser")
-    public Object[][] dataProviderLoginRPAppraiser() {
+    @DataProvider(name = "loginRPAppraiser")
+    public Object[][] dpLoginRPAppraiser() {
         return new Object[][] { { users.RP_APPRAISER }};
     }
-
+    /**
+     * Return RP Principal User
+     */
+    @DataProvider(name = "loginRPPrincipal")
+    public Object[][] dpLoginRPPrincipal() {
+        return new Object[][] { { users.RP_PRINCIPAL }};
+    }
     /**
 	 * Return different status of composite and valuation factor tables
 	 */
@@ -418,8 +424,8 @@ public class DataProviders {
        
 		@DataProvider(name = "dpForCioAutoConfirm")
 		public Object[][] dpTestCioAutoConfirm() {
-			return new Object[][] { { CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART, CIOTransferPage.CIO_RESPONSE_NoChangeRequired },
-					{ CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART, CIOTransferPage.CIO_RESPONS_EventCodeChangeRequired }
+			return new Object[][] { { CIOTransferPage.CIO_EVENT_CODE_COPAL, CIOTransferPage.CIO_EVENT_CODE_PART, CIOTransferPage.CIO_RESPONS_EventCodeChangeRequired},
+					
 
 			};
 		}
@@ -438,7 +444,29 @@ public class DataProviders {
 	        
 		}
 
-       
+		@DataProvider(name = "dpForAppraisalActivityAVCreation")
+		public Object[] dpTestAppraisalActivityAVCreation() {
+			return new Object[] {CIOTransferPage.CIO_EVENT_DISABLED_OWNER_TRANSFER,CIOTransferPage.CIO_EVENT_EXCLUSION,CIOTransferPage.CIO_EVENT_REASSESSMENT };
+
+			
+		}
+		
+		/**
+		 * Below function will be used to login to application with appraisal support user
+		 * @returns: Return the user appraisal support
+		 **/
+	    @DataProvider(name = "loginBPPAppraisalUser")
+	    public Object[][] dpLoginBPPAppraisalUser() {
+	        return new Object[][] { { users.BPP_APPRAISER } };
+	    }
+	    
+	    @DataProvider(name = "BPPAdminAndPrincipalAndAppraisalSupport")
+	    public Object[][] dataBPPAdminAndPricipalUserAndAppraisalSupport() {
+	        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+	            return new Object[][] { { users.PRINCIPAL_USER }};
+	        else
+	            return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_BUSINESS_ADMIN},{ users.APPRAISAL_SUPPORT }};
+	    }
 }
        
 
