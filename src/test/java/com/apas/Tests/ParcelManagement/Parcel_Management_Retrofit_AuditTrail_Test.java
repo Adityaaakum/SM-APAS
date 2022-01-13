@@ -69,7 +69,7 @@ public class Parcel_Management_Retrofit_AuditTrail_Test extends TestBase impleme
 			groups = {"Regression","ParcelManagement","ParcelAuditTrail" })
 	public void ParcelManagement_VerifyAuditTrailsCreatedOnInternalMappingRequestWI(String loginUser) throws Exception {
 		
-		//Fetching parcel that are Active
+		        //Fetching parcel that are Active
 				String queryApnDetails ="SELECT Id,Name FROM Parcel__c where primary_situs__c != NULL and "
 						+ "Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where "
 						+ "type__c='CIO') and (Not Name like '100%') and (Not Name like '800%') "
@@ -92,7 +92,8 @@ public class Parcel_Management_Retrofit_AuditTrail_Test extends TestBase impleme
 				String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
 				HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		        
-				String queryPUC = "SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c "
+				String queryPUC = "SELECT Name,id  FROM PUC_Code__c where id in "
+						+ "(Select PUC_Code_Lookup__c From Parcel__c "
 						+ "where Status__c='Active') limit 1";
 				HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select(queryPUC);
 				
@@ -127,7 +128,7 @@ public class Parcel_Management_Retrofit_AuditTrail_Test extends TestBase impleme
 				driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com"
 						+ "/lightning/r/Parcel__c/"
 						+ apnId1 + "/view");
-						objParcelsPage.waitForElementToBeVisible(20, 
+				objParcelsPage.waitForElementToBeVisible(20, 
 								objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));								
 				
 				// Step 3: Creating Manual work item for the Parcel 
