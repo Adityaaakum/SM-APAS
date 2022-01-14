@@ -1,12 +1,23 @@
 package com.apas.PageObjects;
 
-import com.apas.Utils.DateUtil;
-import com.apas.Utils.PasswordUtils;
-import com.apas.Utils.SalesforceAPI;
-import com.apas.Utils.Util;
-import com.apas.config.modulesObjectName;
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.xpath.operations.Bool;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -18,19 +29,18 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
+import com.apas.Utils.DateUtil;
+import com.apas.Utils.PasswordUtils;
+import com.apas.Utils.SalesforceAPI;
+import com.apas.Utils.Util;
+import com.apas.config.modulesObjectName;
 import com.relevantcodes.extentreports.LogStatus;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.List;
-
 public class ApasGenericPage extends Page {
+
 
 	LoginPage objLoginPage;
 	SalesforceAPI objSalesforceAPI = new SalesforceAPI();
@@ -1556,5 +1566,23 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 	        cal.add(Calendar.DATE, days); //minus number would decrement the days
 	        return cal.getTime();
 	    }
-}
+
+	    /*
+		 * Check if edit button is present for the specific field
+		 * @param Field Name
+		 * @return True if present else false
+		 */
+		public Boolean verifyEditButtonIsPresent(String fieldName) {
+
+			Boolean verifyEditButtonPresence = true;
+			try {
+				driver.findElement(By.xpath(
+						"//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit "
+								+ fieldName + "')]"));
+			} catch (Exception e) {
+				verifyEditButtonPresence = false;
+			}
+			return verifyEditButtonPresence;
+		}
+	}
 

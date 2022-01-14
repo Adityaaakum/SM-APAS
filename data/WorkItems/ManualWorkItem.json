@@ -112,7 +112,7 @@
     "Reference": "Test WI",
     "Description": "Creation of work item",
     "Priority": "Urgent",
-    "Work Item Routing": "Give Work Item to Me"
+    "Work Item Routing": "Give Work Item to Me",
     "Event Code": "Combined Performed"
   },
   "DataToCreateWorkItemOfTypeBuildingPermitBurlingameFileUpload": {
@@ -193,5 +193,14 @@
     "Description": "Creation of work item",
     "Priority": "Urgent",
     "Work Item Routing": "Give Work Item to Me"
-  }
-}
+	},
+	"DataToCreateWorkItemOfTypeRPDemolition": {
+		"Work Item Type": "NC",
+		"Actions": "Demo - Other",
+		"Audit Trail": "No",
+		"Reference": "Test WI",
+		"Description": "Creation of work item",
+		"Priority": "Urgent",
+		"Work Item Routing": "Give Work Item to Me"
+	}
+	}
