@@ -64,7 +64,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2655,SMAB-T2482,SMAB-T2488,SMAB-T2486,SMAB-T2481:Verify that User is able to perform a \"One to One\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","OneToOneAction" })
 	public void ParcelManagement_VerifyOneToOneMappingActionNonCondoParcel(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -237,7 +237,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3052,SMAB-T2482,SMAB-T2485,SMAB-T2484,SMAB-T2545,SMAB-T2489:Verify that the One to One Mapping Action can only be performed on Active Parcels ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","OneToOneAction" })
 	public void ParcelManagement_VerifyOneToOneMappingActionOnlyOnActiveParcels(String loginUser) throws Exception {
 		String queryAPN = "Select name From Parcel__c where (not Name like '100%') and (not Name like '134%') "
 				+ "and Status__c='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";
@@ -369,7 +369,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2655,SMAB-T2544:Verify that Verify that User is able to perform a One to One mapping action for a Parcel (Active) by filling all fields in mapping action form for Condo and mobile home type parcels", dataProvider = "Condo_MobileHome_Parcels", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","OneToOneAction" })
 	public void ParcelManagement_VerifyOneToOneMappingActionCondoMobileHomeParcels(String loginUser,String parcelType) throws Exception {
 		if(parcelType.equals("Condo_Parcel"))
 			apnPrefix="100";
@@ -545,7 +545,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 * 
 	 */
 	@Test(description = "SMAB-T3453,SMAB-T3548,SMAB-T2717,SMAB-T2718,SMAB-T2719,SMAB-T2720,SMAB-T2721,SMAB-T3771:Verify the attributes which will be inherited from the parent parcel to the child parcel and status of child parcels and parent parcel is changed ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","OneToOneAction" })
 	public void ParcelManagement_VerifyOneToOneMappingActionChildInheritanceafterwI_Completion(String loginUser) throws Exception {
 		
 		JSONObject jsonObject = objMappingPage.getJsonObject();
@@ -870,7 +870,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		 * @throws Exception
 		 */
 		@Test(description = "SMAB-T3451,SMAB-T3459,SMAB-T3452,SMAB-T2837,SMAB-T2842: I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels. ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-				"Smoke","Regression","ParcelManagement" },enabled = true)
+				"Smoke","Regression","ParcelManagement","OneToOneAction" },enabled = true)
 		public void ParcelManagement_VerifyOneToOneParcelEditAction(String loginUser) throws Exception {
 			String queryAPN = "Select name,Id From Parcel__c where Status__c='Active'and name like '0%' and "
 					+ " Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 1";			
@@ -1013,7 +1013,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2681:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"One To ONe\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","OneToOneAction" })
 	public void ParcelManagement_ReturnToCustomScreen_OneToOneMappingAction_NoPrimarySitusTRA(String loginUser) throws Exception {
 		String childAPNPUC;
 		
@@ -1131,7 +1131,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2681:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"one to one\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","OneToOneAction" })
 	public void ParcelManagement_ReturnToCustomScreen_OneToOne_MappingAction_WithPrimarySitusTRA(String loginUser) throws Exception {
 
 		String childAPNPUC;
@@ -1232,7 +1232,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		objWorkItemHomePage.logout();
 	}
 	@Test(description = "SMAB-T2652,SMAB-T2681,SMAB-T3634,SMAB-T3633,SMAB-T3635:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"one to one\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","OneToOneAction" })
 	public void ParcelManagement_ReturnToCustomScreen_OneToOne_MappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 
 		String childAPNPUC;
@@ -1379,7 +1379,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		 */
 		@Test(description = "SMAB-T3283,SMAB-T3669,SMAB-T2956,SMAB-T2881:Verify that user is able to perform One To One mapping action "
 				+ "having Divided Interest parcel as Parent APN ", dataProvider = "loginMappingUser", 
-				dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+				dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement","OneToOneAction" })
 		public void ParcelManagement_VerifyOneToOneDividedInterestParcelGeneration(String loginUser) throws Exception {
 			
 			objMappingPage.login(users.SYSTEM_ADMIN);
@@ -1520,7 +1520,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		}
 		
-		@Test(description = "SMAB-T2955,SMAB-T2880,SMAB-T2878,SMAB-T2953,SMAB-T2952,SMAB-T2877,SMAB-T2954,SMAB-T2879,SMAB-T2951,SMAB-T2876 ,SMAB-T2950,SMAB-T2814: Verify Parcel size validations for One to One mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement" })
+		@Test(description = "SMAB-T2955,SMAB-T2880,SMAB-T2878,SMAB-T2953,SMAB-T2952,SMAB-T2877,SMAB-T2954,SMAB-T2879,SMAB-T2951,SMAB-T2876 ,SMAB-T2950,SMAB-T2814: Verify Parcel size validations for One to One mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement","OneToOneAction" })
 
 		public void ParcelManagement_VerifyParcelSizeValidationsForOnetoOneMappingAction(String loginUser) throws Exception {
 
