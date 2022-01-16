@@ -459,6 +459,14 @@ public class DataProviders {
 	    public Object[][] dpLoginBPPAppraisalUser() {
 	        return new Object[][] { { users.BPP_APPRAISER } };
 	    }
+	    
+	    @DataProvider(name = "BPPAdminAndPrincipalAndAppraisalSupport")
+	    public Object[][] dataBPPAdminAndPricipalUserAndAppraisalSupport() {
+	        if (System.getProperty("testSuite") != null && System.getProperty("testSuite").equals("smoke"))
+	            return new Object[][] { { users.PRINCIPAL_USER }};
+	        else
+	            return new Object[][] { { users.PRINCIPAL_USER }, { users.BPP_BUSINESS_ADMIN},{ users.APPRAISAL_SUPPORT }};
+	    }
 }
        
 

@@ -738,9 +738,10 @@ public class Page extends TestBase {
 				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//a | " + //this condition was observed on Mapping Action screen for Assessor' Map label
 				commonPath + "//label[text()=\"" + label + "\"]//parent::div//div//span[@class='slds-col'] | " + //this condition was observed on Mapping Action screen for Parent APN(s) field
 				commonPath + "//label[text()=\"" + label + "\"]/..//textarea | "+//this condition was added to handle webelements of type textarea
-				commonPath + "//span[text()=\"" + label + "\"]/../following-sibling::input | "+					
-				commonPath+"//a[@title=\""+label+"\"]";
-			
+				commonPath + "//span[text()=\"" + label + "\"]/../following-sibling::input | "+	
+				commonPath+"//a[@title=\""+label+"\"] | "+
+			commonPath+  "//label[text()=\"" + label + "\"]//following::button[contains(@class,'slds-combobox__input slds-input_faux')]";
+		
 		waitUntilElementIsPresent(xpath, 10);
 		return driver.findElement(By.xpath(xpath));
 	}

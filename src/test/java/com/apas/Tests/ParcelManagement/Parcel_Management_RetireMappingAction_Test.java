@@ -52,7 +52,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2455,SMAB-T2457,SMAB-T2672:Verify that User is able to view the various error message during Retire Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","RetireAction" })
 
 	public void ParcelManagement_VerifyErrorMessagesInRetireMappingAction(String loginUser) throws Exception {
 		
@@ -255,7 +255,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2456,SMAB-T2671:Verify that User is able to perform Retire Action for more than one active parcels", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Smoke","Regression","ParcelManagement" })
+			"Smoke","Regression","ParcelManagement","RetireAction" })
 	public void ParcelManagement_VerifyRetireMappingActionForMoreThanOneActiveParcels(String loginUser) throws Exception {
 		
 		//Fetching Active General parcel 
@@ -395,7 +395,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	}
 
 	@Test(description = "SMAB-T2833,SMAB-T3622,SMAB-T3634:Parcel Management- Verify that User is able to perform retire action from mapping actions tab for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","RetireAction" })
 	public void ParcelManagement_Retire_MappingAction_IndependentMappingAction(String loginUser) throws Exception {
 
 		//Fetching Active General parcel 
@@ -481,7 +481,7 @@ public class Parcel_Management_RetireMappingAction_Test extends TestBase impleme
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2670,SMAB-T2764,SMAB-T2910,SMAB-T3473,SMAB-T2909,SMAB-T3474,SMAB-T3475:Parcel Management- Verify that User is able to view other parcels getting added in the associated work item after Retire Parcel Action is completed", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
+			"Regression", "ParcelManagement","RetireAction" })
 	public void ParcelManagement_verifyLinkedAPN_OnDiffMapBookAndMapPageParentParcelAdditions_RetireParcelMappingAction(String loginUser)
 			throws Exception {
 

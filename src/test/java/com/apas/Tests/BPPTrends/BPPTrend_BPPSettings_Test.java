@@ -226,53 +226,53 @@ public class BPPTrend_BPPSettings_Test extends TestBase{
 	public void BPPTrend_VerifyTableStatus_ByUpdatingMaxEquipSettings(String loginUser) throws Exception {	
 		
 		//Step1: Login to the APAS application using the given user
-		objBppTrendSetupPage.login(loginUser);
+				objBppTrendSetupPage.login(loginUser);
 
-		//Step2: Updating the composite factor tables status
-		objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.COMPOSITE_TABLES_API_NAMES, "Calculated", rollYear);
+				//Step2: Updating the composite factor tables status
+				objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.COMPOSITE_TABLES_API_NAMES, "Calculated", rollYear);
 
-		//Step3: Updating the valuation factor tables status
-		objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYear);
-		
-		//Step4: Navigate to BPP Trend Setup page snd Select roll Year
-		// Create Maximum Equipment index Factor for given roll year if it does not exist
-		
-		Thread.sleep(6000);
-		objBppTrendSetupPage.closeDefaultOpenTabs();
-		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
-		objBppTrendSetupPage.displayRecords("All");
-		objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
-		objBppTrendSetupPage.createMaxEquip(rollYear);
+				//Step3: Updating the valuation factor tables status
+				objBppTrendPage.updateTablesStatusForGivenRollYear(BPPTablesData.VALUATION_TABLES_API_NAMES, "Yet to submit for Approval", rollYear);
 				
-		//Step5: Retreive Max. Equipment Index factor value and subtract '1' from it 
-		String factorValueBeforeEdit = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();
-		factorValueBeforeEdit = factorValueBeforeEdit.substring(0, factorValueBeforeEdit.length()-1);
-		int maxEquipIndexNewValue = Integer.parseInt(factorValueBeforeEdit) - 1;
-		
-		//Step6: Click on Edit Max. Equipment Index factor Settings and update value
-		Thread.sleep(1000);
-		objBppTrendSetupPage.editSaveFactorValue(Integer.toString(maxEquipIndexNewValue));
-		
-		//Step7: Verify saved Max. Equipment Index factor Settings value 
-		String factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();	
-		softAssert.assertEquals(factorValueSaved,Integer.toString(maxEquipIndexNewValue)+"%","SMAB-T271,SMAB-T172,SMAB-T139: Verify user is able to edit the Max Equipemnt Index factor value  when table status is 'Calculated'");
-		driver.navigate().refresh();
-		Thread.sleep(7000);
-		
-		//Step8: Verify table status when Max. Equipment Index factor Settings value is updated
-		softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Commercial Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Commercial Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
-		softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Industrial Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Industrial Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
-		softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Construction Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Construction Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
-		softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Agricultural Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Agricultural Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
-		
-		//Step9: Click on Edit Max. Equipment Index factor Settings and update value when table status is 'Needs Recalculation'
-		objBppTrendSetupPage.editSaveFactorValue("125");
-		
-		//Step10: Verify saved Max. Equipment Index factor Settings value 
-		factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();	
-		softAssert.assertEquals(factorValueSaved,"125%","SMAB-T172,SMAB-T272,SMAB-T139: Verify user is able to edit the Max Equipemnt Index factor value when table status is 'Needs Recalculation'");		
-		
-		objBppTrendSetupPage.logout();
+				//Step4: Navigate to BPP Trend Setup page snd Select roll Year
+				// Create Maximum Equipment index Factor for given roll year if it does not exist
+				
+				Thread.sleep(6000);
+				objBppTrendSetupPage.closeDefaultOpenTabs();
+				objBppTrendSetupPage.searchModule(modules.BPP_TRENDS_SETUP);
+				objBppTrendSetupPage.displayRecords("All");
+				objBppTrendSetupPage.clickOnEntryNameInGrid(rollYear);
+				objBppTrendSetupPage.createMaxEquip(rollYear);
+						
+				//Step5: Retreive Max. Equipment Index factor value and subtract '1' from it 
+				String factorValueBeforeEdit = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();
+				factorValueBeforeEdit = factorValueBeforeEdit.substring(0, factorValueBeforeEdit.length()-1);
+				int maxEquipIndexNewValue = Integer.parseInt(factorValueBeforeEdit) - 1;
+				
+				//Step6: Click on Edit Max. Equipment Index factor Settings and update value
+				Thread.sleep(1000);
+				objBppTrendSetupPage.editSaveFactorValue(Integer.toString(maxEquipIndexNewValue));
+				
+				//Step7: Verify saved Max. Equipment Index factor Settings value 
+				String factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();	
+				softAssert.assertEquals(factorValueSaved,Integer.toString(maxEquipIndexNewValue)+"%","SMAB-T271,SMAB-T172,SMAB-T139: Verify user is able to edit the Max Equipemnt Index factor value  when table status is 'Calculated'");
+				driver.navigate().refresh();
+				Thread.sleep(7000);
+				
+				//Step8: Verify table status when Max. Equipment Index factor Settings value is updated
+				softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Commercial Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Commercial Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
+				softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Industrial Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Industrial Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
+				softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Construction Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Construction Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
+				softAssert.assertEquals(objBppTrendSetupPage.getTableStatus("Agricultural Composite Factors",rollYear),"Needs Recalculation","SMAB-T172,SMAB-T139: Verify status for Agricultural Composite Factors is changed to 'Needs recalculation' from 'Calculated' when Max Equip. Index Settings is updated");
+				
+				//Step9: Click on Edit Max. Equipment Index factor Settings and update value when table status is 'Needs Recalculation'
+				objBppTrendSetupPage.editSaveFactorValue("125");
+				
+				//Step10: Verify saved Max. Equipment Index factor Settings value 
+				factorValueSaved = objBppTrendSetupPage.retrieveMaxEqipIndexValueFromPopUp();	
+				softAssert.assertEquals(factorValueSaved,"125%","SMAB-T172,SMAB-T272,SMAB-T139: Verify user is able to edit the Max Equipemnt Index factor value when table status is 'Needs Recalculation'");		
+				
+				objBppTrendSetupPage.logout();
 	}
 
 }
