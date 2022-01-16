@@ -86,7 +86,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//a[@role='tab'][@data-label='In Pool']")
 	public WebElement inPoolTab;
 
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-item[contains(.,'Related Action')]//a[@target='_blank']")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[contains(.,'Related Action')]//a[@target='_blank']")
 	public WebElement reviewLink;
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-item[contains(.,'Previous Related Action')]//a[@target='_blank']")
