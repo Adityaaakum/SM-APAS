@@ -776,9 +776,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
 				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
 
-		// STEP 1- Create appraisal WI through CIO Transfer WI approval
-
-		
+		// STEP 1- Create appraisal WI through CIO Transfer WI approval		
 		String[] arrayForWorkItemAfterCIOSupervisorApproval = objCIOTransferPage
 				.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment",
 						eventCode, hashMapOwnershipAndTransferCreationData,
@@ -786,7 +784,6 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 						hashMapCreateAssessedValueRecord);
 
 		// Step 2- LOGIN with appraiser staff
-
 		objAppraisalActivity.login(APPRAISAL_SUPPORT);
 		Thread.sleep(4000);
 		String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
@@ -917,11 +914,11 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				"DataToCreateGranteeWithIncompleteDataForIntergenerationalPartialTransfer");
 
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
-				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecordForP19P");
 
 		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
 		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
-				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecordForP19");
 
 		// Step 1- Creating appraiser WI for P19P transfer event		
 		String[] arrayForWorkItemAfterCIOSupervisorApproval = objCIOTransferPage
@@ -963,6 +960,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 						+ "/related/Assessed_Values__r/view");
 		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.clickShowMoreActionButton, 15);
 		HashMap<String, ArrayList<String>> hashMapForAssessedValueTable = objAppraisalActivity.getGridDataInHashMap();
+		System.out.println(hashMapForAssessedValueTable);
 
 		//Step 4 -Verifying the AV generated  after updating land and improvement value on appraiser screen		
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(0), "Active",
@@ -1032,6 +1030,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		objAppraisalActivity.Click(objParcelsPage.assessedValueOwnershipTab);
 		Thread.sleep(2000);
 		HashMap<String, ArrayList<String>> hashMapAVOForOldAv = objAppraisalActivity.getGridDataInHashMap();
+		System.out.println(hashMapAVOForOldAv );
 
 		//Step 10 -Verifying AVO's associated to the old AV records		
 		softAssert.assertTrue(hashMapAVOForOldAv.get("DOV").size() == 2,
@@ -1043,11 +1042,10 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		//Step 11 - Navigating TO newly  retained AVO for Father		
 		driver.navigate().to("https://smcacre--" + excEnv
 				+ ".lightning.force.com/lightning/r/Assessed_Values_Ownership__c/"
-				+ salesforceAPI
-						.select("SELECT id  FROM Assessed_Values_Ownership__c where name = '" + hashMapAVOForOldAv
-								.get("Assessed Values Ownership: Assessed Values Ownership ID").get(1) + "'")
-						.get("Id").get(0)
+				+ salesforceAPI.select("SELECT id  FROM Assessed_Values_Ownership__c where assessed_values__r.name = '"
+						+ hashMapForAssessedValueTable.get("Assessed Values ID").get(0) + "'").get("Id").get(1)
 				+ "/view");
+				
 		objAppraisalActivity.waitForElementToBeVisible(10, objParcelsPage.propertyOwner);
 
 		softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.statusLabel), "Active",

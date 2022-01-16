@@ -4648,7 +4648,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
 				+ recordeAPNTransferID + "/view");
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.calculateOwnershipButtonLabel);
-		ReportLogger.INFO("Create New grantee");
+		ReportLogger.INFO("Created New grantee");
 		
 		// STEP 8- CIO Staff submitting for approval
 		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
@@ -5403,5 +5403,112 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.logout();
 		
 	}
+	@Test(description = ":Verify that User is able to create Manual WI from RAT screen Component Action. ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "Smoke" }, enabled = true)
+	public void OwnershipAndTransfer_VerifyCioManualWorkItems(String loginUser) throws Exception {
 
+		String execEnv = System.getProperty("region");
+		
+
+		JSONObject jsonForCioManualWI = objCioTransfer.getJsonObject();
+		
+		      String situsId = salesforceAPI.select("SELECT id FROM Situs__c where name !=null").get("Id").get(0);
+		      String pucId  = salesforceAPI.select("SELECT Id FROM PUC_Code__c where Legacy__c='No' AND  NAME !='99-RETIRED PARCEL'").get("Id").get(0);
+		      JSONObject jsonForParcelValidation =objCioTransfer.getJsonObject();
+		      jsonForParcelValidation .put("Primary_Situs__c", situsId);
+		      jsonForParcelValidation .put("PUC_Code_Lookup__c", pucId);
+		      jsonForParcelValidation .put("Short_Legal_Description__c", "Test Legal Description");
+		      
+
+		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferCreationData, "dataToCreateMailToRecordsWithIncompleteData");
+
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithIncompleteData");
+
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
+
+		String recordedDocumentID = salesforceAPI
+				.select("SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c in (0,1,2,3,4)")
+				.get("Id").get(0);
+		
+		objCioTransfer.deleteRecordedApnFromRecordedDocument(recordedDocumentID);
+
+		// STEP 1-login with SYS-ADMIN
+
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		Thread.sleep(3000);
+		objCioTransfer.searchModule("APAS");
+		objCioTransfer.addRecordedApn(recordedDocumentID, 1);
+		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
+
+		// STEP 2-Query to fetch WI
+
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO' order by name desc limit 1";
+		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
+		String workItemId = salesforceAPI.select(workItemQuery).get("Id").get(0);
+
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Work_Item__c/"+workItemId+"/view");
+
+		objCioTransfer.waitForElementToBeInVisible(objCioTransfer.ApnLabel, 5);
+		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		objCioTransfer.deleteOwnershipFromParcel(
+				salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
+
+		// STEP 3- adding owner after deleting for the recorded APN
+
+		String acesseName = objMappingPage.getOwnerForMappingAction();
+		driver.navigate()
+				.to("https://smcacre--"
+						+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
+								.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
+						+ "/related/Property_Ownerships__r/view");
+		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
+		String ownershipId = driver.getCurrentUrl().split("/")[6];
+
+		// STEP 4- updating the ownership date for current owners
+
+		String dateOfEvent = salesforceAPI
+				.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
+				.get("Ownership_Start_Date__c").get(0);
+		jsonForCioManualWI.put("DOR__c", dateOfEvent);
+		jsonForCioManualWI.put("DOV_Date__c", dateOfEvent);
+
+		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForCioManualWI);
+		salesforceAPI.update("Parcel__c",salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0), jsonForParcelValidation);
+
+		objMappingPage.logout();
+		Thread.sleep(2000);
+		
+		objMappingPage.login(loginUser);
+		Thread.sleep(2000);
+		objCioTransfer.searchModule("APAS");
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Work_Item__c/"+workItemId+"/view");
+
+		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + workItemNo + "'";
+		HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);
+
+		// STEP 6-Finding the recorded apn transfer id
+
+		String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+
+		// STEP 7-Clicking on related action link
+
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		
+		
+
+
+
+}
 }

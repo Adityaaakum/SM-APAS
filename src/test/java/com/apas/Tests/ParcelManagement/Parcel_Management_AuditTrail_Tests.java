@@ -1104,9 +1104,10 @@ public class Parcel_Management_AuditTrail_Tests extends TestBase implements test
 		objWorkItemHomePage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
 
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Processed By", "Additional Information"), salesforceAPI.select("SELECT Name FROM User where Username ='" + userNameForMappingStaff + "'").get("Name").get(0),
-				"SMAB-T3381: Verify when work item is completed processed By are updated");
+				"SMAB-T3381,SMAB-T3090,SMAB-T3091: Verify when work item is completed processed By are updated");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Final Approver", "Additional Information"), salesforceAPI.select("SELECT Name FROM User where Username ='" + userNameForMappingSupervisor + "'").get("Name").get(0),
-				"SMAB-T3381: Verify when work item is completed final Approver are updated");
+				"SMAB-T3381,SMAB-T3090,SMAB-T3091: Verify when work item is completed final Approver are updated");
+		softAssert.assertEquals(objMappingPage.verifyElementVisible(objTrailPage.eventLibraryLabel), true, "SMAB-T3090: Verify that Event Library field is visible on AT layout");
 
 		// Logout
 		objParcelsPage.logout();
