@@ -63,8 +63,8 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 	}
 		
 	@Test(description = "SMAB-T3274,SMAB-T3275:Verify Legacy field and PUC Values", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
-	public void PUCValueWithLegacyField(String loginUser) throws Exception {
+			"Regression","ParcelManagement","PUC" })
+	public void  ParcelManagement_PUCValueWithLegacyField(String loginUser) throws Exception {
       
 		// Step1: Login to the APAS application using the credentials passed through Data Provider
 		objMappingPage.login(loginUser);
@@ -131,8 +131,8 @@ public class Parcel_Management_PUC_NewCodes extends TestBase implements testdata
 	}
 	
 	@Test(description = "SMAB-T3272:Verify user is PUC is independent of status field", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
-	public void PUC_UserRestrictionAndIndependentOfStatus(String loginUser) throws Exception {
+			"Regression", "ParcelManagement","PUC" })
+	public void ParcelManagement_PUC_UserRestrictionAndIndependentOfStatus(String loginUser) throws Exception {
 
 		// Step 1: Login as Apas User
 		objMappingPage.login(loginUser);

@@ -542,25 +542,32 @@ public class SalesforceAPI extends TestBase {
      */
     public void deleteWorkItemsBasedOnAge(int age){
         String queryToDeleteWorkItems = "SELECT id FROM Work_Item__c where age__c > " + age ;
-        delete(queryToDeleteWorkItems);
+        if (queryToDeleteWorkItems != null) delete(queryToDeleteWorkItems);
     }
     
     /**
      * This method will delete BPP Annual Settings for the roll year passed in the parameter
      * @param rollYear : Roll Year data to be deleted
      */
-    public void deleteBPPAnnualSettings(String rollYear){
-        String queryBPPAnnualSettings = "SELECT Id FROM BPP_Annual_Setting__c where Roll_Year_Settings__r.name = '" + rollYear  + "'";
-        delete(queryBPPAnnualSettings);
+    public void deleteCurrentRollYearBPPAnnualSettings(String rollYear){
+        String queryBPPAnnualSettings = "SELECT Id FROM BPP_Annual_Setting__c where Roll_Year_Settings__r.name = '" + rollYear + "'";
+        if (queryBPPAnnualSettings != null) delete(queryBPPAnnualSettings);
     }
     
+	/*
+	 * public void deleteBPPAnnualSettings(String rollYear){ String
+	 * queryBPPAnnualSettings =
+	 * "SELECT Id FROM BPP_Annual_Setting__c where Roll_Year_Settings__r.name = '" +
+	 * rollYear + "' and (Status__c = 'In Pool' Or Status__c = 'In Progress')"; if
+	 * (queryBPPAnnualSettings != null) delete(queryBPPAnnualSettings); }
+	 */
+    
     /**
-     * This method will delete Aircraft Listing WIs for the roll year passed in the parameter
-     * @param rollYear : Roll Year data to be deleted
+     * This method will delete Aircraft Listing WIs for the status passed in the parameter
      */
-    public void deleteAircraftListingWIs(String rollYear){
-        String queryAircraftListingWI = "Select Id from Work_Item__c where Work_Pool__r.Name='Aircraft Work Pool' And Roll_Year_Settings__r.name = '" + rollYear  + "'";
-        delete(queryAircraftListingWI);
+    public void deleteAircraftListingWIs(){
+        String queryAircraftListingWorkItem = "Select Id from Work_Item__c where Work_Pool__r.Name='Aircraft Work Pool' and (Status__c = 'In Pool' Or Status__c = 'In Progress')";
+        if (queryAircraftListingWorkItem != null) delete(queryAircraftListingWorkItem);
     }
     
 }
