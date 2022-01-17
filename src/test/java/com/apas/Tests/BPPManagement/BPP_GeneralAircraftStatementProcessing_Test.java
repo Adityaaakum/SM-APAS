@@ -62,8 +62,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 		softAssert = new SoftAssertion();
 		rollYear = "2022";
 		objWorkItemHomePage = new WorkItemHomePage(driver);
-		//objEfileHomePage.updateRollYearStatus("Open", rollYear);
-
+		
 	}
 		
 	/**

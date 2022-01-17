@@ -554,14 +554,7 @@ public class SalesforceAPI extends TestBase {
         if (queryBPPAnnualSettings != null) delete(queryBPPAnnualSettings);
     }
     
-	/*
-	 * public void deleteBPPAnnualSettings(String rollYear){ String
-	 * queryBPPAnnualSettings =
-	 * "SELECT Id FROM BPP_Annual_Setting__c where Roll_Year_Settings__r.name = '" +
-	 * rollYear + "' and (Status__c = 'In Pool' Or Status__c = 'In Progress')"; if
-	 * (queryBPPAnnualSettings != null) delete(queryBPPAnnualSettings); }
-	 */
-    
+	
     /**
      * This method will delete Aircraft Listing WIs for the status passed in the parameter
      */
