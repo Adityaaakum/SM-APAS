@@ -1,4 +1,4 @@
-package com.apas.Tests.OwnershipAndTransfer;
+package com.apas.Tests.RollManagement;
 
 
 import java.text.SimpleDateFormat;
@@ -42,7 +42,7 @@ import com.apas.config.users;
 
 
 
-public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implements users {
+public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends TestBase implements users {
 	private RemoteWebDriver driver;
 	Page objPage;
 	ParcelsPage objParcelsPage;
@@ -88,7 +88,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	
 
 	@Test(description = "SMAB-T4154,SMAB-T3637,SMAB-T3749,SMAB-T3736,SMAB-T3786,SMAB-T3738,SMAB-T3933,SMAB-T3807,SMAB-T3762,SMAB-T4317 : Verify that CIO supervisor on approval is able to create Appraisal WI for non exempted CIO transfers ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "NormalEnrollment" ,"EconomicUnits", "ChangeInOwnershipManagement"}, enabled = true)
+			"Regression", "NormalEnrollment" ,"EconomicUnits", "RollManagement"}, enabled = true)
 	public void OwnershipAndTransfer_CreateAppraisalActivityWorkItem(String loginUser) throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -558,7 +558,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 */
 
 	@Test(description = "SMAB-T3768,SMAB-T3782,SMAB-T3812 : Verify the fileds and calculations on those fields on the layout of different type of assesssed value records  ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "NormalEnrollment", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
 	public void OwnershipAndTransfer_Verify_assessedValueRecords(String loginUser) throws Exception {
 		
 		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
@@ -761,7 +761,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 */
 	
 	@Test(description = "SMAB-T4120,SMAB-T4121 : Verify that new AV records are generated for the given TransferCode when appraiser user appraises land and Improvement values on the appraiser screen", dataProvider = "dpForAppraisalActivityAVCreation", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "NormalEnrollment", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
 	public void OwnershipAndTransfer_RelatedTablesInAppraiserActivityScreen(String eventCode) throws Exception {
 
 		String excEnv = System.getProperty("region");		
@@ -908,7 +908,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 */
 	
 	@Test(description = "SMAB-T4120,SMAB-T4121 : Verify that new AV records are generated for the P19P when appraiser user appraises land and Improvement values on the appraiser screen",  groups = {
-			"Regression", "NormalEnrollment", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
 	public void OwnershipAndTransfer_IntergenerationalTransfer() throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -1073,7 +1073,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 */
 	
 	@Test(description = "SMAB-T4387 : Verify that new AV records are generated for the P19 when appraiser user appraises land and Improvement values on the appraiser screen",  groups = {
-			"Regression", "NormalEnrollment", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
 	public void OwnershipAndTransfer_Prop19Reassessement() throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -1207,7 +1207,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 */
 
 	@Test(description = "SMAB-T4125: RP Roll Management- Verify One supplemental roll entry record is created from AAS when land and improvement types are entered for AV type \"Assessed value\" for DOV >= 31May", groups = {
-			"Regression", "NormalEnrollment"}, enabled = true)
+			"Regression", "NormalEnrollment","RollManagement"}, enabled = true)
 	public void RollManagementVerifyOneSupplementalRollEntryCreationAssessedValueType() throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -1389,7 +1389,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				// Login with RP appraiser supervisor
 				objCIOTransferPage.logout();
 
-				objMappingPage.login(users.SYSTEM_ADMIN);
+				objMappingPage.login(users.RP_PRINCIPAL);
 
 				 driver.navigate().to("https://smcacre--" + excEnv
 							+ ".lightning.force.com/lightning/r/Appraiser_Activity__c/" + appraisalScreenId + "/view");	
@@ -1475,7 +1475,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 */
 
 	@Test(description = "SMAB-T4126: Verify Two supplemental roll entry record is created from AAS when land and improvement types are entered for AV type \"Assessed value\" for DOV < 31May", groups = {
-			"Regression", "NormalEnrollment"}, enabled = true)
+			"Regression", "NormalEnrollment","RollManagement"}, enabled = true)
 	public void RollManagementVerifyTwoSupplementalRollEntryCreationAssessedValueType() throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -1680,7 +1680,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				// Login with RP appraiser supervisor
 				objCIOTransferPage.logout();
 
-				objMappingPage.login(users.SYSTEM_ADMIN);
+				objMappingPage.login(users.RP_PRINCIPAL);
 
 				 driver.navigate().to("https://smcacre--" + excEnv
 							+ ".lightning.force.com/lightning/r/Appraiser_Activity__c/" + appraisalScreenId + "/view");	

@@ -1,4 +1,4 @@
-package com.apas.Tests.OwnershipAndTransfer;
+package com.apas.Tests.RollManagement;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -22,7 +22,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class CIO_RollEntry_Test  extends TestBase implements testdata, modules, users {
+public class RollManagement_RollEntry_Test  extends TestBase implements testdata, modules, users {
 	private RemoteWebDriver driver;
 
 	ParcelsPage objParcelsPage;
@@ -52,7 +52,7 @@ public class CIO_RollEntry_Test  extends TestBase implements testdata, modules, 
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3766:Verify the UI validations for the fields mentioned on 'Roll Entry' details page & user should be able to edit those fields.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ChangeInOwnershipManagement", "RollEntry" })
+			"Regression", "RollManagement" })
 	public void CIO_VerifyRollEntryObjectUIValidations(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
@@ -127,7 +127,7 @@ public class CIO_RollEntry_Test  extends TestBase implements testdata, modules, 
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3932, SMAB-T4268:Verify the Quick Actions Buttons to Generate/Update Annual Roll Entry Records.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression",  "ChangeInOwnershipManagement", "RollEntry" })
+			"Regression",  "RollManagement" })
 	public void CIO_VerifyAnnualRollEntryRecordsButtons(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
