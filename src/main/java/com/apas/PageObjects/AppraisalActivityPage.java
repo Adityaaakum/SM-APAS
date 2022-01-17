@@ -53,6 +53,9 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	public String statusLabel="Status";
 	public String startDateLabel="Start Date";
 	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
+	public String recordTypeLable ="Record Type";
+	public String doeLabel ="DOE";
+
 
 	
 	@FindBy(xpath = "//select[@name='Rejection_Reason_PickList']")
