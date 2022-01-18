@@ -52,6 +52,7 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	public String improvementCashValueLabel ="Improvement Cash Value";
 	public String statusLabel="Status";
 	public String startDateLabel="Start Date";
+	public String submitForApprovalButton = "Submit for Approval";
 	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 
 	
