@@ -536,7 +536,7 @@ public class ParcelsPage extends ApasGenericPage {
 			String description = dataMap.get("Description") + "_" + timeStamp;
 			
 			Thread.sleep(2000);
-			waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
+			waitForElementToBeClickable(5,getButtonWithText(componentActionsButtonText));
 			Click(getButtonWithText(componentActionsButtonText));
 			waitForElementToBeClickable(selectOptionDropdown);
 			selectOptionFromDropDown(selectOptionDropdown, "Create Audit Trail Record");
