@@ -1,4 +1,4 @@
-package com.apas.Tests.RPDemolition;
+package com.apas.Tests.RPValuation;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
-import com.apas.PageObjects.DemolitionsPage;
+import com.apas.PageObjects.DemolitionPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
@@ -23,7 +23,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class Real_Property_Discovery_Demolition_WorkItems extends TestBase implements testdata, modules, users {
+public class RPValuation_Discovery_Demolition_Test extends TestBase implements testdata, modules, users {
 
 	private RemoteWebDriver driver;
 
@@ -32,7 +32,7 @@ public class Real_Property_Discovery_Demolition_WorkItems extends TestBase imple
 	Util objUtil = new Util();
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
-	DemolitionsPage ObjDemolitionPage;
+	DemolitionPage ObjDemolitionPage;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -40,7 +40,7 @@ public class Real_Property_Discovery_Demolition_WorkItems extends TestBase imple
 		setupTest();
 		driver = BrowserDriver.getBrowserInstance();
 		objParcelsPage = new ParcelsPage(driver);
-		ObjDemolitionPage = new DemolitionsPage(driver);
+		ObjDemolitionPage = new DemolitionPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 
 	}
@@ -53,12 +53,14 @@ public class Real_Property_Discovery_Demolition_WorkItems extends TestBase imple
 	 * @param loginUser
 	 */
 	@Test(description = "SMAB-T4366,SMAB-T4377,SMAB-T4378,SMAB-T4379,SMAB-T4403:This method is to verify few validations based on full demolition , partial demolition event codes", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
+			"Regression", "RPValuation", "Demolition" })
 	public void BuildingPermit_Manual_Discovery_Demolition_WorkItem(String loginUser) throws Exception {
 
 		// Fetching Active parcel
+		String executionEnv = System.getProperty("region");
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Status__c = 'Active' Limit 1";
 		String apn = salesforceAPI.select(queryAPNValue).get("Name").get(0);
+		String apnId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -81,8 +83,9 @@ public class Real_Property_Discovery_Demolition_WorkItems extends TestBase imple
 
 		// Step2: Opening the PARCELS page and searching the parcel to perform Combine
 		// Action
-		ObjDemolitionPage.searchModule(PARCELS);
-		ObjDemolitionPage.globalSearchRecords(apn);
+		driver.navigate().to(
+				"https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId + "/view");
+		objParcelsPage.waitForElementToBeVisible(30, objParcelsPage.componentActionsButtonText);
 
 		// Step3 : Creating and navigating to the Demolition work item
 		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);

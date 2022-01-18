@@ -7,11 +7,11 @@ import org.openqa.selenium.support.PageFactory;
 
 import com.apas.Utils.Util;
 
-public class DemolitionsPage extends ApasGenericPage {
+public class DemolitionPage extends ApasGenericPage {
 
 	Util objUtil;
 
-	public DemolitionsPage(RemoteWebDriver driver) {
+	public DemolitionPage(RemoteWebDriver driver) {
 		super(driver);
 		PageFactory.initElements(driver, this);
 		objUtil = new Util();
@@ -24,13 +24,9 @@ public class DemolitionsPage extends ApasGenericPage {
 	public WebElement crossButton;
 
 	public String createNewConstructionWIBtn = "Create New Construction WI";
-
 	public String submitForApprovalDEMOWIBtn = "Submit For Approval (DEMO)";
-
 	public String errorMessageWithLinks = "//*[contains(@class,'forceFormPageError')]//strong//following::a";
-
 	public String errorMsgDown = ("//*[contains(@class,'forceFormPageError')]//ul");
-
 	public String cancel = "Cancel";
 	public String returnButton = "Return";
 	public String approveDemoButton = "Approve(Demo)";

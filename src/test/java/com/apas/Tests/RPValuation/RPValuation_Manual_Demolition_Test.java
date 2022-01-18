@@ -1,4 +1,4 @@
-package com.apas.Tests.RPDemolition;
+package com.apas.Tests.RPValuation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.BuildingPermitPage;
-import com.apas.PageObjects.DemolitionsPage;
+import com.apas.PageObjects.DemolitionPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
@@ -24,7 +24,7 @@ import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
 
-public class Real_Property_Manual_Demolition_Workitems extends TestBase implements users, testdata, modules {
+public class RPValuation_Manual_Demolition_Test extends TestBase implements users, testdata, modules {
 
 	private RemoteWebDriver driver;
 
@@ -33,7 +33,7 @@ public class Real_Property_Manual_Demolition_Workitems extends TestBase implemen
 	Util objUtil = new Util();
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
-	DemolitionsPage ObjDemolitionPage;
+	DemolitionPage ObjDemolitionPage;
 	BuildingPermitPage ObjBuildingPermit;
 
 	@BeforeMethod(alwaysRun = true)
@@ -43,7 +43,7 @@ public class Real_Property_Manual_Demolition_Workitems extends TestBase implemen
 		driver = BrowserDriver.getBrowserInstance();
 		objParcelsPage = new ParcelsPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
-		ObjDemolitionPage = new DemolitionsPage(driver);
+		ObjDemolitionPage = new DemolitionPage(driver);
 		ObjBuildingPermit = new BuildingPermitPage(driver);
 
 	}
@@ -55,11 +55,11 @@ public class Real_Property_Manual_Demolition_Workitems extends TestBase implemen
 	 * @param loginUser
 	 */
 	@Test(description = "SMAB-T7530: Verify that Building permit should be automatically pre-populated through BP WI ", groups = {
-			"Regression",
-			"BuildingPermit" }, dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, alwaysRun = true)
+			"Regression","RPValuation", "Demolition" }, dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_Manual_Demolition_WorkItem(String loginUser) throws Exception {
 
 		// Fetching the active APN
+		String executionEnv = System.getProperty("region");
 		String query = "SELECT Name FROM Parcel__c where Status__C='Active' limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 
@@ -100,8 +100,12 @@ public class Real_Property_Manual_Demolition_Workitems extends TestBase implemen
 		salesforceAPI.update("Work_Item__c", queryWI, "Status__c", "In Progress");
 
 		// Moving to the DEMO WI
-		ObjDemolitionPage.globalSearchRecords(demolitionWorkItem);
-		objParcelsPage.waitForElementToBeVisible(20, objWorkItemHomePage.detailsTab);
+		String WorkitemID = salesforceAPI.select("SELECT Id FROM Work_Item__c where Name='" + demolitionWorkItem + "'")
+				.get("Id").get(0);
+		driver.navigate().to(
+				"https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Work_Item__c/" + WorkitemID + "/view");
+		
+		objParcelsPage.waitForElementToBeClickable(20,objWorkItemHomePage.TAB_IN_PROGRESS);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
