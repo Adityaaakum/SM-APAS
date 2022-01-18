@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.xpath.operations.Bool;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
