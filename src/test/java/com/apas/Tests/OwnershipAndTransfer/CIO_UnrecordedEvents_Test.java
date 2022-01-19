@@ -601,7 +601,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 	 * Verify details on the Unrecorded Transfer event
 	 */
 	
-	@Test(description = "SMAB-T3139,SMAB-T3231,SMAB-T3206,SMAB-T4319:Verify details on the Unrecorded Transfer event", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3139,SMAB-T3231,SMAB-T3206,SMAB-T4319,SMAB-T3228:Verify details on the Unrecorded Transfer event", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ChangeInOwnershipManagement","UnrecordedEvent" })
 	public void UnrecordedEvent_TransferScreenConfiguration(String loginUser) throws Exception {
 		
@@ -669,7 +669,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		//Step4 : Validate the values on Transfer Screen
 		ReportLogger.INFO("Validate the UT values");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel, "").substring(0, 2),"UT",
-				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the prefix of Event ID");
+				"SMAB-T3139,SMAB-T3231,SMAB-T3228: Validate that CIO staff is able to verify the prefix of Event ID");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel, "").length(),"10",
 				"SMAB-T3139,SMAB-T3231: Validate that CIO staff is able to verify the length of Event ID");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.situsLabel, ""),primarySitusValue,
