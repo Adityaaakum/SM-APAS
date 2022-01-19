@@ -114,6 +114,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String originFcv = "Origin FCV";
 	public String apn = "APN";
 	public String parcelAncestry = "Parcel Ancestry";
+	public String dorLabel = "DOR";
 	
 
 	/** Added to identify fields, dropdowns for Assessed value and AVO functionality **/	
@@ -311,8 +312,10 @@ public class ParcelsPage extends ApasGenericPage {
 		String workItemOwner= dataMap.get("Work Item Owner");
 		String workItemNumber;
 		String auditTrailRecord=dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?");
-		String eventCode = dataMap.get("Event Code");
 		
+		String eventCode = objSalesforceAPI.select("SELECT Name FROM Event_Library__c limit 1").get("Name").get(0);
+
+
 		waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
 		Click(getButtonWithText(componentActionsButtonText));
 		Thread.sleep(2000);
@@ -533,7 +536,7 @@ public class ParcelsPage extends ApasGenericPage {
 			String description = dataMap.get("Description") + "_" + timeStamp;
 			
 			Thread.sleep(2000);
-			waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
+			waitForElementToBeClickable(5,getButtonWithText(componentActionsButtonText));
 			Click(getButtonWithText(componentActionsButtonText));
 			waitForElementToBeClickable(selectOptionDropdown);
 			selectOptionFromDropDown(selectOptionDropdown, "Create Audit Trail Record");
@@ -779,6 +782,8 @@ public class ParcelsPage extends ApasGenericPage {
 		            enter(salesPrice, hashMapToCreateAssessedValueRecords.get("Sales Price"));}
 	            if( hashMapToCreateAssessedValueRecords.get("Purchase Price")!=null) {
 		            enter(purchasePrice, hashMapToCreateAssessedValueRecords.get("Purchase Price"));}
+	            if( hashMapToCreateAssessedValueRecords.get("DOR")!=null) {
+		            enter(dorLabel, hashMapToCreateAssessedValueRecords.get("DOR"));}
 	            waitForElementToBeClickable(10, SaveButton);
 	            Click(getButtonWithText(SaveButton));
 	            Thread.sleep(4000);            

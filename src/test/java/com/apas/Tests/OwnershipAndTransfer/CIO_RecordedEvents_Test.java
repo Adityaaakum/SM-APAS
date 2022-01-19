@@ -617,6 +617,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForApproval);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
 		ReportLogger.INFO("CIO!! Transfer submitted for approval");
 
 		// STEP 17- Since new ownership records are created we are validating them
@@ -800,6 +805,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionOptionSubmitForApproval);
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
 
 		// STEP 11-Clicking on submit for approval quick action button		
 		ReportLogger.INFO("CIO!! Transfer submitted for Approval");
@@ -849,6 +859,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			// Step 15 : Submitting for approval
 			objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
 			objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionOptionSubmitForApproval);
+			if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+			{
+			objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+			}
 
 			// STEP 16-Clicking on submit for approval quick action button			
 			ReportLogger.INFO("CIO!! Transfer submitted for approval");
@@ -1052,7 +1067,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 			objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForApproval);
 			objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionOptionSubmitForApproval);
-			ReportLogger.INFO("CIO!! Transfer submitted for review");
+			if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+			{
+			objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+			}
+			ReportLogger.INFO("CIO!! Transfer submitted for approval");
 			objCioTransfer.waitForElementToBeVisible(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5),5);
 			softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5)),
 					"Work Item has been submitted for Approval.",
@@ -1411,6 +1431,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Submitting the WI for approval");
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
 		objCioTransfer.waitForElementToBeVisible(30,objCioTransfer.confirmationMessageOnTranferScreen);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.confirmationMessageOnTranferScreen),"Work Item has been submitted for Approval.","SMAB-T3696: Validation that proper mesage is displayed after submit for approval");
 
@@ -3265,6 +3290,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
 		objCioTransfer.waitForElementToBeVisible(objCioTransfer.confirmationMessageOnTranferScreen);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.locateElement(objCioTransfer.transferSucessMessage, 5)),
 				"Work Item has been submitted for Approval.",
@@ -4622,6 +4652,11 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 		// STEP 8- CIO Staff submitting for approval
 		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
 		Thread.sleep(2000);
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.finishButtonPopUp);
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
@@ -5284,6 +5319,89 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(recordedDocumentName, currentRecordedDocumentName, "SMAB-T4388: Verify the Recorded Document column in COS Doc Summary has a linked URL , navigating to the recorded document record");
 		
 		objParcelsPage.logout();
+	}
+	
+	/*
+	* Validate Mapping Event codes for the Assesed value records
+    */
+
+	@Test(description = "SMAB-T3919, SMAB-T4172, : Govt CIO Post transfer process", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
+	public void CIO_ValidateAssesedValuerecord(String loginUser) throws Exception {
+		
+		String execEnv = System.getProperty("region");
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithIncompleteData");
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
+		Map<String, String> dataToCreateUnrecordedEventMap = objUtil
+				.generateMapFromJsonFile(testdata.UNRECORDED_EVENT_DATA, "UnrecordedEventCreation");
+		Map<String, String> hashMapMailToData = objUtil.generateMapFromJsonFile(MailtoData, "createMailToData");
+
+		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
+		String timeStamp = String.valueOf(System.currentTimeMillis());
+
+		// STEP 1 : Create Appraiser activity
+		String[] arrayForWorkItemAfterCIOSupervisorApproval = objCioTransfer
+				.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", objCioTransfer.CIO_EVENT_EXCLUSION,
+						hashMapMailToData, hashMapOwnershipAndTransferGranteeCreationData,
+						hashMapCreateOwnershipRecordData, hashMapCreateAssessedValueRecord);
+
+		// STEP 2 : Login as Appraiser user
+		ReportLogger.INFO("Login as Appriaser user");
+		objMappingPage.login(users.RP_APPRAISER);
+		String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
+		String workItemQuery = "SELECT Id FROM Work_Item__c where name = '"+workItemForAppraiser+"'";
+		String workItemId = salesforceAPI.select(workItemQuery).get("Id").get(0);
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Work_Item__c/"+workItemId+"/view");
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		
+		// STEP 3 - Navigating to Appraisal Activity Screen
+		ReportLogger.INFO("Navigating to Appraisal Activity Screen");
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.quickActionOptionSubmitForApproval);
+		ReportLogger.INFO("Navigated to Appraisal Activity");
+		
+		//STEP 4 : Validating Assessed value records and Roll entry record tile view values for LCV And ICV as Zero Values
+		String DOV = objCioTransfer.getFieldValueFromAPAS(objCioTransfer.dovLabel);
+		String DOVYear = objCioTransfer.getFieldValueFromAPAS(objCioTransfer.dovLabel).substring(5,9);
+		Integer convertedNumber = Integer.valueOf(DOVYear);	
+		int BaseYear = convertedNumber + 1;
+		objCioTransfer.editRecordedApnField("Land Cash Value");
+		objPage.enter("Land Cash Value", "324567");
+		objPage.enter("Improvement Cash Value", "456784");
+		objCioTransfer.Click(objCioTransfer.saveButtonModalWindow);
+		String apnValue = objCioTransfer.getFieldValueFromAPAS("APN");
+		String apnQuery = "SELECT Id FROM Parcel__c WHERE Name = '" + apnValue + "'";
+		String APN = salesforceAPI.select(apnQuery).get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
+				+ "/related/Assessed_Values__r/view");
+		ReportLogger.INFO("Opened Assessed value records");
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
+		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNew = objMappingPage.getGridDataInHashMap();
+		String assessedValueRecord = gridDataHashMapAssessedValueNew.get("Assessed Values ID").get(1);
+		String assessedValueRecordID = salesforceAPI.select("SELECT Id FROM Assessed_BY_Values__c WHERE Name = '"+assessedValueRecord+"'").get("Id").get(0);
+		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Base Year").get(1), BaseYear, "SMAB-T3919: DOV is Matching");
+		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Effective Start Date").get(1), DOV, "SMAB-T3919: DOV is equal to effective start date");
+		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Status").get(1), "Active",
+				"SMAB-T3919: Status of the assesses value record is active ");
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Assessed_BY_Values__c/"+assessedValueRecordID+"/view");
+		softAssert.assertEquals("Prop 19 Intergenerational Exclusion", objCioTransfer.getFieldValueFromAPAS("Assessed Value Type"), "SMAB-T3919: DOV on AV record is equal to AAS");
+		objWorkItemHomePage.logout();
+		
 	}
 
 }

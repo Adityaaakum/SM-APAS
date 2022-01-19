@@ -58,7 +58,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2748,SMAB-T2689,SMAB-T2688,SMAB-T2754,SMAB-T2749,:Verify that User is able to view the various error message during BOE Activation mapping Action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement","Smoke" })
+			"Regression","ParcelManagement","Smoke","BOEActivationAction" })
 	public void ParcelManagement_VerifyErrorMessagesInBOEActivationMappingAction(String loginUser) throws Exception {
 		
 		//Fetching parcel that is Retired 		
@@ -144,7 +144,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
     		+ "Verify the Output validations for \"BOE Activation\" mapping action for a Parcel (retired) from a work item",
     		dataProvider = "loginMappingUser",
     		dataProviderClass = DataProviders.class, 
-    		groups = {"Regression","ParcelManagement" })
+    		groups = {"Regression","ParcelManagement","BOEActivationAction" })
     public void ParcelManagement_VerifyBOEActivationMappingActionOutputValidations(String loginUser) throws Exception {
 
     	JSONObject jsonObject = objMappingPage.getJsonObject();
@@ -485,7 +485,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2898:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"BOEACtivation\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","BOEActivationAction" })
 	public void ParcelManagement_ReturnToCustomScreen_BOEACtivationMappingAction(String loginUser) throws Exception {
 		String childAPNPUC;
 		
@@ -589,7 +589,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 	}
 	
 	@Test(description = "SMAB-T2832,SMAB-T2898,SMAB-T3623,SMAB-T3634,SMAB-T3771:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"BOEACtivation\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","BOEActivationAction" })
 	public void ParcelManagement_ReturnToCustomScreen_BOEACtivation_MappingAction_IndependentMappingActionWI(String loginUser) throws Exception {
 		String childAPNPUC;
 
@@ -765,7 +765,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		 * @throws Exception
 		 */
 		@Test(description = "SMAB-T2839,SMAB-T2844,SMAB-T2733,SMAB-T2767,SMAB-T2910,SMAB-T3473,SMAB-T2909,SMAB-T3474,SMAB-T3475: I need to have the ability to select specific fields from the mapping custom screen, so that the correct values can be assigned to the parcels. ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-				"Smoke","Regression","ParcelManagement" },enabled = true)
+				"Smoke","Regression","ParcelManagement","BOEActivationAction" },enabled = true)
 		public void ParcelManagement_VerifyBOEParcelEditAction(String loginUser) throws Exception {
 			String queryAPN = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990') and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and  Status__c = 'Retired' Limit 1";
 			HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -958,7 +958,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		@Test(description = "SMAB-T3464:Verify the Output validations for \"BOE Activation\" mapping action for a Parcel (retired) after rejected the work item ",
 	    		dataProvider = "loginMappingUser",
 	    		dataProviderClass = DataProviders.class, 
-	    		groups = {"Regression","ParcelManagement" })
+	    		groups = {"Regression","ParcelManagement","BOEActivationAction" })
 	    public void ParcelManagement_VerifyWIRejectionAfterPerformBOEActivationMappingAction(String loginUser) throws Exception {
 
 	        // Step 1: Fetching parcels that are Active with no Ownership record
@@ -1051,7 +1051,7 @@ public class Parcel_Management_BOEActivationMappingAction_Test extends TestBase 
 		@Test(description = "SMAB-T3562,SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 				+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 				dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-				groups = {"Regression","ParcelManagement","RecorderIntegration"},enabled=true)
+				groups = {"Regression","ParcelManagement","RecorderIntegration","BOEActivationAction"},enabled=true)
 		public void ParcelManagement_VerifyNewWIDeclofCovenantsCondRestrictionsGeneratedfromRecorderIntegrationAndBOEMappingAction(String loginUser) throws Exception {
 
 			JSONObject jsonObject= new JSONObject();

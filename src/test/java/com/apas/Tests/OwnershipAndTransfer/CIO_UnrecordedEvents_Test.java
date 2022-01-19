@@ -350,6 +350,13 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			// STEP 16-Clicking on submit for approval quick action button
 			objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionSubmitForApproval);
 			objCIOTransferPage.clickQuickActionButtonOnTransferActivity(null,objCIOTransferPage.quickActionOptionSubmitForApproval);
+			
+			if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+			{
+				objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+				objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+			}
+			
 			ReportLogger.INFO("CIO!! Transfer submitted for approval");
 			objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5));
 			softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5)),
@@ -949,6 +956,13 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{	
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
+		
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
 		Thread.sleep(2000);
@@ -1689,6 +1703,13 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
+		
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
 		softAssert.assertEquals(objCIOTransferPage.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 5)),
 				"Work Item has been submitted for Approval.",
@@ -1931,6 +1952,12 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objWorkItemHomePage.switchToNewWindow(parentWindow1);
 		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionOptionSubmitForApproval);
 		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
 		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
 		ReportLogger.INFO("CIO Staff reviewed the return reason and Submitted for Approval");
@@ -1953,6 +1980,170 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		Thread.sleep(3000);
 		objCIOTransferPage.logout();
 	  }	
+	/*
+	 * Validate Assessed value record for UT EVent
+	 */
+	@Test(description = "SMAB-T3984 : Update Returned Reason on the Work Item", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
+	public void CIO_ValidateAssessesValuerecordForUTEvent(String loginUser) throws Exception {
+
+		String execEnv = System.getProperty("region");
+		String queryAPNValue = "select Name, Id from Parcel__c where Status__c='Active' and id in ( select parcel__c from mail_to__c where Status__c='Active')";
+		String activeApnId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+
+		Map<String, String> dataToCreateUnrecordedEventMap = objUtil
+				.generateMapFromJsonFile(testdata.UNRECORDED_EVENT_DATA, "UnrecordedEventCreation");
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithCompleteOwnership");
+
+		// Step1: Login to the APAS application
+		objMappingPage.login(users.SYSTEM_ADMIN);
+
+		// Step2: Opening the PARCELS page
+		driver.navigate().to(
+				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + activeApnId + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,
+				objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+
+		// Step3: Create UT event perform validations
+		String timeStamp = String.valueOf(System.currentTimeMillis());
+		String description = dataToCreateUnrecordedEventMap.get("Description") + "_" + timeStamp;
+		objMappingPage.waitForElementToBeClickable(
+				objMappingPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.selectOptionDropdown);
+		objParcelsPage.selectOptionFromDropDown(objParcelsPage.selectOptionDropdown, "Create Audit Trail Record");
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.nextButtonComponentsActionsModal));
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.workItemTypeDropDownComponentsActionsModal);
+		objParcelsPage.selectOptionFromDropDown("Record Type", dataToCreateUnrecordedEventMap.get("Record Type"));
+		objParcelsPage.selectOptionFromDropDown("Group", dataToCreateUnrecordedEventMap.get("Group"));
+		Thread.sleep(2000);
+		objParcelsPage.selectOptionFromDropDown("Type of Audit Trail Record?",
+				dataToCreateUnrecordedEventMap.get("Type of Audit Trail Record?"));
+		if (dataToCreateUnrecordedEventMap.get("Source") != null) {
+			objParcelsPage.selectOptionFromDropDown("Source", dataToCreateUnrecordedEventMap.get("Source"));
+		}
+		if (dataToCreateUnrecordedEventMap.get("Date of Event") != null) {
+			objParcelsPage.enter("Date of Event", dataToCreateUnrecordedEventMap.get("Date of Event"));
+		}
+		objParcelsPage.enter("Date of Recording", dataToCreateUnrecordedEventMap.get("Date of Recording"));
+		objParcelsPage.enter("Description", description);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save and Next"));
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.calculateOwnershipButtonLabel);
+		String currentUrl = driver.getCurrentUrl();
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+
+		// STEP 4-Login with CIO staff
+		objMappingPage.login(loginUser);
+		driver.navigate().to(currentUrl);
+		Thread.sleep(2000);
+
+		// STEP 5-Creating the new Grantee
+		String recordeAPNTransferID = driver.getCurrentUrl().split("/")[6];
+		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID,
+				hashMapOwnershipAndTransferGranteeCreationData);
+		driver.navigate().to("https://smcacre--" + execEnv
+				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.calculateOwnershipButtonLabel);
+		ReportLogger.INFO("Create New grantee");
+
+		// STEP 6- CIO Staff submitting for Approval
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.finishButtonPopUp);
+		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
+		Thread.sleep(2000);
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+		ReportLogger.INFO("CIO activity Submitted for Approval");
+
+		// STEP 7- Login as CIO-Supervisor and Return RAT
+		objMappingPage.login(users.CIO_SUPERVISOR);
+		driver.navigate().to(currentUrl);
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.calculateOwnershipButtonLabel);
+		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-P19");
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionOptionApprove);
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Approve");
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.finishButtonPopUp);
+		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
+		ReportLogger.INFO("CIO Supervisor approved the UT event");
+		Thread.sleep(3000);
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+
+		// STEP 2 : Login as Appraiser user
+		ReportLogger.INFO("Login as Appriaser user");
+		objMappingPage.login(users.RP_APPRAISER);
+
+		String workItemQuery = "SELECT Id, Name FROM Work_Item__c Where Type__c= 'Appraiser' AND Sub_Type__c = 'Appraisal Activity'order by createdDate desc limit 1";
+		String workItemNo = salesforceAPI.select(workItemQuery).get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Work_Item__c/"
+				+ workItemNo + "/view");
+		objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+
+		// STEP 9: Navigating to Appraisal Activity Screen
+		ReportLogger.INFO("Navigating to Appraisal Activity Screen");
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+		objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.quickActionOptionSubmitForApproval);
+
+		// STEP 4 : Validating Assessed value records and Roll entry record list view values for LCV And ICV as Zero Values
+		String DOV = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dovLabel);
+		String DOVYear = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dovLabel).substring(5, 9);
+		Integer convertedNumber = Integer.valueOf(DOVYear);
+		int BaseYear = convertedNumber + 1;
+		objCIOTransferPage.editRecordedApnField("Land Cash Value");
+		objCIOTransferPage.enter("Land Cash Value", "324567");
+		objCIOTransferPage.enter("Improvement Cash Value", "456784");
+		objCIOTransferPage.Click(objCIOTransferPage.saveButtonModalWindow);
+		String apnValue = objCIOTransferPage.getFieldValueFromAPAS("APN");
+		String apnQuery = "SELECT Id FROM Parcel__c WHERE Name = '" + apnValue + "'";
+		String APN = salesforceAPI.select(apnQuery).get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
+				+ "/related/Assessed_Values__r/view");
+		ReportLogger.INFO("Opened Assessed value records");
+		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.newButton, 3);
+		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNew = objMappingPage.getGridDataInHashMap();
+		String assessedValueRecord = gridDataHashMapAssessedValueNew.get("Assessed Values ID").get(1);
+		String assessedValueRecordID = salesforceAPI
+				.select("SELECT Id FROM Assessed_BY_Values__c WHERE Name = '" + assessedValueRecord + "'").get("Id")
+				.get(0);
+		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Base Year").get(1), BaseYear,
+				"SMAB-T3919: DOV is Matching");
+		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Effective Start Date").get(1), DOV,
+				"SMAB-T3919: DOV is equal to effective start date");
+		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Status").get(1), "Active",
+				"SMAB-T3919: Status of the assesses value record is active ");
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Assessed_BY_Values__c/"
+				+ assessedValueRecordID + "/view");
+		softAssert.assertEquals("Prop 19 Intergenerational 100% Assessment",
+				objCIOTransferPage.getFieldValueFromAPAS("Assessed Value Type"),
+				"SMAB-T3919: Assessed Value Type is equal to Prop 19 Intergenerational 100% Assessment");
+		objCIOTransferPage.waitForElementToBeVisible(5, "Event ID");
+		softAssert.assertEquals(objParcelsPage.verifyElementVisible("Event ID"), "true",
+				"SMAB-T3984:Event ID is visible");
+		softAssert.assertEquals(objParcelsPage.verifyElementVisible("Personal Property"), "true",
+				"SMAB-T3984:Personal Property is visible");
+		softAssert.assertEquals(objParcelsPage.verifyElementVisible("Fixtures"), "true",
+				"SMAB-T3984:Fixtures is visible");
+		softAssert.assertEquals(objParcelsPage.verifyElementVisible("Root"), "true", "SMAB-T3984:Root is visible");
+		softAssert.assertEquals(objParcelsPage.verifyElementVisible("Mine/Mineral"), "true",
+				"SMAB-T3984:Mine/Mineral is visible");
+		objParcelsPage.logout();
+	}
 	
 	/*
 	 * Verify the Unrecorded Document Number column in COS Doc Summary has a linked URL , navigating to theAudit Trail Record
@@ -2009,6 +2200,137 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				
 		String currentEventID = trail.getFieldValueFromAPAS(trail.eventNumberLabel);
 		softAssert.assertEquals(eventID, currentEventID, "SMAB-T4389: Verify the Unecorded Document column in COS Doc Summary has a linked URL , navigating to the audit trail record");
+		
+		objParcelsPage.logout();
+	}
+	
+	
+	/*
+	 * Verify ZIP Code transformation to 9 digit in the [5]-[4] format with USPS integration
+	 */
+	@Test(description = "SMAB-T4405 & SMAB-T4406: Verify APAS is able to do this transformation to store the mailing zip in the required format and determine the last four digits if only first five are provided. ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
+	public void CIO_UnrecordedEvent_ZipCodeTransformationToNineDigits(String loginUser) throws Exception {
+		
+		// ----- Data set up -----
+		String queryAPNValue = "select Id from Parcel__c where Status__c='Active' limit 1";
+		String parcelId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		String execEnv = System.getProperty("region");		
+		
+		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithMailTo");
+		Map<String, String> hashMapMailToData = objUtil.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData, "dataToCreateMailToRecord");
+		
+		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select("SELECT id FROM PUC_Code__c where Name in ('101- Single Family Home','105 - Apartment') limit 1");
+		salesforceAPI.update("Parcel__c", parcelId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+		
+		// Login to the APAS application as SysAdmin
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		
+		// Opening the parcel's page
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
+		objParcelsPage.waitUntilPageisReady(driver);
+		
+		// Create UT event
+		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
+		objCIOTransferPage.waitUntilPageisReady(driver);
+		
+		// Edit the Transfer activity and update the Transfer Code
+		ReportLogger.INFO("Add the Transfer Code");
+		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, CIOTransferPage.CIO_EVENT_CODE_SALE);
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+		
+		// Clean parcel
+		objCIOTransferPage.deleteOwnershipFromParcel(parcelId);
+				
+		// Creating the new grantee on transfer
+		String recordeAPNTransferID = driver.getCurrentUrl().split("/")[6];
+		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);			
+
+		// Validating present grantee			 
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+		HashMap<String, ArrayList<String>> granteeHashMap  = objCIOTransferPage.getGridDataForRowString("1");
+		String granteeForMailTo= granteeHashMap.get("Grantee/Retain Owner Name").get(0);
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+		
+		// Step 1: Login as CIO staff
+		objCIOTransferPage.login(loginUser);
+		
+		// Steps 2-7: Creating copy to mail to record
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCIOTransferPage.waitUntilPageisReady(driver);
+		objCIOTransferPage.createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferGranteeCreationData);
+		objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
+				
+		// Verify ZIP code is stored as [5]-[4] digits format
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Mail_To__r/view");
+		HashMap<String, ArrayList<String>> mailToMap = objCIOTransferPage.getGridDataInHashMap();
+		String zipcode = mailToMap.get("Mailing Zip").get(0);
+		ReportLogger.INFO("Zip Code: " + zipcode);
+		softAssert.assertTrue(zipcode.matches("\\d{5}-\\d{4}"), "SMAB-T4405: verify ZIP code is stored as [5]-[4] format in transfer activity");		
+		
+		// Open transfer activity 
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCIOTransferPage.waitUntilPageisReady(driver);
+		
+		// Submit for approval
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
+		ReportLogger.INFO("WI Submitted  for approval successfully");
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+		
+		// Login as SysAdmin
+		objExemptionsPage.login(users.SYSTEM_ADMIN);
+		
+		// Approve transfer activity
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionApprove);
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));		
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+		
+		// Step 1: Login as CIO staff 
+		objCIOTransferPage.login(loginUser);
+		
+		// Step 2: CIO Staff opens the Mail To Object
+		String mailTomQuery = "SELECT Id, Name FROM Mail_To__c ORDER BY CreatedDate DESC limit 1";
+		String mailToId = salesforceAPI.select(mailTomQuery).get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Mail_To__c/" + mailToId + "/view");
+		objParcelsPage.waitUntilPageisReady(driver);
+		
+		// Step 3: User clicks on "Validate Mailing Address" button
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objCIOTransferPage.validateMailingAddressButton));
+		
+		// Step 4: User fills the form
+		objParcelsPage.enter(objCIOTransferPage.addressInCopyToMailTo,hashMapMailToData.get("Address"));
+		objParcelsPage.enter(objCIOTransferPage.zipCodeInCopyToMailTo,hashMapMailToData.get("Zip code"));
+		objParcelsPage.Click(objCIOTransferPage.addressInCopyToMailTo);
+		
+		// Step 5: User clicks on "Validates with USPS" button
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objCIOTransferPage.validateWithUSPSButtonOnCopyToMailTo));
+		
+		// Step 6: User clicks on "Update" button
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objCIOTransferPage.updateMailToButton));
+		objParcelsPage.waitUntilPageisReady(driver);
+		
+		// Verify ZIP code is stored as [5]-[4] digits format in mail to Object
+		zipcode = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.mailZipCopyToMailTo);
+		softAssert.assertTrue(zipcode.matches("\\d{5}-\\d{4}"), "SMAB-T4406: verify ZIP code is stored as [5]-[4] format in Mail to object");	
 		
 		objParcelsPage.logout();
 	}

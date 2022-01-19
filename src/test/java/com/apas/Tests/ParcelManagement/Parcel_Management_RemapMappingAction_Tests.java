@@ -53,7 +53,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	}
 
 	@Test(description = "SMAB-T2490,SMAB-T2536:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","RemapAction" })
 	public void ParcelManagement_VerifyRemapMappingActionForMultipleParcels(String loginUser) throws Exception {
 		ArrayList<String> APNs=objMappingPage.fetchActiveAPN(2);
 		String activeParcelToPerformMapping=APNs.get(0);
@@ -125,7 +125,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T3051,SMAB-T2490,SMAB-T2493,SMAB-T2532,SMAB-T2535,SMAB-T2531,SMAB-T2533:Verify that User is able to perform a Remap mapping action for a Parcel from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement", "RemapAction" })
 	public void ParcelManagement_VerifyRemapMappingAction(String loginUser) throws Exception {
 		String activeParcelToPerformMapping=objMappingPage.fetchActiveAPN();
 		String activeParcelWithoutHyphen=activeParcelToPerformMapping.replace("-","");
@@ -286,7 +286,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 
 
 	@Test(description = "SMAB-T2483,SMAB-T2691,SMAB-T2692: Verify APN entered must exist in APAS,And no dupicates Apn allowed ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
-			,groups = {"Regression","ParcelManagement"},enabled =true)
+			,groups = {"Regression","ParcelManagement", "RemapAction"},enabled =true)
 	public void ParcelManagment_Verify_APN_EnteredMust_Exist_In_Apas_RemapMappingAction(String loginUser) throws Exception
 	{
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
@@ -359,7 +359,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	 */
 
 	@Test(description = "SMAB-T2625,SMAB-T2628:  Verify that when multiple parent parcels are entered, if a space is entered or not after a comma, the system should format the parcel as expected,And Apn should be 9 digits ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
-			,groups = {"Regression","ParcelManagement"},enabled=true)
+			,groups = {"Regression","ParcelManagement","RemapAction" },enabled=true)
 	public void ParcelManagment_Verify_Multiple_Parent_Parcels_Indentation_RemapMapping(String loginUser) throws Exception
 	{
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
@@ -432,7 +432,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 
 
 	@Test(description = "SMAB-T2629,SMAB-T2630 : Verify APN entered must not have special character ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
-			,groups = {"Regression","ParcelManagement"},enabled = true)
+			,groups = {"Regression","ParcelManagement","RemapAction" },enabled = true)
 	public void ParcelManagment_VerifyAPN_Entered_MustNotHave_SpcChar_RemappingAction(String loginUser) throws Exception
 	{
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
@@ -500,7 +500,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 
 
 	@Test(description = "SMAB-T2634: on mapping screen(second screen) when manually update the apn and enter the same existing as generated for another child parcel and try to finalize the action of multiple parcels generated error should be thrownS ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
-			,groups = {"Regression","ParcelManagement"},enabled =true)
+			,groups = {"Regression","ParcelManagement","RemapAction" },enabled =true)
 	public void ParcelManagment_Verify_Remap_With_Duplicate_Apns_RemappingAction(String loginUser) throws Exception
 	{
 		String queryAPN = "select name from parcel__c where status__c ='Active' and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Name not like '134%' limit 2";
@@ -563,7 +563,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	 */
 
 	@Test(description = "SMAB-T2627: Verify that when many parcels are entered that exceed the allocated space, the system should automatically auto-wrap the parent APN so they are displayed properly ",dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class
-			,groups = {"Regression","ParcelManagement"},enabled =true)
+			,groups = {"Regression","ParcelManagement","RemapAction" },enabled =true)
 	public void ParcelManagment_Many_NewParcel_Apn_Formatted_RemappingAction(String loginUser) throws Exception
 	{
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 11";
@@ -624,7 +624,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	 * @throws Exception
 	 */
 	@Test(description = "SMAB-T2898,SMAB-T2667,SMAB-T2766,SMAB-T2910,SMAB-T3473,SMAB-T2909,SMAB-T3474,SMAB-T3475:Parcel Management- Verify that User is able to Return to Custom Screen after performing  a \"remap\" mapping action for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression","ParcelManagement" })
+			"Regression","ParcelManagement","RemapAction"  })
 	public void ParcelManagement_ReturnToCustomScreen_RemapMappingAction_NoPrimarySitusTRA(String loginUser) throws Exception {
 		String queryAPN = "SELECT Id, Name FROM Parcel__c WHERE (Not Name like '%990')and (not Name like '134%') and Status__c = 'Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -825,7 +825,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	 * 
 	 */
 	@Test(description = "SMAB-T3573,SMAB-6789:Parcel Management- Verify that User is able to perform  a \"remap\" mapping output actions for a Parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
+			"Regression", "ParcelManagement","RemapAction"  })
 	public void ParcelManagement_VerifyRemapMappingActionOutput(String loginUser) throws Exception {
 		
 		JSONObject jsonObject = objMappingPage.getJsonObject();
@@ -1117,7 +1117,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	 * @throws Exception
 	 */	
 	@Test(description = "SMAB-T3464:Verify the Output validations for \"Remap\" mapping action for a Parcel (retired) after rejected the work item ", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "ParcelManagement" })
+			"Regression", "ParcelManagement","RemapAction"  })
 	public void ParcelManagement_VerifyWIRejectionAfterPerformRemapMappingAction(String loginUser) throws Exception {
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c='Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -1226,7 +1226,7 @@ public class Parcel_Management_RemapMappingAction_Tests extends TestBase impleme
 	@Test(description = "SMAB-T3575,SMAB-T3645,SMAB-T3511,SMAB-T3512,SMAB-T3513:Verify that the Related Action label should"
 			+ " match the Actions labels while creating WI and it should open mapping screen on clicking",
 			dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
-			groups = {"Regression","ParcelManagement","RecorderIntegration" },enabled=true)
+			groups = {"Regression","ParcelManagement","RecorderIntegration","RemapAction" },enabled=true)
 	public void ParcelManagement_VerifyNewWICovenantsCondRestrGeneratedfromRecorderIntegrationAndRemapMappingAction(String loginUser) throws Exception {
 				
 		JSONObject jsonObject = objMappingPage.getJsonObject();

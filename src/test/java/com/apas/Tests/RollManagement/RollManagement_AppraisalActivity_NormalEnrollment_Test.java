@@ -1,4 +1,4 @@
-package com.apas.Tests.OwnershipAndTransfer;
+package com.apas.Tests.RollManagement;
 
 
 import java.text.SimpleDateFormat;
@@ -42,7 +42,7 @@ import com.apas.config.users;
 
 
 
-public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implements users {
+public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends TestBase implements users {
 	private RemoteWebDriver driver;
 	Page objPage;
 	ParcelsPage objParcelsPage;

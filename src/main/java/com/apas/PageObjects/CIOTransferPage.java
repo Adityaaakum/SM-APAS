@@ -85,6 +85,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String saveButton ="Save";
 	public String finishButton ="Finish";
 	public String nextButton="Next";
+	public String validateMailingAddressButton="Validate Mailing Address";
 	public String cioTransferScreenSectionlabels= "//*[@class='slds-card slds-card_boundary']//span[@class='slds-truncate slds-m-right--xx-small']";
 	public String remarksLabel = "Remarks";
 	public String fieldsInCalculateOwnershipModal="//*[@id='wrapper-body']//flowruntime-screen-field//p";
@@ -156,6 +157,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String verifiedValueFromPcorLabel = "Verified Value from PCOR";
 	public String previousButtonLabel = "Previous";
 
+	public String validateWithUSPSButtonOnCopyToMailTo = "Validate with USPS";
+	public String updateMailToButton = "Update";	
+	public String useThisInformationButtonOnCopyToMailTo = "Use This Information";
 	public String useThisQuickActionButtonOnCopyTOMailTo = "Use This";
 
 	public String saveAndNextButtonCaption = commonXpath + "//button[text()='Save and Next']";
@@ -304,8 +308,20 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath=commonXpath+"//div[text()='New']")
 	public WebElement newButtonMailToListViewScreen;
 	
+	
+	@FindBy(xpath=commonXpath+"//label[text()='Address ']/..//input")
+	public WebElement addressInCopyToMailTo;
+	
+	@FindBy(xpath=commonXpath+"//label[text()='Zip Code']/..//input")
+	public WebElement zipCodeInCopyToMailTo;	
+	
+	@FindBy(xpath=commonXpath+"//*[@id=\"wrapper-body\"]//span[text() = 'Care of']/../../..//input")
+	public WebElement careOfInCopyToMailTo;
+	
+
 	@FindBy(xpath=commonXpath+"//input[contains(@value,'Yes2')]")
 	public WebElement yesRadioButtonRetainMailToWindow;
+	
 	
 	/*
 	    * This method adds the recorded APN in Recorded-Document
@@ -525,17 +541,25 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					 * Click(mailingState); Select selectMailingState = new Select(mailingState);
 					 * selectMailingState.selectByVisibleText(dataToCreateMailTo.get("Mailing State"
 					 * )); Click(mailingState);
-					 */ enter(mailZipCopyToMailTo,
-					  dataToCreateMailTo.get("Mailing Zip"));
-					 
-						Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));				
+					 */ 
+										
+					enter(mailZipCopyToMailTo,
+					dataToCreateMailTo.get("Mailing Zip"));
+					
+					// Using USPS ZIP code validation
+					if (dataToCreateMailTo.get("Address") != null) enter(addressInCopyToMailTo, dataToCreateMailTo.get("Address"));
+                    if (dataToCreateMailTo.get("Zip code") != null) enter(zipCodeInCopyToMailTo, dataToCreateMailTo.get("Zip code"));
+                    if (dataToCreateMailTo.get("Care of") != null) enter(careOfInCopyToMailTo, dataToCreateMailTo.get("Care of"));
+                    if(verifyElementEnabled(getButtonWithText(validateWithUSPSButtonOnCopyToMailTo))) Click(getButtonWithText(validateWithUSPSButtonOnCopyToMailTo));
+                    if(verifyElementEnabled(getButtonWithText(useThisInformationButtonOnCopyToMailTo))) Click(getButtonWithText(useThisInformationButtonOnCopyToMailTo));;
+					
+					Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));			
 					Click(getButtonWithText(nextButton));
 					ReportLogger.INFO("Generated mail to record from Copy to mail  quick action button");
 				} catch (Exception e) {
 					ReportLogger.INFO("SORRY!! MAIL TO RECORD CANNOT BE ADDED THROUGH COPY TO MAIL TO ACTION BUTTON");
 				}
 			}
-
 		 
 		 
 		 /*
@@ -756,7 +780,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			  * @param hashMapCreateAssessedValueRecord : Data to create acessed value record
 			  */
 	
-			 public String[] createAppraisalActivityWorkItemForRecordedCIOTransfer(String enrollmentType,String transferCode,Map<String, String> hashMapOwnershipAndTransferMailToCreationData,Map<String, String> hashMapOwnershipAndTransferGranteeCreationData,Map<String, String> hashMapCreateOwnershipRecordData,Map<String, String> hashMapCreateAssessedValueRecord, int... supplementalsCount ) throws Exception {
+
+			 public String[] createAppraisalActivityWorkItemForRecordedCIOTransfer(String enrollmentType,String transferCode,Map<String, String> hashMapOwnershipAndTransferMailToCreationData,Map<String, String> hashMapOwnershipAndTransferGranteeCreationData,Map<String, String> hashMapCreateOwnershipRecordData,Map<String, String> hashMapCreateAssessedValueRecord,HashMap<String, String>... DovDorDoe ) throws Exception {
 
 					String excEnv = System.getProperty("region");
 
@@ -872,17 +897,23 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
 					objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 					objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
-
-					if(supplementalsCount[0]==1)
-					{	
+					JSONObject jsonForUpdateDOV_DOR_DOE_RAT = getJsonObject();
 					
-					JSONObject jsonForUpdateDOVRAT = getJsonObject();
-					jsonForUpdateDOVRAT.put("xDOV__c", "2021-06-30");
-					jsonForUpdateDOVRAT.put("DOR__c", "2021-06-30");
-					jsonForUpdateDOVRAT.put("xDOE__c", "2021-06-30");
+					if (DovDorDoe.length!=0 && DovDorDoe !=null)
+					{	if(DovDorDoe[0].containsKey("DOV"))
+					
+						jsonForUpdateDOV_DOR_DOE_RAT.put("xDOV__c", DovDorDoe[0].get("DOV"));
+					
+					if(DovDorDoe[0].containsKey("DOR"))
+						jsonForUpdateDOV_DOR_DOE_RAT.put("DOR__c", DovDorDoe[0].get("DOR"));
+					
+					if(DovDorDoe[0].containsKey("DOE"))
+						jsonForUpdateDOV_DOR_DOE_RAT.put("xDOE__c", DovDorDoe[0].get("DOE"));
 	
 
-					salesforceApi.update("Recorded_APN_Transfer__c", recordeAPNTransferID, jsonForUpdateDOVRAT);
+
+					salesforceApi.update("Recorded_APN_Transfer__c", recordeAPNTransferID, jsonForUpdateDOV_DOR_DOE_RAT);
+						
 						
 					}
 					// STEP 7-Clicking on related action link
@@ -943,8 +974,12 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					// STEP 14 - Click on submit for approval button
 					clickQuickActionButtonOnTransferActivity(null, quickActionOptionSubmitForApproval);
+
+					if (waitForElementToBeVisible(7,yesRadioButtonRetainMailToWindow))
+					{
 					Click(yesRadioButtonRetainMailToWindow);
 					Click(getButtonWithText(nextButton));
+					}
 
 					ReportLogger.INFO("CIO!! Transfer submitted for approval");
 					waitForElementToBeClickable(10, finishButton);
