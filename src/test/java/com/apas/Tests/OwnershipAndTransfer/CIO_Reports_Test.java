@@ -40,15 +40,14 @@ public class CIO_Reports_Test extends TestBase {
 	/**
 	 * Below test case will verify if a new report called "MCL report 1" exists with its respective fields
 	 **/
-	@Test(description = "SMAB-T4063: Validation of MCL report 1 in reports", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "Reports" }, alwaysRun = true)
+	@Test(description = "SMAB-T4063: Validation of MCL report 1 in reports", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "Reports","ChangeInOwnershipManagement","ChangeInOwnershipManagement_Reports" }, alwaysRun = true)
 	public void Reports_verifyMCLReport1(String loginUser) throws Exception {
 		String downloadLocation = testdata.DOWNLOAD_FOLDER;
 		String reportName = "MCL Report 1";
 		String exportedFileName;
 		ReportLogger.INFO("Download location : " + downloadLocation);
-		String parcelReports="";
-		//= testdata.HOME_OWNER_EXEMPTION_Reports;
+		String parcelReports = testdata.HOME_OWNER_EXEMPTION_Reports;
 		Map<String, String> parcelReportsfileData = objUtil.generateMapFromJsonFile(parcelReports,
 				"VerifyMCLReport1Columns");
 		

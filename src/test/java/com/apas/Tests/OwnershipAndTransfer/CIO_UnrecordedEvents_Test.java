@@ -2337,4 +2337,54 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		
 		objParcelsPage.logout();
 	}
+	
+	 /*
+		 * Verify the When there is a CIO Event with a APN having existing DV OR Institutional Exemptions , then it needs to 
+		 * trigger an additional WI for the Exemptions Team to validate the qualifications for the new owner
+		 */
+		@Test(description = "SMAB-T3746,SMAB-T3747: Verify the When there is a CIO Event with a APN having existing DV OR Institutional Exemptions , then it needs to trigger an additional WI for the Exemptions Team to validate the qualifications for the new owner", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+				"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
+		public void CIO_VerifyAdditionalWIforExistingDVORIE(String loginUser) throws Exception {
+			
+			// ----- Data set up -----
+			
+			String queryAPNValue = "select Id from Parcel__c where Status__c='Active' limit 1";
+			String parcelId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+			String execEnv = System.getProperty("region");
+			
+			Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
+			
+			HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select("SELECT id FROM PUC_Code__c where Name in ('101- Single Family Home','105 - Apartment') limit 1");
+			salesforceAPI.update("Parcel__c", parcelId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+			
+			// Step1: Login to the APAS application
+			objMappingPage.login(loginUser);
+
+			// Step2: Opening the parcel's page
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
+			objParcelsPage.waitForElementToBeClickable(5, objParcelsPage.editParcelButton);
+			objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.editParcelButton));
+			objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.saveButton);
+			objApasGenericPage.scrollToElement(objApasGenericPage.getWebElementWithLabel(objParcelsPage.exemptionLabel));
+			objExemptionsPage.selectMultipleValues("Institutional Exemption", objParcelsPage.exemptionTypeLabel);
+			objExemptionsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.saveParcelButton));
+			
+			// Step3: Create UT event
+			objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
+			objCIOTransferPage.waitUntilPageisReady(driver);
+			
+			// Step4: Edit the Transfer activity and update the Transfer Code
+			ReportLogger.INFO("Add the Transfer Code");
+			objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+			objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
+			objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, CIOTransferPage.CIO_EVENT_CODE_SALE);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+					
+			// Step5: Verify new WI is created 
+			String DVORIEWIQuery="SELECT Name FROM Work_Item__c where APN__c='"+parcelId+"' and Type__c='Exemptions' and Sub_Type__c='Validate DV & Institutional Exemption Qualifications' ";
+			responsePUCDetails = salesforceAPI.select(DVORIEWIQuery);
+			softAssert.assertTrue(!responsePUCDetails.get("Name").get(0).contains("WI-"), "SMAB-T3746,SMAB-T3747:Verify the When there is a CIO Event with a APN having existing DV OR Institutional Exemptions, then it needs to trigger an additional WI for the Exemptions Team to validate the qualifications for the new owner");	
+
+			objParcelsPage.logout();
+		}
 }
