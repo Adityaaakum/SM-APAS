@@ -82,6 +82,5 @@ public interface testdata {
     String CHARACTERISTICS = userDirectory + "\\data\\Characteristics\\CharacteristicsCreationData.json";
     String AUDIT_TRAIL_DATA = userDirectory+"\\data\\AuditTrail\\AuditTrail.json";
     String SITUS_DATA = userDirectory+"\\data\\Situses\\Situs.json";
-	String HOME_OWNER_EXEMPTION_Reports = userDirectory+"\\data\\OwnershipAndTransfer\\MCLReports.json";
 
 }

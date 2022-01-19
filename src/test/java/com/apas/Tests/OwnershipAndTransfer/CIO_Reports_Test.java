@@ -47,7 +47,8 @@ public class CIO_Reports_Test extends TestBase {
 		String reportName = "MCL Report 1";
 		String exportedFileName;
 		ReportLogger.INFO("Download location : " + downloadLocation);
-		String parcelReports = testdata.HOME_OWNER_EXEMPTION_Reports;
+		String parcelReports="";
+		//= testdata.HOME_OWNER_EXEMPTION_Reports;
 		Map<String, String> parcelReportsfileData = objUtil.generateMapFromJsonFile(parcelReports,
 				"VerifyMCLReport1Columns");
 		
