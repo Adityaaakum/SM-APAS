@@ -1565,6 +1565,25 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 	        cal.setTime(date);
 	        cal.add(Calendar.DATE, days); //minus number would decrement the days
 	        return cal.getTime();
-	    }
-}
+		}
 
+		/*
+		 * Check if edit button is present for the specific field
+		 * 
+		 * @param Field Name
+		 * 
+		 * @return True if present else false
+		 */
+		public Boolean verifyEditButtonIsPresent(String fieldName) {
+
+			Boolean verifyEditButtonPresence = true;
+			try {
+				driver.findElement(By.xpath(
+						"//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit "
+								+ fieldName + "')]"));
+			} catch (Exception e) {
+				verifyEditButtonPresence = false;
+			}
+			return verifyEditButtonPresence;
+		}
+	}
