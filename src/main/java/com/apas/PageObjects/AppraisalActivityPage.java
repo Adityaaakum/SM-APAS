@@ -1,20 +1,11 @@
 package com.apas.PageObjects;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.Select;
 
-import com.apas.Reports.ReportLogger;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
@@ -53,6 +44,9 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	public String statusLabel="Status";
 	public String startDateLabel="Start Date";
 	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
+	public String recordTypeLable ="Record Type";
+	public String doeLabel ="DOE";
+
 
 	
 	@FindBy(xpath = "//select[@name='Rejection_Reason_PickList']")
@@ -113,4 +107,7 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 			waitForElementToBeClickable(drpDwnOption, 8);
 			javascriptClick(drpDwnOption);
 		}
+		
+		
+
 }

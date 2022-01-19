@@ -2207,5 +2207,134 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objParcelsPage.logout();
 	}
 	
-	
+
+	/*
+	 * Verify ZIP Code transformation to 9 digit in the [5]-[4] format with USPS integration
+	 */
+	@Test(description = "SMAB-T4405 & SMAB-T4406: Verify APAS is able to do this transformation to store the mailing zip in the required format and determine the last four digits if only first five are provided. ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
+	public void CIO_UnrecordedEvent_ZipCodeTransformationToNineDigits(String loginUser) throws Exception {
+		
+		// ----- Data set up -----
+		String queryAPNValue = "select Id from Parcel__c where Status__c='Active' limit 1";
+		String parcelId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		String execEnv = System.getProperty("region");		
+		
+		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithMailTo");
+		Map<String, String> hashMapMailToData = objUtil.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData, "dataToCreateMailToRecord");
+		
+		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select("SELECT id FROM PUC_Code__c where Name in ('101- Single Family Home','105 - Apartment') limit 1");
+		salesforceAPI.update("Parcel__c", parcelId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+		
+		// Login to the APAS application as SysAdmin
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		
+		// Opening the parcel's page
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
+		objParcelsPage.waitUntilPageisReady(driver);
+		
+		// Create UT event
+		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
+		objCIOTransferPage.waitUntilPageisReady(driver);
+		
+		// Edit the Transfer activity and update the Transfer Code
+		ReportLogger.INFO("Add the Transfer Code");
+		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, CIOTransferPage.CIO_EVENT_CODE_SALE);
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+		
+		// Clean parcel
+		objCIOTransferPage.deleteOwnershipFromParcel(parcelId);
+				
+		// Creating the new grantee on transfer
+		String recordeAPNTransferID = driver.getCurrentUrl().split("/")[6];
+		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);			
+
+		// Validating present grantee			 
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+		HashMap<String, ArrayList<String>> granteeHashMap  = objCIOTransferPage.getGridDataForRowString("1");
+		String granteeForMailTo= granteeHashMap.get("Grantee/Retain Owner Name").get(0);
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+		
+		// Step 1: Login as CIO staff
+		objCIOTransferPage.login(loginUser);
+		
+		// Steps 2-7: Creating copy to mail to record
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCIOTransferPage.waitUntilPageisReady(driver);
+		objCIOTransferPage.createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferGranteeCreationData);
+		objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
+				
+		// Verify ZIP code is stored as [5]-[4] digits format
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Mail_To__r/view");
+		HashMap<String, ArrayList<String>> mailToMap = objCIOTransferPage.getGridDataInHashMap();
+		String zipcode = mailToMap.get("Mailing Zip").get(0);
+		ReportLogger.INFO("Zip Code: " + zipcode);
+		softAssert.assertTrue(zipcode.matches("\\d{5}-\\d{4}"), "SMAB-T4405: verify ZIP code is stored as [5]-[4] format in transfer activity");		
+		
+		// Open transfer activity 
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCIOTransferPage.waitUntilPageisReady(driver);
+		
+		// Submit for approval
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
+		ReportLogger.INFO("WI Submitted  for approval successfully");
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+		
+		// Login as SysAdmin
+		objExemptionsPage.login(users.SYSTEM_ADMIN);
+		
+		// Approve transfer activity
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionApprove);
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));		
+		objCIOTransferPage.logout();
+		Thread.sleep(5000);
+		
+		// Step 1: Login as CIO staff 
+		objCIOTransferPage.login(loginUser);
+		
+		// Step 2: CIO Staff opens the Mail To Object
+		String mailTomQuery = "SELECT Id, Name FROM Mail_To__c ORDER BY CreatedDate DESC limit 1";
+		String mailToId = salesforceAPI.select(mailTomQuery).get("Id").get(0);
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Mail_To__c/" + mailToId + "/view");
+		objParcelsPage.waitUntilPageisReady(driver);
+		
+		// Step 3: User clicks on "Validate Mailing Address" button
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objCIOTransferPage.validateMailingAddressButton));
+		
+		// Step 4: User fills the form
+		objParcelsPage.enter(objCIOTransferPage.addressInCopyToMailTo,hashMapMailToData.get("Address"));
+		objParcelsPage.enter(objCIOTransferPage.zipCodeInCopyToMailTo,hashMapMailToData.get("Zip code"));
+		objParcelsPage.Click(objCIOTransferPage.addressInCopyToMailTo);
+		
+		// Step 5: User clicks on "Validates with USPS" button
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objCIOTransferPage.validateWithUSPSButtonOnCopyToMailTo));
+		
+		// Step 6: User clicks on "Update" button
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objCIOTransferPage.updateMailToButton));
+		objParcelsPage.waitUntilPageisReady(driver);
+		
+		// Verify ZIP code is stored as [5]-[4] digits format in mail to Object
+		zipcode = objParcelsPage.getFieldValueFromAPAS(objParcelsPage.mailZipCopyToMailTo);
+		softAssert.assertTrue(zipcode.matches("\\d{5}-\\d{4}"), "SMAB-T4406: verify ZIP code is stored as [5]-[4] format in Mail to object");	
+		
+		objParcelsPage.logout();
+	}
 }
