@@ -733,7 +733,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         String queryToFetchCPIFactorId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '2022'";
         HashMap<String, ArrayList<String>> cpiFactorId = objSalesforceAPI.select(queryToFetchCPIFactorId);
         String queryToUpdateCPIFactor = "SELECT Id FROM CPI_Factor__c Where Roll_Year__c = '"+cpiFactorId.get("Id").get(0)+"'";
-        objSalesforceAPI.update("CPI_Factor__c",queryToUpdateCPIFactor,"CPI_Factor__c","1.01");
+        objSalesforceAPI.update("CPI_Factor__c",queryToUpdateCPIFactor,"CPI_Factor__c","1.02");
 
         //Step3: Generate 'Annual Factor Settings' Reminder Work Items
         objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_ANNUAL_FACTORS);
@@ -860,7 +860,7 @@ public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
         String queryToFetchCPIFactorId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '2020'";
         HashMap<String, ArrayList<String>> cpiFactorId = objSalesforceAPI.select(queryToFetchCPIFactorId);
         String queryToUpdateCPIFactor = "SELECT Id FROM CPI_Factor__c Where Roll_Year__c = '"+cpiFactorId.get("Id").get(0)+"'";
-        objSalesforceAPI.update("CPI_Factor__c",queryToUpdateCPIFactor,"CPI_Factor__c","1.01");
+        objSalesforceAPI.update("CPI_Factor__c",queryToUpdateCPIFactor,"CPI_Factor__c","1.02");
 
         objPage.Click(objBppTrendPage.calculateAllBtn);
         objPage.waitForElementToDisappear(objBppTrendPage.xpathSpinner, 50);
