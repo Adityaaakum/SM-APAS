@@ -10,7 +10,7 @@
 		"Work Description": "New Construction",
 		"Estimated Project Value": "500",
 		"Owner Name": "Test Owner Name"
-		}
+		},
 	"BuildingPermitManualCreationDataWithCompletionDate": {
 		"Permit City Code": "LM",
 		"APN": "000002",
@@ -22,7 +22,7 @@
 		"Work Description": "New Construction",
 		"Estimated Project Value": "500",
 		"Owner Name": "Test Owner Name"
-		}
+		},
 	"BuildingPermitManualCreationDataWithoutCompletionDate": {
 		"Permit City Code": "LM",
 		"APN": "000002",
@@ -35,5 +35,17 @@
 		"Estimated Project Value": "500",
 		"Owner Name": "Test Owner Name",
 		"Processing Status": "Process"
+		},
+		"BuildingPermitManualCreationDataForDemolition": {
+		"Permit City Code": "LM",
+		"APN": "000002",
+		"Processing Status": "Process",
+		"Issue Date": "08/16/2021",
+		"Completion Date": "08/16/2021",
+		"County Strat Code Description": "DEMO",
+		"City Strat Code": "DEMO",
+		"Work Description": "New Demolition",
+		"Estimated Project Value": "500000",
+		"Owner Name": "Test Owner Name"
 		}
 }
