@@ -962,8 +962,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 								.get("Id").get(0)
 						+ "/related/Assessed_Values__r/view");
 		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.clickShowMoreActionButton, 15);
-		HashMap<String, ArrayList<String>> hashMapForAssessedValueTable = objAppraisalActivity.getGridDataInHashMap();
-		System.out.println(hashMapForAssessedValueTable);
+		HashMap<String, ArrayList<String>> hashMapForAssessedValueTable = objAppraisalActivity.getGridDataInHashMap();		
 
 		//Step 4 -Verifying the AV generated  after updating land and improvement value on appraiser screen		
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(0), "Active",
@@ -1033,8 +1032,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		objAppraisalActivity.Click(objParcelsPage.assessedValueOwnershipTab);
 		Thread.sleep(2000);
 		HashMap<String, ArrayList<String>> hashMapAVOForOldAv = objAppraisalActivity.getGridDataInHashMap();
-		System.out.println(hashMapAVOForOldAv );
-
+		
 		//Step 10 -Verifying AVO's associated to the old AV records		
 		softAssert.assertTrue(hashMapAVOForOldAv.get("DOV").size() == 2,
 				"SMAB-T4010:Verify two AVO's are present on related list");

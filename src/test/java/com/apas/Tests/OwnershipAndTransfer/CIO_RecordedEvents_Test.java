@@ -1583,9 +1583,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
 				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
 
-		Map<String, String> hashMapWorkItemForCIOComponentAction = objUtil
-				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateWorkItemOfTypeCIOFromRecordedAPNTransfer");
-
+		
 
 		String recordedDocumentID = salesforceAPI.select(" SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1").get("Id").get(0);
 		String recordedDocumentName = salesforceAPI.select(" SELECT Name from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1").get("Name").get(0);
@@ -1685,7 +1683,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 12-Navigating back to RAT screen
 		driver.navigate().to("https://smcacre--" + execEnv
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);		
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);		
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		
