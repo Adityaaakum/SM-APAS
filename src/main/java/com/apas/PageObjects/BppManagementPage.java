@@ -77,7 +77,5 @@ public class BppManagementPage extends ApasGenericPage {
 	public WebElement closeViewDuplicatesPopUpButton;
 	
 	
-
-	
 	
 }
