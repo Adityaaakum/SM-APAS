@@ -170,7 +170,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
         ReportLogger.INFO("Validate duplicate BPP Annual Settings record can't be created");
         objBppManagementPage.searchModule(modules.BPP_ANNUAL_SETTINGS);
         objBppManagementPage.Click(objBppManagementPage.newButton);
-        objBppManagementPage.searchAndSelectOptionFromDropDown(objBppManagementPage.rollYearLabel,rollYear);
+        objBppManagementPage.searchAndSelectOptionFromDropDown(objBppManagementPage.rollYearSettingsLabel,rollYear);
         Thread.sleep(1000);
         
         String expectedErrorMessageOnTop = "You can't save this record because a duplicate";
@@ -333,5 +333,60 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 				"SMAB-T4449: Validation if correct number of records are displayed in Error Row Section after discarding a record");
 
 		objBppManagementPage.logout();
+	}
+	
+	/**
+	 * DESCRIPTION: Create and Validate the PI Space Record
+	 */
+	
+	@Test(description = "SMAB-4164: Create record on PI Setting object", dataProvider = "loginBppAuditor", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "GeneralAircraft", "BPPManagement" })
+	public void BPP_AircraftCreateNewrecordOnPISettingsObject(String loginUser) throws Exception {
+
+		// Login to the APAS application as Aircraft Auditor
+		objBppManagementPage.login(loginUser);
+		ReportLogger.INFO("Login to the APAS application as Aircraft Auditor");
+
+		// Open the PI Space settings
+		objBppManagementPage.searchModule(modules.PI_SPACE_SETTINGS);
+		ReportLogger.INFO("Opened the Space settings");
+
+		// Create new pi space settings record
+		objBppManagementPage.Click(objBppManagementPage.newButton);
+		objBppManagementPage.searchAndSelectOptionFromDropDown(objBppManagementPage.rollYearLabel, "2022");
+		Thread.sleep(1000);
+		objBppManagementPage.enter(objBppManagementPage.rentFeeLabel, "260");
+		objBppManagementPage.enter(objBppManagementPage.rentFactorLabel, "43.51");
+		objBppManagementPage.enter(objBppManagementPage.svcRateLabel, "H520");
+		objBppManagementPage.enter(objBppManagementPage.svcDescriptionLabel, "PI Import");
+		objBppManagementPage.selectOptionFromDropDown(objBppManagementPage.airPortLabel, "HALF MOON BAY AIRPORT");
+		objBppManagementPage.selectOptionFromDropDown(objBppManagementPage.typeOfSpaceLabel, "STORAGE AREAS");
+		objBppManagementPage.selectOptionFromDropDown(objBppManagementPage.spaceNameLabel, "Storage (520 sq. ft.)");
+		objBppManagementPage.Click(objPage.getButtonWithText("Save"));
+		ReportLogger.INFO("Created PI Space settings record");
+		Thread.sleep(1000);
+
+		// Assert the values on the record created
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rollYearLabel), "2022",
+				"SMAB-4164:Roll year is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rentFeeLabel), "$260",
+				"SMAB-4164: Rent fee is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rentFactorLabel),
+				"43.51", "SMAB-4164:Rent factor is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.svcRateLabel), "H520",
+				"SMAB-4164:SVC Rate is Matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.svcDescriptionLabel),
+				"PI Import", "SMAB-4164:SVC Desc is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.airPortLabel),
+				"HALF MOON BAY AIRPORT", "SMAB-4164:Airport is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.typeOfSpaceLabel),
+				"STORAGE AREAS", "Type of space is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.spaceNameLabel),
+				"Storage (520 sq. ft.)", "SMAB-4164space name is matching");
+		ReportLogger.INFO("Validated the created PI record");
+
+		// Log out from the application
+		objBppManagementPage.logout();
+
 	}
 }

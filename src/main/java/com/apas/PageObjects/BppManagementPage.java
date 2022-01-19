@@ -48,13 +48,20 @@ public class BppManagementPage extends ApasGenericPage {
 	}
 
 	//Locators for BPP Annual Settings screen
-	public String rollYearLabel = "Roll Year Settings";
+	public String rollYearSettingsLabel = "Roll Year Settings";
+	public String rollYearLabel = "Roll Year";
 	public String statusLabel = "Status";
 	public String improvementPILabel = "PI Improvement %";
 	public String landPILabel = "PI Land %";
 	public String salesTaxLabel = "Sales Tax %";
 	public String viewFileNetDocumentsButton = "View FileNet Documents";
-	
+	public String rentFeeLabel = "Rent Fee";
+	public String rentFactorLabel = "Rent Factor";
+	public String svcRateLabel = "SVC Rate";
+	public String svcDescriptionLabel = "SVC Description";
+	public String typeOfSpaceLabel = "Type Of Space";
+	public String spaceNameLabel = "Space Name";
+	public String airPortLabel = "Airport";	
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//*[text()='New']")
 	public WebElement newButton;
