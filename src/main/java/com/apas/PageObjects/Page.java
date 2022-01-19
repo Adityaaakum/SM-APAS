@@ -440,7 +440,6 @@ public class Page extends TestBase {
 	public WebElement locateElement(String locatorValue, int timeoutInSeconds) {
 		WebElement element;
 		wait = new WebDriverWait(driver, timeoutInSeconds);
-		System.out.println("Wit for debug"+locatorValue);
 
 		element = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(locatorValue)));
 		element = wait.until(ExpectedConditions.visibilityOf(element));
