@@ -1,0 +1,23 @@
+{
+	"DataToCreatePISpaceSettingsRecord": {
+    	"Roll Year": "2022",
+    	"Rent Fee":"$260",
+		"Rent Factor": "43.51",		
+		"SVC Rate": "H520",
+		"SVC Description": "PI Import",
+		"Type Of Space": "STORAGE AREAS",
+		"Space Name": "Storage (520 sq. ft.)",
+		"Airport": "HALF MOON BAY AIRPORT"
+	},
+	
+	"DataToUpdatePISpaceSettingsRecord": {
+    	"Roll Year": "2021",
+    	"Rent Fee":"$175",
+		"Rent Factor": "43.51",		
+		"SVC Rate": "H550",
+		"SVC Description": "PI Import",
+		"Type Of Space": "STORAGE AREAS",
+		"Space Name": "Storage (350 sq. ft.)",
+		"Airport": "HALF MOON BAY AIRPORT"
+	}
+}
