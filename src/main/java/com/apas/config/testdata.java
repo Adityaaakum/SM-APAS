@@ -13,6 +13,7 @@ public interface testdata {
 	String BUILDING_PERMIT_BELMONT = "\\data\\BuildingPermit\\BelmontPermits\\";
 	String BUILDING_PERMIT_MANUAL = "\\data\\BuildingPermit\\ManualBuildingPermits\\";
 	String BUILDING_PERMIT_UNINCORPORATED = "\\data\\BuildingPermit\\UnicorporatedBuildingPermits\\";
+	String BUILDING_PERMIT_DATA_DEMOLITION = userDirectory +"\\data\\BuildingPermit\\ManualBuildingPermits\\BuildingPermitManualCreationData.json";
 	String BPP_TREND_TABLES_DATA = "\\data\\BppTrend\\2020_Trend_Factors_Calculator.xlsx";
 	
 	String RPSL_ENTRY_DATA = "\\data\\DisabledVeteran\\RPSL\\RealPropertySettings.json";
