@@ -74,7 +74,7 @@ public class RPValuation_Manual_Demolition_Test extends TestBase implements user
 		ObjDemolitionPage.searchModule(modules.BUILDING_PERMITS);
 
 		// Step3: Manually creating building permit Record
-		String mappingActionCreationData = testdata.BPP_AIRPORT_LISTING_DATA;
+		String mappingActionCreationData = testdata.BUILDING_PERMIT_DATA_DEMOLITION;
 		Map<String, String> manualBuildingPermitMap = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"BuildingPermitManualCreationDataForDemolition");
 		manualBuildingPermitMap.put("APN", activeAPNW);
