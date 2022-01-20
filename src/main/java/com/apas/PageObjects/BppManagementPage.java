@@ -26,6 +26,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -83,6 +84,27 @@ public class BppManagementPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(.,'View Duplicates')]/button[@title='Close this window']")
 	public WebElement closeViewDuplicatesPopUpButton;
 	
+	/**
+	 * This Method is used to create PI record
+	 * @param dataToCreatePISPACERecord is a Map
+	 * @throws Exception
+	 */
 	
+	public void createPISpaceRecord(Map<String, String>dataToCreatePISPACERecord ) throws Exception
+	 {
+		    searchAndSelectOptionFromDropDown(rollYearLabel, dataToCreatePISPACERecord.get(rollYearLabel));
+			Thread.sleep(1000);
+			enter(rentFeeLabel, dataToCreatePISPACERecord.get(rentFeeLabel));
+			enter(rentFactorLabel, dataToCreatePISPACERecord.get(rentFactorLabel));
+			enter(svcRateLabel,dataToCreatePISPACERecord.get(svcRateLabel));
+			enter(svcDescriptionLabel, dataToCreatePISPACERecord.get(svcDescriptionLabel));
+			selectOptionFromDropDown(airPortLabel, dataToCreatePISPACERecord.get(airPortLabel));
+			selectOptionFromDropDown(typeOfSpaceLabel,dataToCreatePISPACERecord.get(typeOfSpaceLabel));
+			selectOptionFromDropDown(spaceNameLabel,dataToCreatePISPACERecord.get(spaceNameLabel));
+			Click(objPage.getButtonWithText("Save"));
+			ReportLogger.INFO("Created PI Space settings record");
+			Thread.sleep(1000);
+
+		}
 	
 }

@@ -83,6 +83,8 @@ public interface testdata {
     String CHARACTERISTICS = userDirectory + "\\data\\Characteristics\\CharacteristicsCreationData.json";
     String AUDIT_TRAIL_DATA = userDirectory+"\\data\\AuditTrail\\AuditTrail.json";
     String SITUS_DATA = userDirectory+"\\data\\Situses\\Situs.json";
+    String PI_SPACE_SETTINGS_RECORD_CREATION_DATA= userDirectory+"\\data\\BppManagement\\PISpaceSettings.json";
+    
     
     String BPP_AIRPORT_LISTING_DATA = "\\data\\GeneralAircraft\\AirportListing\\";
 }

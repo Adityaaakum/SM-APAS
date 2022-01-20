@@ -339,9 +339,14 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 	 * DESCRIPTION: Create and Validate the PI Space Record
 	 */
 	
-	@Test(description = "SMAB-4164: Create record on PI Setting object", dataProvider = "loginBppAuditor", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-4164: Create record on PI Setting object", dataProvider = "loginBPPAppraisalUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "GeneralAircraft", "BPPManagement" })
-	public void BPP_AircraftCreateNewrecordOnPISettingsObject(String loginUser) throws Exception {
+	public void BPP_CreateNewPISettingsRecord(String loginUser) throws Exception {
+
+		Map<String, String> mapToCreatePISpaceSettingsData = objUtil.generateMapFromJsonFile(
+				testdata.PI_SPACE_SETTINGS_RECORD_CREATION_DATA, "DataToCreatePISpaceSettingsRecord");
+		Map<String, String> mapToUpdatePISpaceSettingsData = objUtil.generateMapFromJsonFile(
+				testdata.PI_SPACE_SETTINGS_RECORD_CREATION_DATA, "DataToUpdatePISpaceSettingsRecord");
 
 		// Login to the APAS application as Aircraft Auditor
 		objBppManagementPage.login(loginUser);
@@ -353,38 +358,44 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 
 		// Create new pi space settings record
 		objBppManagementPage.Click(objBppManagementPage.newButton);
-		objBppManagementPage.searchAndSelectOptionFromDropDown(objBppManagementPage.rollYearLabel, "2022");
-		Thread.sleep(1000);
-		objBppManagementPage.enter(objBppManagementPage.rentFeeLabel, "260");
-		objBppManagementPage.enter(objBppManagementPage.rentFactorLabel, "43.51");
-		objBppManagementPage.enter(objBppManagementPage.svcRateLabel, "H520");
-		objBppManagementPage.enter(objBppManagementPage.svcDescriptionLabel, "PI Import");
-		objBppManagementPage.selectOptionFromDropDown(objBppManagementPage.airPortLabel, "HALF MOON BAY AIRPORT");
-		objBppManagementPage.selectOptionFromDropDown(objBppManagementPage.typeOfSpaceLabel, "STORAGE AREAS");
-		objBppManagementPage.selectOptionFromDropDown(objBppManagementPage.spaceNameLabel, "Storage (520 sq. ft.)");
-		objBppManagementPage.Click(objPage.getButtonWithText("Save"));
-		ReportLogger.INFO("Created PI Space settings record");
-		Thread.sleep(1000);
+		objBppManagementPage.createPISpaceRecord(mapToCreatePISpaceSettingsData);
 
 		// Assert the values on the record created
-		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rollYearLabel), "2022",
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rollYearLabel),
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.rollYearLabel),
 				"SMAB-4164:Roll year is matching");
-		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rentFeeLabel), "$260",
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rentFeeLabel),
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.rentFeeLabel),
 				"SMAB-4164: Rent fee is matching");
 		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rentFactorLabel),
-				"43.51", "SMAB-4164:Rent factor is matching");
-		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.svcRateLabel), "H520",
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.rentFactorLabel),
+				"SMAB-4164:Rent factor is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.svcRateLabel),
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.svcRateLabel),
 				"SMAB-4164:SVC Rate is Matching");
 		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.svcDescriptionLabel),
-				"PI Import", "SMAB-4164:SVC Desc is matching");
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.svcDescriptionLabel),
+				"SMAB-4164:SVC Desc is matching");
 		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.airPortLabel),
-				"HALF MOON BAY AIRPORT", "SMAB-4164:Airport is matching");
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.airPortLabel), "SMAB-4164:Airport is matching");
 		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.typeOfSpaceLabel),
-				"STORAGE AREAS", "Type of space is matching");
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.typeOfSpaceLabel), "Type of space is matching");
 		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.spaceNameLabel),
-				"Storage (520 sq. ft.)", "SMAB-4164space name is matching");
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.spaceNameLabel),
+				"SMAB-4164space name is matching");
 		ReportLogger.INFO("Validated the created PI record");
-
+		
+		//Update PI record
+		objBppManagementPage.Click(objBppManagementPage.getButtonWithText("Edit"));
+		objBppManagementPage.enter(objBppManagementPage.svcRateLabel,
+				mapToUpdatePISpaceSettingsData.get(objBppManagementPage.svcRateLabel));
+		objBppManagementPage.Click(objPage.getButtonWithText("Save"));
+		objBppManagementPage.waitForElementToBeClickable(5, objBppManagementPage.getButtonWithText("Edit"));
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.svcRateLabel),
+				mapToUpdatePISpaceSettingsData.get(objBppManagementPage.svcRateLabel),
+				"SMAB-4164:SVC Rate is Matching");
+		ReportLogger.INFO("PI Record updated and Validated");
+		
 		// Log out from the application
 		objBppManagementPage.logout();
 
