@@ -82,5 +82,7 @@ public interface testdata {
     String ASSESSED_VALUE_CREATION_DATA= userDirectory+"\\data\\OwnershipAndTransfer\\AssessedValue.json";	
     String CHARACTERISTICS = userDirectory + "\\data\\Characteristics\\CharacteristicsCreationData.json";
     String AUDIT_TRAIL_DATA = userDirectory+"\\data\\AuditTrail\\AuditTrail.json";
-    String SITUS_DATA = userDirectory+"\\data\\Situses\\Situs.json";	
+    String SITUS_DATA = userDirectory+"\\data\\Situses\\Situs.json";
+    
+    String BPP_AIRPORT_LISTING_DATA = "\\data\\GeneralAircraft\\AirportListing\\";
 }

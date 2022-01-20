@@ -113,6 +113,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public static final String CIO_EVENT_EXCLUSION="CIO-P19E";
 	public static final String CIO_EVENT_REASSESSMENT="CIO-P19";
 	public static final String CIO_EVENT_INTERGENERATIONAL_TRANSFER="CIO-P19P";
+
 	
 	public String eventIDLabel = "EventID";
 	public String situsLabel = "Situs";
@@ -305,6 +306,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	
 	@FindBy(xpath=commonXpath+"//div[text()='New']")
 	public WebElement newButtonMailToListViewScreen;
+	
 	
 	@FindBy(xpath=commonXpath+"//label[text()='Address ']/..//input")
 	public WebElement addressInCopyToMailTo;
@@ -777,6 +779,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			  * @param hashMapCreateAssessedValueRecord : Data to create acessed value record
 			  */
 	
+
 			 public String[] createAppraisalActivityWorkItemForRecordedCIOTransfer(String enrollmentType,String transferCode,Map<String, String> hashMapOwnershipAndTransferMailToCreationData,Map<String, String> hashMapOwnershipAndTransferGranteeCreationData,Map<String, String> hashMapCreateOwnershipRecordData,Map<String, String> hashMapCreateAssessedValueRecord,HashMap<String, String>... DovDorDoe ) throws Exception {
 
 					String excEnv = System.getProperty("region");
@@ -907,6 +910,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 						jsonForUpdateDOV_DOR_DOE_RAT.put("xDOE__c", DovDorDoe[0].get("DOE"));
 	
 
+
 					salesforceApi.update("Recorded_APN_Transfer__c", recordeAPNTransferID, jsonForUpdateDOV_DOR_DOE_RAT);
 						
 						
@@ -938,6 +942,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 								"DOV__c", dateOfEvent);
 					}
 
+					
 					// STEP 11- Performing calculate ownership to perform partial transfer
 
 					driver.navigate()
@@ -968,6 +973,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 					// STEP 14 - Click on submit for approval button
 					clickQuickActionButtonOnTransferActivity(null, quickActionOptionSubmitForApproval);
+
 					if (waitForElementToBeVisible(7,yesRadioButtonRetainMailToWindow))
 					{
 					Click(yesRadioButtonRetainMailToWindow);
