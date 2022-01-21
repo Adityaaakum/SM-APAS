@@ -85,6 +85,6 @@ public interface testdata {
     String SITUS_DATA = userDirectory+"\\data\\Situses\\Situs.json"; 
     String BPP_AIRPORT_LISTING_DATA = "\\data\\GeneralAircraft\\AirportListing\\";
     String HOME_OWNER_EXEMPTION_Reports = userDirectory+"\\data\\OwnershipAndTransfer\\MCLReports.json";
+    String PI_SPACE_SETTINGS_RECORD_CREATION_DATA= userDirectory+"\\data\\BppManagement\\PISpaceSettings.json";
     
-
 }

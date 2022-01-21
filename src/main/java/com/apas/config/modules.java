@@ -37,5 +37,6 @@ public interface modules {
 	String PUC = "PUCs";
 	String TRA = "TRA";
 	String BPP_ANNUAL_SETTINGS = "BPP Annual Settings";
+	String PI_SPACE_SETTINGS = "PI Space Settings";
 }
 
