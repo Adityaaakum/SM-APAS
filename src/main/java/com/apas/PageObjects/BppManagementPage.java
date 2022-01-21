@@ -92,6 +92,7 @@ public class BppManagementPage extends ApasGenericPage {
 	
 	public void createPISpaceRecord(Map<String, String>dataToCreatePISPACERecord ) throws Exception
 	 {
+		    Click(newButton);
 		    searchAndSelectOptionFromDropDown(rollYearLabel, dataToCreatePISPACERecord.get(rollYearLabel));
 			Thread.sleep(1000);
 			enter(rentFeeLabel, dataToCreatePISPACERecord.get(rentFeeLabel));

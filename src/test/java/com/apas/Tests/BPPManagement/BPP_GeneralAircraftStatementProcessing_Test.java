@@ -357,7 +357,6 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 		ReportLogger.INFO("Opened the Space settings");
 
 		// Create new pi space settings record
-		objBppManagementPage.Click(objBppManagementPage.newButton);
 		objBppManagementPage.createPISpaceRecord(mapToCreatePISpaceSettingsData);
 
 		// Assert the values on the record created
