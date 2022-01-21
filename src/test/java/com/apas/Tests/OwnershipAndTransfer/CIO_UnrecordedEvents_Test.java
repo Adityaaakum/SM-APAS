@@ -2342,7 +2342,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		 * Verify the When there is a CIO Event with a APN having existing DV OR Institutional Exemptions , then it needs to 
 		 * trigger an additional WI for the Exemptions Team to validate the qualifications for the new owner
 		 */
-		@Test(description = "SMAB-T3746,SMAB-T3747: Verify the When there is a CIO Event with a APN having existing DV OR Institutional Exemptions , then it needs to trigger an additional WI for the Exemptions Team to validate the qualifications for the new owner", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+		@Test(description = "SMAB-T3746,SMAB-T3747: Verify the When there is a CIO Event with a APN having existing DV OR Institutional Exemptions , then it needs to trigger an additional WI for the Exemptions Team to validate the qualifications for the new owner", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 				"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
 		public void CIO_VerifyAdditionalWIforExistingDVORIE(String loginUser) throws Exception {
 			
