@@ -18,6 +18,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.STSourceType;
+
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.relevantcodes.extentreports.LogStatus;
@@ -707,16 +709,21 @@ public void searchModule(String moduleToSearch) throws Exception {
 	}
 
 	/**
-	 * Description: This method will delete all the files from the folder passed in the parameter folderPath
+	 * Description: This method will delete all the files from the folder passed in
+	 * the parameter folderPath
 	 *
 	 * @param folderPath: path of the folder
 	 */
 	public void deleteFilesFromFolder(String folderPath) {
 		ReportLogger.INFO("Deleting the files from the folder : " + folderPath);
 		File dir = new File(folderPath);
-		for (File file : Objects.requireNonNull(dir.listFiles())) {
-			if (!file.isDirectory())
-				file.delete();
+		try {
+			for (File file : Objects.requireNonNull(dir.listFiles())) {
+				if (!file.isDirectory())
+					file.delete();
+			}
+		} catch (NullPointerException e) {
+			System.out.println("No files found to delete...!");
 		}
 	}
 
