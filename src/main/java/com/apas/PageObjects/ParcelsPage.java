@@ -530,7 +530,7 @@ public class ParcelsPage extends ApasGenericPage {
 		 * @param dataMap: A data map which contains data to create audit trail record
 		 * @throws Exception
 		 */
-		public String createUnrecordedEvent(Map<String, String> dataMap) throws Exception {
+		public void createUnrecordedEvent(Map<String, String> dataMap) throws Exception {
 			ReportLogger.INFO("Create Unrecorded Event Transfer");
 			String timeStamp = String.valueOf(System.currentTimeMillis());
 			String description = dataMap.get("Description") + "_" + timeStamp;
@@ -557,9 +557,6 @@ public class ParcelsPage extends ApasGenericPage {
 			if(dataMap.get("Please select the Parent Audit Trail Record")!=null) {enter(linkExistingAuditTrail, dataMap.get("Please select the Parent Audit Trail Record"));}
 			Click(getButtonWithText(saveAndNextButton));
 			Thread.sleep(5000);
-			if(dataMap.get("Record Type").equalsIgnoreCase("Correspondence")) {return null;}				
-			
-			return getElementText(recordedDocumentApnGenerated);
 		}		
 		
 		//To create new parcel manually

@@ -1193,7 +1193,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 	 * Verify the AV records and Roll Entry records are created correclty when user enters the assessed values for land and improvement for BMR properties in Menlo Park township
 	 */
 	@Test(description = "SMAB-T4262: Verify the AV records and Roll Entry records are created correclty when user enters the assessed values for land and improvement for BMR properties in Menlo Park township", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "NormalEnrollment", "ChangeInOwnershipManagement" })
+			"Regression", "NormalEnrollment", "RollManagement" })
 	public void CIO_AppraisalForBMR(String loginUser) throws Exception {
 
 		// === Data set up ===
@@ -1219,9 +1219,8 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		        
 		// Opening the parcel's page
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
-		// To avoid StaleElementReferenceException
 		Thread.sleep(2000);
-		objParcelsPage.waitUntilPageisReady(driver);
+		objParcelsPage.waitForElementToBeVisible(20,objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
 		
 		// Create UT event
 		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
@@ -1243,21 +1242,22 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 
 		// Validating present grantee			 
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+		objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
 		HashMap<String, ArrayList<String>> granteeHashMap  = objCIOTransferPage.getGridDataForRowString("1");
 		String granteeForMailTo= granteeHashMap.get("Grantee/Retain Owner Name").get(0);
 
 		// Create copy to mail to record
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCIOTransferPage.waitUntilPageisReady(driver);
+		objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
 		objCIOTransferPage.createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferGranteeCreationData);
 		objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
 
 		// Open transfer activity 
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCIOTransferPage.waitUntilPageisReady(driver);
+		Thread.sleep(2000);
 
 		// Submit for approval
-		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionButtonDropdownIcon, 5);
+		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionButtonDropdownIcon, 10);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
 		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
@@ -1272,6 +1272,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		// Approve transfer activity
 		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionOptionApprove);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionApprove);
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));		
