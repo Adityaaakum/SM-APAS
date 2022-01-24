@@ -1219,7 +1219,6 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		        
 		// Opening the parcel's page
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
-		Thread.sleep(2000);
 		objParcelsPage.waitForElementToBeVisible(20,objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
 		
 		// Create UT event
@@ -1254,7 +1253,6 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 
 		// Open transfer activity 
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		Thread.sleep(2000);
 
 		// Submit for approval
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionButtonDropdownIcon, 10);
@@ -1270,9 +1268,9 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		ReportLogger.INFO("WI Submitted  for approval successfully");
 
 		// Approve transfer activity
-		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.quickActionButtonDropdownIcon);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
-		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionOptionApprove);
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.quickActionOptionApprove);
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionApprove);
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));		
@@ -1301,7 +1299,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Work_Item__c/"+workItemIdForAppraiser+"/view");
 		objWorkItemHomePage.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.waitForElementToBeClickable(5, objWorkItemHomePage.relatedActionLink);
+		objWorkItemHomePage.waitForElementToBeClickable(10, objWorkItemHomePage.relatedActionLink);
 		objWorkItemHomePage.Click(objWorkItemHomePage.relatedActionLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
@@ -1309,7 +1307,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		objAppraisalActivity.waitUntilPageisReady(driver);
 		
 		// Step 3 - User enters Land and Improvement values
-		objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+		objAppraisalActivity.waitForElementToBeVisible(15, objAppraisalActivity.appraisalActivityStatus);
 		objAppraisalActivity.Click(objAppraisalActivity.appraisalActivityEditValueButton(objAppraisalActivity.landCashValueLabel));
 		objAppraisalActivity.enter(objAppraisalActivity.landCashValueLabel, landValue);
 		objAppraisalActivity.enter(objAppraisalActivity.improvementCashValueLabel, improvementValue);
