@@ -22,6 +22,9 @@ public class DemolitionPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//button[@title='Close error dialog']")
 	public WebElement crossButton;
+	
+	@FindBy(xpath = "//span[contains(text(),'APN is retired.')]")
+	public WebElement retiredAPNWarning;
 
 	public String createNewConstructionWIBtn = "Create New Construction WI";
 	public String submitForApprovalDEMOWIBtn = "Submit For Approval (DEMO)";
