@@ -54,13 +54,13 @@ public class RPValuation_Manual_Demolition_Test extends TestBase implements user
 	 * 
 	 * @param loginUser
 	 */
-	@Test(description = "SMAB-T7530: Verify that Building permit should be automatically pre-populated through BP WI ", groups = {
+	@Test(description = "SMAB-T7530,SMAB-T7572: Verify that Building permit should be automatically pre-populated through BP WI ", groups = {
 			"Regression","RPValuation", "Demolition", "ManualDemolition", "BuildingPermit" }, dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_Manual_Demolition_WorkItem(String loginUser) throws Exception {
 
 		// Fetching the active APN
 		String executionEnv = System.getProperty("region");
-		String query = "SELECT Name FROM Parcel__c where Status__C='Active' limit 1";
+		String query = "SELECT Name FROM Parcel__c where Status__C='Retired' limit 1";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 
 		String activeAPNW = response.get("Name").get(0);
@@ -92,6 +92,9 @@ public class RPValuation_Manual_Demolition_Test extends TestBase implements user
 				"Building Permit Information");
 		String actualCompletionDate = ObjDemolitionPage.getFieldValueFromAPAS("Completion Date",
 				"Building Permit Information");
+		
+		softAssert.assertEquals(ObjDemolitionPage.retiredAPNWarning.getAttribute("innerText"), " APN is retired.",
+				"SMAB-T7572: Warning message is displayed successfully.");
 
 		// Fetching the DEMO WI and marking it in 'In Progress' status
 		String demolitionWorkItem = salesforceAPI.select("SELECT Name,id FROM Work_Item__c order by name desc limit 1")

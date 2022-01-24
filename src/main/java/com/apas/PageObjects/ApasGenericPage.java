@@ -714,9 +714,14 @@ public void searchModule(String moduleToSearch) throws Exception {
 	public void deleteFilesFromFolder(String folderPath) {
 		ReportLogger.INFO("Deleting the files from the folder : " + folderPath);
 		File dir = new File(folderPath);
-		for (File file : Objects.requireNonNull(dir.listFiles())) {
-			if (!file.isDirectory())
-				file.delete();
+		try {
+			for (File file : Objects.requireNonNull(dir.listFiles())) {
+				if (!file.isDirectory())
+					file.delete();
+			}
+		} catch (NullPointerException e) {
+			System.out.println("No files found to delete...!");
+
 		}
 	}
 
