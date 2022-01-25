@@ -1071,7 +1071,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 	 */
 	
 	@Test(description = "SMAB-T4387, SMAB-T4320 : Verify that new AV records are generated for the P19 when appraiser user appraises land and Improvement values on the appraiser screen",  groups = {
-			"Regression", "NormalEnrollment", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
 	public void OwnershipAndTransfer_Prop19Reassessement() throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -1204,7 +1204,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 	 */
 	
 	@Test(description = "SMAB-T4320 : Verify that new AV records are generated for the P19 when appraiser user appraises land and Improvement values on the appraiser screen for Partial CIO",  groups = {
-			"Regression", "NormalEnrollment", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
 	public void OwnershipAndTransfer_Prop19Reassessement_Part() throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -1233,7 +1233,6 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		
 		// Step 2- LOGIN with appraiser staff
 		objAppraisalActivity.login(APPRAISAL_SUPPORT);
-		Thread.sleep(4000);
 		String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
 		String query = "Select Id from Work_Item__c where Name = '"+workItemForAppraiser+"'";
 		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
