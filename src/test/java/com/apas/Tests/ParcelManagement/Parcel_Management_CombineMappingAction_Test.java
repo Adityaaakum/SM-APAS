@@ -3543,7 +3543,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, "No");
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
 				"Taxes must be fully paid in order to perform any action",
-				"SMAB-T2813,SMAB-T2880:Verify error message successfully when Parcel Size Validation for Parent & Children Needed? - No");
+				"SMAB-T2813:Verify error message successfully when Parcel Size Validation for Parent & Children Needed? - No");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
