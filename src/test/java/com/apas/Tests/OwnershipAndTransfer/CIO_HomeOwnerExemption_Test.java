@@ -132,8 +132,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		driver.navigate().to("https://smcacre--"+execEnv+
 				 ".lightning.force.com/lightning/r/Parcel__c/"+apnId+"/view");
 		objCIOTransferPage.waitForElementToBeVisible(6, objParcelsPage.componentActionsButtonText);
-		
-		String transferActivityId = objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
+		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
 		String recordeAPNTransferID = driver.getCurrentUrl().split("/")[6];
 		
 		objCIOTransferPage.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
