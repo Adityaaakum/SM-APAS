@@ -3540,18 +3540,16 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
 
-		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, "Yes");
-		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-
-		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
-				"Parent Parcel Size = 400, Net Land Loss = 0, Net Land Gain = 0, Total Child Parcel(s) Size = 400.",
-				"SMAB-T2813:Verify message on second custom screen when there is no Net Loss and Net Gain and Parcel Size Validation for Parent & Children Needed? - No");
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, "No");
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageFirstScreen),
+				"Taxes must be fully paid in order to perform any action",
+				"SMAB-T2813,SMAB-T2880:Verify error message successfully when Parcel Size Validation for Parent & Children Needed? - No");
 
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 
 	}
-	/**
+	/** 
 	 * This method is to Verify the User is able to work on Update PUC and Chars
 	 * work items along with Allocate values
 	 * 
