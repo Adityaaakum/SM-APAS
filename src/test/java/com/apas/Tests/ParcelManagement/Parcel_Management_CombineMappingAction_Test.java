@@ -3391,7 +3391,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(childApnstatus, "In Progress - New Parcel","SMAB-T3561: Verify Status of Child Parcel: ");
 	}
 	
-	@Test(description = "SMAB-T2955,SMAB-T2880,SMAB-T2878,SMAB-T2953,SMAB-T2952,SMAB-T2877,SMAB-T2954,SMAB-T2879,SMAB-T2951,SMAB-T2876 ,SMAB-T2950,SMAB-T2814: Verify Parcel size validations for combine mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement","CombineAction" })
+	@Test(description = "SMAB-T2955,SMAB-T2880,SMAB-T2878,SMAB-T2953,SMAB-T2952,SMAB-T2877,SMAB-T2954,SMAB-T2879,SMAB-T2951,SMAB-T2876 ,SMAB-T2950,SMAB-T2814,SMAB-T2813: Verify Parcel size validations for combine mapping action", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {"Regression","ParcelManagement","CombineAction" })
 
 	public void ParcelManagement_VerifyParcelSizeValidationsForCombineMappingAction(String loginUser) throws Exception {
 
@@ -3420,7 +3420,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		JSONObject jsonParcelObject = objMappingPage.getJsonObject();
 		jsonParcelObject.put("PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 		jsonParcelObject.put("Short_Legal_Description__c", legalDescriptionValue);
-		jsonParcelObject.put("TRA__c", responseTRADetails.get("Id").get(0));
 		jsonParcelObject.put("Lot_Size_SQFT__c", "200");
 		jsonParcelObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
 
@@ -3451,7 +3450,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
 		// populating fields on mapping action screen
-		objMappingPage.waitForElementToBeVisible(10, objMappingPage.actionDropDownLabel);
+		objMappingPage.waitForElementToBeVisible(30, objMappingPage.actionDropDownLabel);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.parentAPNEditButton));
 		objMappingPage.enter(objMappingPage.parentAPNTextBoxLabel, concatenateAPNWithSameOwnership);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
@@ -3538,7 +3537,16 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
 				"Parent Parcel Size = 400, Net Land Loss = 0, Net Land Gain = 0, Total Child Parcel(s) Size = 400.",
 				"SMAB-T2950,SMAB-T2814:verify message on second custom screen when there is no Net Loss and Net Gain");
-		
+
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.previousButton));
+
+		objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, "Yes");
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
+
+		softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
+				"Parent Parcel Size = 400, Net Land Loss = 0, Net Land Gain = 0, Total Child Parcel(s) Size = 400.",
+				"SMAB-T2813:Verify message on second custom screen when there is no Net Loss and Net Gain and Parcel Size Validation for Parent & Children Needed? - No");
+
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
 
