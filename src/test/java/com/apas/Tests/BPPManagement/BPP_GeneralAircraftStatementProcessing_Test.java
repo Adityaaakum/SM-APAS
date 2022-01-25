@@ -170,7 +170,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
         ReportLogger.INFO("Validate duplicate BPP Annual Settings record can't be created");
         objBppManagementPage.searchModule(modules.BPP_ANNUAL_SETTINGS);
         objBppManagementPage.Click(objBppManagementPage.newButton);
-        objBppManagementPage.searchAndSelectOptionFromDropDown(objBppManagementPage.rollYearLabel,rollYear);
+        objBppManagementPage.searchAndSelectOptionFromDropDown(objBppManagementPage.rollYearSettingsLabel,rollYear);
         Thread.sleep(1000);
         
         String expectedErrorMessageOnTop = "You can't save this record because a duplicate";
@@ -333,5 +333,70 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 				"SMAB-T4449: Validation if correct number of records are displayed in Error Row Section after discarding a record");
 
 		objBppManagementPage.logout();
+	}
+	
+	/**
+	 * DESCRIPTION: Create and Validate the PI Space Record
+	 */
+	
+	@Test(description = "SMAB-4164: Create record on PI Setting object", dataProvider = "loginBPPAppraisalUser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "GeneralAircraft", "BPPManagement" })
+	public void BPP_CreateNewPISettingsRecord(String loginUser) throws Exception {
+
+		Map<String, String> mapToCreatePISpaceSettingsData = objUtil.generateMapFromJsonFile(
+				testdata.PI_SPACE_SETTINGS_RECORD_CREATION_DATA, "DataToCreatePISpaceSettingsRecord");
+		Map<String, String> mapToUpdatePISpaceSettingsData = objUtil.generateMapFromJsonFile(
+				testdata.PI_SPACE_SETTINGS_RECORD_CREATION_DATA, "DataToUpdatePISpaceSettingsRecord");
+
+		// Login to the APAS application as Aircraft Auditor
+		objBppManagementPage.login(loginUser);
+		ReportLogger.INFO("Login to the APAS application as Aircraft Auditor");
+
+		// Open the PI Space settings
+		objBppManagementPage.searchModule(modules.PI_SPACE_SETTINGS);
+		ReportLogger.INFO("Opened the Space settings");
+
+		// Create new pi space settings record
+		objBppManagementPage.createPISpaceRecord(mapToCreatePISpaceSettingsData);
+
+		// Assert the values on the record created
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rollYearLabel),
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.rollYearLabel),
+				"SMAB-4164:Roll year is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rentFeeLabel),
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.rentFeeLabel),
+				"SMAB-4164: Rent fee is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rentFactorLabel),
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.rentFactorLabel),
+				"SMAB-4164:Rent factor is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.svcRateLabel),
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.svcRateLabel),
+				"SMAB-4164:SVC Rate is Matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.svcDescriptionLabel),
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.svcDescriptionLabel),
+				"SMAB-4164:SVC Desc is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.airPortLabel),
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.airPortLabel), "SMAB-4164:Airport is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.typeOfSpaceLabel),
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.typeOfSpaceLabel), "Type of space is matching");
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.spaceNameLabel),
+				mapToCreatePISpaceSettingsData.get(objBppManagementPage.spaceNameLabel),
+				"SMAB-4164space name is matching");
+		ReportLogger.INFO("Validated the created PI record");
+		
+		//Update PI record
+		objBppManagementPage.Click(objBppManagementPage.getButtonWithText("Edit"));
+		objBppManagementPage.enter(objBppManagementPage.svcRateLabel,
+				mapToUpdatePISpaceSettingsData.get(objBppManagementPage.svcRateLabel));
+		objBppManagementPage.Click(objPage.getButtonWithText("Save"));
+		objBppManagementPage.waitForElementToBeClickable(5, objBppManagementPage.getButtonWithText("Edit"));
+		softAssert.assertEquals(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.svcRateLabel),
+				mapToUpdatePISpaceSettingsData.get(objBppManagementPage.svcRateLabel),
+				"SMAB-4164:SVC Rate is Matching");
+		ReportLogger.INFO("PI Record updated and Validated");
+		
+		// Log out from the application
+		objBppManagementPage.logout();
+
 	}
 }
