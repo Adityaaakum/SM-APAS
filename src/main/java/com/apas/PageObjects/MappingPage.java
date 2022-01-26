@@ -210,8 +210,6 @@ public class MappingPage extends ApasGenericPage {
 	public WebElement createNewParcelSuccessMessage;
 	
 	
-		
-	
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
 	 * @param dataMap: A data map which contains data to perform  mapping action
