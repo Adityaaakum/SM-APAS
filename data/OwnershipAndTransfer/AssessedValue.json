@@ -5,6 +5,7 @@
 	"Improvement Cash Value" : "20,000" ,
 	"Start Date" : "7/19/1950",
 	"Assessed Value Type" : "Assessed Value",
+
 	"Ownership Percentage" : "100" ,
 	"DOR": "7/19/1950"
 },
@@ -55,5 +56,15 @@
 	"Start Date" : "7/19/1999",
 	"Assessed Value Type" : "Assessed Value",
 	"Ownership Percentage" : "100",
-	"DOR": "7/19/1999" }
+	"DOR": "7/19/1999" 
+	},
+	"dataToCreateAnnualAssesedValueRecord":{
+	
+		"DOV": "12/31/2017",
+		"Land Cash Value" : "100,000",
+		"Improvement Cash Value" : "20,000" ,
+		"Start Date" : "12/31/2017",
+		"Assessed Value Type" : "Assessed Value",
+		"Ownership Percentage" : "100"
+	}
 }

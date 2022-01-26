@@ -13,6 +13,7 @@ public interface testdata {
 	String BUILDING_PERMIT_BELMONT = "\\data\\BuildingPermit\\BelmontPermits\\";
 	String BUILDING_PERMIT_MANUAL = "\\data\\BuildingPermit\\ManualBuildingPermits\\";
 	String BUILDING_PERMIT_UNINCORPORATED = "\\data\\BuildingPermit\\UnicorporatedBuildingPermits\\";
+	String BUILDING_PERMIT_DATA_DEMOLITION = userDirectory +"\\data\\BuildingPermit\\ManualBuildingPermits\\BuildingPermitManualCreationData.json";
 	String BPP_TREND_TABLES_DATA = "\\data\\BppTrend\\2020_Trend_Factors_Calculator.xlsx";
 	
 	String RPSL_ENTRY_DATA = "\\data\\DisabledVeteran\\RPSL\\RealPropertySettings.json";
@@ -81,5 +82,9 @@ public interface testdata {
     String ASSESSED_VALUE_CREATION_DATA= userDirectory+"\\data\\OwnershipAndTransfer\\AssessedValue.json";	
     String CHARACTERISTICS = userDirectory + "\\data\\Characteristics\\CharacteristicsCreationData.json";
     String AUDIT_TRAIL_DATA = userDirectory+"\\data\\AuditTrail\\AuditTrail.json";
-    String SITUS_DATA = userDirectory+"\\data\\Situses\\Situs.json";	
+    String SITUS_DATA = userDirectory+"\\data\\Situses\\Situs.json"; 
+    String BPP_AIRPORT_LISTING_DATA = "\\data\\GeneralAircraft\\AirportListing\\";
+    String HOME_OWNER_EXEMPTION_Reports = userDirectory+"\\data\\OwnershipAndTransfer\\MCLReports.json";
+    String PI_SPACE_SETTINGS_RECORD_CREATION_DATA= userDirectory+"\\data\\BppManagement\\PISpaceSettings.json";
+    
 }

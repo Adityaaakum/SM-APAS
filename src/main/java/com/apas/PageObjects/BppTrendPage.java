@@ -52,7 +52,7 @@ public class BppTrendPage extends ApasGenericPage {
 		objSFAPI = new SalesforceAPI();
 	}
 
-	@FindBy(xpath = "//input[@name = 'rollyear']")
+	@FindBy(xpath = "//input[@name = 'rollyear'] | //button[@name = 'rollyear']")
 	public WebElement rollYearDropdown;
 
 	@FindBy(xpath = "//button[@title=  'Select']")
@@ -1010,7 +1010,7 @@ public class BppTrendPage extends ApasGenericPage {
 	 * @throws: Exception
 	 */
 	public void clickDownloadBtn() throws Exception {
-		String xpath = "//button[text() = 'Download']";
+		String xpath = "//button[text() = 'Download as PDF']";
 		Click(locateElement(xpath, 20));
 		Thread.sleep(10000);
 	}
