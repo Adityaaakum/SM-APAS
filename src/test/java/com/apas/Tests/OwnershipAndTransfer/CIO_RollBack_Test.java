@@ -585,5 +585,53 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		objCioTransfer.logout(); 
 
 	}
+	
+	/*
+	 * This method is to Validate Roll entry record fields.
+	 * 
+	 * @param loginUser
+	 * 
+	 * @throws Exception
+	 */
+	@Test(description = "SMAB-T4228, Validate fields on roll entry record", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "RollEntry" })
+	public void ValidateFieldsOnRollEntryProduct(String loginUser) throws Exception {
+
+		String execEnv = System.getProperty("region");
+			// Step1: Login to the APAS application using the credentials passed through
+		objParcelsPage.login(loginUser);
+
+		// Step2: Navigating to the Roll Record 
+		String rollRecordQuery = "SELECT Id FROM Roll_Entry__c limit 1";
+		HashMap<String, ArrayList<String>>  rollRecordID= salesforceAPI.select(rollRecordQuery);
+		String rollID=rollRecordID.get("Id").get(0);	
+		// Step2: Validate lables on roll entry record
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Roll_Entry__c/"+rollID+"/view");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Activity"), "SMAB-4228: Activity is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("District"), "SMAB-4228: District is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Neighborhood"), "SMAB-4228: Neighborhood is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Notice Date"), "SMAB-4228: Activity is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Zone"), "SMAB-4228: Zone  is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("BC#"), "SMAB-4228: BC is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("CPI Factor"), "SMAB-4228: CPI Factor	 is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Base Years"), "SMAB-4228: Base Years is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Last Transaction"), "SMAB-4228: Last Transaction is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("DOR"), "SMAB-4228: DOR is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("DOV"), "SMAB-4228: DOV is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Approved by"), "SMAB-4228: Approved by is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Approved Date"), "SMAB-4228: Approved Date is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Temp Land"), "SMAB-4228: Temp Land is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Temp Improvement"), "SMAB-4228: Temp Improvement is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Total Temp"), "SMAB-4228: Total Temp is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Type Number"), "SMAB-4228:  Type Number is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Status Number"), "SMAB-4228:  Status Number is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Assessment Year"), "SMAB-4228: Assessment Year is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Roll Type"), "SMAB-4228:  Roll Type is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Event ID"), "SMAB-4228:  Event ID is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Temp Code"), "SMAB-4228:  Temp Code is present on roll entry object");
+		softAssert.assertTrue(objParcelsPage.verifyElementVisible("Temp Date"), "SMAB-4228:  Temp Date is present on roll entry object");
+		objMappingPage.logout();
+		
+	}
 
 }
