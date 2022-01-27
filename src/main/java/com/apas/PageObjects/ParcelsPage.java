@@ -464,7 +464,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createOwnershipRecord(String assesseeName, Map<String, String> dataMap) throws Exception {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");        
 		String owner = assesseeName;
-		String type = dataMap.get("Type");
+		//String type = dataMap.get("Type");
 		String status = dataMap.get("Status");
 		String bppAccount = dataMap.get("BPP Account");
 		String ownershipStartDate = dataMap.get("Ownership Start Date");
@@ -484,7 +484,7 @@ public class ParcelsPage extends ApasGenericPage {
 		Thread.sleep(2000);
 		Click(ownershipNextButton);
 		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
-		selectOptionFromDropDown(typeDropDown, type);
+		//selectOptionFromDropDown(typeDropDown, type);
 		selectOptionFromDropDown(statusDropDown, status);
 		if (ownershipStartDate != null)
 			enter(ownershipStartTextBox, ownershipStartDate);
