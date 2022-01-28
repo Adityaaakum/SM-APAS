@@ -85,7 +85,7 @@ public class BuildingPermitPage extends ApasGenericPage {
 	@FindBy(xpath = "//label[text()='Permit City Code']/..//*[@role='listbox']")
 	public WebElement permitCityCodeDrpDownOptions;
 
-	@FindBy(xpath = "//span/img[@alt='Priority Flag']/..")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span/img[@alt='Priority Flag']/..")
 	public WebElement warningMessageWithPriorityFlag;
 
 	@FindBy(xpath = "//a[text()='View Duplicates']")

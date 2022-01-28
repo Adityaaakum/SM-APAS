@@ -133,7 +133,7 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		
 		//Step7: Opening the building permit module
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Building_Permit__c/"+buildingPermitId+"/view");	
-
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		//Step8: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch
 		softAssert.assertContains(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag).trim(), "APN is retired", "SMAB-T453,SMAB-T455: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch");
 		softAssert.assertContains(objPage.getElementText(objBuildingPermitPage.warningMessageWithPriorityFlag).trim(), "City Situs not matching system", "SMAB-T453,SMAB-T455: Warning message validation for building permit(Imported through E-File Intake module) with retired permit and situs information mismatch");
