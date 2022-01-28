@@ -5304,19 +5304,19 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
 						.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
 				+ "/view");
-		objParcelsPage.waitUntilPageisReady(driver);
 		
 		// Step 2: User clicks on "COS Document Summary" button
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.cosDocumentSummaryText,25);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
 		
 		// Step 3: User clicks on the recorded document
-		objParcelsPage.Click(objParcelsPage.lastItemInCosDocumentSummary);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(recordedDocumentName));
 		String parentWindow = driver.getWindowHandle();
 		objParcelsPage.switchToNewWindow(parentWindow);
-		objParcelsPage.waitUntilPageisReady(driver);
+		objParcelsPage.waitForElementToBeVisible(25,objParcelsPage.recordedDocumentNameText);
 		
-		String currentRecordedDocumentName = objCioTransfer.getFieldValueFromAPAS("Recorded Document Name");
-		softAssert.assertEquals(recordedDocumentName, currentRecordedDocumentName, "SMAB-T4388: Verify the Recorded Document column in COS Doc Summary has a linked URL , navigating to the recorded document record");
+		String currentRecordedDocumentName = objCioTransfer.getFieldValueFromAPAS(objParcelsPage.recordedDocumentNameText);
+		softAssert.assertEquals(currentRecordedDocumentName, recordedDocumentName, "SMAB-T4388: Verify the Recorded Document column in COS Doc Summary has a linked URL , navigating to the recorded document record");
 		
 		objParcelsPage.logout();
 	}
