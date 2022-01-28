@@ -595,7 +595,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 	 */
 	@Test(description = "SMAB-T4228, Validate fields on roll entry record", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RollBackOwners" })
-	public void ValidateFieldsOnRollEntryProduct(String loginUser) throws Exception {
+	public void OwnershipAndTransfer_ValidateFieldsOnRollEntryProduct(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
 		// Step1: Login to the APAS application using the credentials passed through
