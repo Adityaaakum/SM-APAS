@@ -139,6 +139,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String total = "Total";
 	public String fullCashValue = "Full Cash Value";
 	public String combinedFactoredandHPI = "Combined FBYV and HPI";
+	public String newTaxableValue = "New Taxable Value";
 	public String partOfEconomicUnit = "Part of Economic Unit";
 	public String numberOfParcelsEconomicUnit = "# of Parcels in Economic Unit";
 	public String listOfParcelsEconomicUnit = "List of all Parcels in Economic Unit";
