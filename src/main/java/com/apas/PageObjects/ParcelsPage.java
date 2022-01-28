@@ -142,7 +142,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String partOfEconomicUnit = "Part of Economic Unit";
 	public String numberOfParcelsEconomicUnit = "# of Parcels in Economic Unit";
 	public String listOfParcelsEconomicUnit = "List of all Parcels in Economic Unit";
-
+	public String recordedDocumentNameText = "Recorded Document Name";
 	
 	
 	
