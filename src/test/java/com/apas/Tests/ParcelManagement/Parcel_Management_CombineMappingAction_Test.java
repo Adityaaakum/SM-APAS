@@ -3545,7 +3545,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 			objMappingPage.waitForElementToBeVisible(20,objMappingPage.generateParcelButton);
 			
 			softAssert.assertTrue(objMappingPage.isNotDisplayed(objMappingPage.errorMessageonSecondCustomScreen),
-					"SMAB-T2813:Verify error message successfully when Parcel Size Validation for Parent & Children Needed? - No");
+					"SMAB-T2813:Verify error is not displayed when Parcel Size Validation for Parent & Children Needed? - No");
 		
 		driver.switchTo().window(parentWindow);
 		objWorkItemHomePage.logout();
