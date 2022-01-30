@@ -323,7 +323,7 @@ public class MappingPage extends ApasGenericPage {
 		String situsType = dataMap.get("Situs Type");
 		String situsUnitNumber = dataMap.get("Situs Unit Number");
 		String cityName = objSalesforceAPI.select("SELECT City__c FROM TRA__c where Name='"+TRA+"'").get("City__c").get(0);
-		String situsCityCode = objSalesforceAPI.select("SELECT Situs_City_Code__c FROM Situs__c where Situs_City__c='"+cityName+"' and Situs_City_Code__c !=null").get("Situs_City_Code__c").get(0);
+		String situsCityCode = objSalesforceAPI.select("SELECT Situs_City_Code__c FROM Situs__c where Situs_City__c='"+cityName+"' and Situs_City_Code__c !=null limit 1").get("Situs_City_Code__c").get(0);
 		
 		if (cityName != null) selectOptionFromDropDown(cityNameLabel, cityName);
 		if (situsCityCode != null) selectOptionFromDropDown(situsCityCodeLabel,situsCityCode);	
