@@ -111,6 +111,7 @@ public class MappingPage extends ApasGenericPage {
 	public String performAdditionalMappingButton = "Perform Additional Mapping Action";
 	public String userNameForRpAppraiser = CONFIG.getProperty(users.RP_APPRAISER + "UserName");
 	public String appraiserwWorkPool = "Appraiser";
+	public String TRA;
 
 	@FindBy(xpath = "//*[contains(@class,'slds-dropdown__item')]/a")
 	public WebElement editButtonInSeconMappingScreen;
@@ -207,7 +208,7 @@ public class MappingPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//*[contains(@class,'message-font slds-align_absolute-center slds-text-color_success slds-m-bottom_medium slds-m-top_medium')]")
 	public WebElement createNewParcelSuccessMessage;
-
+	
 	
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
@@ -315,17 +316,22 @@ public class MappingPage extends ApasGenericPage {
 	 */
 	public void editSitusModalWindowFirstScreen(Map<String, String> dataMap) throws Exception {
 		
-		String cityName = dataMap.get("City Name");
-		String situsCityCode = dataMap.get("Situs City Code");
 		String situsCityName = dataMap.get("Situs City Name");
 		String direction = dataMap.get("Direction");
 		String situsNumber = dataMap.get("Situs Number");
 		String situsStreetName = dataMap.get("Situs Street Name");
 		String situsType = dataMap.get("Situs Type");
-		String situsUnitNumber = dataMap.get("Situs Unit Number");
+		String situsUnitNumber = dataMap.get("Situs Unit Number");	
+		String cityName = dataMap.get("City Name");
+		String situsCityCode = dataMap.get("Situs City Code");
+		
+		if(cityName !=null)
+		cityName = objSalesforceAPI.select("SELECT City__c FROM TRA__c where Name='"+TRA+"'").get("City__c").get(0);
+		if(situsCityCode !=null)
+		situsCityCode = objSalesforceAPI.select("SELECT Situs_City_Code__c FROM Situs__c where Situs_City__c='"+cityName+"' and Situs_City_Code__c !=null limit 1").get("Situs_City_Code__c").get(0);
 		
 		if (cityName != null) selectOptionFromDropDown(cityNameLabel, cityName);
-		if (situsCityCode != null) selectOptionFromDropDown(situsCityCodeLabel, situsCityCode);
+		if (situsCityCode != null) selectOptionFromDropDown(situsCityCodeLabel,situsCityCode);	
 		if (situsCityName != null) enter(situsCityNameLabel, situsCityName);
 		if (direction != null) selectOptionFromDropDown(directionLabel, direction);
 		if (situsNumber != null) enter(situsNumberLabel, situsNumber);
@@ -495,7 +501,7 @@ public class MappingPage extends ApasGenericPage {
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
     		
 			String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
-			String TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
+			TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
 			String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1").get("Name").get(0);
 		    objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='"+PUC+"'").get("Id").get(0), "Legacy__c", "No");
 
