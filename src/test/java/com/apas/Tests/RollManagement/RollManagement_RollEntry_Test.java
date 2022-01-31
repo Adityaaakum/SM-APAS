@@ -1,7 +1,8 @@
 package com.apas.Tests.RollManagement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-
+import java.util.List;
 
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -11,6 +12,7 @@ import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.ApasGenericPage;
+import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
@@ -32,6 +34,8 @@ public class RollManagement_RollEntry_Test  extends TestBase implements testdata
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	MappingPage objMappingPage;
+	CIOTransferPage objCIOTransferPage;
+
 	
 
 	@BeforeMethod(alwaysRun = true)
@@ -43,6 +47,8 @@ public class RollManagement_RollEntry_Test  extends TestBase implements testdata
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		objMappingPage = new MappingPage(driver);
 		salesforceAPI = new SalesforceAPI();
+		objCIOTransferPage = new CIOTransferPage(driver);
+
 	}
 	/*
 	 * This method is to Verify the Taxable 'Assessed value' fields mentioned on Roll Entry Object.
@@ -51,7 +57,7 @@ public class RollManagement_RollEntry_Test  extends TestBase implements testdata
 	 * 
 	 * @throws Exception
 	 */
-	@Test(description = "SMAB-T3766:Verify the UI validations for the fields mentioned on 'Roll Entry' details page & user should be able to edit those fields.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T7565,SMAB-T3766:Verify the UI validations for the fields mentioned on 'Roll Entry' details page & user should be able to edit those fields.", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "RollManagement" })
 	public void CIO_VerifyRollEntryObjectUIValidations(String loginUser) throws Exception {
 
@@ -71,7 +77,20 @@ public class RollManagement_RollEntry_Test  extends TestBase implements testdata
 		//Step 3 : Clicking on the edit button and verifying all the fields
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.editButton);
 
-
+		//adding verification for picklist values in Status field
+		
+		objCIOTransferPage.editRecordedApnField("Status");
+		objCIOTransferPage.waitForElementToBeVisible(6, "Status");		
+		objParcelsPage.Click(objParcelsPage.getWebElementWithLabel("Status"));
+		List<Object> statusFieldOptions= objParcelsPage.getAllOptionFromDropDown("Status");
+		
+		String[]  expectedSubSetStatusFieldOptions= {"Direct Enrollment","Conversion","Cancellation","Record Calculated","Ready for Early Release","Approved","Assessment held for further review","Manual record insert","For Record Only, No Processing Done","Notice Sent","Same as NOTC. Used by Appraiser Support when SUP NOTC is opened to add / delete exemption","Processed and ready to be released","Released to Controller" ,"Current Working Roll","Manual Calc Roll"};
+		
+		List<String> expectedStatusFieldOptions=Arrays.asList(expectedSubSetStatusFieldOptions);
+		
+		
+		softAssert.assertTrue(statusFieldOptions.containsAll(expectedStatusFieldOptions),"SMAB-T7565 : Validation of picklist values in  Status field in roll entry object");		
+ 
 		objParcelsPage.javascriptClick(objParcelsPage.getButtonWithText("Edit"));
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.SaveButton);
 		objParcelsPage.enter(objParcelsPage.getWebElementWithLabel("Land Assessed Value"), "2334465");

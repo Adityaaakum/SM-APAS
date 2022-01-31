@@ -5317,19 +5317,19 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
 						.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
 				+ "/view");
-		objParcelsPage.waitUntilPageisReady(driver);
 		
 		// Step 2: User clicks on "COS Document Summary" button
+		objParcelsPage.waitForElementToBeClickable(objParcelsPage.cosDocumentSummaryText,25);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
 		
 		// Step 3: User clicks on the recorded document
-		objParcelsPage.Click(objParcelsPage.lastItemInCosDocumentSummary);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(recordedDocumentName));
 		String parentWindow = driver.getWindowHandle();
 		objParcelsPage.switchToNewWindow(parentWindow);
-		objParcelsPage.waitUntilPageisReady(driver);
+		objParcelsPage.waitForElementToBeVisible(25,objParcelsPage.recordedDocumentNameText);
 		
-		String currentRecordedDocumentName = objCioTransfer.getFieldValueFromAPAS("Recorded Document Name");
-		softAssert.assertEquals(recordedDocumentName, currentRecordedDocumentName, "SMAB-T4388: Verify the Recorded Document column in COS Doc Summary has a linked URL , navigating to the recorded document record");
+		String currentRecordedDocumentName = objCioTransfer.getFieldValueFromAPAS(objParcelsPage.recordedDocumentNameText);
+		softAssert.assertEquals(currentRecordedDocumentName, recordedDocumentName, "SMAB-T4388: Verify the Recorded Document column in COS Doc Summary has a linked URL , navigating to the recorded document record");
 		
 		objParcelsPage.logout();
 	}
@@ -5338,7 +5338,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	* Validate Mapping Event codes for the Assesed value records
     */
 
-	@Test(description = "SMAB-T3919, SMAB-T4172, : Govt CIO Post transfer process", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3919, SMAB-T4172,SMAB-T4316 : Govt CIO Post transfer process", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void CIO_ValidateAssesedValuerecord(String loginUser) throws Exception {
 		
@@ -5413,7 +5413,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3919: Status of the assesses value record is active ");
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Assessed_BY_Values__c/"+assessedValueRecordID+"/view");
 		softAssert.assertEquals("Prop 19 Intergenerational Exclusion", objCioTransfer.getFieldValueFromAPAS("Assessed Value Type"), "SMAB-T3919: DOV on AV record is equal to AAS");
-		objWorkItemHomePage.logout();
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+APN+"/related/Roll_Entry__r/view");
+		ReportLogger.INFO("Opened ROll Entry records");
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
+		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryValues = objMappingPage.getGridDataInHashMap();
+		softAssert.assertEquals(gridDataHashMapRollEntryValues.get("Roll Year - Seq#").get(0), "2001 - 2",
+				"SMAB-T4316: Roll year Is in");
+		objWorkItemHomePage.logout();		
 		
 	}
 	
