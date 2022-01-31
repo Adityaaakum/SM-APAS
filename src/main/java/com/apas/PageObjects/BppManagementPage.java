@@ -26,6 +26,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -48,13 +49,20 @@ public class BppManagementPage extends ApasGenericPage {
 	}
 
 	//Locators for BPP Annual Settings screen
-	public String rollYearLabel = "Roll Year Settings";
+	public String rollYearSettingsLabel = "Roll Year Settings";
+	public String rollYearLabel = "Roll Year";
 	public String statusLabel = "Status";
 	public String improvementPILabel = "PI Improvement %";
 	public String landPILabel = "PI Land %";
 	public String salesTaxLabel = "Sales Tax %";
 	public String viewFileNetDocumentsButton = "View FileNet Documents";
-	
+	public String rentFeeLabel = "Rent Fee";
+	public String rentFactorLabel = "Rent Factor";
+	public String svcRateLabel = "SVC Rate";
+	public String svcDescriptionLabel = "SVC Description";
+	public String typeOfSpaceLabel = "Type Of Space";
+	public String spaceNameLabel = "Space Name";
+	public String airPortLabel = "Airport";	
 	
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'slds-listbox__option_plain')]//a[@title = 'New'] | //flexipage-tab2[contains(@class,'show')]//*[text()='New']")
 	public WebElement newButton;
@@ -76,8 +84,28 @@ public class BppManagementPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(.,'View Duplicates')]/button[@title='Close this window']")
 	public WebElement closeViewDuplicatesPopUpButton;
 	
+	/**
+	 * This Method is used to create PI record
+	 * @param dataToCreatePISPACERecord is a Map
+	 * @throws Exception
+	 */
 	
+	public void createPISpaceRecord(Map<String, String>dataToCreatePISPACERecord ) throws Exception
+	 {
+		    Click(newButton);
+		    searchAndSelectOptionFromDropDown(rollYearLabel, dataToCreatePISPACERecord.get(rollYearLabel));
+			Thread.sleep(1000);
+			enter(rentFeeLabel, dataToCreatePISPACERecord.get(rentFeeLabel));
+			enter(rentFactorLabel, dataToCreatePISPACERecord.get(rentFactorLabel));
+			enter(svcRateLabel,dataToCreatePISPACERecord.get(svcRateLabel));
+			enter(svcDescriptionLabel, dataToCreatePISPACERecord.get(svcDescriptionLabel));
+			selectOptionFromDropDown(airPortLabel, dataToCreatePISPACERecord.get(airPortLabel));
+			selectOptionFromDropDown(typeOfSpaceLabel,dataToCreatePISPACERecord.get(typeOfSpaceLabel));
+			selectOptionFromDropDown(spaceNameLabel,dataToCreatePISPACERecord.get(spaceNameLabel));
+			Click(objPage.getButtonWithText("Save"));
+			ReportLogger.INFO("Created PI Space settings record");
+			Thread.sleep(1000);
 
-	
+		}
 	
 }

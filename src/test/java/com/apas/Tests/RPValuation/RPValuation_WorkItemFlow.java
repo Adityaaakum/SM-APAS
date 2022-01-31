@@ -1,11 +1,10 @@
-package com.apas.Tests.WorkItemsTest.WorkItemWorkFlow;
+package com.apas.Tests.RPValuation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -21,13 +20,12 @@ import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
-import com.apas.Utils.DateUtil;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 
-public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
+public class RPValuation_WorkItemFlow extends TestBase {
 	
 	private RemoteWebDriver driver;
 	Page objPage;
@@ -283,11 +281,9 @@ public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
 	    	flag = true;
 	    	
 	    	softAssert.assertTrue(flag, "SMAB-T4274:" + newConstructionPage);
-	    }
-		
+	    }	
 		
 		
 	}
-
 
 }

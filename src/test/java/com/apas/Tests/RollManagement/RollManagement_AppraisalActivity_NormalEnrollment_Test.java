@@ -1,7 +1,11 @@
-package com.apas.Tests.OwnershipAndTransfer;
+package com.apas.Tests.RollManagement;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +32,7 @@ import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
-
+import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
@@ -38,8 +42,7 @@ import com.apas.config.users;
 
 
 
-public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implements users {
-
+public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends TestBase implements users {
 	private RemoteWebDriver driver;
 	Page objPage;
 	ParcelsPage objParcelsPage;
@@ -75,7 +78,9 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		
 	}
 	/*
-	 * Verify user is able to create Appraisal WI after approval of CIO WI for recorded documents and is able to reject that WI to make further Corrections through CIO-REVIEW WI and is able to reapprove that WI
+	 * Verify user is able to 
+
+ Appraisal WI after approval of CIO WI for recorded documents and is able to reject that WI to make further Corrections through CIO-REVIEW WI and is able to reapprove that WI
 	 * 
 	 * Last Modified by -Aditya 
 	 * 
@@ -83,12 +88,10 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	
 
 	@Test(description = "SMAB-T4154,SMAB-T3637,SMAB-T3749,SMAB-T3736,SMAB-T3786,SMAB-T3738,SMAB-T3933,SMAB-T3807,SMAB-T3762,SMAB-T4317 : Verify that CIO supervisor on approval is able to create Appraisal WI for non exempted CIO transfers ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "NormalEnrollment" ,"EconomicUnits", "ChangeInOwnershipManagement"}, enabled = true)
+			"Regression", "NormalEnrollment" ,"EconomicUnits", "RollManagement"}, enabled = true)
 	public void OwnershipAndTransfer_CreateAppraisalActivityWorkItem(String loginUser) throws Exception {
 
 		String excEnv = System.getProperty("region");
-		
-		 
 		
 
 		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
@@ -553,7 +556,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 */
 
 	@Test(description = "SMAB-T3768,SMAB-T3782,SMAB-T3812 : Verify the fileds and calculations on those fields on the layout of different type of assesssed value records  ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "NormalEnrollment", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
 	public void OwnershipAndTransfer_Verify_assessedValueRecords(String loginUser) throws Exception {
 		
 		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
@@ -756,7 +759,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 */
 	
 	@Test(description = "SMAB-T4120,SMAB-T4121 : Verify that new AV records are generated for the given TransferCode when appraiser user appraises land and Improvement values on the appraiser screen", dataProvider = "dpForAppraisalActivityAVCreation", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "NormalEnrollment", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
 	public void OwnershipAndTransfer_RelatedTablesInAppraiserActivityScreen(String eventCode) throws Exception {
 
 		String excEnv = System.getProperty("region");		
@@ -776,9 +779,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
 				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
 
-		// STEP 1- Create appraisal WI through CIO Transfer WI approval
-
-		
+		// STEP 1- Create appraisal WI through CIO Transfer WI approval		
 		String[] arrayForWorkItemAfterCIOSupervisorApproval = objCIOTransferPage
 				.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment",
 						eventCode, hashMapOwnershipAndTransferCreationData,
@@ -786,7 +787,6 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 						hashMapCreateAssessedValueRecord);
 
 		// Step 2- LOGIN with appraiser staff
-
 		objAppraisalActivity.login(APPRAISAL_SUPPORT);
 		Thread.sleep(4000);
 		String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
@@ -903,7 +903,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 */
 	
 	@Test(description = "SMAB-T4120,SMAB-T4121 : Verify that new AV records are generated for the P19P when appraiser user appraises land and Improvement values on the appraiser screen",  groups = {
-			"Regression", "NormalEnrollment", "ChangeInOwnershipManagement" }, enabled = true)
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
 	public void OwnershipAndTransfer_IntergenerationalTransfer() throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -917,11 +917,11 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 				"DataToCreateGranteeWithIncompleteDataForIntergenerationalPartialTransfer");
 
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
-				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecordForP19P");
 
 		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
 		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
-				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecordForP19");
 
 		// Step 1- Creating appraiser WI for P19P transfer event		
 		String[] arrayForWorkItemAfterCIOSupervisorApproval = objCIOTransferPage
@@ -962,7 +962,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 								.get("Id").get(0)
 						+ "/related/Assessed_Values__r/view");
 		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.clickShowMoreActionButton, 15);
-		HashMap<String, ArrayList<String>> hashMapForAssessedValueTable = objAppraisalActivity.getGridDataInHashMap();
+		HashMap<String, ArrayList<String>> hashMapForAssessedValueTable = objAppraisalActivity.getGridDataInHashMap();		
 
 		//Step 4 -Verifying the AV generated  after updating land and improvement value on appraiser screen		
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(0), "Active",
@@ -1032,7 +1032,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		objAppraisalActivity.Click(objParcelsPage.assessedValueOwnershipTab);
 		Thread.sleep(2000);
 		HashMap<String, ArrayList<String>> hashMapAVOForOldAv = objAppraisalActivity.getGridDataInHashMap();
-
+		
 		//Step 10 -Verifying AVO's associated to the old AV records		
 		softAssert.assertTrue(hashMapAVOForOldAv.get("DOV").size() == 2,
 				"SMAB-T4010:Verify two AVO's are present on related list");
@@ -1043,11 +1043,10 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		//Step 11 - Navigating TO newly  retained AVO for Father		
 		driver.navigate().to("https://smcacre--" + excEnv
 				+ ".lightning.force.com/lightning/r/Assessed_Values_Ownership__c/"
-				+ salesforceAPI
-						.select("SELECT id  FROM Assessed_Values_Ownership__c where name = '" + hashMapAVOForOldAv
-								.get("Assessed Values Ownership: Assessed Values Ownership ID").get(1) + "'")
-						.get("Id").get(0)
+				+ salesforceAPI.select("SELECT id  FROM Assessed_Values_Ownership__c where assessed_values__r.name = '"
+						+ hashMapForAssessedValueTable.get("Assessed Values ID").get(0) + "'").get("Id").get(1)
 				+ "/view");
+				
 		objAppraisalActivity.waitForElementToBeVisible(10, objParcelsPage.propertyOwner);
 
 		softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.statusLabel), "Active",
@@ -1067,8 +1066,8 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 	 * @Description : Verify that new AV records and enrollement  are created for Prop 19 100% reassessement transfer and validating the values that it carries.
 	 */
 	
-	@Test(description = "SMAB-T4387 : Verify that new AV records are generated for the P19 when appraiser user appraises land and Improvement values on the appraiser screen",  groups = {
-			"Regression", "NormalEnrollment", "ChangeInOwnershipManagement" }, enabled = true)
+	@Test(description = "SMAB-T4387, SMAB-T4320 : Verify that new AV records are generated for the P19 when appraiser user appraises land and Improvement values on the appraiser screen",  groups = {
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
 	public void OwnershipAndTransfer_Prop19Reassessement() throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -1129,16 +1128,16 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 
 		//Step 3 -Verifying the AV generated  after updating land and improvement value on appraiser screen		
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(0), "Retired",
-				"SMAB-T4387:Verify that earlier active AV record is  getting retired  for P19 100% Reassessement");
+				"SMAB-T4387, SMAB-T4320:Verify that earlier active AV record is  getting retired  for P19 100% Reassessement");
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(1), "Active",
-				"SMAB-T4387:Verify that new active AV record is getting created  for P19 100% Reassessement");
+				"SMAB-T4387, SMAB-T4320:Verify that new active AV record is getting created  for P19 100% Reassessement");
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Assessed Value Type").get(1),
 				"Prop 19 Intergenerational 100% Assessment",
-				"SMAB-T4387:Verify that new  active AV record is getting created  for Intergeneational transfer has assessed value type ofProp 19 Intergenerational 100% Assessment");
+				"SMAB-T4387, SMAB-T4320:Verify that new  active AV record is getting created  for Intergeneational transfer has assessed value type ofProp 19 Intergenerational 100% Assessment");
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Land Value").get(1), "5,000,000",
-				"SMAB-T4387:Verify that Land taxable value is getting reflected at grid");
+				"SMAB-T4387, SMAB-T4320:Verify that Land taxable value is getting reflected at grid");
 		softAssert.assertEquals(hashMapForAssessedValueTable.get("Improvement Value").get(1), "2,000,000",
-				"SMAB-T4387:Verify that Improvement taxable value is getting reflected at grid");
+				"SMAB-T4387, SMAB-T4320:Verify that Improvement taxable value is getting reflected at grid");
 		
 		//Navigating to the AVO record for new owner 
 		driver.navigate().to("https://smcacre--" + excEnv
@@ -1150,10 +1149,10 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 
 		//Step 4 -Verifying fields on AVO records		
 		softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.statusLabel), "Active",
-				"SMAB-T4387:Verify that AVO of new active  AV after appraisal is created and is active.");
+				"SMAB-T4387, SMAB-T4320:Verify that AVO of new active  AV after appraisal is created and is active.");
 		softAssert.assertEquals(
 				objAppraisalActivity.getFieldValueFromAPAS(objParcelsPage.ownershipPercentageTextBoxForAVO), "100.0000%",
-				"SMAB-T4387:Verify that AVO of new active  AV after appraisal is created with ownership percentage 100%.");
+				"SMAB-T4387, SMAB-T4320:Verify that AVO of new active  AV after appraisal is created with ownership percentage 100%.");
 
 		HashMap<String, ArrayList<String>> hashMapPropertyId = salesforceAPI
 				.select("SELECT Name FROM Property_Ownership__c where parcel__c = '" + salesforceAPI
@@ -1161,7 +1160,7 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 						+ "' order by id");
 		softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objParcelsPage.propertyOwner),
 				hashMapPropertyId.get("Name").get(1),
-				"SMAB-T4387:Verify that AVO of child  is created after updating land and improvement values ");
+				"SMAB-T4387, SMAB-T4320:Verify that AVO of child  is created after updating land and improvement values ");
 		
 		//Navigating to Roll Entry table
 		driver.navigate().to(
@@ -1170,20 +1169,905 @@ public class CIO_AppraisalActivity_NormalEnrollment_Test extends TestBase implem
 		  HashMap<String, ArrayList<String>>hashMapRollEntryTable =objAppraisalActivity.getGridDataInHashMap();
 		  
 		  //Validating Enrollement records generated for p19		  
-		softAssert.assertEquals(hashMapRollEntryTable.get("Type").size(),2 , "SMAB-T4387: For DOV occuring after May 31 only 1 supplemental record is generated ");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Type").get(0) ,"Annual", "SMAB-T4387: Verify that Annual record is genrated after appraisal for year 2002 ");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Type").get(1) ,"Supplemental", "SMAB-T4387: Verify that Supplemental  record is genrated after appraisal for year 2001 ");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Type").get(1) ,"Supplemental", "SMAB-T4387: Verify that Supplemental  record is genrated after appraisal for year 2001 ");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Roll Year - Seq#").get(0) ,"2002 - 1", "SMAB-T4387: Verify that sequence of annual record is 1 for roll year 2002 ");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Roll Year - Seq#").get(1) ,"2001 - 2", "SMAB-T4387: Verify that sequence of supplemental record is 1 for roll year 2001 ");
+		softAssert.assertEquals(hashMapRollEntryTable.get("Type").size(),2 , "SMAB-T4387, SMAB-T4320: For DOV occuring after May 31 only 1 supplemental record is generated ");
+		softAssert.assertEquals(hashMapRollEntryTable.get("Type").get(0) ,"Annual", "SMAB-T4387, SMAB-T4320: Verify that Annual record is genrated after appraisal for year 2002 ");
+		softAssert.assertEquals(hashMapRollEntryTable.get("Type").get(1) ,"Supplemental", "SMAB-T4387, SMAB-T4320: Verify that Supplemental  record is genrated after appraisal for year 2001 ");
+		softAssert.assertEquals(hashMapRollEntryTable.get("Type").get(1) ,"Supplemental", "SMAB-T4387, SMAB-T4320: Verify that Supplemental  record is genrated after appraisal for year 2001 ");
+		softAssert.assertEquals(hashMapRollEntryTable.get("Roll Year - Seq#").get(0) ,"2002 - 1", "SMAB-T4387, SMAB-T4320: Verify that sequence of annual record is 1 for roll year 2002 ");
+		softAssert.assertEquals(hashMapRollEntryTable.get("Roll Year - Seq#").get(1) ,"2001 - 2", "SMAB-T4387, SMAB-T4320: Verify that sequence of supplemental record is 1 for roll year 2001 ");
 		softAssert.assertTrue(!hashMapRollEntryTable.get("Land Assessed Value").get(0).equals(hashMapRollEntryTable.get("Land Assessed Value").get(1)) &&( hashMapRollEntryTable.get("Improvement Assessed Value").get(0).equals( hashMapRollEntryTable.get("Improvement Assessed Value").get(1))), "SMAB-T4387: Verify that annual enrollement record have factored forwarded values from previous supplemental records ");
 		
+		//Validate AV record Values
+		
+		driver.navigate().to("https://smcacre--" + excEnv
+				+ ".lightning.force.com/lightning/r/Assessed_BY_Values__c/"
+				+ salesforceAPI.select("SELECT id  FROM Assessed_Values_Ownership__c where assessed_values__r.name = '"
+						+ hashMapForAssessedValueTable.get("Assessed Values ID").get(1) + "'").get("Id").get(0)
+				+ "/view");
+		objAppraisalActivity.waitForElementToBeVisible(10, objParcelsPage.detailPagelandValue);
+
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objHpiValueAllowance)),
+				"SMAB-T4387, SMAB-T4320: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.newTaxableValue),
+				"SMAB-T4387, SMAB-T4320: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.combinedFactoredandHPI),
+				"SMAB-T4387, SMAB-T4320: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
+
+		objAppraisalActivity.logout();
+		}
+	/*
+	 * @Description : Verify that new AV records and enrollement  are created for Prop 19 100% reassessement transfer and validating the values that it carries for Partial CIO.
+	 */
+	
+	@Test(description = "SMAB-T4320 : Verify that new AV records are generated for the P19 when appraiser user appraises land and Improvement values on the appraiser screen for Partial CIO",  groups = {
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
+	public void OwnershipAndTransfer_Prop19Reassessement_Part() throws Exception {
+
+		String excEnv = System.getProperty("region");
+
+		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferCreationData, "dataToCreateMailToRecordsWithIncompleteData");
+
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferCreationData,
+				"dataToCreateGranteeWithPartialOwnership");
+
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecordForP19Part");
+
+		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
+		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecordForP19");
+
+		// Step 1- Creating appraiser WI for P19P transfer event		
+		String[] arrayForWorkItemAfterCIOSupervisorApproval = objCIOTransferPage
+				.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment",
+						CIOTransferPage.CIO_EVENT_REASSESSMENT, hashMapOwnershipAndTransferCreationData,
+						hashMapOwnershipAndTransferGranteeCreationData, hashMapCreateOwnershipRecordData,
+						hashMapCreateAssessedValueRecord);
+		
+		// Step 2- LOGIN with appraiser staff
+		objAppraisalActivity.login(APPRAISAL_SUPPORT);
+		String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
+		String query = "Select Id from Work_Item__c where Name = '"+workItemForAppraiser+"'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		driver.navigate().to("https://smcacre--"+excEnv+
+		".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
+		objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+		String apnNoForAppraisal = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.apnLabel);
+		objAppraisalActivity
+				.Click(objAppraisalActivity.appraisalActivityEditValueButton(objAppraisalActivity.landCashValueLabel));
+		objAppraisalActivity.enter(objAppraisalActivity.landCashValueLabel, "5000,000");
+		objAppraisalActivity.enter(objAppraisalActivity.improvementCashValueLabel, "2000,000");
+		objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.SaveButton));
+		driver.navigate()
+				.to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+						+ salesforceAPI.select("Select Id from Parcel__c where name ='"
+								+ apnNoForAppraisal + "'")
+								.get("Id").get(0)
+						+ "/related/Assessed_Values__r/view");
+		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.clickShowMoreActionButton, 15);
+		HashMap<String, ArrayList<String>> hashMapForAssessedValueTable = objAppraisalActivity.getGridDataInHashMap();
+
+		//Step 3 -Verifying the AV generated  after updating land and improvement value on appraiser screen		
+		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(0), "Active",
+				"SMAB-T4320:Verify that earlier active AV record is  getting retired  for P19 100% Reassessement");
+		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(1), "Active",
+				"SMAB-T4320:Verify that new active AV record is getting created  for P19 100% Reassessement");
+		softAssert.assertEquals(hashMapForAssessedValueTable.get("Assessed Value Type").get(1),
+				"Prop 19 Intergenerational 100% Assessment",
+				" SMAB-T4320:Verify that new  active AV record is getting created  for Intergeneational transfer has assessed value type ofProp 19 Intergenerational 100% Assessment");
+		softAssert.assertEquals(hashMapForAssessedValueTable.get("Land Value").get(1), "5,000,000",
+				"SMAB-T4320:Verify that Land taxable value is getting reflected at grid");
+		softAssert.assertEquals(hashMapForAssessedValueTable.get("Improvement Value").get(1), "2,000,000",
+				"SMAB-T4320:Verify that Improvement taxable value is getting reflected at grid");
+		
+		//Navigating to the AVO record for new owner 
+		driver.navigate().to("https://smcacre--" + excEnv
+				+ ".lightning.force.com/lightning/r/Assessed_Values_Ownership__c/"
+				+ salesforceAPI.select("SELECT id  FROM Assessed_Values_Ownership__c where assessed_values__r.name = '"
+						+ hashMapForAssessedValueTable.get("Assessed Values ID").get(1) + "'").get("Id").get(0)
+				+ "/view");
+		objAppraisalActivity.waitForElementToBeVisible(10, objParcelsPage.propertyOwner);
+
+		//Step 4 -Verifying fields on AVO records		
+		softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.statusLabel), "Active",
+				"SMAB-T4387, SMAB-T4320:Verify that AVO of new active  AV after appraisal is created and is active.");
+		softAssert.assertEquals(
+				objAppraisalActivity.getFieldValueFromAPAS(objParcelsPage.ownershipPercentageTextBoxForAVO), "50.0000%",
+				"SMAB-T4320:Verify that AVO of new active  AV after appraisal is created with ownership percentage 50%.");
+
+		HashMap<String, ArrayList<String>> hashMapPropertyId = salesforceAPI
+				.select("SELECT Name FROM Property_Ownership__c where parcel__c = '" + salesforceAPI
+						.select("Select Id from Parcel__c where name ='" + apnNoForAppraisal + "'").get("Id").get(0)
+						+ "' order by id");
+		softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objParcelsPage.propertyOwner),
+				hashMapPropertyId.get("Name").get(1),
+				"SMAB-T4320:Verify that AVO of child  is created after updating land and improvement values ");
+		
+		//Validate AV record Values
+		
+		driver.navigate().to("https://smcacre--" + excEnv
+				+ ".lightning.force.com/lightning/r/Assessed_BY_Values__c/"
+				+ salesforceAPI.select("SELECT id  FROM Assessed_Values_Ownership__c where assessed_values__r.name = '"
+						+ hashMapForAssessedValueTable.get("Assessed Values ID").get(1) + "'").get("Id").get(0)
+				+ "/view");
+		objAppraisalActivity.waitForElementToBeVisible(10, objParcelsPage.detailPagelandValue);
+
+		softAssert.assertTrue(!(objMappingPage.verifyElementVisible(objParcelsPage.objHpiValueAllowance)),
+				"SMAB-T4320: Validation that all fields (HPI Value Allowance) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.newTaxableValue),
+				"SMAB-T4320: Validation that all fields (newTaxable Value Text) are not visible when Assessed Type is not 'Prop 19'");
+		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.combinedFactoredandHPI),
+				"SMAB-T4320: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
+
+		objAppraisalActivity.logout();
+		}	
+	/*
+	 * Verify the AV records and Roll Entry records are created correclty when user enters the assessed values for land and improvement for BMR properties in Menlo Park township
+	 */
+	@Test(description = "SMAB-T4262: Verify the AV records and Roll Entry records are created correclty when user enters the assessed values for land and improvement for BMR properties in Menlo Park township", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "NormalEnrollment", "RollManagement" })
+	public void CIO_AppraisalForBMR(String loginUser) throws Exception {
+
+		// === Data set up ===
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Primary_Situs__c IN (SELECT Id FROM Situs__c WHERE Situs_City__c = 'MENLO PARK') limit 1";
+		String parcelId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+		String parcelAPN = salesforceAPI.select(queryAPNValue).get("Name").get(0);
+		String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		String execEnv = System.getProperty("region");
+		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
+		String unrecordedEventData = testdata.UNRECORDED_EVENT_DATA;;
+
+		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "DataToCreateAnnualAssessment");
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithMailTo");
+		Map<String, String> datatoCreateAssesedValue = objUtil.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAnnualAssesedValueRecord");
+		HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select("SELECT id FROM PUC_Code__c where Name in ('101- Single Family Home','105 - Apartment') limit 1");
+
+		String landValue = datatoCreateAssesedValue.get("Land Cash Value");
+		String improvementValue = datatoCreateAssesedValue.get("Improvement Cash Value");
+		salesforceAPI.update("Parcel__c", parcelId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
+
+		// Login to the APAS application as SysAdmin
+		objMappingPage.login(users.SYSTEM_ADMIN);
+		        
+		// Opening the parcel's page
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
+		objParcelsPage.waitForElementToBeVisible(20,objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		
+		// Create UT event
+		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
+		objCIOTransferPage.waitUntilPageisReady(driver);
+
+		// Edit the Transfer activity and update the Transfer Code
+		ReportLogger.INFO("Add the Transfer Code");
+		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, CIOTransferPage.APPRAISAL_SP_ANNUAL);
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+
+		// Clean parcel
+		objCIOTransferPage.deleteOwnershipFromParcel(parcelId);
+		        
+		// Creating the new grantee on transfer
+		String recordeAPNTransferID = driver.getCurrentUrl().split("/")[6];
+		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);	
+
+		// Validating present grantee			 
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+		objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
+		HashMap<String, ArrayList<String>> granteeHashMap  = objCIOTransferPage.getGridDataForRowString("1");
+		String granteeForMailTo= granteeHashMap.get("Grantee/Retain Owner Name").get(0);
+
+		// Create copy to mail to record
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+		objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
+		objCIOTransferPage.createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferGranteeCreationData);
+		objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
+
+		// Open transfer activity 
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+
+		// Submit for approval
+		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionButtonDropdownIcon, 10);
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{
+		    objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+		    objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
+		ReportLogger.INFO("WI Submitted  for approval successfully");
+
+		// Approve transfer activity
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.quickActionOptionApprove);
+		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionApprove);
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));		
+		
+		// Delete all AV and RE 
+		objParcelsPage.deleteOldAndCreateNewAssessedValuesRecords(datatoCreateAssesedValue,parcelAPN);
+		objParcelsPage.deleteRollEntryFromParcel(parcelId);
+		
+		String workItemQuery = "Select Id, Name, Navigation_Url__c from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by name desc";
+		String workItemIdForAppraiser = salesforceAPI.select(workItemQuery).get("Id").get(0);
+		String workItemRelatedAction = salesforceAPI.select(workItemQuery).get("Navigation_Url__c").get(0);
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Work_Item__c/"+workItemIdForAppraiser+"/view");
+		objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		
+		objWorkItemHomePage.logout();
+		Thread.sleep(5000);
+		
+		// --- Steps ---
+		
+		// Step 1 - User logs in as Rp Appraiser
+		objWorkItemHomePage.login(loginUser);
+		
+		// Step 2 - User navigates to Appraisal Activity Screen
+		ReportLogger.INFO("Navigating to Appraisal Activity Screen");
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Work_Item__c/"+workItemIdForAppraiser+"/view");
+		objWorkItemHomePage.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeClickable(10, objWorkItemHomePage.relatedActionLink);
+		objWorkItemHomePage.Click(objWorkItemHomePage.relatedActionLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		ReportLogger.INFO("Navigated to Appraisal Activity");
+		objAppraisalActivity.waitUntilPageisReady(driver);
+		
+		// Step 3 - User enters Land and Improvement values
+		objAppraisalActivity.waitForElementToBeVisible(15, objAppraisalActivity.appraisalActivityStatus);
+		objAppraisalActivity.Click(objAppraisalActivity.appraisalActivityEditValueButton(objAppraisalActivity.landCashValueLabel));
+		objAppraisalActivity.enter(objAppraisalActivity.landCashValueLabel, landValue);
+		objAppraisalActivity.enter(objAppraisalActivity.improvementCashValueLabel, improvementValue);
+		objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.SaveButton));
+		
+		driver.navigate()
+		.to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/related/Assessed_Values__r/view");
+		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.clickShowMoreActionButton, 15);
+		HashMap<String, ArrayList<String>> hashMapForAssessedValueTable = objAppraisalActivity.getGridDataInHashMap();
+		
+		// Verifying the AV generated  after updating land and improvement value on appraiser screen		
+		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(0), "Retired",
+				"SMAB-T4262:Verify that earlier active AV record is getting retired for BMR assessement");
+		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(1), "Active",
+				"SMAB-T4262:Verify that new active AV record is getting created  for BMR assessement");
+		softAssert.assertEquals(hashMapForAssessedValueTable.get("Assessed Value Type").get(1),	"Annual",
+				"SMAB-T4262:Verify that new active AV record is getting created for BMR has assessed value of type Annual");
+		softAssert.assertEquals(hashMapForAssessedValueTable.get("Land Value").get(1), landValue,
+				"SMAB-T4262:Verify that Land taxable value is getting reflected at grid");
+		softAssert.assertEquals(hashMapForAssessedValueTable.get("Improvement Value").get(1), improvementValue,
+				"SMAB-T4262:Verify that Improvement taxable value is getting reflected at grid");
+
+		// Verifying AVO record for new owner 
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Assessed_Values_Ownership__c/"
+				+ salesforceAPI.select("SELECT id  FROM Assessed_Values_Ownership__c where assessed_values__r.name = '"
+				+ hashMapForAssessedValueTable.get("Assessed Values ID").get(1) + "'").get("Id").get(0)
+				+ "/view");
+		objAppraisalActivity.waitForElementToBeVisible(10, objParcelsPage.propertyOwner);
+		// Verifying fields on AVO records		
+		softAssert.assertEquals(objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.statusLabel), "Active",
+				"SMAB-T4262:Verify that AVO of new active  AV after appraisal is created and is active.");
+		softAssert.assertEquals(
+				objAppraisalActivity.getFieldValueFromAPAS(objParcelsPage.ownershipPercentageTextBoxForAVO), "100.0000%",
+				"SMAB-T4262:Verify that AVO of new active  AV after appraisal is created with ownership percentage 100%.");
+		
+		// Verifying Roll Entry table
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+salesforceAPI.select("Select Id from Parcel__c where name ='"+parcelAPN+"'").get("Id").get(0)+"/related/Roll_Entry__r/view");
+		objAppraisalActivity.waitForElementToBeClickable(15,objAppraisalActivity.clickShowMoreActionButton );		
+		  HashMap<String, ArrayList<String>>hashMapRollEntryTable =objAppraisalActivity.getGridDataInHashMap();
+		  
+		// Validating Enrollement records generated for BMR
+		softAssert.assertEquals(hashMapRollEntryTable.get("Type").get(0) ,"Annual", "SMAB-T4262: Verify that Annual record is genrated after appraisal for year 2019 ");
+		softAssert.assertEquals(hashMapRollEntryTable.get("Roll Year - Seq#").get(0) ,"2019 - 1", "SMAB-T4262: Verify that sequence of annual record is 1 for roll year 2019 ");
+		softAssert.assertEquals(hashMapRollEntryTable.get("Status").get(0), "Draft", "SMAB-T4262: Verify RE is created as Draft");
+		softAssert.assertEquals(hashMapRollEntryTable.get("Land Assessed Value").get(0), "$"+landValue, "SMAB-T4262: Verify Land Assessed Value");
+		softAssert.assertEquals(hashMapRollEntryTable.get("Improvement Assessed Value").get(0), "$"+improvementValue, "SMAB-T4262: Verify Improvement Assessed Value");
+		
+		// Step 4 - User submits for approval
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com"+workItemRelatedAction);
+		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.submitForApprovalButton, 5);
+		objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.submitForApprovalButton));
+		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText(objAppraisalActivity.finishButton), 5);
+		objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.finishButton));
 		
 		objAppraisalActivity.logout();
+		Thread.sleep(5000);
 		
+		// Step 5 - Approve Appraisal activity
+		objAppraisalActivity.login(users.SYSTEM_ADMIN);
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com"+workItemRelatedAction);
+		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.quickActionOptionApprove, 5);
+		objAppraisalActivity.Click(objAppraisalActivity.quickActionOptionApprove);
+		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText(objAppraisalActivity.finishButton), 5);
+		objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.finishButton));
 		
-
-
+		// Validate new WI, AT and AA are created
+		String newWorkItemCreatedQuery = "SELECT Id, APN__c FROM Work_Item__c WHERE type__c='Appraiser' and sub_type__c='Appraisal Activity' ORDER BY CreatedDate DESC limit 1";
+		String newWorkItemId = salesforceAPI.select(newWorkItemCreatedQuery).get("Id").get(0);
+		String newWorkItemParcelId = salesforceAPI.select(newWorkItemCreatedQuery).get("APN__c").get(0);
+		
+		softAssert.assertEquals(newWorkItemParcelId, parcelId, "SMAB-T4262: Verify the a new WI was created for the parcel");
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Work_Item__c/"+newWorkItemId+"/view");
+		objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		softAssert.assertContains(objWorkItemHomePage.firstRelatedBuisnessEvent.getText(), "Trail", "SMAB-T4262: Verify a new Audit Trail was created");
+		
+		objAppraisalActivity.logout();
 	}
 	
+	 /*
+	 * RP Roll Management- Verify One supplemental roll entry record is created from
+	 * AAS when land and improvement types are entered for AV type "Assessed value"
+	 * for DOV >= 31May
+	 * 
+	 * This test cases verifies that one supplemental roll entry record is created
+	 * for partial ownership transfer CIO event for DOV=31MAY and DOV=31DEC The CPI
+	 * factor values are standard CPI factor values for these years :
+	 * 
+	 * 
+	 * 2017 1.0200000 2018 1.0200000 2019 1.0200000 2020 1.0200000 2021 1.0103600
+	 * 
+	 */
+
+	@Test(description = "SMAB-T4125: RP Roll Management- Verify One supplemental roll entry record is created from AAS when land and improvement types are entered for AV type \"Assessed value\" for DOV >= 31May", groups = {
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
+	public void RollManagementVerifyOneSupplementalRollEntryCreationAssessedValueType() throws Exception {
+
+		String excEnv = System.getProperty("region");
+
+		// fetching the test data for partial transfer of ownership
+		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferCreationData, "dataToCreateMailToRecordsWithIncompleteData");
+
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "dataToCreateGranteeWithIncompleteData");
+
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
+
+		// update Ownership Start Date for existing ownership record for parcel
+		hashMapCreateOwnershipRecordData.put("Ownership Start Date", "4/19/2017");
+
+		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
+		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
+
+		hashMapCreateAssessedValueRecord.put("DOV", "4/19/2017");
+		hashMapCreateAssessedValueRecord.put("Start Date", "4/19/2017");
+		hashMapCreateAssessedValueRecord.put("DOR", "4/19/2017");
+
+		// Create appraisal WI through CIO Transfer WI approval
+
+		HashMap hashmapDates = new HashMap<String, String>();
+		hashmapDates.put("DOV", "2021-05-31");
+		hashmapDates.put("DOR", "2021-05-31");
+		hashmapDates.put("DOE", "2021-05-31");
+
+		String[] arrayForWorkItemAfterCIOSupervisorApproval = objCIOTransferPage
+				.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment",
+						objCIOTransferPage.CIO_EVENT_CODE_SALE, hashMapOwnershipAndTransferCreationData,
+						hashMapOwnershipAndTransferGranteeCreationData, hashMapCreateOwnershipRecordData,
+						hashMapCreateAssessedValueRecord, hashmapDates);
+
+		// LOGIN with RP appraiser staff user
+
+		objAppraisalActivity.login(RP_APPRAISER);
+
+		String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
+
+		objAppraisalActivity.globalSearchRecords(workItemForAppraiser);
+		objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+
+		// Navigating to appraisal activity screen
+
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+
+		objWorkItemHomePage.waitForElementToBeInVisible(objCIOTransferPage.ApnLabel, 5);
+		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		String parcelId = salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id")
+				.get(0);
+
+		String query = "SELECT  id FROM Roll_Entry__c where APN__c='" + parcelId + "' and type__c!='Annual' ";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+
+		if (!response.isEmpty()) {
+			response.get("Id").stream().forEach(Id -> {
+				salesforceAPI.delete("Roll_Entry__c", Id);
+
+			});
+		}
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+
+		String appraisalScreenId = driver.getCurrentUrl().split("/")[6];
+		String dovForAppraisal = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.dovLabel);
+
+		Date dovDAte = new SimpleDateFormat("MM/dd/yyyy").parse(dovForAppraisal);
+
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(dovDAte);
+		Integer dovYear = calendar.get(Calendar.YEAR);
+
+		String queryForRollYearId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '" + dovYear.toString() + "'";
+		HashMap<String, ArrayList<String>> rollYearId = salesforceAPI.select(queryForRollYearId);
+		String dovYearCPIFactor = salesforceAPI.select(
+				"SELECT CPI_Factor__c FROM CPI_Factor__c  Where Roll_Year__c ='" + rollYearId.get("Id").get(0) + "' ")
+				.get("CPI_Factor__c").get(0);
+		String expectedDOVYearCPIFactor = dovYearCPIFactor + "000";
+
+		// Updating Land and Improvement Values and saving it for appraisal
+		objAppraisalActivity
+				.Click(objAppraisalActivity.appraisalActivityEditValueButton(objAppraisalActivity.landCashValueLabel));
+		objAppraisalActivity.enter(objAppraisalActivity.landCashValueLabel, "300000");
+		objAppraisalActivity.enter(objAppraisalActivity.improvementCashValueLabel, "500000");
+		objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.SaveButton));
+		Thread.sleep(3000);
+
+		// verifying that only one supplemental roll entry record is created when DOV
+		// =31May
+
+		String supplementalQuery = "SELECT  count(id) FROM Roll_Entry__c where APN__c='" + parcelId
+				+ "' and type__c='Supplemental' ";
+		String countSupplementalRecords = salesforceAPI.select(supplementalQuery).get("expr0").get(0);
+
+		softAssert.assertEquals(countSupplementalRecords, 1,
+				"SMAB-T4125:verify that One supplemental roll entry record is created from AAS when land and improvement types are entered for AV type \"Assessed value\" for DOV = 31May");
+
+		// verifying the supplemental roll entry record that is created
+
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId
+				+ "/related/Roll_Entry__r/view");
+		objCIOTransferPage.waitForElementToBeVisible(25, objCIOTransferPage.columnInGrid.replace("columnName", "Type"));
+		objCIOTransferPage.sortInGrid("Type", false);
+
+		HashMap<String, ArrayList<String>> HashMapSupplementalRollEntryRecord = objAppraisalActivity
+				.getGridDataInHashMap();
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("DOV").get(0), dovForAppraisal,
+				"SMAB-T4125:verifying that DOV field in supplemental created is DOV of Appraisal activity screen  ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Type").get(0), "Supplemental",
+				"SMAB-T4125:verifying that type field in supplemental created is Supplemental ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Roll Year - Seq#").get(0),
+				dovYear.toString() + " - 2",
+				"SMAB-T4125:verifying that Roll Year - Seq# field in supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(0), "Draft",
+				"SMAB-T4125:verifying that Status field in supplemental created is Draft ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("CPI Factor").get(0), expectedDOVYearCPIFactor,
+				"SMAB-T4125:verifying that CPI Factor field in supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Land Assessed Value").get(0), "$203,609",
+				"SMAB-T4125:verifying that Land Assessed Value field in supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Improvement Assessed Value").get(0), "$260,721",
+				"SMAB-T4125:verifying that Improvement Assessed Value field in supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Total Assessed Value").get(0), "$464,330",
+				"SMAB-T4125:verifying that Total Assessed Value field in supplemental created is correct ");
+
+		// submitting the AAS for approval
+		driver.navigate().back();
+		objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		objCIOTransferPage
+				.waitForElementToBeClickable(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton), 10);
+
+		softAssert.assertEquals(
+				objCIOTransferPage
+						.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 10)),
+				"Appraisal Activity has been Submitted for Approval.",
+				"SMAB-T4125:Appraisal activity screen is submitted for approval afterclickinmg on submit for approval button");
+
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
+		objCIOTransferPage.waitForElementToBeInVisible(objCIOTransferPage.xpathSpinner, 6);
+
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objAppraisalActivity.appraisalActivityStatus),
+				"Submit for Approval",
+				"SMAB-T4125: Verify that appraiser activity status is changed to Submit for Approval after RP appraiser staff submits the AAS for approval");
+
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId
+				+ "/related/Roll_Entry__r/view");
+
+		objCIOTransferPage.waitForElementToBeVisible(25, objCIOTransferPage.columnInGrid.replace("columnName", "Type"));
+		objCIOTransferPage.sortInGrid("Type", false);
+
+		HashMapSupplementalRollEntryRecord = objAppraisalActivity.getGridDataInHashMap();
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(0), "Draft",
+				"SMAB-T4125:verifying that Status field in supplemental created is Draft after submitting the AAS fo approval ");
+
+		// Login with RP appraiser supervisor
+		objCIOTransferPage.logout();
+
+		objMappingPage.login(users.RP_PRINCIPAL);
+
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Appraiser_Activity__c/"
+				+ appraisalScreenId + "/view");
+
+		// approving the AAS
+		objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Approve");
+		objCIOTransferPage
+				.waitForElementToBeClickable(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton), 10);
+
+		softAssert.assertEquals(
+				objCIOTransferPage
+						.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 10)),
+				"Appraisal Activity has been approved successfully.",
+				"SMAB-T4125:verify Appraisal activity screen is approved after rp appraiser approves the AAS");
+
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
+		objCIOTransferPage.waitForElementToBeInVisible(objCIOTransferPage.xpathSpinner, 6);
+
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objAppraisalActivity.appraisalActivityStatus),
+				"Approved",
+				"SMAB-T4125: Verify that appraiser activity status is changed to Approved after RP appraiser supervisor approves the AAS");
+
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId
+				+ "/related/Roll_Entry__r/view");
+
+		objCIOTransferPage.waitForElementToBeVisible(25, objCIOTransferPage.columnInGrid.replace("columnName", "Type"));
+		objCIOTransferPage.sortInGrid("Type", false);
+
+		HashMapSupplementalRollEntryRecord = objAppraisalActivity.getGridDataInHashMap();
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(0), "Approved",
+				"SMAB-T4125:verifying that Status field in supplemental created is Approved after AAs is approved");
+
+		// verifying that only one supplemental is created when DOV=31DEc
+
+		driver.navigate().back();
+		objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+
+		query = "SELECT  id FROM Roll_Entry__c where APN__c='" + parcelId + "' and type__c!='Annual' ";
+		response = salesforceAPI.select(query);
+
+		if (!response.isEmpty()) {
+			response.get("Id").stream().forEach(Id -> {
+				salesforceAPI.delete("Roll_Entry__c", Id);
+
+			});
+		}
+
+		objAppraisalActivity
+				.Click(objAppraisalActivity.appraisalActivityEditValueButton(objAppraisalActivity.landCashValueLabel));
+		objAppraisalActivity.enter(objAppraisalActivity.landCashValueLabel, "300000");
+		objAppraisalActivity.enter(objAppraisalActivity.improvementCashValueLabel, "500000");
+		objAppraisalActivity.enter(objAppraisalActivity.dovLabel, "12/31/2021");
+		objAppraisalActivity.enter(objAppraisalActivity.doeLabel, "12/31/2021");
+		objAppraisalActivity.enter(objAppraisalActivity.dorLabel, "12/31/2021");
+
+		objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.SaveButton));
+		Thread.sleep(3000);
+
+		supplementalQuery = "SELECT  count(id) FROM Roll_Entry__c where APN__c='" + parcelId
+				+ "' and type__c='Supplemental' ";
+		countSupplementalRecords = salesforceAPI.select(supplementalQuery).get("expr0").get(0);
+
+		softAssert.assertEquals(countSupplementalRecords, 1,
+				"SMAB-T4125:verify that One supplemental roll entry record is created from AAS when land and improvement types are entered for AV type \"Assessed value\" for DOV = 31DEc");
+
+		objAppraisalActivity.logout();
+
+	}
+
+	/*
+	 * RP Roll Management- Verify Two supplemental roll entry record is created from
+	 * AAS when land and improvement types are entered for AV type "Assessed value"
+	 * for DOV < 31 May
+	 * 
+	 * This test cases verifies that two supplemental roll entry record is created
+	 * for complete ownership transfer CIO event for DOV=1 jan and DOV=30 May The
+	 * CPI factor values are standard CPI factor values for these years :
+	 * 
+	 * 
+	 * 2017 1.0200000 2018 1.0200000 2019 1.0200000 2020 1.0200000 2021 1.0103600
+	 * 
+	 */
+
+	@Test(description = "SMAB-T4126: Verify Two supplemental roll entry record is created from AAS when land and improvement types are entered for AV type \"Assessed value\" for DOV < 31May", groups = {
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
+	public void RollManagementVerifyTwoSupplementalRollEntryCreationAssessedValueType() throws Exception {
+
+		String excEnv = System.getProperty("region");
+
+		// fetching the test data for partial transfer of ownership
+		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferCreationData, "dataToCreateMailToRecordsWithIncompleteData");
+
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "dataToCreateGranteeWithIncompleteData");
+		hashMapOwnershipAndTransferGranteeCreationData.put("Owner Percentage", "100");
+
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
+
+		// update Ownership Start Date for existing ownership record for parcel
+		hashMapCreateOwnershipRecordData.put("Ownership Start Date", "4/19/2017");
+
+		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
+		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
+				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
+
+		hashMapCreateAssessedValueRecord.put("DOV", "4/19/2017");
+		hashMapCreateAssessedValueRecord.put("Start Date", "4/19/2017");
+		hashMapCreateAssessedValueRecord.put("DOR", "4/19/2017");
+
+		// Create appraisal WI through CIO Transfer WI approval
+
+		HashMap hashmapDates = new HashMap<String, String>();
+		hashmapDates.put("DOV", "2021-05-30");
+		hashmapDates.put("DOR", "2021-05-30");
+		hashmapDates.put("DOE", "2021-05-30");
+
+		String[] arrayForWorkItemAfterCIOSupervisorApproval = objCIOTransferPage
+				.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment",
+						objCIOTransferPage.CIO_EVENT_CODE_SALE, hashMapOwnershipAndTransferCreationData,
+						hashMapOwnershipAndTransferGranteeCreationData, hashMapCreateOwnershipRecordData,
+						hashMapCreateAssessedValueRecord, hashmapDates);
+
+		// LOGIN with RP appraiser staff user
+
+		objAppraisalActivity.login(RP_APPRAISER);
+
+		String workItemForAppraiser = arrayForWorkItemAfterCIOSupervisorApproval[0];
+
+		objAppraisalActivity.globalSearchRecords(workItemForAppraiser);
+		objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+
+		// Navigating to appraisal activity screen
+
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+
+		objWorkItemHomePage.waitForElementToBeInVisible(objCIOTransferPage.ApnLabel, 5);
+		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+		String parcelId = salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id")
+				.get(0);
+
+		String query = "SELECT  id FROM Roll_Entry__c where APN__c='" + parcelId + "' and type__c!='Annual' ";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+
+		if (!response.isEmpty()) {
+			response.get("Id").stream().forEach(Id -> {
+				salesforceAPI.delete("Roll_Entry__c", Id);
+
+			});
+		}
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+		objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+
+		String appraisalScreenId = driver.getCurrentUrl().split("/")[6];
+		String dovForAppraisal = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.dovLabel);
+
+		Date dovDAte = new SimpleDateFormat("MM/dd/yyyy").parse(dovForAppraisal);
+
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(dovDAte);
+		Integer dovYear = calendar.get(Calendar.YEAR);
+		Integer dovYear1 = dovYear - 1;
+
+		// Updating Land and Improvement Values and saving it for appraisal
+		objAppraisalActivity
+				.Click(objAppraisalActivity.appraisalActivityEditValueButton(objAppraisalActivity.landCashValueLabel));
+		objAppraisalActivity.enter(objAppraisalActivity.landCashValueLabel, "300000");
+		objAppraisalActivity.enter(objAppraisalActivity.improvementCashValueLabel, "500000");
+		objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.SaveButton));
+		Thread.sleep(3000);
+
+		// verifying that two supplemental roll entry record is created when DOV =31May
+
+		String supplementalQuery = "SELECT  count(id) FROM Roll_Entry__c where APN__c='" + parcelId
+				+ "' and type__c='Supplemental' ";
+		String countSupplementalRecords = salesforceAPI.select(supplementalQuery).get("expr0").get(0);
+
+		softAssert.assertEquals(countSupplementalRecords, 2,
+				"SMAB-T4126:Verify Two supplemental roll entry record is created from AAS when land and improvement types are entered for AV type \"Assessed value\" for DOV = 30May");
+
+		// verifying the supplemental roll entry record that is created
+
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId
+				+ "/related/Roll_Entry__r/view");
+		objCIOTransferPage.waitForElementToBeVisible(25, objCIOTransferPage.columnInGrid.replace("columnName", "Type"));
+		objCIOTransferPage.sortInGrid("Type", false);
+
+		HashMap<String, ArrayList<String>> HashMapSupplementalRollEntryRecord = objAppraisalActivity
+				.getGridDataInHashMap();
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("DOV").get(0), dovForAppraisal,
+				"SMAB-T4126:verifying that DOV field in first supplemental created is DOV of Appraisal activity screen  ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Type").get(0), "Supplemental",
+				"SMAB-T4126:verifying that type field in first supplemental created is Supplemental ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Roll Year - Seq#").get(0),
+				dovYear.toString() + " - 2",
+				"SMAB-T4126:verifying that Roll Year - Seq# field in first supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(0), "Draft",
+				"SMAB-T4126:verifying that Status field in first supplemental created is Draft ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("CPI Factor").get(0), "1.01036000",
+				"SMAB-T4126:verifying that CPI Factor field in first supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Land Assessed Value").get(0), "$300,000",
+				"SMAB-T4126:verifying that Land Assessed Value field in first supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Improvement Assessed Value").get(0), "$500,000",
+				"SMAB-T4126:verifying that Improvement Assessed Value field in first supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Total Assessed Value").get(0), "$800,000",
+				"SMAB-T4126:verifying that Total Assessed Value field in first supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("DOV").get(1), dovForAppraisal,
+				"SMAB-T4126:verifying that DOV field in second supplemental created is DOV of Appraisal activity screen  ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Type").get(1), "Supplemental",
+				"SMAB-T4126:verifying that type field in second supplemental created is Supplemental ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Roll Year - Seq#").get(1),
+				dovYear1.toString() + " - 2",
+				"SMAB-T4126:verifying that Roll Year - Seq# field in second supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(1), "Draft",
+				"SMAB-T4126:verifying that Status field in second supplemental created is Draft ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("CPI Factor").get(1), "1.02000000",
+				"SMAB-T4126:verifying that CPI Factor field in second supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Land Assessed Value").get(1), "$300,000",
+				"SMAB-T4126:verifying that Land Assessed Value field in second supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Improvement Assessed Value").get(1), "$500,000",
+				"SMAB-T4126:verifying that Improvement Assessed Value field in second supplemental created is correct ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Total Assessed Value").get(1), "$800,000",
+				"SMAB-T4126:verifying that Total Assessed Value field in second supplemental created is correct ");
+
+		// submitting the AAS for approval
+		driver.navigate().back();
+		objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		objCIOTransferPage
+				.waitForElementToBeClickable(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton), 10);
+
+		softAssert.assertEquals(
+				objCIOTransferPage
+						.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 10)),
+				"Appraisal Activity has been Submitted for Approval.",
+				"SMAB-T4126:Appraisal activity screen is submitted for approval afterclickinmg on submit for approval button");
+
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
+		objCIOTransferPage.waitForElementToBeInVisible(objCIOTransferPage.xpathSpinner, 6);
+
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objAppraisalActivity.appraisalActivityStatus),
+				"Submit for Approval",
+				"SMAB-T4126: Verify that appraiser activity status is changed to Submit for Approval after RP appraiser staff submits the AAS for approval");
+
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId
+				+ "/related/Roll_Entry__r/view");
+
+		objCIOTransferPage.waitForElementToBeVisible(25, objCIOTransferPage.columnInGrid.replace("columnName", "Type"));
+		objCIOTransferPage.sortInGrid("Type", false);
+
+		HashMapSupplementalRollEntryRecord = objAppraisalActivity.getGridDataInHashMap();
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(0), "Draft",
+				"SMAB-T4126:verifying that Status field in first supplemental created is Draft after submitting the AAS fo approval ");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(1), "Draft",
+				"SMAB-T4126:verifying that Status field in second supplemental created is Draft after submitting the AAS fo approval ");
+
+		// Login with RP appraiser supervisor
+		objCIOTransferPage.logout();
+
+		objMappingPage.login(users.RP_PRINCIPAL);
+
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Appraiser_Activity__c/"
+				+ appraisalScreenId + "/view");
+
+		// approving the AAS
+		objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Approve");
+		objCIOTransferPage
+				.waitForElementToBeClickable(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton), 10);
+
+		softAssert.assertEquals(
+				objCIOTransferPage
+						.getElementText(objCIOTransferPage.locateElement(objCIOTransferPage.transferSucessMessage, 10)),
+				"Appraisal Activity has been approved successfully.",
+				"SMAB-T4126:verify Appraisal activity screen is approved after rp appraiser approves the AAS");
+
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
+		objCIOTransferPage.waitForElementToBeInVisible(objCIOTransferPage.xpathSpinner, 6);
+
+		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objAppraisalActivity.appraisalActivityStatus),
+				"Approved",
+				"SMAB-T4126: Verify that appraiser activity status is changed to Approved after RP appraiser supervisor approves the AAS");
+
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId
+				+ "/related/Roll_Entry__r/view");
+
+		objCIOTransferPage.waitForElementToBeVisible(25, objCIOTransferPage.columnInGrid.replace("columnName", "Type"));
+		objCIOTransferPage.sortInGrid("Type", false);
+
+		HashMapSupplementalRollEntryRecord = objAppraisalActivity.getGridDataInHashMap();
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(0), "Approved",
+				"SMAB-T4126:verifying that Status field in first supplemental created is Approved after AAs is approved");
+
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(1), "Approved",
+				"SMAB-T4126:verifying that Status field in second supplemental created is Approved after AAs is approved");
+
+		// verifying that only two supplemental is created when DOV=1 Jan
+
+		driver.navigate().back();
+		objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+
+		query = "SELECT  id FROM Roll_Entry__c where APN__c='" + parcelId + "' and type__c!='Annual' ";
+		response = salesforceAPI.select(query);
+
+		if (!response.isEmpty()) {
+			response.get("Id").stream().forEach(Id -> {
+				salesforceAPI.delete("Roll_Entry__c", Id);
+
+			});
+		}
+
+		objAppraisalActivity
+				.Click(objAppraisalActivity.appraisalActivityEditValueButton(objAppraisalActivity.landCashValueLabel));
+		objAppraisalActivity.enter(objAppraisalActivity.landCashValueLabel, "300000");
+		objAppraisalActivity.enter(objAppraisalActivity.improvementCashValueLabel, "500000");
+		objAppraisalActivity.enter(objAppraisalActivity.dovLabel, "1/1/2021");
+		objAppraisalActivity.enter(objAppraisalActivity.doeLabel, "1/1/2021");
+		objAppraisalActivity.enter(objAppraisalActivity.dorLabel, "1/1/2021");
+
+		objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.SaveButton));
+		Thread.sleep(3000);
+
+		supplementalQuery = "SELECT  count(id) FROM Roll_Entry__c where APN__c='" + parcelId
+				+ "' and type__c='Supplemental' ";
+		countSupplementalRecords = salesforceAPI.select(supplementalQuery).get("expr0").get(0);
+
+		softAssert.assertEquals(countSupplementalRecords, 2,
+				"SMAB-T4126:Verify Two supplemental roll entry record is created from AAS when land and improvement types are entered for AV type \"Assessed value\" for DOV =1jan");
+
+		objAppraisalActivity.logout();
+
+	}
+
 }

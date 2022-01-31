@@ -295,28 +295,32 @@ public class ApasGenericPage extends Page {
 	 * @param value: Like Roof Repair or Repairs for strat code field etc.
 	 * @throws Exception
 	 */
-	public void searchAndSelectOptionFromDropDown(Object element, String value) throws Exception { 
-        WebElement webElement;
-        String xpathDropDownOption;
-        if (element instanceof String) {
-            webElement = getWebElementWithLabel((String) element);
-            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
-            		+ "contains(@class,'windowViewMode-maximized')]"
-            		+ "//label[text()=\""+element+"\"]/..//*[(@title='" + value + "') or "
-            				+ "(text() = '" + value + "')]";
-        } else{
-            webElement = (WebElement) element;
-            //xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
-            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
-            		+ "contains(@class,'windowViewMode-maximized') or "
-            		+ "contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
-        }
-        
-        enter(webElement, value);
-        WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
-        waitForElementToBeVisible(drpDwnOption, 10);
-        //drpDwnOption.click();
-        Click(drpDwnOption);
+	public boolean searchAndSelectOptionFromDropDown(Object element, String value) throws Exception {
+		WebElement webElement;
+		String xpathDropDownOption;
+		if (element instanceof String) {
+			webElement = getWebElementWithLabel((String) element);
+			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
+					+ "contains(@class,'windowViewMode-maximized')]" + "//label[text()=\"" + element
+					+ "\"]/..//*[(@title='" + value + "') or " + "(text() = '" + value + "')]";
+		} else {
+			webElement = (WebElement) element;
+			// xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or
+			// contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
+			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
+					+ "contains(@class,'windowViewMode-maximized') or "
+					+ "contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
+		}
+		try {
+			enter(webElement, value);
+			WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
+			waitForElementToBeVisible(drpDwnOption, 10);
+			// drpDwnOption.click();
+			Click(drpDwnOption);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
     
 
@@ -714,9 +718,14 @@ public void searchModule(String moduleToSearch) throws Exception {
 	public void deleteFilesFromFolder(String folderPath) {
 		ReportLogger.INFO("Deleting the files from the folder : " + folderPath);
 		File dir = new File(folderPath);
-		for (File file : Objects.requireNonNull(dir.listFiles())) {
-			if (!file.isDirectory())
-				file.delete();
+		try {
+			for (File file : Objects.requireNonNull(dir.listFiles())) {
+				if (!file.isDirectory())
+					file.delete();
+			}
+		} catch (NullPointerException e) {
+			System.out.println("No files found to delete...!");
+
 		}
 	}
 
@@ -729,17 +738,27 @@ public void searchModule(String moduleToSearch) throws Exception {
 	public String getFieldValueFromAPAS(String fieldName, String sectionName) {
 		
 		String fieldValue;
-		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section[contains(.,'"
-				+ sectionName + "')]";
-		String fieldPath = sectionXpath + "//force-record-layout-item//*[text()='" + fieldName
-				+ "']/../..//slot[@slot='outputField']";
-		String fieldXpath;
 		
-		fieldXpath = fieldPath + "//force-hoverable-link//a//span | " + fieldPath + "//lightning-formatted-text | "
-				+ fieldPath + "//lightning-formatted-number | " + fieldPath + "//lightning-formatted-rich-text | "
-				+ fieldPath + "//force-record-type//span | " + fieldPath + "//lightning-formatted-name | "
-				+ fieldPath + "//a//span | "+"//*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-number | //*[text()='"+fieldName+"']/../..//*[@class='slds-form-element__control']//slot[@slot='output']//lightning-formatted-text";
-	
+		String sectionXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]";
+		String fieldPath1 = sectionXpath + "//force-record-layout-section[contains(.,'" + sectionName + "')]//force-record-layout-item//*[text()='" + fieldName
+				+ "']/../..//slot[@slot='outputField']";
+		String fieldPath2 = sectionXpath + "//*[contains(.,'" + sectionName + "')]//*//*[text()='" + fieldName
+				+ "']/parent::div/following-sibling::div/span";
+		
+		String fieldXpath;
+		fieldXpath = fieldPath1 + "//force-hoverable-link//a//span | "
+				+ fieldPath1 + "//lightning-formatted-text | "
+				+ fieldPath1 + "//lightning-formatted-number | "
+				+ fieldPath1 + "//lightning-formatted-rich-text | "
+				+ fieldPath1 + "//force-record-type//span | "
+				+ fieldPath1 + "//lightning-formatted-name | "
+				+ fieldPath1 + "//a//span | "
+				+ fieldPath2 + "//slot/lightning-formatted-text | "
+				+ fieldPath2 + "//slot/lightning-formatted-number | "
+				+ fieldPath2 + "//slot/lightning-formatted-rich-text | "
+				+ fieldPath2 + "//slot/span | "	
+				+ fieldPath2 + "//span/a";
+		
 		waitForElementToBeVisible(20, fieldXpath);
 		
 		try {
@@ -1555,6 +1574,25 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
 	        cal.setTime(date);
 	        cal.add(Calendar.DATE, days); //minus number would decrement the days
 	        return cal.getTime();
-	    }
-}
+		}
 
+		/*
+		 * Check if edit button is present for the specific field
+		 * 
+		 * @param Field Name
+		 * 
+		 * @return True if present else false
+		 */
+		public Boolean verifyEditButtonIsPresent(String fieldName) {
+
+			Boolean verifyEditButtonPresence = true;
+			try {
+				driver.findElement(By.xpath(
+						"//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[contains(.,'Edit "
+								+ fieldName + "')]"));
+			} catch (Exception e) {
+				verifyEditButtonPresence = false;
+			}
+			return verifyEditButtonPresence;
+		}
+	}

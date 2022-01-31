@@ -193,24 +193,14 @@
     "Description": "Creation of work item",
     "Priority": "Urgent",
     "Work Item Routing": "Give Work Item to Me"
-  },
-  "DataToCreateWorkItemOfTypeNCWithActionConstructionOther": {
-    "Work Item Type": "NC",
-    "Actions": "Construction - Other",
-    "Audit Trail": "No",
-    "Reference": "Test Construnction WI",
-    "Description": "Creation of Construnction work item",
-    "Priority": "Urgent",
-    "Work Item Routing": "Give Work Item to Me"
-  },
-  "DataToCreateWorkItemOfTypeNCWithActionDemolitionOther": {
-    "Work Item Type": "NC",
-    "Actions": "Demo - Other",
-    "Audit Trail": "No",
-    "Reference": "Test Demolition WI",
-    "Description": "Creation of Demolition work item",
-    "Priority": "Urgent",
-    "Work Item Routing": "Give Work Item to Me"
-  }
-  
-}
+	},
+	"DataToCreateWorkItemOfTypeRPDemolition": {
+		"Work Item Type": "NC",
+		"Actions": "Demo - Other",
+		"Audit Trail": "No",
+		"Reference": "Test WI",
+		"Description": "Creation of work item",
+		"Priority": "Urgent",
+		"Work Item Routing": "Give Work Item to Me"
+	}
+	}

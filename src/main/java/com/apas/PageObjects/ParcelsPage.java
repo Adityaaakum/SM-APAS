@@ -139,10 +139,11 @@ public class ParcelsPage extends ApasGenericPage {
 	public String total = "Total";
 	public String fullCashValue = "Full Cash Value";
 	public String combinedFactoredandHPI = "Combined FBYV and HPI";
+	public String newTaxableValue = "New Taxable Value";
 	public String partOfEconomicUnit = "Part of Economic Unit";
 	public String numberOfParcelsEconomicUnit = "# of Parcels in Economic Unit";
 	public String listOfParcelsEconomicUnit = "List of all Parcels in Economic Unit";
-
+	public String recordedDocumentNameText = "Recorded Document Name";
 	
 	
 	
@@ -464,7 +465,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String createOwnershipRecord(String assesseeName, Map<String, String> dataMap) throws Exception {
 		ExtentTestManager.getTest().log(LogStatus.INFO, "Creating Ownership Record");        
 		String owner = assesseeName;
-		String type = dataMap.get("Type");
+		//String type = dataMap.get("Type");
 		String status = dataMap.get("Status");
 		String bppAccount = dataMap.get("BPP Account");
 		String ownershipStartDate = dataMap.get("Ownership Start Date");
@@ -484,7 +485,7 @@ public class ParcelsPage extends ApasGenericPage {
 		Thread.sleep(2000);
 		Click(ownershipNextButton);
 		searchAndSelectOptionFromDropDown(ownerDropDown, owner);
-		selectOptionFromDropDown(typeDropDown, type);
+		//selectOptionFromDropDown(typeDropDown, type);
 		selectOptionFromDropDown(statusDropDown, status);
 		if (ownershipStartDate != null)
 			enter(ownershipStartTextBox, ownershipStartDate);
@@ -530,13 +531,13 @@ public class ParcelsPage extends ApasGenericPage {
 		 * @param dataMap: A data map which contains data to create audit trail record
 		 * @throws Exception
 		 */
-		public String createUnrecordedEvent(Map<String, String> dataMap) throws Exception {
+		public void createUnrecordedEvent(Map<String, String> dataMap) throws Exception {
 			ReportLogger.INFO("Create Unrecorded Event Transfer");
 			String timeStamp = String.valueOf(System.currentTimeMillis());
 			String description = dataMap.get("Description") + "_" + timeStamp;
 			
 			Thread.sleep(2000);
-			waitForElementToBeClickable(getButtonWithText(componentActionsButtonText));
+			waitForElementToBeClickable(5,getButtonWithText(componentActionsButtonText));
 			Click(getButtonWithText(componentActionsButtonText));
 			waitForElementToBeClickable(selectOptionDropdown);
 			selectOptionFromDropDown(selectOptionDropdown, "Create Audit Trail Record");
@@ -557,9 +558,6 @@ public class ParcelsPage extends ApasGenericPage {
 			if(dataMap.get("Please select the Parent Audit Trail Record")!=null) {enter(linkExistingAuditTrail, dataMap.get("Please select the Parent Audit Trail Record"));}
 			Click(getButtonWithText(saveAndNextButton));
 			Thread.sleep(5000);
-			if(dataMap.get("Record Type").equalsIgnoreCase("Correspondence")) {return null;}				
-			
-			return getElementText(recordedDocumentApnGenerated);
 		}		
 		
 		//To create new parcel manually
