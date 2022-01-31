@@ -4791,27 +4791,25 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ "/related/Assessed_Values__r/view");
 		ReportLogger.INFO("Opened Assessed value records");
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
-		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNew = objMappingPage.getGridDataInHashMap();
-		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Land Value").get(1), "0", "SMAB-T4169: LCV for Assessed value record is 0");
-		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Improvement Value").get(1), "0",
-				"SMAB-T4169: ICV for Assessed value record ");
+		String assessedValueQuery = "SELECT Land_Cash_Value__c, Improvement_Cash_Value__c FROM Assessed_BY_Values__c WHERE APN__c = '"+ APN +"' order by Base_Year__c desc";
+		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Land_Cash_Value__c").get(0), "0.0", "SMAB-T4169: LCV for Assessed value record is 0");
+		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Improvement_Cash_Value__c").get(0), "0.0", "SMAB-T4169: ICV for Assessed value record ");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
 				+ "/related/Roll_Entry__r/view");
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
 		ReportLogger.INFO("Opened Roll Entry records");
-		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryValue = objMappingPage.getGridDataInHashMap();
-		softAssert.assertEquals(gridDataHashMapRollEntryValue.get("Land Assessed Value").get(0), "$0",
+		String rollEntryQuery = "SELECT Improvement_Assessed_Value__c,Land_Assessed_Value__c FROM Roll_Entry__c WHERE APN__c = '"+ APN +"' order by Roll_Year_Sequence__c desc";
+		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Improvement_Assessed_Value__c").get(0), "0.0",
 				"SMAB-T4169: LCV for roll entry record is 0");
-		softAssert.assertEquals(gridDataHashMapRollEntryValue.get("Improvement Assessed Value").get(0), "$0",
+		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Land_Assessed_Value__c").get(0), "0.0",
 				"SMAB-T4169: ICV for roll entry record is 0");
 		objMappingPage.logout();
 		Thread.sleep(4000);
 
 		//STEP 5: Create CIO-GOVT Transfer by creating UT Event on the same parcel
 		objMappingPage.login(users.SYSTEM_ADMIN);
-		driver.navigate().to("https://smcacre--qa.lightning.force.com/lightning/r/Parcel__c/" + APN + "/view");
-		objMappingPage.waitForElementToBeClickable(
-				objMappingPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + APN + "/view");
+		objMappingPage.waitForElementToBeClickable(objParcelsPage.componentActionsButtonText);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.selectOptionDropdown);
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.selectOptionDropdown, "Create Audit Trail Record");
@@ -4851,12 +4849,17 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.calculateOwnershipButtonLabel);
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
-		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, objCioTransfer.CIO_EVENT_CODE_CIOGOVT);
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, CIOTransferPage.CIO_EVENT_CODE_CIOGOVT);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.calculateOwnershipButtonLabel);
 		
 		// STEP 6- CIO Staff submitting for Review
 		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
+		{
+			objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
+			objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		}
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.finishButtonPopUp);
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
 		Thread.sleep(2000);
@@ -4904,23 +4907,19 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
 				+ "/related/Assessed_Values__r/view");
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
-		ReportLogger.INFO("Navigated to Assessed value records");		
-		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNewTransferGovt = objMappingPage
-				.getGridDataInHashMap();
-		softAssert.assertEquals(gridDataHashMapAssessedValueNewTransferGovt.get("Land Value").get(2), "0",
+		ReportLogger.INFO("Navigated to Assessed value records");
+		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Land_Cash_Value__c").get(0), "0.0",
 				"SMAB-T4169: LCV For Assessed value is 0");
-		softAssert.assertEquals(gridDataHashMapAssessedValueNewTransferGovt.get("Improvement Value").get(2), "0",
+		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Improvement_Cash_Value__c").get(0), "0.0",
 				"SMAB-T4169: ICV for Assessed value is 0");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + APN
 				+ "/related/Roll_Entry__r/view");
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.newButton, 3);
 		ReportLogger.INFO("Navigated to Roll entry record");
-		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryValueGOVTTransfer = objMappingPage
-				.getGridDataInHashMap();
-		softAssert.assertEquals(gridDataHashMapRollEntryValueGOVTTransfer.get("Land Assessed Value").get(0), "$0",
+		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Improvement_Assessed_Value__c").get(0), "0.0",
 				"SMAB-T4169: LCV For Roll entry record is 0");
-		softAssert.assertEquals(gridDataHashMapRollEntryValueGOVTTransfer.get("Improvement Assessed Value").get(0),
-				"$0", "SMAB-T4169: ICV For Roll entry record is 0");
+		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Land_Assessed_Value__c").get(0),
+				"0.0", "SMAB-T4169: ICV For Roll entry record is 0");
 		objMappingPage.logout();		
 	
 	}
