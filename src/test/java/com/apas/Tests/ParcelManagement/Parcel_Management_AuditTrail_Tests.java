@@ -1112,4 +1112,6 @@ public class Parcel_Management_AuditTrail_Tests extends TestBase implements test
 		objParcelsPage.logout();
 
 	}
+	
+
 }

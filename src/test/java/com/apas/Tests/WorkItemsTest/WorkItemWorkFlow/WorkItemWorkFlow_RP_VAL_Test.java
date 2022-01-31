@@ -66,6 +66,11 @@ public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
 
 	}
 
+	/*
+	 * This method is to create a WI for the Construction Discovery by the Appraiser
+	 * @param loginUser
+	 * @throws Exception
+	 */
 	@Test(description = "SMAB-T4230,SMAB-T4231,SMAB-T4232:RP Construction Discovery- Verify that Appraisers "
 			+ "will have the ability to create a construction discovery work item from the Component Actions"
 			+ " list and its Type label should be NC, the Actions label should be Construction - Other", 
@@ -90,11 +95,10 @@ public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
 		
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		ReportLogger.INFO("Step 1: Login to the Salesforce ");
-		objApasGenericPage.login(loginUser);
-		Thread.sleep(20000);
+		objApasGenericPage.login(loginUser);		
 		
 		objApasGenericPage.searchModule(modules.APAS);
-		Thread.sleep(20000);
+	
 		// Step2: Navigating to the Parcel View page								
 		String execEnv = System.getProperty("region");
 
@@ -102,7 +106,7 @@ public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
 				+ "/lightning/r/Parcel__c/"
 				+ apnId1 + "/view");
 		
-		Thread.sleep(20000);
+		
 		// Step 3: Creating Manual work item for the Parcel 
 		String WINumber = objParcel.createWorkItem(newConstructionWIData);
 		if(!WINumber.isEmpty()) {
@@ -115,7 +119,7 @@ public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
 		
 		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWIHomePage.Click(objWIHomePage.detailsTab);
-		Thread.sleep(20000);
+		
 		String sqlWIDetails = "select type__c ,sub_type__c ,"
 				+ "use_code_f__c , event_id__c ,request_type__c "
 				+ "from work_item__c where name = '"+WINumber+"'";
@@ -127,7 +131,6 @@ public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
 		String expectedReference = responseWIDetails.get("Event_ID__c").get(0);
 		String expectedRequestType = responseWIDetails.get("Request_Type__c").get(0);
 		String expectedRelatedAction = responseWIDetails.get("Sub_Type__c").get(0);
-		//String expectedAPN = responseWIDetails.get("Parcel__c.Name").get(0);
 		String expectedEventID = responseWIDetails.get("Event_ID__c").get(0);
 		String expectedUseCode = responseWIDetails.get("Use_Code_f__c").get(0);
 		
@@ -157,12 +160,8 @@ public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
 		String parentWindow = driver.getWindowHandle();
 		ReportLogger.INFO("Switch to the Mapping Action screen");
 		objWIHomePage.switchToNewWindow(parentWindow);
-		
-		Thread.sleep(20000);
-		
-		String newConstructionPage = "As part of the new construction process, confirm and update the values as needed:";
-		
-		//WebElement constructPage = driver.findElement(By.xpath("//p/span[text()='As part of the new construction process, confirm and update the values as needed:'])"));
+					
+		String newConstructionPage = "As part of the new construction process, confirm and update the values as needed:";			
 		
 		String  constructPage = driver.findElement(By.xpath("//div[@class='slds-rich-text-editor__output uiOutputRichText forceOutputRichText']/p/span")).getText();
 		
@@ -174,9 +173,13 @@ public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
 	    	softAssert.assertTrue(flag, "SMAB-T4232:" + newConstructionPage);
 	    }
 		
-		
-		
 	}
+	
+	/*
+	 * This method is to create a WI for the Demolition Discovery by the Appraiser
+	 * @param loginUser
+	 * @throws Exception
+	 */
 
 	@Test(description = "SMAB-T4272,SMAB-T4273,SMAB-T4274:RP Demolition Discovery- Verify that Appraisers "
 			+ "will have the ability to create a demolition discovery work item from the Component Actions"
@@ -203,18 +206,17 @@ public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
 		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 		ReportLogger.INFO("Step 1: Login to the Salesforce ");
 		objApasGenericPage.login(loginUser);
-		Thread.sleep(20000);
+		
 		
 		objApasGenericPage.searchModule(modules.APAS);
-		Thread.sleep(20000);
+		
 		// Step2: Navigating to the Parcel View page								
 		String execEnv = System.getProperty("region");
 
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com"
 				+ "/lightning/r/Parcel__c/"
 				+ apnId1 + "/view");
-		
-		Thread.sleep(20000);
+				
 		// Step 3: Creating Manual work item for the Parcel 
 		String WINumber = objParcel.createWorkItem(newConstructionWIData);
 		
@@ -229,7 +231,7 @@ public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
 		
 		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWIHomePage.Click(objWIHomePage.detailsTab);
-		Thread.sleep(20000);
+	
 		String sqlWIDetails = "select type__c ,sub_type__c ,"
 				+ "use_code_f__c , event_id__c ,request_type__c "
 				+ "from work_item__c where name = '"+WINumber+"'";
@@ -241,7 +243,6 @@ public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
 		String expectedReference = responseWIDetails.get("Event_ID__c").get(0);
 		String expectedRequestType = responseWIDetails.get("Request_Type__c").get(0);
 		String expectedRelatedAction = responseWIDetails.get("Sub_Type__c").get(0);
-		//String expectedAPN = responseWIDetails.get("Parcel__c.Name").get(0);
 		String expectedEventID = responseWIDetails.get("Event_ID__c").get(0);
 		String expectedUseCode = responseWIDetails.get("Use_Code_f__c").get(0);
 		
@@ -272,11 +273,7 @@ public class WorkItemWorkFlow_RP_VAL_Test extends TestBase {
 		ReportLogger.INFO("Switch to the Mapping Action screen");
 		objWIHomePage.switchToNewWindow(parentWindow);
 		
-		Thread.sleep(20000);
-		
-		String newConstructionPage = "As part of the new construction process, confirm and update the values as needed:";
-		
-		//WebElement constructPage = driver.findElement(By.xpath("//p/span[text()='As part of the new construction process, confirm and update the values as needed:'])"));
+		String newConstructionPage = "As part of the new construction process, confirm and update the values as needed:";		
 		
 		String  constructPage = driver.findElement(By.xpath("//div[@class='slds-rich-text-editor__output uiOutputRichText forceOutputRichText']/p/span")).getText();
 		
