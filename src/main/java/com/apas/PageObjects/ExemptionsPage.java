@@ -469,7 +469,7 @@ public class ExemptionsPage extends ApasGenericPage {
         ReportLogger.INFO("Entering/Selecting values for New Exemption record");
         searchAndSelectOptionFromDropDown("APN", fetchActiveAPN());
         objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-        searchAndSelectOptionFromDropDown("Claimant 1 Name", fetchAssesseeName());
+        searchAndSelectOptionFromDropDown(claimantName, fetchAssesseeName());
         objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
         objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
         objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));

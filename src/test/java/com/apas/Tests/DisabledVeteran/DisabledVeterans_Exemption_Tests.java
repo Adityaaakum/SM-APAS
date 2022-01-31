@@ -95,7 +95,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 		
 		//Step3: selecting mandatory details before verifying error message
 		objApasGenericPage.searchAndSelectOptionFromDropDown("APN",fieldData.get("APN"));
-		objApasGenericPage.searchAndSelectOptionFromDropDown("Claimant's Name",fieldData.get("ClaimantName"));
+		objApasGenericPage.searchAndSelectOptionFromDropDown(exemptionPageObj.claimantName,fieldData.get("ClaimantName"));
 		objPage.enter(exemptionPageObj.claimantSSN, fieldData.get("ClaimantSSN"));
 		
 		//step4:
@@ -151,7 +151,6 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			//Step3: selecting mandatory details before verifying error message
 			objApasGenericPage.searchAndSelectOptionFromDropDown("APN",businessValidationdata.get("APN"));
 			objPage.enter(exemptionPageObj.dateApplicationReceived,businessValidationdata.get("DateApplicationReceived"));
-			objApasGenericPage.searchAndSelectOptionFromDropDown("Claimant 1 Name",businessValidationdata.get("ClaimantName"));
 			objApasGenericPage.searchAndSelectOptionFromDropDown(exemptionPageObj.claimantName,businessValidationdata.get("ClaimantName"));
 
 			objPage.enter(exemptionPageObj.claimantSSN, businessValidationdata.get("ClaimantSSN"));
@@ -165,27 +164,22 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.qualification, businessValidationdata.get("Qualification"));
 			objPage.Click(ExemptionsPage.saveButton);
 		
-			//step4:
-			/**Verifying Veteran SSN is required if Veteran Name is mentioned
-			**/
+			//step4: Verifying Veteran SSN is required if Veteran Name is mentioned
+			
 			ReportLogger.INFO("Verifying Veteran SSN is required if Veteran Name is mentioned");
 			Thread.sleep(2000);
 			softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("Veteran's SSN"),"Veteran's SSN is required" ,"SMAB-T502:Verify Veteran SSN is required if Veteran Name is mentioned");
 			
-			//step5:
-			/**verifying 'Effective Date of 100% USDVA Rating' can not be greater than 'Date of Notice of 100% Rating'
-			 *and 'End Date of Rating'
-			**/
-			//ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying Effective Date of 100% USDVA Rating can't be greater than Date of Notice of 100% Rating");
+			//step5: verifying Effective Date of 100% USDVA Rating can not be greater than Date of Notice of 100% Rating		  End Date of Rating
+	
 			ReportLogger.INFO("Verifying Effective Date of 100% USDVA Rating can't be greater than Date of Notice of 100% Rating");
 			
 			softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("Date of Notice of 100% Rating"),"Date of Notice of 100% Rating cannot be less than the Effective Date of 100% USDVA Rating.","SMAB-T1278: Verify Date of Notice of 100% Rating cannot be less than the Effective Date of 100% USDVA Rating.");
 			softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("End Rating Reason"),"End Rating Reason Is required","SMAB-T498: Verify End Rating Reason is required if End Date of rating is not BLANK");
 			softAssert.assertEquals(objApasGenericPage.getIndividualFieldErrorMessage("End Date of Rating"),"End Date of Rating must be greater than Effective Date","SMAB-T497: Verify End Date of rating must be greater than Effective Date of 100% USDVA Rating");
 					
-			//step6:
-			/**verifying 'Date of Death of Veteran' and 'Deceased Veteran Qualification' are required when 'Unmarried_Spouse_of_Deceased_Veteran__c is 'Yes'
-			**/
+			//step6: verifying 'Date of Death of Veteran' and 'Deceased Veteran Qualification' are required when 'Unmarried_Spouse_of_Deceased_Veteran__c is 'Yes'
+		
 			ReportLogger.INFO("Verifying validation when unmarriedSpouseOfDisabledVeteran is Yes");
 			objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.unmarriedSpouseOfDisabledVeteran, "Yes");
 			objPage.Click(ExemptionsPage.saveButton);
@@ -199,17 +193,14 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			 are all mandatory
 			**/
 			
-			//ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying validation for dvExemptionOnPriorResidence and realted fields");
 			ReportLogger.INFO("Verifying validation for dvExemptionOnPriorResidence and related fields");
 			objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.dvExemptionOnPriorResidence, "Yes");
 			objPage.Click(ExemptionsPage.saveButton);
 			Thread.sleep(2000);
 			softAssert.assertContains(objPage.getElementText(objApasGenericPage.pageError),businessValidationdata.get("dvExemptionOnPriorResidenceYesErrorMsg"),"SMAB-T503:Verify Prior Residence Street Address, Prior Residence City,Prior Residence State,Prior Residence County, Date move from Prior Residence are required if 'DV Exemption on Prior Residence' is 'Yes'");
 			
-			//step8:
-		
-		 // verifying Spouse SSN is required if Spouse Name is not blank
-		 ReportLogger.INFO("verifying Spouse SSN is required if Spouse Name is not blank");
+		    //step8: verifying Spouse SSN is required if Spouse Name is not blank
+		    ReportLogger.INFO("verifying Spouse SSN is required if Spouse Name is not blank");
 			objPage.enter(exemptionPageObj.spouseName, businessValidationdata.get("SpouseName"));
 			objPage.Click(ExemptionsPage.saveButton);
 			Thread.sleep(2000);
@@ -219,7 +210,6 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			/**verifying when 'Qualification' is Not Qualified then 'Qualification Denial Detail' and 'Qualification Denial Reason' are mandatory
 			 * End Date of Rating has to be blank when Qualification is set to Not Qualified.
 			 **/
-			//ExtentTestManager.getTest().log(LogStatus.INFO, "Verifying validations when 'Qualification' is Not Qualified");
 			ReportLogger.INFO("Verifying error messages when 'Qualification' is Not Qualified");
 			objPage.enter(exemptionPageObj.endDateOfRating, "01/01/2020");
 			objApasGenericPage.selectOptionFromDropDown(exemptionPageObj.qualification, "Not Qualified");
@@ -458,7 +448,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 	       
 	       //Step3: Selecting mandatory details before verifying error message
 	       objPage.enter(exemptionPageObj.dateApplicationReceived,fieldData.get("DateApplicationReceived"));
-	       objApasGenericPage.searchAndSelectOptionFromDropDown("Claimant 1 Name",fieldData.get("ClaimantName"));
+	       objApasGenericPage.searchAndSelectOptionFromDropDown(exemptionPageObj.claimantName,fieldData.get("ClaimantName"));
 	       objPage.enter(exemptionPageObj.claimantSSN, fieldData.get("ClaimantSSN"));
 	       objPage.enter(exemptionPageObj.veteranName, fieldData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
 	       objPage.enter(exemptionPageObj.veteranSSN, fieldData.get("VeteranSSN"));
