@@ -101,10 +101,10 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		
 		if( Integer.parseInt(responseTRA.substring(0, 3))-TRA_VALIDATION_BASE_NUMBER>=0) {
 			
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Unincorporated"), "Yes", "SMAB-3124: Verifying that Unincorporated field exists at parcel page and is Yes as TRA is  greater than 022");
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Unincorporated"), "Yes", "SMAB-T3124: Verifying that Unincorporated field exists at parcel page and is Yes as TRA is  greater than 022");
 		}
 		else
-			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Unincorporated"), "No", "SMAB-3124: Verifying that Unincorporated field exists at parcel page and is No as TRA is  less  than 022");
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Unincorporated"), "No", "SMAB-T3124: Verifying that Unincorporated field exists at parcel page and is No as TRA is  less  than 022");
 	
 			
 

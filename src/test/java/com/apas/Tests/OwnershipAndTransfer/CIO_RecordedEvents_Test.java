@@ -3623,7 +3623,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		}
 	
 	
-	@Test(description = "SMAB-T3345, SMAB-T3392,SMAB-3218,SMAB-T3220: - Verify User is able to create WI from CIO transfer activity screen and Verify Event ID and APN should be displayed in WI and AT Business Event linked to WI", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3345, SMAB-T3392,SMAB-T3218,SMAB-T3220: - Verify User is able to create WI from CIO transfer activity screen and Verify Event ID and APN should be displayed in WI and AT Business Event linked to WI", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void CIOTransfer_CreateWiFromCioTransferActivityScreen(String loginUser) throws Exception {
 
@@ -3680,10 +3680,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		
 		//Asserting the WI details created manually from RAT screen
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage), "CIO", "SMAB-3218,SMAB-T3220:Verify that WI type is CIO for the manual WI from RAT Screen");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage), "APN & Legal Description Validation", "SMAB-3218,SMAB-T3220:Verify that WI type is CIO for the manual WI from RAT Screen");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiWorkPoolDetailsPage), "Mapping", "SMAB-3218,SMAB-T3220:Verify that workpool of the WI created manually from RAT screen is routed to mapping team ");
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "In Progress", "SMAB-3218,SMAB-T3220:Verify that status of WI is In progress ");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage), "CIO", "SMAB-T3218,SMAB-T3220:Verify that WI type is CIO for the manual WI from RAT Screen");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage), "APN & Legal Description Validation", "SMAB-T3218,SMAB-T3220:Verify that WI type is CIO for the manual WI from RAT Screen");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiWorkPoolDetailsPage), "Mapping", "SMAB-T3218,SMAB-T3220:Verify that workpool of the WI created manually from RAT screen is routed to mapping team ");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "In Progress", "SMAB-T3218,SMAB-T3220:Verify that status of WI is In progress ");
 		
 		//Navigating to AT
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
