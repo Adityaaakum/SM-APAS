@@ -2,8 +2,10 @@ package com.apas.Tests.ParcelManagement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.json.JSONObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -59,10 +61,13 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	 * @throws Exception
 	 */
 
-	@Test(description = "SMAB-T3049,SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2663,SMAB-T2263,SMAB-T2521,SMAB-T2522,SMAB-T2537,SMAB-T2547:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3049,SMAB-T3495,SMAB-T3494,SMAB-T3496,SMAB-T2663,SMAB-T2263,SMAB-T2521,SMAB-T2522,SMAB-T2537,SMAB-T2547,SMAB-T3124:Verify that User is able to perform a \"Brand New Parcel\" mapping action for a Parcel (Active) of type Non Condo from a work item", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression","ParcelManagement","BrandNewAction" },enabled= true)
 	public void ParcelManagement_VerifyBrandNewParcelMappingActionNonCondoParcel(String loginUser) throws Exception {
-		String queryAPN = "Select name,ID  From Parcel__c where (Not Name like '1%') and (Not Name like '8%')AND Primary_Situs__c !=NULL limit 1";
+		
+		final int TRA_VALIDATION_BASE_NUMBER =022;
+		
+		String queryAPN = "Select name,ID  From Parcel__c where (Not Name like '1%') and (Not Name like '8%')AND Primary_Situs__c !=NULL  and TRA__c!=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 		objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
@@ -73,6 +78,17 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformBrandNewParcelMappingActionWithoutAllFields");
+		
+		if(salesforceAPI.select("Select TRA__c from parcel__c where name='"+apn+"'").get("TRA__c")==null) {
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
+				"Primary_Situs__c", "");
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
+				"TRA__c",
+				salesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
+				"Primary_Situs__c",
+				salesforceAPI.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id")
+						.get(0));}
 
 		// Step1: Login to the APAS application using the credentials passed through data provider (login Mapping User)
 		objMappingPage.login(loginUser);
@@ -80,6 +96,17 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform brand new parcel mapping
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
+		
+		String responseTRA= salesforceAPI.select("Select Name from TRA__C Where ID ='"+salesforceAPI.select("Select TRA__c from parcel__c where name='"+apn+"'").get("TRA__c").get(0)+"'").get("Name").get(0);
+		
+		if( Integer.parseInt(responseTRA.substring(0, 3))-TRA_VALIDATION_BASE_NUMBER>=0) {
+			
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Unincorporated"), "Yes", "SMAB-T3124: Verifying that Unincorporated field exists at parcel page and is Yes as TRA is  greater than 022");
+		}
+		else
+			softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS("Unincorporated"), "No", "SMAB-T3124: Verifying that Unincorporated field exists at parcel page and is No as TRA is  less  than 022");
+	
+			
 
 		// Step 3: Creating Manual work item for the Parcel 
 		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);

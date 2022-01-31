@@ -1583,6 +1583,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
 				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
 
+		
+
 		String recordedDocumentID = salesforceAPI.select(" SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1").get("Id").get(0);
 		String recordedDocumentName = salesforceAPI.select(" SELECT Name from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1").get("Name").get(0);
 		objCioTransfer.deleteOldGranteesRecords(recordedDocumentID);
@@ -1681,9 +1683,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 12-Navigating back to RAT screen
 		driver.navigate().to("https://smcacre--" + execEnv
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);		
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
-
+		
 		// STEP 13-Clicking on submit for approval quick action button
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForApproval);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
@@ -3621,7 +3623,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		}
 	
 	
-	@Test(description = "SMAB-T3345, SMAB-T3392- Verify User is able to create WI from CIO transfer activity screen and Verify Event ID and APN should be displayed in WI and AT Business Event linked to WI", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3345, SMAB-T3392,SMAB-T3218,SMAB-T3220: - Verify User is able to create WI from CIO transfer activity screen and Verify Event ID and APN should be displayed in WI and AT Business Event linked to WI", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void CIOTransfer_CreateWiFromCioTransferActivityScreen(String loginUser) throws Exception {
 
@@ -3675,9 +3677,20 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// Step5: Clicking the details tab for the work item newly created and clicking on Related Action Link
 		ReportLogger.INFO("Click on the Related Action link");
 		objWorkItemHomePage.waitForElementToBeClickable(10, objWorkItemHomePage.completedOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		
+		//Asserting the WI details created manually from RAT screen
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiTypeDetailsPage), "CIO", "SMAB-T3218,SMAB-T3220:Verify that WI type is CIO for the manual WI from RAT Screen");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiActionDetailsPage), "APN & Legal Description Validation", "SMAB-T3218,SMAB-T3220:Verify that WI type is CIO for the manual WI from RAT Screen");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiWorkPoolDetailsPage), "Mapping", "SMAB-T3218,SMAB-T3220:Verify that workpool of the WI created manually from RAT screen is routed to mapping team ");
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(objWorkItemHomePage.wiStatus), "In Progress", "SMAB-T3218,SMAB-T3220:Verify that status of WI is In progress ");
+		
+		//Navigating to AT
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 		objWorkItemHomePage.Click(objWorkItemHomePage.markStatusAsCompleteBtn);
-		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab,10);
+		objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.firstRelatedBuisnessEvent,10);
 		String newFirstBussinessEventName = objWorkItemHomePage.firstRelatedBuisnessEvent.getText();
 		String newSecondAuditTrailID = salesforceAPI.select(
 				"SELECT Id,Status__c,Name FROM Transaction_Trail__c where Name='" + newFirstBussinessEventName + "'")
@@ -4648,7 +4661,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
 				+ recordeAPNTransferID + "/view");
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.calculateOwnershipButtonLabel);
-		ReportLogger.INFO("Create New grantee");
+		ReportLogger.INFO("Created New grantee");
 		
 		// STEP 8- CIO Staff submitting for approval
 		objCioTransfer.clickQuickActionButtonOnTransferActivity("Submit for Approval");
@@ -5408,5 +5421,5 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.logout();		
 		
 	}
-
+	
 }
