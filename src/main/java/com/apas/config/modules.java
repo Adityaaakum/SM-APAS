@@ -3,6 +3,7 @@ package com.apas.config;
 public interface modules {
 
 	//List of all the modules on APAS application
+	String APAS = "APAS";
 	String EFILE_INTAKE = "E-File Import Tool";
 	String EFILE_INTAKE_VIEW = "E-File Intake";
 	String EFILE_IMPORT_TRANSACTIONS = "E-File Import Transactions";
