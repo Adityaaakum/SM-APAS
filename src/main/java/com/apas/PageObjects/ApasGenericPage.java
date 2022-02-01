@@ -295,28 +295,32 @@ public class ApasGenericPage extends Page {
 	 * @param value: Like Roof Repair or Repairs for strat code field etc.
 	 * @throws Exception
 	 */
-	public void searchAndSelectOptionFromDropDown(Object element, String value) throws Exception { 
-        WebElement webElement;
-        String xpathDropDownOption;
-        if (element instanceof String) {
-            webElement = getWebElementWithLabel((String) element);
-            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
-            		+ "contains(@class,'windowViewMode-maximized')]"
-            		+ "//label[text()=\""+element+"\"]/..//*[(@title='" + value + "') or "
-            				+ "(text() = '" + value + "')]";
-        } else{
-            webElement = (WebElement) element;
-            //xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
-            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
-            		+ "contains(@class,'windowViewMode-maximized') or "
-            		+ "contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
-        }
-        
-        enter(webElement, value);
-        WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
-        waitForElementToBeVisible(drpDwnOption, 10);
-        //drpDwnOption.click();
-        Click(drpDwnOption);
+	public boolean searchAndSelectOptionFromDropDown(Object element, String value) throws Exception {
+		WebElement webElement;
+		String xpathDropDownOption;
+		if (element instanceof String) {
+			webElement = getWebElementWithLabel((String) element);
+			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
+					+ "contains(@class,'windowViewMode-maximized')]" + "//label[text()=\"" + element
+					+ "\"]/..//*[(@title='" + value + "') or " + "(text() = '" + value + "')]";
+		} else {
+			webElement = (WebElement) element;
+			// xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or
+			// contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
+			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
+					+ "contains(@class,'windowViewMode-maximized') or "
+					+ "contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
+		}
+		try {
+			enter(webElement, value);
+			WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
+			waitForElementToBeVisible(drpDwnOption, 10);
+			// drpDwnOption.click();
+			Click(drpDwnOption);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
     
 
@@ -714,9 +718,14 @@ public void searchModule(String moduleToSearch) throws Exception {
 	public void deleteFilesFromFolder(String folderPath) {
 		ReportLogger.INFO("Deleting the files from the folder : " + folderPath);
 		File dir = new File(folderPath);
-		for (File file : Objects.requireNonNull(dir.listFiles())) {
-			if (!file.isDirectory())
-				file.delete();
+		try {
+			for (File file : Objects.requireNonNull(dir.listFiles())) {
+				if (!file.isDirectory())
+					file.delete();
+			}
+		} catch (NullPointerException e) {
+			System.out.println("No files found to delete...!");
+
 		}
 	}
 

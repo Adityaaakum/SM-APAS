@@ -21,14 +21,12 @@
 		"Owner Percentage":"50",
 		"IncorrectDOV" : "7/20/2051"
 	},
-	"dataToCreateGranteeWithIncompleteDataPartTransfer":{
-	
+	"dataToCreateGranteeWithIncompleteDataPartTransfer":{	
 	"Last Name":"LUKE SHAW",
-	"Ownership Start Date":"7/1/1999",
-	"Ownership End Date":"7/7/1999",
-	"Owner Percentage":"50",
-	"IncorrectDOV" : "9/10/2051"
-	
+	"Ownership Start Date":"7/1/1990",
+	"Ownership End Date":"7/7/1990",
+	"Owner Percentage":"100",
+	"IncorrectDOV" : "9/10/2051"	
 	},
 	
 	"DataToCreateOwnershipRecord": {
@@ -47,10 +45,9 @@
 	
 	"DataToCreateRpOwnership":{
 		"RP Account":"",
- 		"Type": "Owner",
 	    "Status": "Active",
 	    "Ownership Percentage":"100",
-	    "Ownership Start Date":"7/1/1999"
+	    "Ownership Start Date":"7/1/1990"
 	},
 	
 	"DataToCreatePenaltyRecord": {
@@ -98,8 +95,28 @@
 	    "Ownership Start Date":"7/19/1999"
 	},
 
+	"DataToCreateOwnershipRecordForP19P": {
+	    "Type": "Owner",
+	    "Status": "Active",
+	    "Ownership Percentage":"100",
+	    "Ownership Start Date":"7/19/1999"
+     },
+     
 	"dataToCreateMailToRecord":{
 		"Address": "700 NW 111TH PL",
 		"Zip code": "33172"
+},
+"DataToCreateOwnershipRecordForP19Part": {
+	    "Type": "Owner",
+	    "Status": "Active",
+	    "Ownership Percentage":"100",
+	    "Ownership Start Date":"7/19/1999"
+	},
+		"dataToCreateGranteeWithPartialOwnership":{
+		"Last Name":"Will Smith",
+		"First Name":"Jhones",
+		"Ownership Start Date":"7/16/2021",
+		"Owner Percentage":"50"
 	}
 }
+

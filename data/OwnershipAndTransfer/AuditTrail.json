@@ -59,5 +59,15 @@
 		"Date of Event": "09/04/2021",
 		"Date of Recording": "10/04/2021",
 		"Description": "Unrecorded LEOP Transfer"
-	}	
+	},
+	"DataToCreateAnnualAssessment": {
+    	"Record Type": "Business Event",
+    	"Group":"CIO",
+		"Type of Audit Trail Record?": "Unrecorded Event",
+		"Source": "Unrecorded document",
+		"Date of Event": "12/31/2018",
+		"Date of Recording": "12/31/2018",
+		"Description": "Unrecorded Transfer",
+		"Updated DOE": "12/31/2018"
+	}
 }

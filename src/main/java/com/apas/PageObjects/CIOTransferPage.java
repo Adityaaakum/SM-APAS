@@ -113,6 +113,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public static final String CIO_EVENT_EXCLUSION="CIO-P19E";
 	public static final String CIO_EVENT_REASSESSMENT="CIO-P19";
 	public static final String CIO_EVENT_INTERGENERATIONAL_TRANSFER="CIO-P19P";
+	public static final String APPRAISAL_SP_ANNUAL="SP-ANNUAL";
 
 	
 	public String eventIDLabel = "EventID";
@@ -305,8 +306,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public WebElement recordedDocumentApnGenerated;
 	
 	@FindBy(xpath=commonXpath+"//div[text()='New']")
-	public WebElement newButtonMailToListViewScreen;
-	
+	public WebElement newButtonMailToListViewScreen;	
 	
 	@FindBy(xpath=commonXpath+"//label[text()='Address ']/..//input")
 	public WebElement addressInCopyToMailTo;
@@ -315,13 +315,14 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public WebElement zipCodeInCopyToMailTo;	
 	
 	@FindBy(xpath=commonXpath+"//*[@id=\"wrapper-body\"]//span[text() = 'Care of']/../../..//input")
-	public WebElement careOfInCopyToMailTo;
-	
+	public WebElement careOfInCopyToMailTo;	
 
 	@FindBy(xpath=commonXpath+"//input[contains(@value,'Yes2')]")
 	public WebElement yesRadioButtonRetainMailToWindow;
 	
-	
+	@FindBy(xpath="//button[@title='Edit End Date']")
+	public WebElement editEndDateButton;
+		
 	/*
 	    * This method adds the recorded APN in Recorded-Document
 	    * 
