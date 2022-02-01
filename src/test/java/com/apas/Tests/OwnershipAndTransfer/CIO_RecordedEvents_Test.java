@@ -4296,7 +4296,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	public void RecorderIntegration_ValidateStartDateAndEnddateOnMailtoRecordOfParcel(String loginUser) throws Exception {
 
 		String execEnv = System.getProperty("region");
-		String mailToRecordFromParcel = "SELECT Parcel__c,Id FROM Mail_To__c where status__c = 'Active' Limit 1";
+		String mailToRecordFromParcel = "SELECT Parcel__c,Id FROM Mail_To__c where status__c = 'Active' AND Name != '' AND Parcel__c != '' Limit 1";
 		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI.select(mailToRecordFromParcel);
 		String mailToID = hashMapRecordedApn.get("Id").get(0);
 		String OwnershipAndTransferCreationData = testdata.MAILTO_RECORD_DATA_PARCEL;
@@ -4313,20 +4313,22 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objMappingPage.login(users.SYSTEM_ADMIN);
 		driver.navigate().to(
 				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Mail_To__c/" + mailToID + "/view");
-		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.Edit);
-		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.Edit));
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.editEndDateButton);
+		objCioTransfer.Click(objCioTransfer.editEndDateButton);		
 		objCioTransfer.enter(objCioTransfer.endDate, endDate);
+		objCioTransfer.enter(objCioTransfer.startDate, "");
 		objCioTransfer.enter(objCioTransfer.mailingZip, hashMapOwnershipAndTransferCreationData.get("Mailing Zip"));
 		softAssert.assertContains(objCioTransfer.saveRecordAndGetError(), "Future end-date cannot be entered",
 				"SMAB-T2995:Future Enddate cannot be entered");
 		objCioTransfer.enter(objCioTransfer.endDate, hashMapOwnershipAndTransferCreationData.get("End Date"));
 		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.SaveButton));
-		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.Edit);
-		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.Edit));
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.editEndDateButton);
+		objCioTransfer.Click(objCioTransfer.editEndDateButton);
 		objCioTransfer.enter(objCioTransfer.startDate, hashMapOwnershipAndTransferCreationData.get("Start Date"));
 		objCioTransfer.enter(objCioTransfer.endDate, hashMapOwnershipAndTransferCreationData.get("End Date"));
 		softAssert.assertContains(objCioTransfer.saveRecordAndGetError(), "Start Date cannot be greater than End Date",
 				"SMAB-T2995:Start Date cannot be greater than End Date");
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.CancelButton));
 		objWorkItemHomePage.logout();
 	}
 
