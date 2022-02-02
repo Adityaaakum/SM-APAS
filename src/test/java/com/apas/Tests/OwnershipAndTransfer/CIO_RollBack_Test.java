@@ -117,7 +117,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 						+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
 								.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
 						+ "/related/Property_Ownerships__r/view");
-		driver.navigate().refresh();
+		
+		if(!objCioTransfer.waitForElementToBeVisible(20, objCioTransfer.getButtonWithText("New")))
 		driver.navigate().refresh();
 
 		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
@@ -294,7 +295,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		objCioTransfer.enter(objCioTransfer.returnReasonTextBox, "return by CIO supervisor");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
 		objCioTransfer.waitForElementTextToBe(objCioTransfer.confirmationMessageOnTranferScreen,
-				"Work Item has been rejected by the approver.", 30);
+				"Work Item has been returned by the approver.", 30);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.confirmationMessageOnTranferScreen),
 				"Work Item has been returned by the approver.",
 				"SMAB-T3510: Validation that proper mesage is displayed after WI is returned by CIO supervisor");
@@ -357,8 +358,9 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID1 + "/view");
 		driver.navigate().refresh();
-		objCioTransfer.waitForElementToBeVisible(40,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+	/*	objCioTransfer.waitForElementToBeVisible(40,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));*/
+		Thread.sleep(10000);
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
 		
@@ -378,7 +380,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		// operations
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
 				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
-		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.newButton);
+		if(!objCioTransfer.waitForElementToBeVisible(20, objCioTransfer.newButton))
+			driver.navigate().refresh();
 		objCioTransfer.Click(driver.findElement(By.xpath(objCioTransfer.xpathShowMoreLinkForEditOption
 				.replace("propertyName", hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase()))));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.editLinkUnderShowMore);
@@ -392,7 +395,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		objCioTransfer.Click(objCioTransfer.saveButtonModalWindow);
 
 		driver.navigate().refresh();
-		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.newButton);
+		if(!objCioTransfer.waitForElementToBeVisible(20, objCioTransfer.newButton))
+			driver.navigate().refresh();
 		objCioTransfer.Click(driver.findElement(By.xpath(objCioTransfer.xpathShowMoreLinkForEditOption
 				.replace("propertyName", hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase()))));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.editLinkUnderShowMore);

@@ -625,7 +625,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					String execEnv = System.getProperty("region");
 					driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/"
 							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
-					waitForElementToBeVisible(5, newButton);
+					if(!waitForElementToBeVisible(20, newButton))
+						driver.navigate().refresh();
 					Click(getButtonWithText(newButton));
 					enter(LastNameLabel, dataToCreateGrantee.get("Last Name"));
 					if (dataToCreateGrantee.get("Owner Percentage") != null)

@@ -1324,8 +1324,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// action link
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCioTransfer.waitForElementToBeVisible(15,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		/*objCioTransfer.waitForElementToBeVisible(15,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));*/
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.nextButton);
 
@@ -1375,7 +1375,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		HashMap<String, ArrayList<String>> granteeHashMap = objCioTransfer.getGridDataInHashMap();
 
 		softAssert.assertEquals(granteeHashMap.get("Grantee/Retain Owner Name").get(0),
-				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase(),
 				"SMAB-T3696: Validation that Grantee name that was created in grantee table  is correct");
 		softAssert.assertEquals(granteeHashMap.get("Status").get(0), "Active",
 				"SMAB-T3696: Validation that Grantee that was created has active status");
@@ -1385,8 +1385,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3696: Validation that DOR of grantee that was craeted is DOR of recorded document");
 		softAssert.assertEquals(granteeHashMap.get("DOV").get(0), dov,
 				"SMAB-T3696: Validation that DOV of grantee that was craeted is DOV of recorded document");
-		softAssert.assertEquals(granteeHashMap.get("Ownership Start Date").get(0), dov,
-				"SMAB-T3696: Validation that Ownership Start Date of grantee that was created is the DOV of recorded document");
+		softAssert.assertEquals(granteeHashMap.get("Ownership Start Date").get(0), dor,
+				"SMAB-T3696: Validation that Ownership Start Date of grantee that was created is the dor of recorded document");
 
 		softAssert.assertEquals(granteeHashMap.get("Grantee/Retain Owner Name").get(1),
 				(assesseeLastName + " " + assesseeFirstName).trim(),
@@ -1395,12 +1395,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3696: Validation that current owner  (that was retained partially ) in Grantee table has active status");
 		softAssert.assertEquals(granteeHashMap.get("Owner Percentage").get(1), "15.0000%",
 				"SMAB-T3696: Validation that Owner Percentage of owner that was partially retained is correct");
-		softAssert.assertEquals(granteeHashMap.get("DOR").get(1), ownershipStartDate[1],
-				"SMAB-T3696: Validation that DOR of owner that was partially retained is DOR of original ownership record");
+		softAssert.assertEquals(granteeHashMap.get("DOR").get(1), dor,
+				"SMAB-T3696: Validation that DOR of owner that was partially retained is DOR of recorded document");
 		softAssert.assertEquals(granteeHashMap.get("DOV").get(1), ownershipStartDate[1],
 				"SMAB-T3696: Validation that DOV of owner that was partially retained is DOV of of original ownership record");
-		softAssert.assertEquals(granteeHashMap.get("Ownership Start Date").get(1), ownershipStartDate[1],
-				"SMAB-T3696: Validation that Ownership Start Date of owner that was partially retained is Ownership Start Date of original ownership record");
+		softAssert.assertEquals(granteeHashMap.get("Ownership Start Date").get(1), dor,
+				"SMAB-T3696: Validation that Ownership Start Date of owner that was partially retained is dor of recorded document");
 
 		softAssert.assertEquals(granteeHashMap.get("Grantee/Retain Owner Name").get(2),
 				(assesseeLastName + " " + assesseeFirstName).trim(),
@@ -1456,7 +1456,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		// STEP 13-Validating the Owners ,their status and ownership percentages
 		softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(0),
-				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase(),
 				"SMAB-T3696:Validating that the grantee that was created from transfer screen has become  new owner : "
 						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
 
@@ -1468,8 +1468,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3696: Validating that Ownership Percentage of new owner which is the grantee created from transfer screen is correct: "
 						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
 
-		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(0), dov,
-				"SMAB-T3696: Validating that Ownership Start Date of new owner which is the grantee created from transfer screen is DOVof recorded document : "
+		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(0), dor,
+				"SMAB-T3696: Validating that Ownership Start Date of new owner which is the grantee created from transfer screen is dor of  recorded document : "
 						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
 
 		softAssert.assertEquals(HashMapLatestOwner.get("DOR").get(0), dor,
@@ -1491,12 +1491,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3696: Validating that Ownership Percentage of partially retained owner retained from transfer screen is correct: "
 						+ assesseeName);
 
-		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(1), ownershipStartDate[1],
-				"SMAB-T3696: Validating that Ownership Start Date of partially retained owner created from transfer screen is Ownership Start Date of original record :"
+		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(1), dor,
+				"SMAB-T3696: Validating that Ownership Start Date of partially retained owner created from transfer screen is dor of recorded document"
 						+ assesseeName);
 
-		softAssert.assertEquals(HashMapLatestOwner.get("DOR").get(1), ownershipStartDate[1],
-				"SMAB-T3696: Validating that DOR of partially retained owner created from transfer screen is DOR of original ownership record: "
+		softAssert.assertEquals(HashMapLatestOwner.get("DOR").get(1), dor,
+				"SMAB-T3696: Validating that DOR of partially retained owner created from transfer screen is DOR of recorded document"
 						+ assesseeName);
 
 		softAssert.assertEquals(HashMapLatestOwner.get("DOV").get(1), ownershipStartDate[1],
