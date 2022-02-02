@@ -759,7 +759,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 				+ fieldPath2 + "//slot/span | "	
 				+ fieldPath2 + "//span/a";
 		
-		waitForElementToBeVisible(20, fieldXpath);
+		waitForElementToBeVisible(30, fieldXpath);
 		
 		try {
 			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();			

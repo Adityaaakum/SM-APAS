@@ -3085,7 +3085,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+				objCioTransfer.getButtonWithText(objCioTransfer.componentActionsButtonLabel));
 		
 		String urlForRATScreen = driver.getCurrentUrl();
 		String  RATId=urlForRATScreen.split("/")[6];
@@ -3105,7 +3105,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+				objCioTransfer.getButtonWithText(objCioTransfer.componentActionsButtonLabel));
 
 		objCioTransfer.editRecordedApnField(objCioTransfer.ApnLabel);
 		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.ApnLabel);
@@ -3171,7 +3171,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Updating the transfer code");
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
 		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.transferCodeLabel);
-		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-COPAL");
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-SALE");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 		ReportLogger.INFO("transfer code updated successfully");
 
@@ -3288,7 +3288,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 		driver.navigate().back();
 		objCioTransfer.waitForElementToBeVisible(20,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+				objCioTransfer.getButtonWithText(objCioTransfer.componentActionsButtonLabel));
 
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
@@ -3318,12 +3318,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		HashMapLatestOwner = objCioTransfer.getGridDataInHashMap();
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(0),
-		hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"),
+		hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase(),
 		"SMAB-T3821:The new ownership  record gets created  for the new APN");
 		
 		// STEP 16-validating that Business event created due to change in transfer code is linked to new APN and not to old APN
 
-		 auditTrailId =salesforceAPI.select("SELECT id FROM Transaction_Trail__c where Event_Library__c in (select id from Event_Library__c  where name='CIO-COPAL') order by createddate desc limit 1").get("Id").get(0);
+		 auditTrailId =salesforceAPI.select("SELECT id FROM Transaction_Trail__c where Event_Library__c in (select id from Event_Library__c  where name='CIO-SALE') order by createddate desc limit 1").get("Id").get(0);
 		 auditTrailsParcelLinkage= "SELECT Associated_APNs__c FROM Transaction_Trail__c where id='"+auditTrailId+"'";
 		countAuditTrailsParcelLinkage= "SELECT count(id) FROM Transaction_Trail__c where id='"+auditTrailId+"'";
 
@@ -3342,7 +3342,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		driver.navigate().refresh();
 		objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+				objCioTransfer.getButtonWithText(objCioTransfer.componentActionsButtonLabel));
 
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionApprove);
@@ -3357,6 +3357,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 		//Step 18 : Validate the Appraisal WIs created  
 
+		Thread.sleep(4000);
 		workItemQuery = "SELECT Id,name,APN__c   FROM Work_Item__c where Type__c='Appraiser' And Sub_Type__c ='Appraisal Activity' and  status__c='In Pool' order by createdDate desc limit 1";
 		 workItemNumber = salesforceAPI.select(workItemQuery).get("Name").get(0);
 
@@ -4429,7 +4430,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='Mapping' and CreatedDate =TODAY and Recorded_Document__c='"+documentId+"'";
 		HashMap<String, ArrayList<String>> hashMapWorkItem=salesforceAPI.select(WorkItemQuery);
 		
-		softAssert.assertEquals(hashMapWorkItem.size(),"1",
+		softAssert.assertEquals(hashMapWorkItem.get("Id").size(),"1",
 				"SMAB-T3964:Verifying that only one WI should be created if recorded document has one invalid and one Recorded APN");
 
 		String workItemId=hashMapWorkItem.get("Id").get(0);
