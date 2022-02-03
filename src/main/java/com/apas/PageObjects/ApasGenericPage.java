@@ -138,7 +138,7 @@ public class ApasGenericPage extends Page {
 	public WebElement successAlertText;
 
 	@FindBy(xpath = "//span[@title='APAS']")
-	public WebElement APAS;
+	public WebElement apas;
 
 	public String xpathSpinner = "//lightning-spinner";
 
