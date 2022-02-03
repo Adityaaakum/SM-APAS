@@ -159,7 +159,14 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objBuildingPermitPage.displayRecords("All Manual Building Permits");
 		Map<String, ArrayList<String>> manualBuildingPermitGridDataMap = objBuildingPermitPage.getGridDataInHashMap(1);
 		String buildingPermitNumber = manualBuildingPermitGridDataMap.get("Building Permit Number").get(0);
-		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
+		
+		String buildingPermitIDQuery = "SELECT Id FROM Building_Permit__c where Name = '"+buildingPermitNumber+"'";
+		String buildingPermitId = salesforceAPI.select(buildingPermitIDQuery).get("Id").get(0);
+		String execEnv = System.getProperty("region");
+		
+		//Step7: Opening the building permit module
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Building_Permit__c/"+buildingPermitId+"/view");	
+
 		objPage.Click(objBuildingPermitPage.editButton);
 		Thread.sleep(2000);
 
@@ -190,17 +197,14 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objPage.enter(objBuildingPermitPage.buildingPermitNumberTxtBox,updatedBuildingPermitNumber);
 		objPage.enter(objBuildingPermitPage.workDescriptionTxtBox,updatedWorkDescriptionValue);
 		objBuildingPermitPage.saveRecord();
-
-		//Step8: Validation for record with old building permit number exists or not
-		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
-
-		//Step9: Search the building permit number record edited above
-		objBuildingPermitPage.searchRecords(updatedBuildingPermitNumber);
-
-		//Step10: Validating that new value entered in estimated project value filed is saved
-		Map<String, ArrayList<String>> manualBuildingPermitGridDataMapAfterEdit = objBuildingPermitPage.getGridDataInHashMap(1);
-		softAssert.assertEquals(manualBuildingPermitGridDataMapAfterEdit.get("Work Description").get(0),updatedWorkDescriptionValue,"SMAB-T466,SMAB-T419: Validating the 'Work Description' after editing the record");
-		softAssert.assertEquals(manualBuildingPermitGridDataMapAfterEdit.get("Building Permit Number").get(0),updatedBuildingPermitNumber,"SMAB-T466,SMAB-T419: Validating the 'Building Permit Number' after editing the record");
+		
+		String buildingPermitIDQuery1 = "SELECT Id FROM Building_Permit__c where Name = '"+updatedBuildingPermitNumber+"'";
+		String buildingPermitId1 = salesforceAPI.select(buildingPermitIDQuery1).get("Id").get(0);
+		
+		//Step7: Opening the building permit module
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Building_Permit__c/"+buildingPermitId1+"/view");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Work Description"),updatedWorkDescriptionValue,"SMAB-T466,SMAB-T419: Validating the 'Work Description' after editing the record");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Building Permit Number"),updatedBuildingPermitNumber,"SMAB-T466,SMAB-T419: Validating the 'Building Permit Number' after editing the record");
 
 		//Logout at the end of the test
 		objBuildingPermitPage.logout();
