@@ -1867,8 +1867,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		// Step2: Opening the PARCELS page
 		driver.navigate()
 				.to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + activeApnId + "/view");
-		objParcelsPage.waitForElementToBeVisible(20,
-				objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objParcelsPage.waitForElementToBeVisible(20,objParcelsPage.componentActionsButtonText);
 
 		// Step3: Create UT event perform validations
 		String timeStamp = String.valueOf(System.currentTimeMillis());
@@ -1937,6 +1936,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objParcelsPage.openTab("Details");
 		softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS("Returned Reason"), "Returned by CIO Supervisor",
 				"SMAB-T3608 : Validated retirned reason on work item");
+		currentUrl = driver.getCurrentUrl();
 		objCIOTransferPage.logout();
 		Thread.sleep(5000);
 
@@ -1964,6 +1964,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
 		ReportLogger.INFO("CIO Staff reviewed the return reason and Submitted for Approval");
+		currentUrl = driver.getCurrentUrl();
 		Thread.sleep(3000);
 		objCIOTransferPage.logout();
 		Thread.sleep(5000);
