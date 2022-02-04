@@ -79,6 +79,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 		//Delete the existing WI from system before importing files
         String query = "select id from Work_Item__c where Request_Type__c = 'BPP - Annual Setting - BPP-Annual Setting' and (Status__c = 'In Pool' Or Status__c = 'In Progress')";
         if (query != null) objSalesforceAPI.delete("Work_Item__c", query);
+        objSalesforceAPI.deleteAircraftSDRWIs();
         
         //Generate Reminder WI
         objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_AIRCRAFT_ANNUAL_SETTINGS);
@@ -108,7 +109,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
         objWorkItemHomePage.openActionLink(aircraftAnnualSettingsWorkItem);
         
         //Validate the values on BPP Annual Settings record
-        softAssert.assertContains(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rollYearLabel),rollYear,
+        softAssert.assertContains(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rollYearSettingsLabel),rollYear,
 				"SMAB-T3840: Validate Roll year on the Annual Settings record");
         softAssert.assertContains(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.statusLabel),"Active",
 				"SMAB-T3840: Validate the status on the Annual Settings record");
@@ -151,7 +152,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		
 		objWorkItemHomePage.waitForElementToBeVisible(20,objBppManagementPage.rollYearLabel);
-		softAssert.assertContains(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rollYearLabel),rollYear,
+		softAssert.assertContains(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.rollYearSettingsLabel),rollYear,
 				"SMAB-T3840: Validate Roll year on the Annual Settings record");
 	    softAssert.assertContains(objBppManagementPage.getFieldValueFromAPAS(objBppManagementPage.statusLabel),"Active",
 	    		"SMAB-T3840: Validate the status on the Annual Settings record");
@@ -197,7 +198,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 	 * and Import Airport Listing data
 	 */
 	
-	@Test(description = "SMAB-T4449,SMAB-T4266,SMAB-T4267: Verify creation of Airport Listing Work Item and Import Airport Listing data", dataProvider = "loginPrincipalUser", dataProviderClass = DataProviders.class, groups = {"Regression", "GeneralAircraft", "BPPManagement"})
+	@Test(description = "SMAB-T4449,SMAB-T4266,SMAB-T4267: Verify creation of Airport Listing Work Item and Import Airport Listing data", dataProvider = "loginBPPAppraisalUser", dataProviderClass = DataProviders.class, groups = {"Regression", "GeneralAircraft", "BPPManagement"})
 	public void BPP_GeneralAircraft_AirportListingImport(String loginUser) throws Exception {
 		
 		//Login to the APAS application 
@@ -207,6 +208,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 		String query = "Select id From E_File_Import_Log__c where File_type__c = 'Airport Listing' and Import_Period__C='" + rollYear + "' and File_Source__C = 'Airports' and (Status__c = 'Imported' Or Status__c = 'Approved')";
 		objSalesforceAPI.update("E_File_Import_Log__c", query, "Status__c", "Reverted");
 		objSalesforceAPI.deleteAircraftListingWIs();
+		objSalesforceAPI.deleteAircraftSDRWIs();
 
 		//Generate Reminder WI
         objSalesforceAPI.generateReminderWorkItems(SalesforceAPI.REMINDER_WI_CODE_BPP_EFILE);
@@ -221,7 +223,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 		objWorkItemHomePage.waitForElementToBeVisible(20,objWorkItemHomePage.acceptWorkItemButton);
        
         //Verify that only one WI is generated
-        String airportListingRequestType = "BPP - Airport Listing Import";
+        String airportListingRequestType = "BPP - Airport Listing Import - BPP - Airport Listing Import";
         int airportListingWorkItemCount = objWorkItemHomePage.getWorkItemCount(airportListingRequestType, objWorkItemHomePage.TAB_IN_POOL);
         softAssert.assertEquals(airportListingWorkItemCount, 1, 
         		"SMAB-T4266: Validate that only one WI for Airport Listing is generated");
