@@ -73,17 +73,15 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 
 		// Step3: Opening the work items and accepting the WI created by recorder batch
 		objCIOTransferPage.searchModule(HOME);
-		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABHome);
-		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABWorkItems);
-		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInPool);
-		Thread.sleep(4000);
-		objWorkItemHomePage.clickCheckBoxForSelectingWI(cioWorkItem);
-		objWorkItemHomePage.Click(objWorkItemHomePage.acceptWorkItemBtn);
-		Thread.sleep(4000);
-		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInProgress);
-		Thread.sleep(4000);
-		objWorkItemHomePage.clickCheckBoxForSelectingWI(cioWorkItem);
-		objWorkItemHomePage.openActionLink(cioWorkItem);	  	
+		objWorkItemHomePage.globalSearchRecords(cioWorkItem);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+	  	
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
 		// step 4: fetching the recorded apn transfer object associated with the CIO WI
 		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + cioWorkItem + "'";
@@ -101,8 +99,8 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.waitForElementToBeVisible(20,
 				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
 
-		objCIOTransferPage.scrollToBottom();
-
+		objCIOTransferPage.scrollToBottomOfPage();
+		
 		// Step6: verifying the presence of quick action buttons visible to CIO staff
 		softAssert.assertTrue(objCIOTransferPage.verifyElementVisible(objCIOTransferPage.calculateOwnershipButtonLabel),
 				"SMAB-T3390: Validation that calculateOwnershipButtonLabel button is visible CIO staff");

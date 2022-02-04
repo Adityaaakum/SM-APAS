@@ -1406,7 +1406,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				(assesseeLastName + " " + assesseeFirstName).trim(),
 				"SMAB-T3696: Validation that current owner name (that was retained fully )in grantee table  after calculate ownership is correct ");
 		softAssert.assertEquals(granteeHashMap.get("Status").get(2), "Retained",
-				"SMAB-T3696: Validation that current owner  (that was retained fully ) in Grantee table has active status");
+				"SMAB-T3696: Validation that current owner  (that was retained fully ) in Grantee table has Retained status");
 		softAssert.assertEquals(granteeHashMap.get("Owner Percentage").get(2), "75.0000%",
 				"SMAB-T3696: Validation that Owner Percentage of owner that was fully retained is correct");
 		softAssert.assertEquals(granteeHashMap.get("DOR").get(2), ownershipStartDate[0],
@@ -4365,15 +4365,21 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		salesforceAPI.update("Recorded_APN__c", recordedAPNID, jsonToUpdateRecordedAPN);
 		}
 		
+		 HashMap<String, ArrayList<String>> hashMapWorkItem;
+		String WorkItemQuery = "SELECT max(name) FROM Work_Item__c where Type__c='CIO' and CreatedDate =TODAY and Recorded_Document__c='"+documentId+"'";
+		String maxWorkItemNumber=salesforceAPI.select(WorkItemQuery).get("expr0").get(0);		
+	
 		// Step 3: generating recorded work items from job
 		objCioTransfer.generateRecorderJobWorkItems(documentId);
-
-		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO' and CreatedDate =TODAY and Recorded_Document__c='"+documentId+"'";
-		HashMap<String, ArrayList<String>> hashMapWorkItem=salesforceAPI.select(WorkItemQuery);
+		 WorkItemQuery = "SELECT max(name) FROM Work_Item__c where Type__c='CIO' and CreatedDate =TODAY and Recorded_Document__c='"+documentId+"'";
+		 hashMapWorkItem=salesforceAPI.select(WorkItemQuery);
 		
-		softAssert.assertEquals(hashMapWorkItem.size(),"0",
+		String maxWIAfterJobRun=hashMapWorkItem.get("expr0").get(0);
+
+		softAssert.assertTrue(maxWorkItemNumber.equals(maxWIAfterJobRun),
 				"SMAB-T3963:Verifying that No WI should be created if recorded document has invalid Recorded APN");
 
+	
 		 String statusRECDoc=salesforceAPI.select("SELECT Status__c FROM Recorded_Document__c where id='"+documentId+"'").get("Status__c").get(0);
 		 String statusRECAPN=salesforceAPI.select("SELECT Status__c FROM Recorded_APN__c where id='"+recordedAPNID+"'").get("Status__c").get(0);
 
@@ -4425,14 +4431,24 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String APNIdFromValidREcordedAPN =salesforceAPI.select("SELECT PARCEL__C FROM Recorded_APN__c WHERE RECORDED_DOCUMENT__C='"+documentId+"' AND PARCEL__C != NULL ").get("Parcel__c").get(0);
 		
 		// Step 3: generating recorded work items from job
+		HashMap<String, ArrayList<String>> hashMapWorkItem;
+		String WorkItemQuery = "SELECT count(name) FROM Work_Item__c where Type__c='Mapping' and CreatedDate =TODAY and Recorded_Document__c='"+documentId+"'";
+		int countWorkItemNumber=Integer.parseInt(salesforceAPI.select(WorkItemQuery).get("expr0").get(0));		
+	
+		// Step 3: generating recorded work items from job
 		objCioTransfer.generateRecorderJobWorkItems(documentId);
-
-		String WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='Mapping' and CreatedDate =TODAY and Recorded_Document__c='"+documentId+"'";
-		HashMap<String, ArrayList<String>> hashMapWorkItem=salesforceAPI.select(WorkItemQuery);
+		 WorkItemQuery = "SELECT count(name) FROM Work_Item__c where Type__c='Mapping' and CreatedDate =TODAY and Recorded_Document__c='"+documentId+"'";
+		 hashMapWorkItem=salesforceAPI.select(WorkItemQuery);
 		
-		softAssert.assertEquals(hashMapWorkItem.get("Id").size(),"1",
+		int countWIAfterJobRun=Integer.parseInt(hashMapWorkItem.get("expr0").get(0));
+
+		softAssert.assertEquals(countWIAfterJobRun,countWorkItemNumber+1,
 				"SMAB-T3964:Verifying that only one WI should be created if recorded document has one invalid and one Recorded APN");
 
+		
+		 WorkItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='Mapping' and CreatedDate =TODAY and Recorded_Document__c='"+documentId+"' order by Name desc limit 1";
+		 hashMapWorkItem=salesforceAPI.select(WorkItemQuery);
+		
 		String workItemId=hashMapWorkItem.get("Id").get(0);
 				
 		String apnWorkItemQuery = "SELECT parcel__c FROM Work_Item_Linkage__c where Work_Item__c ='"+workItemId+"' ";
