@@ -2272,8 +2272,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				
 		// Verify ZIP code is stored as [5]-[4] digits format
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Mail_To__r/view");
-		HashMap<String, ArrayList<String>> mailToMap = objCIOTransferPage.getGridDataInHashMap();
-		String zipcode = mailToMap.get("Mailing Zip").get(0);
+		String mailToQuery = "SELECT Mailing_Zip__c FROM CIO_Transfer_Mail_To__c WHERE Recorded_APN_Transfer__c = '" + recordeAPNTransferID + "' ORDER BY CreatedDate DESC limit 1";
+		String zipcode = salesforceAPI.select(mailToQuery).get("Mailing_Zip__c").get(0);
 		ReportLogger.INFO("Zip Code: " + zipcode);
 		softAssert.assertTrue(zipcode.matches("\\d{5}-\\d{4}"), "SMAB-T4405: verify ZIP code is stored as [5]-[4] format in transfer activity");		
 		

@@ -1342,7 +1342,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		        
 		// Opening the parcel's page
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
-		objParcelsPage.waitForElementToBeVisible(20,objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objParcelsPage.waitForElementToBeVisible(20,objParcelsPage.componentActionsButtonText);
 		
 		// Create UT event
 		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
