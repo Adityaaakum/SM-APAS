@@ -55,7 +55,7 @@ public class RPValuation_Manual_Demolition_Test extends TestBase implements user
 	 * @param loginUser
 	 */
 	@Test(description = "SMAB-T7530,SMAB-T7572: Verify that Building permit should be automatically pre-populated through BP WI ", groups = {
-			"Regression","RPValuation", "Demolition", "ManualDemolition", "BuildingPermit" }, dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, alwaysRun = true)
+			"Regression","RPValuation", "Demolition", "ManualDemolition", "BuildingPermit", "WorkItemWorkflow" }, dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BuildingPermit_Manual_Demolition_WorkItem(String loginUser) throws Exception {
 
 		// Fetching the active APN
