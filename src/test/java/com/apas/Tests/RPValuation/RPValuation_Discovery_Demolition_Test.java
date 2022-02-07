@@ -107,10 +107,12 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		Thread.sleep(3000);
 		String demolitionScreenURL = driver.getCurrentUrl();
-		ObjDemolitionPage.searchModule("APAS");
+		if (ObjDemolitionPage.isNotDisplayed(ObjDemolitionPage.apas)) {
+			ObjDemolitionPage.searchModule("APAS");
+		}
 		driver.navigate().to(demolitionScreenURL);
-
-		ObjDemolitionPage.waitForElementToBeVisible(
+        Thread.sleep(5000);
+		ObjDemolitionPage.waitForElementToBeVisible(30,
 				ObjDemolitionPage.getButtonWithText(ObjDemolitionPage.createNewConstructionWIBtn));
 		softAssert.assertTrue(
 				!(ObjDemolitionPage.isNotDisplayed(

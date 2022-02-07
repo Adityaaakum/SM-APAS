@@ -8,6 +8,7 @@ import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.DateUtil;
 import com.apas.Utils.Util;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.config.modules;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
@@ -20,6 +21,7 @@ public class CityStratCodesTest extends TestBase {
 	CityStratCodesPage objCityStratCodesPage;
 	SoftAssertion softAssert = new SoftAssertion();
 	Util objUtils = new Util();
+	SalesforceAPI salesforceAPI = new SalesforceAPI();
 
 	@BeforeMethod(alwaysRun=true)
 	public void beforeMethod() throws Exception{
@@ -59,12 +61,19 @@ public class CityStratCodesTest extends TestBase {
 		softAssert.assertEquals(strSuccessAlertMessage, "success\nCity Strat Code \"" + strCityStratCode2 + "\" was created.\nClose", "SMAB-T396: Validation of text nessage on Success Alert");
 
 		//Step6: Edit the recently created City strat code
-		objCityStratCodesPage.searchModule(modules.CITY_STRAT_CODES);
-		objCityStratCodesPage.globalSearchRecords(strCityStratCode2);
+		String cityStartCodeQuery = "SELECT Id FROM City_Strat_Code__c where Name = '"+strCityStratCode2+"'";
+		String cityStartCodeId = salesforceAPI.select(cityStartCodeQuery).get("Id").get(0);
+		String execEnv = System.getProperty("region");
+		
+		//Step7: Opening the building permit module
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/City_Strat_Code__c/"+cityStartCodeId+"/view");	
+		objPage.waitForElementToBeClickable(10, objCityStratCodesPage.EditButton);
 		objPage.Click(objPage.getButtonWithText("Edit"));
 		objPage.waitForElementToBeClickable(10, objCityStratCodesPage.countyStratCodeEditBox);
 		objCityStratCodesPage.selectOptionFromDropDown(objCityStratCodesPage.statusDropDown,"Inactive");
 		softAssert.assertEquals(objCityStratCodesPage.saveRecord(), "success\nCity Strat Code \"" + strCityStratCode2 + "\" was saved.\nClose", "SMAB-T396,SMAB-T390: Validation of text nessage on Success Alert");
+		objCityStratCodesPage.logout();
+	
 	}
 
 

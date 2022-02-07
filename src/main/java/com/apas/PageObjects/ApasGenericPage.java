@@ -136,8 +136,10 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
 	public WebElement successAlertText;
-	
-	
+
+	@FindBy(xpath = "//span[@title='APAS']")
+	public WebElement apas;
+
 	public String xpathSpinner = "//lightning-spinner";
 
 	public String maxEquipmentIndexFactor = "Maximum Equipment index Factor";
