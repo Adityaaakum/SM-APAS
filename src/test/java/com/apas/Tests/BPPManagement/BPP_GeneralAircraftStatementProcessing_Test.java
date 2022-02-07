@@ -70,7 +70,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 	 * and restriction of creation of duplicate Annual Settings record
 	 */
 	
-	@Test(description = "SMAB-T3840,SMAB-T3985: Verify creation of Aircraft Annual Settings Work Item and restriction of creation of duplicate Annual Settings record", dataProvider = "loginBPPAppraisalUser", dataProviderClass = DataProviders.class, groups = {"Regression", "GeneralAircraft", "BPPManagement"})
+	@Test(description = "SMAB-T3840,SMAB-T3985: Verify creation of Aircraft Annual Settings Work Item and restriction of creation of duplicate Annual Settings record", dataProvider = "loginBPPAppraisalUser", dataProviderClass = DataProviders.class, enabled = false, groups = {"Regression", "GeneralAircraft", "BPPManagement"})
 	public void BPP_GeneralAircraft_AircraftAnnualSettings(String loginUser) throws Exception {
 		
 		//Delete BPP Annual Settings
@@ -198,7 +198,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 	 * and Import Airport Listing data
 	 */
 	
-	@Test(description = "SMAB-T4449,SMAB-T4266,SMAB-T4267: Verify creation of Airport Listing Work Item and Import Airport Listing data", dataProvider = "loginBPPAppraisalUser", dataProviderClass = DataProviders.class, groups = {"Regression", "GeneralAircraft", "BPPManagement"})
+	@Test(description = "SMAB-T4449,SMAB-T4266,SMAB-T4267: Verify creation of Airport Listing Work Item and Import Airport Listing data", dataProvider = "loginBPPAppraisalUser", dataProviderClass = DataProviders.class, enabled = false, groups = {"Regression", "GeneralAircraft", "BPPManagement"})
 	public void BPP_GeneralAircraft_AirportListingImport(String loginUser) throws Exception {
 		
 		//Login to the APAS application 
@@ -341,7 +341,7 @@ public class BPP_GeneralAircraftStatementProcessing_Test extends TestBase {
 	 * DESCRIPTION: Create and Validate the PI Space Record
 	 */
 	
-	@Test(description = "SMAB-4164: Create record on PI Setting object", dataProvider = "loginBPPAppraisalUser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-4164: Create record on PI Setting object", dataProvider = "loginBPPAppraisalUser", dataProviderClass = DataProviders.class, enabled = false, groups = {
 			"Regression", "GeneralAircraft", "BPPManagement" })
 	public void BPP_CreateNewPISettingsRecord(String loginUser) throws Exception {
 
