@@ -61,7 +61,7 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 	 */
 	@Test(description = "SMAB-T4455,SMAB-T4366,SMAB-T4377,SMAB-T4378,SMAB-T4379,SMAB-T4403:This method is to verify few validations based on full demolition , partial demolition event codes", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "RPValuation", "Demolition", "DiscoveryDemolition"})
-	public void BuildingPermit_Manual_Discovery_Demolition_WorkItem(String loginUser) throws Exception {
+	public void RPValuation_Manual_Demolition_WorkItem(String loginUser) throws Exception {
 
 		// Fetching Active parcel
 		String executionEnv = System.getProperty("region");

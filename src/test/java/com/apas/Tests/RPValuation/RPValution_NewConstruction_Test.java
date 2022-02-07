@@ -63,7 +63,7 @@ public class RPValution_NewConstruction_Test extends TestBase implements testdat
 	@Test(description = "SMAB-T4365,SMAB-T4367,SMAB-T4404,SMAB-T4368,SMAB-T4454:This method is to verify few validations based on full NewConstruction ,"
 			+ " partial NewConstruction event codes", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "RPValuation", "NewConstruction"})
-	public void Manual_NewConstruction_WorkItem(String loginUser) throws Exception {
+	public void RPValuation_Manual_NewConstruction_WorkItem(String loginUser) throws Exception {
 
 		// Fetching Active parcel
 		String executionEnv = System.getProperty("region");
@@ -159,8 +159,8 @@ public class RPValution_NewConstruction_Test extends TestBase implements testdat
 		objNewConstructionPage.Click(objNewConstructionPage.cancelButton);
 		
 		// Validating user is able to click on createNewConstructionWI Button
-//		objWorkItemHomePage.scrollToElement(objNewConstructionPage.getWebElementWithLabel("DOV"));
-
+		objWorkItemHomePage.scrollToTop();
+		objParcelsPage.Click(objParcelsPage.editFieldButton("DOV"));
 		objParcelsPage.enter("DOV", "1/13/2022");
 		objParcelsPage.searchAndSelectOptionFromDropDown("Event Code", noStartNewConstructionEventCode);
 		
@@ -174,13 +174,11 @@ public class RPValution_NewConstruction_Test extends TestBase implements testdat
 				" SMAB-T4367: Verify that error msg should be thrown if land and improvement is populated");
 		objNewConstructionPage.Click(objNewConstructionPage.cancelButton);
 
-
-//		objParcelsPage.Click(objParcelsPage.getButtonWithText("Cancel"));
 		objParcelsPage.searchAndSelectOptionFromDropDown("Event Code", partialNewConstructionEventCode);
+
 		objParcelsPage.enter(objNewConstructionPage.puc,puc);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
 		
-		// Staff is submitting request for approval to supervisor
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objNewConstructionPage.submitForApprovalNCWIBtn));
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objNewConstructionPage.nextButton));
 
