@@ -1247,6 +1247,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 			hashMapCreateOwnershipRecordData.put("Ownership Percentage", ownershipPercentage[i]);
 			hashMapCreateOwnershipRecordData.put("Ownership Start Date", ownershipStartDate[i]);
+			
+			if(!objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.newButton))
+				driver.navigate().refresh();
 			objParcelsPage.createOwnershipRecord(assesseeName, hashMapCreateOwnershipRecordData);
 
 			String ownershipId = driver.getCurrentUrl().split("/")[6];
@@ -1306,8 +1309,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
 		objCioTransfer.scrollToBottom();
 		String dov = objCioTransfer.getFieldValueFromAPAS(objCioTransfer.dovLabel);
 		String dor = objCioTransfer.getFieldValueFromAPAS(objCioTransfer.dorLabel);
@@ -1324,8 +1326,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// action link
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		/*objCioTransfer.waitForElementToBeVisible(15,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));*/
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.nextButton);
 
@@ -1419,8 +1420,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// Step 11: submitting the WI for approval
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCioTransfer.waitForElementToBeVisible(15,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
 		ReportLogger.INFO("Updating the transfer code");
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
 		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.transferCodeLabel);
@@ -3021,6 +3021,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 						+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
 								.select("Select Id from parcel__C where name='" + apnToUpdate + "'").get("Id").get(0)
 						+ "/related/Property_Ownerships__r/view");
+		if(!objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.newButton))
+			driver.navigate().refresh();
 		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
 		String ownershipId = driver.getCurrentUrl().split("/")[6];
 
@@ -3084,9 +3086,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		String parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.componentActionsButtonLabel));
-		
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
+
 		String urlForRATScreen = driver.getCurrentUrl();
 		String  RATId=urlForRATScreen.split("/")[6];
 
@@ -3104,13 +3105,14 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 9-Updating The APN from transfer screen 
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.componentActionsButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
+
 
 		objCioTransfer.editRecordedApnField(objCioTransfer.ApnLabel);
 		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.ApnLabel);
 		objCioTransfer.Click(objCioTransfer.crossIconAPNEditField);
 		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.ApnLabel, apnToUpdate);
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-SALE");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 		ReportLogger.INFO("APN   updated successfully");
 		
@@ -3168,21 +3170,15 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 		driver.navigate().to("https://smcacre--" + execEnv
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		ReportLogger.INFO("Updating the transfer code");
-		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
-		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.transferCodeLabel);
-		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-SALE");
-		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
-		ReportLogger.INFO("transfer code updated successfully");
-
+				objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
+		
 		// STEP 11-verifying the correspondence event created after creating correspondence AT from component action
 		
 		objParcelsPage.createUnrecordedEvent(hashMapCorrespondenceEventForAutoConfirm);
 		String urlForTransactionTrail = driver.getCurrentUrl();
 		driver.navigate().to("https://smcacre--" + execEnv
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCioTransfer.waitForElementToBeVisible(20,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
 
 		String  auditTrailId=urlForTransactionTrail.split("/")[6];
 		
@@ -3287,8 +3283,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// STEP 14-Clicking on submit for approval quick action button
 		
 		driver.navigate().back();
-		objCioTransfer.waitForElementToBeVisible(20,
-				objCioTransfer.getButtonWithText(objCioTransfer.componentActionsButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
 
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
@@ -3341,8 +3336,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		driver.navigate().refresh();
-		objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.componentActionsButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
 
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionApprove);

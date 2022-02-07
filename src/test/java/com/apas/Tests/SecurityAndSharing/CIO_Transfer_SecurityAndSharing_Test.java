@@ -96,8 +96,8 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
 
 		// Step5: CIO staff user navigating to transfer screen by clicking on related action link
-		objCIOTransferPage.waitForElementToBeVisible(20,
-				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.quickActionButtonDropdownIcon,20);
+
 
 		objCIOTransferPage.scrollToBottomOfPage();
 		
@@ -163,8 +163,8 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCIOTransferPage.waitForElementToBeVisible(15,
-				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.quickActionButtonDropdownIcon,20);
+
 
 		ReportLogger.INFO("Submitting the WI for approval");
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
@@ -207,8 +207,8 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		driver.navigate().refresh();
-		objCIOTransferPage.waitForElementToBeVisible(10,
-				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.quickActionButtonDropdownIcon,20);
+
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
 				"SMAB-T3467: Validation that componentActionsButtonLabel  button is not visible CIO supervisor after submit for approval");
 

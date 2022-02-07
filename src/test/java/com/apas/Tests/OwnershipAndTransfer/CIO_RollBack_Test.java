@@ -268,8 +268,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 
 		parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		/*objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));*/
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
 		Thread.sleep(5000);
 		
 		String urlForRATScreen = driver.getCurrentUrl();
@@ -287,8 +286,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		driver.navigate().refresh();
-		/*objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));*/
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
 		Thread.sleep(5000);
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionReturn);
@@ -335,8 +333,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		// related action link
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID1 + "/view");
-		objCioTransfer.waitForElementToBeVisible(15,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
+
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.nextButton);
 
@@ -360,9 +358,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID1 + "/view");
 		driver.navigate().refresh();
-	/*	objCioTransfer.waitForElementToBeVisible(40,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));*/
-		Thread.sleep(10000);
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
+
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
 		
@@ -576,8 +573,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		driver.navigate().refresh();
-		objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
+
 
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionApprove);
