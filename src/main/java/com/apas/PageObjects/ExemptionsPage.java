@@ -377,6 +377,9 @@ public class ExemptionsPage extends ApasGenericPage {
    
     public String yearOfFiling = "Year of filing";
     
+    @FindBy (xpath ="//div[@class='slds-form-element__control slds-input-has-icon slds-input-has-icon_right']//input[@name='Date_Occupy_Property__c']")
+    public WebElement dateOfOccupideProperty;
+    
 
     /** Locators for Institution Exemptions **/
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(@class,'slds-radio topdown-radio')]//span[text()='Institutional']")
