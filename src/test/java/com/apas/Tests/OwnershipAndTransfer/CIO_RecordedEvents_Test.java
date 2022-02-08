@@ -4218,7 +4218,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 			throws Exception {
 
 		String execEnv = System.getProperty("region");
-		String mailToRecordFromParcel = "SELECT Parcel__c,Id FROM Mail_To__c where status__c = 'Active' Limit 1";
+		String mailToRecordFromParcel = "SELECT Parcel__c,Id FROM Mail_To__c where status__c = 'Active' AND Parcel__c != '' Limit 1";
 		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI.select(mailToRecordFromParcel);
 		String mailToID = hashMapRecordedApn.get("Id").get(0);
 		String viewAllParcel = hashMapRecordedApn.get("Parcel__c").get(0);
@@ -4229,7 +4229,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Mail_To__c/" + mailToID + "/view");
 		
 		// STEP 2: Validate labels on the Mail-To record
-		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.formattedName1LabelForParcelMailTo);
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.formattedName1LabelForParcelMailTo);
 		softAssert.assertEquals(objParcelsPage.verifyElementVisible(objCioTransfer.formattedName1LabelForParcelMailTo),
 				"true", "SMAB-T3252-Formatted name1 lable validation");
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.formattedName2LabelForParcelMailTo);
@@ -4247,12 +4247,16 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"is-read-only", "SMAB-T3246-Start date is not editable");
 		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"),
 				"is-read-only", "SMAB-T3246,SMAB-T3249-End date is not editable");
-		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Edit));
-		objWorkItemHomePage.Click(objCioTransfer.getButtonWithText(objCioTransfer.Edit));
+		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.editFormattedName1Button);
+		objWorkItemHomePage.Click(objCioTransfer.editFormattedName1Button);
 		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"),
 				"is-read-only", "SMAB-T3246,SMAB-T3249-End date is not editable");
-		objCioTransfer.Click(objCioTransfer.getButtonWithText("Save"));
-		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Clone));
+		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.saveButton);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+		
+		// This code  was commented since Clone Mail-To feature is no longer available and cannot be tested
+		
+		/*objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"),
 				"is-read-only", "SMAB-T3246,SMAB-T3249-End date is not editable");
@@ -4261,7 +4265,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Date date = new Date();
 		String todayDate = dateFormat.format(date);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Start Date").trim(), todayDate.trim(),
-				"SMAB-T3247-Start date is equal to Today's date");
+				"SMAB-T3247-Start date is equal to Today's date");*/
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ viewAllParcel + "/related/Mail_To__r/view");
 
@@ -4277,10 +4281,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ mailToIDforRetired + "/view");
 		softAssert.assertContains(objCioTransfer.getFieldValueFromAPAS("End Date"), "/",
 				"SMAB-T3249-End date is not Empty");
-		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Clone));
+		/*objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		softAssert.assertContains(objCioTransfer.saveRecordAndGetError(), "cloned",
-				"SMAB-T3289: Retired record cannot be cloned");
+				"SMAB-T3289: Retired record cannot be cloned");*/
 		objWorkItemHomePage.logout();
 
 	}

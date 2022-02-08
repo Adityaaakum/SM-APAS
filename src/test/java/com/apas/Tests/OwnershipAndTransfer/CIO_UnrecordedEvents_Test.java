@@ -2172,7 +2172,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 
 		// Step2: Opening the parcel's page
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
-		objParcelsPage.waitForElementToBeVisible(5,objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objParcelsPage.waitForElementToBeVisible(5,objParcelsPage.componentActionsButtonText);
 		
 		// Step3: Create UT event
 		objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
@@ -2197,10 +2197,10 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
 		
 		// Step 3: User clicks on the recorded document
-		objParcelsPage.Click(objParcelsPage.lastItemInCosDocumentSummary);
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(eventID));
 		String parentWindow = driver.getWindowHandle();
 		objParcelsPage.switchToNewWindow(parentWindow);
-		objParcelsPage.waitUntilPageisReady(driver);
+		trail.waitForElementToBeVisible(5, trail.eventNumberLabel);
 				
 		String currentEventID = trail.getFieldValueFromAPAS(trail.eventNumberLabel);
 		softAssert.assertEquals(eventID, currentEventID, "SMAB-T4389: Verify the Unecorded Document column in COS Doc Summary has a linked URL , navigating to the audit trail record");
