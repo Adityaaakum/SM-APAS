@@ -3345,13 +3345,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"Work Item has been approved successfully.", 30);
 		
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
-		objCioTransfer.waitForElementToBeInVisible(objCioTransfer.xpathSpinner, 6);
 		ReportLogger.INFO("CIO!! Transfer approved by Supervisor");
 		
 		
 		//Step 18 : Validate the Appraisal WIs created  
 
-		Thread.sleep(4000);
+		Thread.sleep(5000);
 		workItemQuery = "SELECT Id,name,APN__c   FROM Work_Item__c where Type__c='Appraiser' And Sub_Type__c ='Appraisal Activity' and  status__c='In Pool' order by createdDate desc limit 1";
 		 workItemNumber = salesforceAPI.select(workItemQuery).get("Name").get(0);
 
