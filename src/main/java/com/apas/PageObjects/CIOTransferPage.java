@@ -266,16 +266,16 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath="	//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]//button[text()='Save']")
 	public WebElement saveButtonModalWindow;
 	
-	@FindBy(xpath =commonXpath+"//force-record-layout-section//div//span[text()='APN']//parent::div//following-sibling::div//a//slot//slot//span")
+	@FindBy(xpath =commonXpath+"//*[text()='APN']//parent::div//following-sibling::div//a//slot//slot//span")
 	public WebElement apnOnTransferActivityLabel;
 	
-	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='Situs']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	@FindBy(xpath =commonXpath+"//*[text()='Situs']/../..//*[@slot='outputField']//lightning-formatted-text")
 	public WebElement situsOnTransferActivityLabel;
 	
-	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='Short Legal Description']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	@FindBy(xpath =commonXpath+"//*[text()='Short Legal Description']/../..//*[@slot='outputField']//lightning-formatted-text")
 	public WebElement shortLegalDescriptionOnTransferActivityLabel;
 	
-	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='PUC Code']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	@FindBy(xpath =commonXpath+"//*[text()='PUC Code']/../..//*[@slot='outputField']//lightning-formatted-text")
 	public WebElement pucCodeTransferActivityLabel;
 	
 	@FindBy(xpath =commonXpath+"//*[@class='slds-form-element__help']")
@@ -284,7 +284,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath =commonXpath+ "//select[@name='States']")
 	public WebElement mailingState;
 	
-	@FindBy(xpath =commonXpath+"//force-record-layout-section//force-record-layout-item//*[text()='EventID']//following::a[@target='_blank']")
+	@FindBy(xpath =commonXpath+"//*[text()='EventID']//following::a[@target='_blank']")
 	public WebElement eventIDOnTransferActivityLabel;
 	
 	@FindBy(xpath =commonXpath+"//span[@title='Recorded APNs']//ancestor::lst-list-view-manager-header//following-sibling::div[@class='slds-grid listDisplays']//table//a[contains(@class,'displayLabel')]")
@@ -625,7 +625,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					String execEnv = System.getProperty("region");
 					driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/"
 							+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
-					waitForElementToBeVisible(5, newButton);
+					if(!waitForElementToBeVisible(20, newButton))
+						driver.navigate().refresh();
 					Click(getButtonWithText(newButton));
 					enter(LastNameLabel, dataToCreateGrantee.get("Last Name"));
 					if (dataToCreateGrantee.get("Owner Percentage") != null)
