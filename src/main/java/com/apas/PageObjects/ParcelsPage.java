@@ -536,7 +536,7 @@ public class ParcelsPage extends ApasGenericPage {
 			String timeStamp = String.valueOf(System.currentTimeMillis());
 			String description = dataMap.get("Description") + "_" + timeStamp;
 			
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 			waitForElementToBeClickable(5,componentActionsButtonText);
 			Click(getButtonWithText(componentActionsButtonText));
 			waitForElementToBeClickable(selectOptionDropdown);

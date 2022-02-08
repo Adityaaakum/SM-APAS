@@ -2158,8 +2158,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		
 		// ----- Data set up -----
 		
-		String queryAPNValue = "select Id from Parcel__c where Status__c='Active' limit 1";
+		String queryAPNValue = "select Id, Name from Parcel__c where Status__c='Active' limit 1";
 		String parcelId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+		String parcelName = salesforceAPI.select(queryAPNValue).get("Name").get(0);
 		String execEnv = System.getProperty("region");
 		
 		Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
@@ -2169,6 +2170,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		
 		// Step1: Login to the APAS application
 		objMappingPage.login(loginUser);
+		Thread.sleep(2000);
 
 		// Step2: Opening the parcel's page
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
@@ -2184,13 +2186,12 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, CIOTransferPage.CIO_EVENT_CODE_SALE);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
-				
 		String eventID = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel);
 		
 		// ----- Steps -----
 		
-		// Step 1:  User navigates to a parcel with an unrecorded document associated
-		objCIOTransferPage.Click(objCIOTransferPage.apnOnTransferActivityLabel);
+		// Step 1:  User navigates to a parcel with an unrecorded document associated		
+		objCIOTransferPage.Click(objParcelsPage.getButtonWithText(parcelName));
 		
 		// Step 2: User clicks on "COS Document Summary" button
 		objParcelsPage.waitUntilPageisReady(driver);
