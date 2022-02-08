@@ -29,6 +29,9 @@ public class NewConstructionPage extends ApasGenericPage {
 	@FindBy(xpath = "//*[contains(@class,'forceFormPageError')]//ul//li")
 	public WebElement errorMsg;
 	
+	@FindBy(xpath = "//button[@title='Clear Selection']")
+	public WebElement clearButton;
+	
 	@FindBy(xpath = "//strong[contains(normalize-space(),'New Construction - Manual Entry')]")
 	public WebElement ncAuditTrail;
 

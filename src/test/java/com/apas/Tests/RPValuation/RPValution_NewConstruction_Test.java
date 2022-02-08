@@ -73,9 +73,10 @@ public class RPValution_NewConstruction_Test extends TestBase implements testdat
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select(
 				"SELECT Name,Id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c"
 				+ " where Status__c='Active') and Legacy__c = 'No' limit 1");
-		String pucOnParcel = responsePUCDetails.get("Id").get(0);
+		String pucIdOnParcel = responsePUCDetails.get("Id").get(0);
+		String pucOnParcel = responsePUCDetails.get("Name").get(0);
 
-		salesforceAPI.update("Parcel__c", apnId,"PUC_Code_Lookup__c",pucOnParcel);
+		salesforceAPI.update("Parcel__c", apnId,"PUC_Code_Lookup__c",pucIdOnParcel);
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -85,7 +86,7 @@ public class RPValution_NewConstruction_Test extends TestBase implements testdat
 		
 
 		String puc = salesforceAPI
-				.select("SELECT Name,id FROM PUC_Code__c where legacy__c = 'NO' limit 1").get("Name").get(0);
+				.select("SELECT Name,id FROM PUC_Code__c where legacy__c = 'NO' and (not name like '"+pucOnParcel+"') limit 1").get("Name").get(0);
 		String partialNewConstructionEventCode = salesforceAPI
 				.select("SELECT Name FROM Event_Library__c where Name like 'NC-Partial' limit 1").get("Name").get(0);
 		String noStartNewConstructionEventCode = salesforceAPI
@@ -124,8 +125,7 @@ public class RPValution_NewConstruction_Test extends TestBase implements testdat
 				"SMAB-T4404:Demolition WI Button is present");
 		objNewConstructionPage.Click(objNewConstructionPage.getButtonWithText
 				(objNewConstructionPage.createDemolitionWIBtn));
-		objNewConstructionPage.waitForElementToBeVisible(20,
-				objNewConstructionPage.messageForDemolition);
+		objNewConstructionPage.waitForElementToBeVisible(20,objNewConstructionPage.messageForDemolition);
 		softAssert.assertContains(objNewConstructionPage.messageForDemolition.getText(),
 				"A Demolition WI will be created and assigned to you",
 				" SMAB-T4404: Verify that Create Demolition WI btn should be visible on screen and on clicking it a msg should be shown");
@@ -174,13 +174,23 @@ public class RPValution_NewConstruction_Test extends TestBase implements testdat
 				" SMAB-T4367: Verify that error msg should be thrown if land and improvement is populated");
 		objNewConstructionPage.Click(objNewConstructionPage.cancelButton);
 
+		objWorkItemHomePage.scrollToTop();
+		Thread.sleep(3000);
+	
+		objParcelsPage.Click(objParcelsPage.editFieldButton("PUC Code"));
+		objParcelsPage.clearSelectionFromLookup("PUC Code");
+		objParcelsPage.enter(objNewConstructionPage.puc, puc);
+		objParcelsPage.selectOptionFromDropDown(objNewConstructionPage.puc, puc);
+
+		objParcelsPage.enter("DOV", "1/13/2022");		
+
 		objParcelsPage.searchAndSelectOptionFromDropDown("Event Code", partialNewConstructionEventCode);
 
-		objParcelsPage.enter(objNewConstructionPage.puc,puc);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText("Save"));
-		
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objNewConstructionPage.submitForApprovalNCWIBtn));
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objNewConstructionPage.nextButton));
+		
+		objNewConstructionPage.waitForElementToBeVisible(20,objNewConstructionPage.approveNCButton);
 
 		// Staff Logout
 		objWorkItemHomePage.logout();
@@ -191,18 +201,22 @@ public class RPValution_NewConstruction_Test extends TestBase implements testdat
 
 		driver.navigate().to(newConstructionScreenURL);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objNewConstructionPage.approveNCButton));
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objNewConstructionPage.nextButton));
 		
-		objNewConstructionPage.searchModule(PARCELS);
-		objNewConstructionPage.globalSearchRecords(apn);
+		objNewConstructionPage.waitForElementToBeVisible(20,objNewConstructionPage.submitForApprovalNCWIBtn);
 		
-		softAssert.assertEquals(objNewConstructionPage.getFieldValueFromAPAS("PUC",
-				"Parcel Information"),puc,
+		driver.navigate().to(
+				"https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId + "/view");
+		
+		softAssert.assertEquals(objNewConstructionPage.getFieldValueFromAPAS("PUC","Parcel Information"),puc,
 				"SMAB-T4368: Verify PUC is updated on parcel after approval of New Construction WI");
 
 		objParcelsPage.waitForElementToBeVisible(20, objNewConstructionPage.ncAuditTrail);
 		objParcelsPage.Click(objNewConstructionPage.ncAuditTrail);
 		
+		objNewConstructionPage.waitForElementToBeVisible(20,businessAudittrail.relatedBusinessRecords);
 		businessAudittrail.Click(businessAudittrail.relatedBusinessRecords);
+		Thread.sleep(5000);
 		HashMap<String, ArrayList<String>> gridRelatedBusinessRecords = objNewConstructionPage.getGridDataInHashMap();
 		String auditTrailSubject = gridRelatedBusinessRecords.get("Subject").get(0);
 		softAssert.assertEquals(auditTrailSubject, "NC-Manual Entry",
