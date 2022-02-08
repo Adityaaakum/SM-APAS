@@ -36,7 +36,7 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	DemolitionPage ObjDemolitionPage;
-	AuditTrailPage businessAuditTrail;
+	AuditTrailPage objBusinessAuditTrail;
 
 	String manualWIFilePath;
 
@@ -48,7 +48,7 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 		objParcelsPage = new ParcelsPage(driver);
 		ObjDemolitionPage = new DemolitionPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
-		businessAuditTrail = new AuditTrailPage(driver);
+		objBusinessAuditTrail = new AuditTrailPage(driver);
 		manualWIFilePath = testdata.MANUAL_WORK_ITEMS;
 
 	}
@@ -233,13 +233,14 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 		
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(ObjDemolitionPage.approveDemoButton));
 		
-		ObjDemolitionPage.searchModule(PARCELS);
-		ObjDemolitionPage.globalSearchRecords(apn);
+		driver.navigate().to(
+				"https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId + "/view");
+		objParcelsPage.waitForElementToBeVisible(30, objParcelsPage.componentActionsButtonText);
 		
 		objParcelsPage.waitForElementToBeVisible(20, ObjDemolitionPage.demoAuditTrail);
 		objParcelsPage.Click(ObjDemolitionPage.demoAuditTrail);
 		
-		businessAuditTrail.Click(businessAuditTrail.relatedBusinessRecords);
+		objBusinessAuditTrail.Click(objBusinessAuditTrail.relatedBusinessRecords);
 		HashMap<String, ArrayList<String>> gridRelatedBusinessRecords = ObjDemolitionPage.getGridDataInHashMap();
 		String auditTrailSubject = gridRelatedBusinessRecords.get("Subject").get(0);
 		softAssert.assertEquals(auditTrailSubject, "Demo - Manual Entry",
