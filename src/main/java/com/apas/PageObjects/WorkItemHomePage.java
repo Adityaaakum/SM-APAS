@@ -270,7 +270,7 @@ public class WorkItemHomePage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//a[@role='tab'][@data-label='Linked Items']")
 	public WebElement linkedItemsTab;
 	
-	@FindBy(xpath = "//a[contains(text(),'Trail')][1]")
+	@FindBy(xpath = commonXpath+"//a[contains(text(),'Trail')][1]")
 	public WebElement firstRelatedBuisnessEvent;
 	
 	@FindBy(xpath = "//a[contains(text(),'Trail')][1]/ancestor::tr/following-sibling::tr//a[1]")

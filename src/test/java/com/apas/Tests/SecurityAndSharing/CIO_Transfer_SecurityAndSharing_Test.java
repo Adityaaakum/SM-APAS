@@ -73,17 +73,15 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 
 		// Step3: Opening the work items and accepting the WI created by recorder batch
 		objCIOTransferPage.searchModule(HOME);
-		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABHome);
-		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABWorkItems);
-		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInPool);
-		Thread.sleep(4000);
-		objWorkItemHomePage.clickCheckBoxForSelectingWI(cioWorkItem);
-		objWorkItemHomePage.Click(objWorkItemHomePage.acceptWorkItemBtn);
-		Thread.sleep(4000);
-		objWorkItemHomePage.Click(objWorkItemHomePage.lnkTABInProgress);
-		Thread.sleep(4000);
-		objWorkItemHomePage.clickCheckBoxForSelectingWI(cioWorkItem);
-		objWorkItemHomePage.openActionLink(cioWorkItem);	  	
+		objWorkItemHomePage.globalSearchRecords(cioWorkItem);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+	  	
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
 
 		// step 4: fetching the recorded apn transfer object associated with the CIO WI
 		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + cioWorkItem + "'";
@@ -98,11 +96,11 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
 
 		// Step5: CIO staff user navigating to transfer screen by clicking on related action link
-		objCIOTransferPage.waitForElementToBeVisible(20,
-				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.quickActionButtonDropdownIcon,20);
 
-		objCIOTransferPage.scrollToBottom();
 
+		objCIOTransferPage.scrollToBottomOfPage();
+		
 		// Step6: verifying the presence of quick action buttons visible to CIO staff
 		softAssert.assertTrue(objCIOTransferPage.verifyElementVisible(objCIOTransferPage.calculateOwnershipButtonLabel),
 				"SMAB-T3390: Validation that calculateOwnershipButtonLabel button is visible CIO staff");
@@ -155,7 +153,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		ReportLogger.INFO("Updating the transfer code");
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
-		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-COPAL");
+		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-SALE");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
 		ReportLogger.INFO("transfer code updated successfully");
 
@@ -165,8 +163,8 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCIOTransferPage.waitForElementToBeVisible(15,
-				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.quickActionButtonDropdownIcon,20);
+
 
 		ReportLogger.INFO("Submitting the WI for approval");
 		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
@@ -209,8 +207,8 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		driver.navigate().refresh();
-		objCIOTransferPage.waitForElementToBeVisible(10,
-				objCIOTransferPage.getButtonWithText(objCIOTransferPage.calculateOwnershipButtonLabel));
+		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.quickActionButtonDropdownIcon,20);
+
 		softAssert.assertTrue(!objCIOTransferPage.verifyElementVisible(objCIOTransferPage.componentActionsButtonLabel),
 				"SMAB-T3467: Validation that componentActionsButtonLabel  button is not visible CIO supervisor after submit for approval");
 
@@ -308,7 +306,7 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		ReportLogger.INFO("Updating the transfer code");
 		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
 		objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
-		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-COPAL");
+		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-SALE");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
 		ReportLogger.INFO("transfer code updated successfully");
 

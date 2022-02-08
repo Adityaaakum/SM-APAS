@@ -38,6 +38,7 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 	DemolitionPage ObjDemolitionPage;
 	AuditTrailPage businessAuditTrail;
 
+	String manualWIFilePath;
 
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
@@ -48,7 +49,7 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 		ObjDemolitionPage = new DemolitionPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
 		businessAuditTrail = new AuditTrailPage(driver);
-
+		manualWIFilePath = testdata.MANUAL_WORK_ITEMS;
 
 	}
 
@@ -60,10 +61,10 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 	 * @param loginUser
 	 */
 	@Test(description = "SMAB-T4455,SMAB-T4366,SMAB-T4377,SMAB-T4378,SMAB-T4379,SMAB-T4403:This method is to verify few validations based on full demolition , partial demolition event codes", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "RPValuation", "Demolition", "DiscoveryDemolition"})
+			"Regression", "RPValuation", "Demolition", "DiscoveryDemolition", "WorkItemWorkflow", "BuildingPermit"})
 	public void RPValuation_Manual_Demolition_WorkItem(String loginUser) throws Exception {
 
-		// Fetching Active parcel
+	// Fetching Active parcel
 		String executionEnv = System.getProperty("region");
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Status__c = 'Active' Limit 1";
 		String apn = salesforceAPI.select(queryAPNValue).get("Name").get(0);
@@ -247,6 +248,102 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 		// Logout at the end of the test
 		ObjDemolitionPage.logout();
 
+	}
+	
+	/*
+	 * This method is to create a WI for the Demolition Discovery by the Appraiser
+	 * @param loginUser
+	 * @throws Exception
+	 */
+
+	@Test(description = "SMAB-T4272,SMAB-T4273,SMAB-T4274:RP Demolition Discovery- Verify that Appraisers "
+			+ "will have the ability to create a demolition discovery work item from the Component Actions"
+			+ " list and its Type label should be NC, the Actions label should be Demo - Other", 
+			dataProvider = "loginRPAppraiser", 
+			dataProviderClass = DataProviders.class , 
+			groups = {"Regression", "RPValuation", "Demolition", "DiscoveryDemolition", "WorkItemWorkflow", "BuildingPermit"})
+	public void BuildingPermit_Manual_Discovery_Demolition_ValidateWorkItemDetails(String loginUser) throws Exception {
+		
+		//Fetching parcel that are Active
+		String queryApnDetails ="SELECT Id,Name FROM Parcel__c where primary_situs__c != NULL and "
+				+ "Status__c='Active' and Id NOT IN (SELECT APN__c FROM Work_Item__c where "
+				+ "type__c='CIO') and (Not Name like '100%') and (Not Name like '800%') "
+				+ "and (Not Name like '%990') and (Not Name like '134%') Limit 2";
+		
+		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryApnDetails);
+		String apn1=responseAPNDetails.get("Name").get(0);		
+		String apnId1=responseAPNDetails.get("Id").get(0);
+				
+		Map<String, String> newConstructionWIData = objUtil.generateMapFromJsonFile(manualWIFilePath, 
+				                               "DataToCreateWorkItemOfTypeNCWithActionDemolitionOther");
+		
+		//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
+		ReportLogger.INFO("Step 1: Login to the Salesforce ");
+		ObjDemolitionPage.login(loginUser);
+		ObjDemolitionPage.searchModule(modules.APAS);
+		
+		// Step2: Navigating to the Parcel View page								
+		String execEnv = System.getProperty("region");
+		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com"
+				+ "/lightning/r/Parcel__c/"
+				+ apnId1 + "/view");
+				
+		// Step 3: Creating Manual work item for the Parcel 
+		String WINumber = objParcelsPage.createWorkItem(newConstructionWIData);
+		
+		if(!WINumber.isEmpty()) {			
+			softAssert.assertTrue(true, "SMAB-T4272: Demolition Discovery WI is created successfully");
+		}
+		else {	
+			softAssert.assertTrue(false, "SMAB-T4272: Demolition Discovery WI is created successfully");
+		}
+						
+		//Step 4:Clicking the  details tab for the work item newly created and clicking on Related Action Link
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+	
+		String sqlWIDetails = "select type__c ,sub_type__c ,"
+				+ "use_code_f__c , event_id__c ,request_type__c "
+				+ "from work_item__c where name = '"+WINumber+"'";
+				
+		String expectedUseCode = salesforceAPI.select(sqlWIDetails).get("Use_Code_f__c").get(0);
+		
+		//verify the WI details		
+		String actualType = objWorkItemHomePage.getFieldValueFromAPAS("Type"); 
+		String actualAction = objWorkItemHomePage.getFieldValueFromAPAS("Action");;
+		String actualReference = objWorkItemHomePage.getFieldValueFromAPAS("Reference");;
+		String actualRequestType = objWorkItemHomePage.getFieldValueFromAPAS("Request Type");;
+		String actualRelatedAction = objWorkItemHomePage.getFieldValueFromAPAS("Related Action");;
+		String actualAPN = objWorkItemHomePage.getFieldValueFromAPAS("APN");
+		String actualEventID = objWorkItemHomePage.getFieldValueFromAPAS("Event ID");
+		String actualUseCode = objWorkItemHomePage.getFieldValueFromAPAS("Use Code");
+		
+		//Assertions
+		softAssert.assertEquals(actualType, "NC", "SMAB-T4273: The WI Type is verified");
+		softAssert.assertEquals(actualAction, "Demo - Other", "SMAB-T4273: The WI Action is verified");
+		softAssert.assertContains(actualReference, "DC", "SMAB-T4273: The WI Reference is verified");
+		softAssert.assertContains(actualRequestType, "NC - Demo - Other", "SMAB-T4273: The WI RequestType is verified");
+		softAssert.assertEquals(actualRelatedAction, "Demo - Other", "SMAB-T4273: The WI Related Action is verified");
+		softAssert.assertEquals(actualAPN, apn1, "SMAB-T4273: The WI APN is verified");
+		softAssert.assertContains(actualEventID, "DC", "SMAB-T4273: The WI Event ID is verified");
+		softAssert.assertEquals(actualUseCode, expectedUseCode, "SMAB-T4273: The WI Use Code is verified");
+		
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		
+		String parentWindow = driver.getWindowHandle();
+		ReportLogger.INFO("Switch to the Mapping Action screen");
+		ObjDemolitionPage.switchToNewWindow(parentWindow);
+		
+		String newConstructionPage = "As part of the new construction process, confirm and update the values as needed:";		
+		String  constructPage = driver.findElement(By.xpath("//div[@class='slds-rich-text-editor__output uiOutputRichText forceOutputRichText']/p/span")).getText();
+		
+		boolean flag= false;
+	    if(constructPage.equalsIgnoreCase(newConstructionPage)) {
+	    	flag = true;
+	    	softAssert.assertTrue(flag, "SMAB-T4274:" + newConstructionPage);
+	    }	
+		
+	    // Logout at the end of the test
+	    ObjDemolitionPage.logout();
 	}
 
 }

@@ -117,6 +117,10 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 						+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
 								.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
 						+ "/related/Property_Ownerships__r/view");
+		
+		if(!objCioTransfer.waitForElementToBeVisible(20, objCioTransfer.getButtonWithText("New")))
+		driver.navigate().refresh();
+
 		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
 		String ownershipId = driver.getCurrentUrl().split("/")[6];
 
@@ -199,7 +203,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		ReportLogger.INFO("Updating the transfer code");
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
 		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.transferCodeLabel);
-		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-COPAL");
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-SALE");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 		ReportLogger.INFO("transfer code updated successfully");
 
@@ -227,7 +231,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 
 		// Verify that User is able to launch CIO Transfer Activity from business event triggered by Transfer Code update
 		
-		String auditTrailId =salesforceAPI.select("SELECT id FROM Transaction_Trail__c where Event_Library__c in (select id from Event_Library__c  where name='CIO-COPAL') order by createddate desc limit 1").get("Id").get(0);
+		String auditTrailId =salesforceAPI.select("SELECT id FROM Transaction_Trail__c where Event_Library__c in (select id from Event_Library__c  where name='CIO-SALE') order by createddate desc limit 1").get("Id").get(0);
 		 
 		driver.navigate().to("https://smcacre--" + execEnv
 					+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrailId + "/view");
@@ -250,7 +254,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.dovLabel), dovCIOScreen,
 				"SMAB-T3384:Verifying that business event created by transfer code update inherits the DOV from recorded document");
 		
-		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.eventLibraryLabel), "CIO-COPAL",
+		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.eventLibraryLabel), "CIO-SALE",
 				"SMAB-T3384:Verifying that business event created by transfer code update has event library value as the event code entered in transfer screen");
 		
 		softAssert.assertEquals(objMappingPage.getFieldValueFromAPAS(trail.statusLabel), "Open",
@@ -264,8 +268,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 
 		parentWindow = driver.getWindowHandle();
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
+		Thread.sleep(5000);
 		
 		String urlForRATScreen = driver.getCurrentUrl();
 		String  RATId=urlForRATScreen.split("/")[6];
@@ -282,8 +286,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		driver.navigate().refresh();
-		objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
+		Thread.sleep(5000);
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionReturn);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionReturn);
@@ -291,9 +295,9 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		objCioTransfer.enter(objCioTransfer.returnReasonTextBox, "return by CIO supervisor");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
 		objCioTransfer.waitForElementTextToBe(objCioTransfer.confirmationMessageOnTranferScreen,
-				"Work Item has been rejected by the approver.", 30);
+				"Work Item has been returned by the approver.", 30);
 		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.confirmationMessageOnTranferScreen),
-				"Work Item has been rejected by the approver.",
+				"Work Item has been returned by the approver.",
 				"SMAB-T3510: Validation that proper mesage is displayed after WI is returned by CIO supervisor");
 
 		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
@@ -329,8 +333,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		// related action link
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID1 + "/view");
-		objCioTransfer.waitForElementToBeVisible(15,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
+
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.nextButton);
 
@@ -346,7 +350,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		ReportLogger.INFO("Updating the transfer code");
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
 		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.transferCodeLabel);
-		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-COPAL");
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, "CIO-SALE");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 		ReportLogger.INFO("transfer code updated successfully");
 
@@ -354,8 +358,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID1 + "/view");
 		driver.navigate().refresh();
-		objCioTransfer.waitForElementToBeVisible(40,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
+
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
 		
@@ -375,9 +379,10 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		// operations
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
 				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
-		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.newButton);
+		if(!objCioTransfer.waitForElementToBeVisible(20, objCioTransfer.newButton))
+			driver.navigate().refresh();
 		objCioTransfer.Click(driver.findElement(By.xpath(objCioTransfer.xpathShowMoreLinkForEditOption
-				.replace("propertyName", hashMapOwnershipAndTransferGranteeCreationData.get("Last Name")))));
+				.replace("propertyName", hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase()))));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.editLinkUnderShowMore);
 		objCioTransfer.Click(objCioTransfer.editLinkUnderShowMore);
 		objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.saveButtonModalWindow);
@@ -389,9 +394,10 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		objCioTransfer.Click(objCioTransfer.saveButtonModalWindow);
 
 		driver.navigate().refresh();
-		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.newButton);
+		if(!objCioTransfer.waitForElementToBeVisible(20, objCioTransfer.newButton))
+			driver.navigate().refresh();
 		objCioTransfer.Click(driver.findElement(By.xpath(objCioTransfer.xpathShowMoreLinkForEditOption
-				.replace("propertyName", hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name")))));
+				.replace("propertyName", hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase()))));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.editLinkUnderShowMore);
 		objCioTransfer.Click(objCioTransfer.editLinkUnderShowMore);
 		objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.saveButtonModalWindow);
@@ -432,55 +438,55 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 
 		// STEP 19-Validating the Owners ,their status and ownership percentages
 		softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(0),
-				hashMapOwnershipAndTransferGranteeCreationData2.get("Last Name"),
+				hashMapOwnershipAndTransferGranteeCreationData2.get("Last Name").toUpperCase(),
 				"SMAB-T3510:Validating that the grantee that was created from second transfer screen has become  new owner : "
-						+ hashMapOwnershipAndTransferGranteeCreationData2.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData2.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Status").get(0), "Active",
 				"SMAB-T3510: Validating that status of new owner which is the grantee created from second transfer screen is Active : "
-						+ hashMapOwnershipAndTransferGranteeCreationData2.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData2.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Percentage").get(0), "25.0000%",
 				"SMAB-T3510: Validating that Ownership Percentage of new owner which is the grantee created from second transfer screen is correct: "
-						+ hashMapOwnershipAndTransferGranteeCreationData2.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData2.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(1),
-				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase(),
 				"SMAB-T3510:Validating that the grantee that was created from first  transfer screen has become  new owner : "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Status").get(1), "Active",
 				"SMAB-T3510: Validating that status of new owner which is the grantee created from first transfer screen is Active : "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Percentage").get(1), "25.0000%",
 				"SMAB-T3510: Validating that Ownership Percentage of new owner which is the grantee created from first  transfer screen is correct: "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(2),
-				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase(),
 				"SMAB-T3510:Validating that the grantee that was created from first  transfer screen has retired due to second transfer screen "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Status").get(2), "Retired",
 				"SMAB-T3510: Validating that status of new retired owner which is the grantee created from first transfer screen is retired : "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Percentage").get(2), "50.0000%",
 				"SMAB-T3510: Validating that Ownership Percentage of new retired owner which is the grantee created from first transfer screen is correct: "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("DOV").get(2), "7/19/2001",
 				"SMAB-T3510: Validating that status of new retired owner which is the grantee created from first transfer screen is retired : "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Remarks").get(2), "New Retired Record after Rolled back Retire",
 				"SMAB-T3510: Validating that remarks of new retired owner which is the grantee created from first transfer screen is correct : "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(2), "7/19/2001",
 				"SMAB-T3510: Validating that Ownership Start Date of new retired owner which is the grantee created from first transfer screen is updatd DOV entered wile performing roll back operation : "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		String queryOwnershipDetails = "SELECT id,Vesting_Type__c,Original_Transferor__c  FROM Property_Ownership__c where DOV_Date__c =2001-07-19 and parcel__c in (Select Id from parcel__C where name='"
 				+ apnFromWIPage + "')";
@@ -488,28 +494,28 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 
 		softAssert.assertEquals(responseOwnershipDetails.get("Vesting_Type__c").get(0), "JT",
 				"SMAB-T3510: Validating that Vesting_Type of new retired owner which is the grantee created from first transfer screen is retired : "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(responseOwnershipDetails.get("Original_Transferor__c").get(0), "Yes",
 				"SMAB-T3510: Validating that Original_Transferor of new retired owner which is the grantee created from first transfer screen is correct : "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(3),
-				hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name"),
+				hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase(),
 				"SMAB-T3510:Validating  the grantee that was created from first  transfer screen "
-						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Status").get(3), "Active",
 				"SMAB-T3510: Validating that status of new active owner which is the grantee created from first transfer screen is Active : "
-						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Percentage").get(3), "50.0000%",
 				"SMAB-T3510: Validating that Ownership Percentage of new active owner which is the grantee created from first  transfer screen is correct: "
-						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Remarks").get(3), "New Active record after Rolled back Active",
 				"SMAB-T3510: Validating that remarks of new active owner which is the grantee created from first transfer screen is correct : "
-						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(4), acesseName,
 				"SMAB-T3510:Validating  the old original parcel owner " + acesseName);
@@ -532,30 +538,30 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		HashMap<String, ArrayList<String>> HashMapRolledBackOwner = objCioTransfer.getGridDataInHashMap();
 
 		softAssert.assertEquals(HashMapRolledBackOwner.get("Owner").get(0),
-				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase(),
 				"SMAB-T3510:Validating  the first grantee that was created from first  transfer screen is now rolled back "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapRolledBackOwner.get("Status").get(0), "Rolled Back",
 				"SMAB-T3510: Validating that status of the first grantee that was created from first  transfer screen is now rolled back "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapRolledBackOwner.get("Ownership Percentage").get(0), "50.0000%",
 				"SMAB-T3510: Validating that Ownership Percentage of rolled back owner which is the first grantee created from first  transfer screen is correct after roll back: "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapRolledBackOwner.get("Owner").get(1),
-				hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name"),
+				hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase(),
 				"SMAB-T3510:Validating  the second grantee that was created from first  transfer screen is now rolled back "
-						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapRolledBackOwner.get("Status").get(1), "Rolled Back",
 				"SMAB-T3510: Validating that status of the second grantee that was created from first  transfer screen is now rolled back "
-						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapRolledBackOwner.get("Ownership Percentage").get(1), "50.0000%",
 				"SMAB-T3510: Validating that Ownership Percentage of rolled back owner which is the second grantee created from first  transfer screen is correct: "
-						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name"));
+						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase());
 
 		objCioTransfer.logout();
 		Thread.sleep(4000);
@@ -567,8 +573,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		driver.navigate().refresh();
-		objCioTransfer.waitForElementToBeVisible(30,
-				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
+
 
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionApprove);
