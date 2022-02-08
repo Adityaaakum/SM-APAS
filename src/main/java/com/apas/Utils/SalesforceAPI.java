@@ -563,4 +563,13 @@ public class SalesforceAPI extends TestBase {
         if (queryAircraftListingWorkItem != null) delete(queryAircraftListingWorkItem);
     }
     
+    
+    /**
+     * This method will delete Aircraft SDR/eSDR WIs
+     */
+    public void deleteAircraftSDRWIs(){
+        String queryAircraftSDRWorkItem = "Select Id from Work_Item__c where Work_Pool__r.Name='BPP Auditor' and (Status__c = 'In Pool' Or Status__c = 'In Progress') and Age__c > 1";
+        if (queryAircraftSDRWorkItem != null) delete(queryAircraftSDRWorkItem);
+    }
+    
 }
