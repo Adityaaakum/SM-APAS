@@ -1146,7 +1146,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		String mappingActionCreationData =  testdata.ONE_TO_ONE_MAPPING_ACTION;
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformOneToOneMappingActionWithAllFields");
+				"DataToPerformOneToOneMappingActionWithoutAllFields");
 
 		objParcelsPage.updateTraAndSitusWithSameCity(apn);
 
