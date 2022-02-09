@@ -74,6 +74,7 @@ public class Parcel_Management_TRA_Updates_Tests extends TestBase implements tes
 
 		// Step3 : Creating a new TRA record with same name as above created TRA record
 		objTRAPage.searchModule(TRA);
+		objTRAPage.waitForElementToBeClickable(objTRAPage.newButton,20);
 		objTRAPage.createTRARecord(hashMapTRAData);
 		objTRAPage.Click(objTRAPage.getButtonWithText("Save"));
 		objTRAPage.waitForElementToBeClickable(objTRAPage.pageError,20);
