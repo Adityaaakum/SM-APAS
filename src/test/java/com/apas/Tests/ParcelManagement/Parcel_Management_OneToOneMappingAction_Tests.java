@@ -1136,7 +1136,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		String childAPNPUC;
 		
-		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' limit 1";
+		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and  Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and Status__c = 'Active' limit 2";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 
@@ -1148,23 +1148,14 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 		Map<String, String> hashMapOneToOneMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformOneToOneMappingActionWithAllFields");
 
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
-		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
-		//jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-		
-		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'","Primary_Situs__c", "");
-		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'","TRA__c",
-				salesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
-		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'","Primary_Situs__c",
-				salesforceAPI.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id").get(0));
-		
+		objParcelsPage.updateTraAndSitusWithSameCity(apn);
+
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
-		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
-		
-		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
+		jsonObject.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
+
+		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), jsonObject);
 		
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
 		objMappingPage.login(loginUser);
@@ -1307,7 +1298,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		//Step 5: Click one to one Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+		objMappingPage.waitForElementToBeVisible(20,objMappingPage.confirmationMessageOnSecondScreen);
 		softAssert.assertEquals(objMappingPage.confirmationMsgOnSecondScreen(),"Parcel(s) have been created successfully. Please review spatial information.",
 				"SMAB-T2652: Validate that User is able to perform one to one  action from mapping actions tab");
 
