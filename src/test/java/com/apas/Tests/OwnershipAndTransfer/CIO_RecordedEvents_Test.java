@@ -460,29 +460,36 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.dovLabel),
 				dateofRecordingAfterConversion, "SMAB-T3166: Verify that DOV is defaulted to DOR");
 
-		objCioTransfer.editRecordedApnField(objCioTransfer.doeLabel);
-
-		objCioTransfer.enter(objCioTransfer.doeLabel,
-				hashMapOwnershipAndTransferGranteeCreationData.get("IncorrectDOV"));
-		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
-
-		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.doeLabel),
-				hashMapOwnershipAndTransferGranteeCreationData.get("IncorrectDOV"),
-				"SMAB-T3166:Verifying that DOE fied is editable ");
-
-		objCioTransfer.editRecordedApnField(objCioTransfer.dovLabel);
-
-		objCioTransfer.enter(objCioTransfer.dovLabel,
-				hashMapOwnershipAndTransferGranteeCreationData.get("IncorrectDOV"));
-		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
-		
-		
-		softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.errorMessageOnTransferScreen),
-				"You cannot enter date for DOV later than DOR.",
-				"SMAB-T3166:Verifying that DOV cannot be later than DOR for recorded document");
-
-		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.CancelButton));
-
+		/*
+		 * objCioTransfer.editRecordedApnField(objCioTransfer.doeLabel);
+		 * 
+		 * objCioTransfer.enter(objCioTransfer.doeLabel,
+		 * hashMapOwnershipAndTransferGranteeCreationData.get("IncorrectDOV"));
+		 * objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.
+		 * saveButton));
+		 * 
+		 * softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.
+		 * doeLabel),
+		 * hashMapOwnershipAndTransferGranteeCreationData.get("IncorrectDOV"),
+		 * "SMAB-T3166:Verifying that DOE fied is editable ");
+		 * 
+		 * objCioTransfer.editRecordedApnField(objCioTransfer.dovLabel);
+		 * 
+		 * objCioTransfer.enter(objCioTransfer.dovLabel,
+		 * hashMapOwnershipAndTransferGranteeCreationData.get("IncorrectDOV"));
+		 * objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.
+		 * saveButton));
+		 * 
+		 * 
+		 * softAssert.assertEquals(objCioTransfer.getElementText(objCioTransfer.
+		 * errorMessageOnTransferScreen),
+		 * "You cannot enter date for DOV later than DOR.",
+		 * "SMAB-T3166:Verifying that DOV cannot be later than DOR for recorded document"
+		 * );
+		 * 
+		 * objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.
+		 * CancelButton));
+		 */
 		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.transferTaxLabel),
 				"$" + recorderTransferTax.substring(0, 1) + "," + recorderTransferTax.substring(1),
 				"SMAB-T3206:Verifying that recorder transfer tax of recorded document is transfer tax of the transfer screen");

@@ -798,6 +798,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					deleteRecordedApnFromRecordedDocument(recordedDocumentID);
 					Thread.sleep(3000);
 					addRecordedApn(recordedDocumentID, 1);
+					if(hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date")!=null) {
+					salesforceApi.update("Recorded_Document__c", recordedDocumentID, "Recording_Date__c",updateDateFormat(hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date")));}
 
 					generateRecorderJobWorkItems(recordedDocumentID);
 
@@ -1054,7 +1056,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		/* 
 		 * Description - This method will change the date format
 		 * Param - mm/dd/yyyy
-		 * Return - YYYY/MM/DD
+		 * Return - YYYY-MM-DD
 		 */
 		
 		public String updateDateFormat(String dateValue ) throws Exception {
