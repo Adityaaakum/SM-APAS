@@ -303,14 +303,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String recorderConvTax = "11875.00";
 		String pcorExit;
 
-		JSONObject jsonForPartialTransfer = objCioTransfer.getJsonObject();
-		
-		      String situsId = salesforceAPI.select("SELECT id FROM Situs__c where name !=null").get("Id").get(0);
-		      String pucId  = salesforceAPI.select("SELECT Id FROM PUC_Code__c where Legacy__c='No' AND  NAME !='99-RETIRED PARCEL'").get("Id").get(0);
-		      JSONObject jsonForParcelValidation =objCioTransfer.getJsonObject();
-		      jsonForParcelValidation.put("Primary_Situs__c", situsId);
-		      jsonForParcelValidation.put("PUC_Code_Lookup__c", pucId);
-		      jsonForParcelValidation.put("Short_Legal_Description__c", "Test Legal Description");
+		JSONObject jsonForPartialTransfer = objCioTransfer.getJsonObject();	
 		      
 
 		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
@@ -399,9 +392,23 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				.get("Ownership_Start_Date__c").get(0);
 		jsonForPartialTransfer.put("DOR__c", dateOfEvent);
 		jsonForPartialTransfer.put("DOV_Date__c", dateOfEvent);
+		
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apnFromWIPage + "'",
+				"Primary_Situs__c", "");
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apnFromWIPage + "'",
+				"TRA__c",
+				salesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apnFromWIPage + "'",
+				"Primary_Situs__c",
+				salesforceAPI.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id")
+						.get(0));
+		
+		JSONObject jsonForParcelValidation = objCioTransfer.getJsonObject();
+		jsonForParcelValidation.put("Primary_Situs__c", salesforceAPI.select("Select Primary_Situs__c from parcel__c where name ='"+apnFromWIPage+"'").get("Primary_Situs__c").get(0));
+		jsonForParcelValidation.put("PUC_Code_Lookup__c", salesforceAPI.select("Select PUC_Code_Lookup__c from parcel__c where name='"+apnFromWIPage+"'").get("PUC_Code_Lookup__c").get(0));
 
 		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForPartialTransfer);
-		salesforceAPI.update("Parcel__c",salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0), jsonForParcelValidation);
+	
 
 		objMappingPage.logout();
 
@@ -490,6 +497,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		 * objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.
 		 * CancelButton));
 		 */
+		//Below two validations are failed due to new functionality added ,will be fixed as a part of automation story
 		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.transferTaxLabel),
 				"$" + recorderTransferTax.substring(0, 1) + "," + recorderTransferTax.substring(1),
 				"SMAB-T3206:Verifying that recorder transfer tax of recorded document is transfer tax of the transfer screen");
@@ -546,9 +554,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3206: Verifying that Last Modified By field is visible on CIO transfer screen");
 		softAssert.assertEquals(objCioTransfer.verifyElementVisible(objCioTransfer.transferStatusLabel), true,
 				"SMAB-T3206: Verifying that CIO Transfer Status field is visible on CIO transfer screen");
-		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.situsLabel), salesforceAPI.select("Select name from Situs__C where id ='"+situsId+"'").get("Name").get(0),
+		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.situsLabel), salesforceAPI.select("Select name from Situs__C where id ='"+jsonForParcelValidation.get("Primary_Situs__c")+"'").get("Name").get(0),
 				"SMAB-T3206: Verifying that correct situs field value of parcel is getting reflected in RAT screen");
-		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.pucCodeLabel), salesforceAPI.select("Select name from PUC_Code__c where id ='"+pucId+"'").get("Name").get(0),
+		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.pucCodeLabel), salesforceAPI.select("Select name from PUC_Code__c where id ='"+jsonForParcelValidation.get("PUC_Code_Lookup__c")+"'").get("Name").get(0),
 				"SMAB-T3206: Verifying that correct PUC field value of parcel is getting reflected in RAT screen");
 		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.shortLegalDescriptionLabel), salesforceAPI.select("Select Short_Legal_Description__c from Parcel__c where id ='"+salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0)+"'").get("Short_Legal_Description__c").get(0),
 				"SMAB-T3206: Verifying that correct Short Legal description field value of parcel is getting reflected in RAT screen");
@@ -660,6 +668,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3446: Validating that status of old owner is Retired");
 		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Percentage").get(2), "100.0000%",
 				"SMAB-T3446:Validating that retired owner had percentage of 100");
+		
+		//This functionality is changed and it is needed to be changed as a part of new automation story .
 		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(0), ownershipDovForNewGrantee,
 				"SMAB-T3691: Validating that Ownership start date of new owner is DOV of the recorded document by default.");
 		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(1),
