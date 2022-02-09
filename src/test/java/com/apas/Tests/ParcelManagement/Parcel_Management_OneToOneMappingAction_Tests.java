@@ -1701,7 +1701,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			objMappingPage.deleteOwnershipFromParcel(apnId);
 
 
-			salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), "Lot_Size_SQFT__c", "100");
+			salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), "Lot_Size_SQFT__c", "500");
 			
 
 			String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL and legacy__c ='No' limit 1";
@@ -1720,7 +1720,8 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			jsonForOutputValidations.put("Short_Legal_Description__c", legalDescriptionValue);
 			jsonForOutputValidations.put("District__c", districtValue);
 			jsonForOutputValidations.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
-			jsonForOutputValidations.put("TRA__c", responseTRADetails.get("Id").get(0));
+			//jsonForOutputValidations.put("TRA__c", responseTRADetails.get("Id").get(0));
+			objParcelsPage.updateTraAndSitusWithSameCity(apn);
 
 			salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonForOutputValidations);
 			
@@ -1773,6 +1774,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			// Submit work item for approval
 			String querys = "Select Id from Work_Item__c where Name = '" + workItemNumber + "'";
 			salesforceAPI.update("Work_Item__c", querys, "Status__c", "Submitted for Approval");
+			salesforceAPI.update("Parcel__c", response.get("Id").get(0), "Lot_Size_SQFT__c", "500");
 
 			driver.switchTo().window(parentWindow);
 			objWorkItemHomePage.logout();
@@ -1873,6 +1875,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			softAssert.assertEquals(puc, pucAndNeighCode[0], "SMAB-T4015:PUC was updated successfully");
 			objParcelsPage.Click(objParcelsPage.workItems);
 			objParcelsPage.Click(objParcelsPage.allocateValue);
+			objWorkItemHomePage.waitForElementToBeClickable(30, objWorkItemHomePage.detailsTab);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 			String assignedTo = objMappingPage.getFieldValueFromAPAS("Assigned To", "Information");
 			String workPool = objMappingPage.getFieldValueFromAPAS("Work Pool", "Information");
