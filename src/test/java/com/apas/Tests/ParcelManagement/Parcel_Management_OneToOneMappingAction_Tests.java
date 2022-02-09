@@ -943,7 +943,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			 objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
 			objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneParcelMappingData.get("Action"));
 			objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, hashMapOneToOneParcelMappingData.get("Are taxes fully paid?"));
-			objMappingPage.waitForElementToBeVisible(objMappingPage.reasonCodeField);
+			objMappingPage.waitForElementToBeVisible(20,objMappingPage.reasonCodeField);
 			softAssert.assertEquals(objMappingPage.getAttributeValue(objMappingPage.getWebElementWithLabel(objMappingPage.reasonCodeTextBoxLabel),"value"),reasonCode,
 					"SMAB-T2837: Validation that reason code field is auto populated from parent parcel work item");
 			objMappingPage.fillMappingActionForm(hashMapOneToOneParcelMappingData);
@@ -1194,7 +1194,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		//Step 7: Click one to one Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
-		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
+		objMappingPage.waitForElementToBeVisible(20,objMappingPage.confirmationMessageOnSecondScreen);
 
 		HashMap<String, ArrayList<String>> responsePUCDetailsChildAPN= salesforceAPI.select("SELECT Name FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Name='"+apn+"') limit 1");
 		if(responsePUCDetailsChildAPN.size()==0)
@@ -1461,7 +1461,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
 			objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel,hashMapOneToOneParcelMappingData.get("Action"));
 			objMappingPage.selectOptionFromDropDown(objMappingPage.taxesPaidDropDownLabel, hashMapOneToOneParcelMappingData.get("Are taxes fully paid?"));
-			objMappingPage.waitForElementToBeVisible(objMappingPage.reasonCodeField);
+			objMappingPage.waitForElementToBeVisible(20,objMappingPage.reasonCodeField);
 			objMappingPage.fillMappingActionForm(hashMapOneToOneParcelMappingData);
 			objMappingPage.waitForElementToBeVisible(5, objMappingPage.generateParcelButton);
 			
@@ -1645,7 +1645,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			objMappingPage.enter(objMappingPage.netLandGainTextBoxLabel, "");
 
 			objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.nextButton));
-			objMappingPage.waitForElementToBeVisible(objMappingPage.legalDescriptionFieldSecondScreen);
+			objMappingPage.waitForElementToBeVisible(20,objMappingPage.legalDescriptionFieldSecondScreen);
 			softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.errorMessageonSecondCustomScreen),
 					"Parent Parcel Size = 200, Net Land Loss = 20, Net Land Gain = 0, Total Child Parcel(s) Size = 1"
 					+ "80.",
