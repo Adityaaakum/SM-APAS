@@ -51,6 +51,8 @@ public class AuditTrailPage extends ApasGenericPage {
 	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//strong[contains(normalize-space(),'Performed Alpha')]")
 	public WebElement businessEventCharacteristicsAuditTrail; 
 	
+	@FindBy(xpath="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[text()='Record Type']/../..//*[@slot='outputField']//span")
+	public WebElement recordTypeFieldValue; 
 	
   	   
 }

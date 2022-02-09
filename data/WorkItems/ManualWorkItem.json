@@ -202,5 +202,14 @@
 		"Description": "Creation of work item",
 		"Priority": "Urgent",
 		"Work Item Routing": "Give Work Item to Me"
+	},
+	"DataToCreateWorkItemOfTypeRPNewConstruction": {
+		"Work Item Type": "NC",
+		"Actions": "Construction - Other",
+		"Audit Trail": "No",
+		"Reference": "Test WI",
+		"Description": "Creation of work item",
+		"Priority": "Urgent",
+		"Work Item Routing": "Give Work Item to Me"
 	}
 	}

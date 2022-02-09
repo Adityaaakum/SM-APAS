@@ -62,7 +62,7 @@ public class BPP_FileNetIntegration_Test extends TestBase {
 	 * DESCRIPTION: Validate Filenet document button on property record
 	 */
 
-	@Test(description = "SMAB-T4219: Verify filenet documents on property record page", dataProvider = "BPPAdminAndPrincipalAndAppraisalSupport", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T4219: Verify filenet documents on property record page", dataProvider = "BPPAdminAndPrincipalAndAppraisalSupport", dataProviderClass = DataProviders.class, enabled = false, groups = {
 			"Regression", "FileNetIntegration", "BPPManagement" })
 	public void BPP_ValidateFileNetDocument(String loginUser) throws Exception {
 
