@@ -906,4 +906,23 @@ public class ParcelsPage extends ApasGenericPage {
 			enter(getWebElementWithLabel("Situs Name"), dataMap.get("Situs Name"));
 			Click(getButtonWithText("Save"));
 		}
+		
+		/**
+		 * This method will update the same City for TRA and Situs on given parcels
+		 * 
+		 * 
+		 **/
+		public void updateTraAndSitusWithSameCity(String... apns) {
+			for (String apn : apns) {
+
+				objSalesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
+						"Primary_Situs__c", "");
+				objSalesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'", "TRA__c",
+						objSalesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+				objSalesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
+						"Primary_Situs__c", objSalesforceAPI
+								.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id").get(0));
+
+			}
+		}
 	}
