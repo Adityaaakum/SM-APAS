@@ -1648,25 +1648,15 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		apnValue.put("APN1", apn1); 
 		apnValue.put("APN2", apn2); 
 		apnValue.put("APN3", apn3);
-				
-		int numbParcel2 = objMappingPage.convertAPNIntoInteger(apn2);
-		int numbParcel3 = objMappingPage.convertAPNIntoInteger(apn3);
-			
+						
+		String concatenateAPNWithDifferentMapBookMapPage = apn2+","+apn3;
 		
-		int smallApn = numbParcel2<numbParcel3?numbParcel2:numbParcel3;
-		
-		String concatenateAPNWithDifferentMapBookMapPage ="";
-		if(smallApn== numbParcel2) 
-			concatenateAPNWithDifferentMapBookMapPage = apn2+","+apn3;
-		else
-		    concatenateAPNWithDifferentMapBookMapPage = apn3+","+apn2;
-	    
 	    String legalDescriptionValue="Legal PM 85/25-260";
 		String districtValue="District01";
 		String parcelSize	= "200";
 
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
-		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+//		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
+//		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
 		
 		HashMap<String, ArrayList<String>> responsePUCDetails= salesforceAPI.select("SELECT Name,id  FROM PUC_Code__c where id in (Select PUC_Code_Lookup__c From Parcel__c where Status__c='Active')and  Legacy__c = 'NO' limit 1");
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
@@ -1680,16 +1670,22 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		jsonParcelObject.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonParcelObject.put("District__c",districtValue);
 		jsonParcelObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+//		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 		jsonParcelObject.put("Lot_Size_SQFT__c",parcelSize);
 
 		//updating PUC details
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObject);
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonParcelObject);
 		salesforceAPI.update("Parcel__c",responseAPN3Details.get("Id").get(0),jsonParcelObject);
-		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(0));
-		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(0));	
-		salesforceAPI.update("Parcel__c", responseAPN3Details.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(0));
+		
+		objParcelsPage.updateTraAndSitusWithSameCity(apn1);
+		objParcelsPage.updateTraAndSitusWithSameCity(apn2);
+		objParcelsPage.updateTraAndSitusWithSameCity(apn3);
+
+
+//		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(0));
+//		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(0));	
+//		salesforceAPI.update("Parcel__c", responseAPN3Details.get("Id").get(0), "TRA__c", responseTRADetails.get("Id").get(0));
 
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -1885,8 +1881,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 				"SMAB-T2664: Validate that second Parent APN is displayed in the linked item");
 		objMappingPage.Click(objWorkItemHomePage.detailsTab);
 		referenceURl= objMappingPage.getFieldValueFromAPAS("Navigation Url", "Reference Data Details");
-//		softAssert.assertContains(referenceURl,concatenateAPNWithDifferentMapBookMapPage,
-//				"SMAB-T2910,SMAB-T3473: Validate that Parent APNs are present in the reference Link");
 		
 		if(referenceURl.contains(apn2) && referenceURl.contains(apn3) )
 			softAssert.assertTrue(true,
