@@ -1150,7 +1150,20 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 1";
 		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
+		//jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'","Primary_Situs__c", "");
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'","TRA__c",
+				salesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'","Primary_Situs__c",
+				salesforceAPI.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id").get(0));
+		
+		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
+		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+
+		jsonObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
 		jsonObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+		
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonObject);
 		
 		// Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
@@ -1282,7 +1295,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 
 		//Step 4: filling all fields in mapping action screen
 		objMappingPage.fillMappingActionForm(hashMapOneToOneMappingData);
-		objMappingPage.waitForElementToBeVisible(objMappingPage.generateParcelButton);
+		objMappingPage.waitForElementToBeVisible(20,objMappingPage.generateParcelButton);
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		String childAPN=gridDataHashMap.get("APN").get(0);	
 		String legalDescription=gridDataHashMap.get("Legal Description*").get(0);
