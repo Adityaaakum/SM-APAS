@@ -1720,7 +1720,6 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			jsonForOutputValidations.put("Short_Legal_Description__c", legalDescriptionValue);
 			jsonForOutputValidations.put("District__c", districtValue);
 			jsonForOutputValidations.put("Neighborhood_Reference__c", responseNeighborhoodDetails.get("Id").get(0));
-			//jsonForOutputValidations.put("TRA__c", responseTRADetails.get("Id").get(0));
 			objParcelsPage.updateTraAndSitusWithSameCity(apn);
 
 			salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonForOutputValidations);
@@ -1776,7 +1775,6 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			String querys = "Select Id from Work_Item__c where Name = '" + workItemNumber + "'";
 			salesforceAPI.update("Work_Item__c", querys, "Status__c", "Submitted for Approval");
 			
-
 			driver.switchTo().window(parentWindow);
 			objWorkItemHomePage.logout();
 			Thread.sleep(5000);
