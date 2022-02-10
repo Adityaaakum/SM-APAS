@@ -212,5 +212,14 @@
 		"Description": "Creation of work item",
 		"Priority": "Urgent",
 		"Work Item Routing": "Give Work Item to Me"
+	},
+	"DataToCreateWorkItemOfHOEFormReceivedAndProcessing": {
+    "Work Item Type": "Exemptions",
+    "Actions": "HOE Form received & processing",
+    "Audit Trail": "No",
+    "Reference":  "WI for HOE Form received & processing",
+    "Description": "Creation of work item for HOE Form received & processing",
+    "Priority": "Urgent",
+    "Work Item Routing": "Give Work Item to Me"
 	}
 	}
