@@ -1,7 +1,9 @@
 package com.apas.Tests.OwnershipAndTransfer;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -2007,14 +2009,12 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		// Step2: Opening the PARCELS page
 		driver.navigate().to(
 				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + activeApnId + "/view");
-		objParcelsPage.waitForElementToBeVisible(20,
-				objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objParcelsPage.waitForElementToBeVisible(20, objParcelsPage.componentActionsButtonText);
 
 		// Step3: Create UT event perform validations
 		String timeStamp = String.valueOf(System.currentTimeMillis());
 		String description = dataToCreateUnrecordedEventMap.get("Description") + "_" + timeStamp;
-		objMappingPage.waitForElementToBeClickable(
-				objMappingPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		objMappingPage.waitForElementToBeClickable(10, objParcelsPage.componentActionsButtonText);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.selectOptionDropdown);
 		objParcelsPage.selectOptionFromDropDown(objParcelsPage.selectOptionDropdown, "Create Audit Trail Record");
@@ -2046,6 +2046,10 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 
 		// STEP 5-Creating the new Grantee
 		String recordeAPNTransferID = driver.getCurrentUrl().split("/")[6];
+		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.transferCodeLabel);
+		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-P19");
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
 		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID,
 				hashMapOwnershipAndTransferGranteeCreationData);
 		driver.navigate().to("https://smcacre--" + execEnv
@@ -2055,21 +2059,28 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 
 		// STEP 6- CIO Staff submitting for Approval
 		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+		{
+			objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+		}
 		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.finishButtonPopUp);
 		objCIOTransferPage.Click(objCIOTransferPage.finishButtonPopUp);
+		
+		// Delete all AV and RE 
+		objParcelsPage.deleteAssessedValuesFromParcel(activeApnId);
+		objParcelsPage.deleteRollEntryFromParcel(activeApnId);
+		
 		Thread.sleep(2000);
 		objCIOTransferPage.logout();
 		Thread.sleep(5000);
 		ReportLogger.INFO("CIO activity Submitted for Approval");
 
-		// STEP 7- Login as CIO-Supervisor and Return RAT
+		// STEP 7- Login as CIO-Supervisor and approve RAT
 		objMappingPage.login(users.CIO_SUPERVISOR);
 		driver.navigate().to(currentUrl);
 		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.calculateOwnershipButtonLabel);
-		objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
-		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.transferCodeLabel);
-		objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, "CIO-P19");
-		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+		
 		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.quickActionOptionApprove);
 		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Approve");
 		objCIOTransferPage.waitForElementToBeVisible(5, objCIOTransferPage.finishButtonPopUp);
@@ -2079,7 +2090,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.logout();
 		Thread.sleep(5000);
 
-		// STEP 2 : Login as Appraiser user
+		// Login as Appraiser user
 		ReportLogger.INFO("Login as Appriaser user");
 		objMappingPage.login(users.RP_APPRAISER);
 
@@ -2094,7 +2105,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 
-		// STEP 9: Navigating to Appraisal Activity Screen
+		// STEP 3: Navigating to Appraisal Activity Screen
 		ReportLogger.INFO("Navigating to Appraisal Activity Screen");
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
 		objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
@@ -2106,9 +2117,9 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 
 		// STEP 4 : Validating Assessed value records and Roll entry record list view values for LCV And ICV as Zero Values
 		String DOV = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dovLabel);
-		String DOVYear = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dovLabel).substring(5, 9);
+		String DOVYear = objCIOTransferPage.getFieldValueFromAPAS(objCIOTransferPage.dovLabel).substring(4);
 		Integer convertedNumber = Integer.valueOf(DOVYear);
-		int BaseYear = convertedNumber + 1;
+		int baseYear = convertedNumber + 1;
 		objCIOTransferPage.editRecordedApnField("Land Cash Value");
 		objCIOTransferPage.enter("Land Cash Value", "324567");
 		objCIOTransferPage.enter("Improvement Cash Value", "456784");
@@ -2120,19 +2131,22 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 				+ "/related/Assessed_Values__r/view");
 		ReportLogger.INFO("Opened Assessed value records");
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.newButton, 3);
-		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNew = objMappingPage.getGridDataInHashMap();
-		String assessedValueRecord = gridDataHashMapAssessedValueNew.get("Assessed Values ID").get(1);
-		String assessedValueRecordID = salesforceAPI
-				.select("SELECT Id FROM Assessed_BY_Values__c WHERE Name = '" + assessedValueRecord + "'").get("Id")
-				.get(0);
-		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Base Year").get(1), BaseYear,
+		String assessedValueQuery = "SELECT Id, Base_Year__c, Effective_Start_Date_2__c, Status__c FROM Assessed_BY_Values__c WHERE APN__c = '"+APN+"' order by Effective_Start_Date_2__c desc limit 1";
+		String assessedValueRecordID = salesforceAPI.select(assessedValueQuery).get("Id").get(0);
+		SimpleDateFormat dovFormat = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date dovDate = dovFormat.parse(DOV);
+		System.out.println("DOVVVVV: " + DOV);
+		String formattedDOV = newFormat.format(dovDate);
+		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Base_Year__c").get(0), baseYear,
 				"SMAB-T3919: DOV is Matching");
-		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Effective Start Date").get(1), DOV,
+		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Effective_Start_Date_2__c").get(0), formattedDOV,
 				"SMAB-T3919: DOV is equal to effective start date");
-		softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Status").get(1), "Active",
+		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Status__c").get(0), "Active",
 				"SMAB-T3919: Status of the assesses value record is active ");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Assessed_BY_Values__c/"
 				+ assessedValueRecordID + "/view");
+		objParcelsPage.waitForElementToBeVisible(5, objParcelsPage.EditButton);
 		softAssert.assertEquals("Prop 19 Intergenerational 100% Assessment",
 				objCIOTransferPage.getFieldValueFromAPAS("Assessed Value Type"),
 				"SMAB-T3919: Assessed Value Type is equal to Prop 19 Intergenerational 100% Assessment");

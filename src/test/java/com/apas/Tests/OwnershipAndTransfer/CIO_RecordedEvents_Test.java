@@ -4207,12 +4207,15 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	}
 
 	/**
+	 * 
+	 * ---		This script is commented since Clone Mail-To feature is no longer available and cannot be tested		---
+	 * 
 	 * This method is to Validate that user is able to check the labels on the story
 	 * 	 * @param loginUsers:System Admin
 	 * @throws Exception
 	 */
 
-	@Test(description = "SMAB-T3252, SMAB-T3246, SMAB-T3259, SMAB-T3249, SMAB-T3247, SMAB-T3251, SMAB-T3289: Validate that user is able to update the status of Appraisal activity and related Work item to Return using the 'Return' option using Quick Action button", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {
+	/*@Test(description = "SMAB-T3252, SMAB-T3246, SMAB-T3259, SMAB-T3249, SMAB-T3247, SMAB-T3251, SMAB-T3289: Validate that user is able to update the status of Appraisal activity and related Work item to Return using the 'Return' option using Quick Action button", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 		public void RecorderIntegration_ValidateStartdateAndEndDateFieldsOnParcelMailtorec(String loginUser)
 			throws Exception {
@@ -4254,9 +4257,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.saveButton);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 		
-		// This code  was commented since Clone Mail-To feature is no longer available and cannot be tested
-		
-		/*objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Clone));
+		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"),
 				"is-read-only", "SMAB-T3246,SMAB-T3249-End date is not editable");
@@ -4265,7 +4266,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Date date = new Date();
 		String todayDate = dateFormat.format(date);
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Start Date").trim(), todayDate.trim(),
-				"SMAB-T3247-Start date is equal to Today's date");*/
+				"SMAB-T3247-Start date is equal to Today's date");
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/"
 				+ viewAllParcel + "/related/Mail_To__r/view");
 
@@ -4281,13 +4282,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ mailToIDforRetired + "/view");
 		softAssert.assertContains(objCioTransfer.getFieldValueFromAPAS("End Date"), "/",
 				"SMAB-T3249-End date is not Empty");
-		/*objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Clone));
+		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		softAssert.assertContains(objCioTransfer.saveRecordAndGetError(), "cloned",
-				"SMAB-T3289: Retired record cannot be cloned");*/
+				"SMAB-T3289: Retired record cannot be cloned");
 		objWorkItemHomePage.logout();
 
-	}
+	}*/
 
 	/**
 	 * This method is to Validate start-date and end-date on Mail-to record of Active parcel
