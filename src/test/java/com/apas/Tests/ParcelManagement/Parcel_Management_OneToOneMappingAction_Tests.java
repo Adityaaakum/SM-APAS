@@ -1771,6 +1771,7 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 
 			// Submit work item for approval
+			//Below Parcel size is updated inorder to close the WI , will remove it once defect SMAB-12156 is resolved.
 			salesforceAPI.update("Parcel__c", response.get("Id").get(0), "Lot_Size_SQFT__c", "500");
 			String querys = "Select Id from Work_Item__c where Name = '" + workItemNumber + "'";
 			salesforceAPI.update("Work_Item__c", querys, "Status__c", "Submitted for Approval");
