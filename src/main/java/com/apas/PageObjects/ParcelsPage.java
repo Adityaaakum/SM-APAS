@@ -139,10 +139,11 @@ public class ParcelsPage extends ApasGenericPage {
 	public String total = "Total";
 	public String fullCashValue = "Full Cash Value";
 	public String combinedFactoredandHPI = "Combined FBYV and HPI";
+	public String newTaxableValue = "New Taxable Value";
 	public String partOfEconomicUnit = "Part of Economic Unit";
 	public String numberOfParcelsEconomicUnit = "# of Parcels in Economic Unit";
 	public String listOfParcelsEconomicUnit = "List of all Parcels in Economic Unit";
-
+	public String recordedDocumentNameText = "Recorded Document Name";
 	
 	
 	
@@ -536,7 +537,7 @@ public class ParcelsPage extends ApasGenericPage {
 			String description = dataMap.get("Description") + "_" + timeStamp;
 			
 			Thread.sleep(2000);
-			waitForElementToBeClickable(5,getButtonWithText(componentActionsButtonText));
+			waitForElementToBeClickable(5,componentActionsButtonText);
 			Click(getButtonWithText(componentActionsButtonText));
 			waitForElementToBeClickable(selectOptionDropdown);
 			selectOptionFromDropDown(selectOptionDropdown, "Create Audit Trail Record");
@@ -904,5 +905,24 @@ public class ParcelsPage extends ApasGenericPage {
 			selectOptionFromDropDown("City Name", dataMap.get("City Name"));
 			enter(getWebElementWithLabel("Situs Name"), dataMap.get("Situs Name"));
 			Click(getButtonWithText("Save"));
+		}
+		
+		/**
+		 * This method will update the same City for TRA and Situs on given parcels
+		 * 
+		 * 
+		 **/
+		public void updateTraAndSitusWithSameCity(String... apns) {
+			for (String apn : apns) {
+
+				objSalesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
+						"Primary_Situs__c", "");
+				objSalesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'", "TRA__c",
+						objSalesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+				objSalesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
+						"Primary_Situs__c", objSalesforceAPI
+								.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id").get(0));
+
+			}
 		}
 	}

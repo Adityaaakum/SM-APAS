@@ -136,8 +136,10 @@ public class ApasGenericPage extends Page {
 	
 	@FindBy(xpath = "//div[@role='alert'][@data-key='success']//span[@data-aura-class='forceActionsText']")
 	public WebElement successAlertText;
-	
-	
+
+	@FindBy(xpath = "//span[@title='APAS']")
+	public WebElement apas;
+
 	public String xpathSpinner = "//lightning-spinner";
 
 	public String maxEquipmentIndexFactor = "Maximum Equipment index Factor";
@@ -295,28 +297,32 @@ public class ApasGenericPage extends Page {
 	 * @param value: Like Roof Repair or Repairs for strat code field etc.
 	 * @throws Exception
 	 */
-	public void searchAndSelectOptionFromDropDown(Object element, String value) throws Exception { 
-        WebElement webElement;
-        String xpathDropDownOption;
-        if (element instanceof String) {
-            webElement = getWebElementWithLabel((String) element);
-            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
-            		+ "contains(@class,'windowViewMode-maximized')]"
-            		+ "//label[text()=\""+element+"\"]/..//*[(@title='" + value + "') or "
-            				+ "(text() = '" + value + "')]";
-        } else{
-            webElement = (WebElement) element;
-            //xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
-            xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
-            		+ "contains(@class,'windowViewMode-maximized') or "
-            		+ "contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
-        }
-        
-        enter(webElement, value);
-        WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
-        waitForElementToBeVisible(drpDwnOption, 10);
-        //drpDwnOption.click();
-        Click(drpDwnOption);
+	public boolean searchAndSelectOptionFromDropDown(Object element, String value) throws Exception {
+		WebElement webElement;
+		String xpathDropDownOption;
+		if (element instanceof String) {
+			webElement = getWebElementWithLabel((String) element);
+			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
+					+ "contains(@class,'windowViewMode-maximized')]" + "//label[text()=\"" + element
+					+ "\"]/..//*[(@title='" + value + "') or " + "(text() = '" + value + "')]";
+		} else {
+			webElement = (WebElement) element;
+			// xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or
+			// contains(@class,'windowViewMode-maximized')]//*[@title='" + value + "']";
+			xpathDropDownOption = "//div[contains(@class,'windowViewMode-normal') or "
+					+ "contains(@class,'windowViewMode-maximized') or "
+					+ "contains(@class,'lafAppLayoutHost forceAccess tablet')]//*[@title='" + value + "']";
+		}
+		try {
+			enter(webElement, value);
+			WebElement drpDwnOption = locateElement(xpathDropDownOption, 20);
+			waitForElementToBeVisible(drpDwnOption, 10);
+			// drpDwnOption.click();
+			Click(drpDwnOption);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
     
 
@@ -755,7 +761,7 @@ public void searchModule(String moduleToSearch) throws Exception {
 				+ fieldPath2 + "//slot/span | "	
 				+ fieldPath2 + "//span/a";
 		
-		waitForElementToBeVisible(20, fieldXpath);
+		waitForElementToBeVisible(30, fieldXpath);
 		
 		try {
 			fieldValue = driver.findElement(By.xpath(fieldXpath)).getText();			
