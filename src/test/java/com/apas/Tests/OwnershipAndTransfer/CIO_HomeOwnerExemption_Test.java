@@ -797,11 +797,7 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 					objApasGenericPage.enterDate(objExemptionsPage.dateOfApplicationOnDetailPage, dateOfEvent);
 					objApasGenericPage.enterDate(objExemptionsPage.dateOfOccupideProperty, dateOfEvent);
 					objExemptionsPage.Click(objExemptionsPage.saveButtonOnDetailPage);					
-					objApasGenericPage.scrollToBottomOfPage();
-					
-					softAssert.assertEquals(objCIOTransferPage.getFieldValueFromAPAS(objExemptionsPage.qualification, "General Information"),"Qualified",
-							"SMAB-T3478: Validate that 'Qualification?' field is updated to on HOE Exemption record");
-					String workItemCreationData =testdata.MANUAL_WORK_ITEMS; 
+										String workItemCreationData =testdata.MANUAL_WORK_ITEMS; 
 					Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfHOEFormReceivedAndProcessing");
 					  
 					// Step 3: Creating Manual work item for the Parcel 
@@ -827,10 +823,10 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 					String  RollEntryID = salesforceAPI.select(query).get("Id").get(0);
 					
 					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Roll_Entry__c/"+ RollEntryID +"/view");
-
-
 					
-						
+					String HomeOwnerExemptionAmount = objAppraisalActivity.getFieldValueFromAPAS(objExemptionsPage.ExemptionAmountOnRollEntry);
+					softAssert.assertEquals(HomeOwnerExemptionAmount,"7000",
+					        "SMAB-T4168: Validate that Net Exemption amount should be updated to on Exemption 1(HOE) on annual roll entry record");
 											
 						
 	}

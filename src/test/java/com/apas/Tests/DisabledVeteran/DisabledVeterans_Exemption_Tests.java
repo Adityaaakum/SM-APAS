@@ -352,6 +352,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
 			String erroMsgOnField=vaPageObj.editFieldErrorMsg.getText().trim();
 			softAssert.assertEquals(erroMsgOnField, expectedError,"SMAB-T1218:verified End Date of Rating can't be modified if set once on field level edit.");
 			objPage.Click(exemptionPageObj.cancelButton);
+			Thread.sleep(5000);
 			String exemptionStatus=exemptionPageObj.exemationStatusOnDetails.getText().trim();
 			softAssert.assertEquals(exemptionStatus, "Inactive","SMAB-T643:Verify that User is able to validate Exemption 'Status' based on the 'End Date of Rating' for the Exemption record");
 	
@@ -422,7 +423,7 @@ public class DisabledVeterans_Exemption_Tests extends TestBase implements testda
       Map<String, String> fieldData = objUtil.generateMapFromJsonFile(exemptionFilePath, "newExemptionMandatoryData1");
       fieldData.put("ClaimantName", exemptionPageObj.fetchAssesseeName());       
       String queryRetiredAPN = "SELECT Name,Status__c FROM Parcel__c where Status__c='Retired' Limit 1";
-      String queryPUCAPN="SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('000- Vacant Land (Migrated)','000B Vacant Land - Brush', Barren','00-VACANT LAND','06-HOTEL','08-BOARDING HOUSE','09-MOBILEHOME PARK','11-STORE','14-SUPERMARKET') Limit 1";
+      String queryPUCAPN="SELECT Name FROM Parcel__c where Status__c='Active' and PUC_Code_Lookup__r.name in ('000- Vacant Land (Migrated)','000B Vacant Land - Brush', 'Barren','00-VACANT LAND','06-HOTEL','08-BOARDING HOUSE','09-MOBILEHOME PARK','11-STORE','14-SUPERMARKET') Limit 1";
       HashMap<String, ArrayList<String>> response  = salesforceAPI.select(queryRetiredAPN);
       String retiredAPNName= response.get("Name").get(0);       
       HashMap<String, ArrayList<String>> response1  = salesforceAPI.select(queryPUCAPN);
