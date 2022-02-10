@@ -549,9 +549,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					// Using USPS ZIP code validation
 					if (dataToCreateMailTo.get("Address") != null) enter(addressInCopyToMailTo, dataToCreateMailTo.get("Address"));
                     if (dataToCreateMailTo.get("Zip code") != null) enter(zipCodeInCopyToMailTo, dataToCreateMailTo.get("Zip code"));
-                    if (dataToCreateMailTo.get("Care of") != null) enter(careOfInCopyToMailTo, dataToCreateMailTo.get("Care of"));
+                    if (dataToCreateMailTo.get("Care of") != null) {enter(careOfInCopyToMailTo, dataToCreateMailTo.get("Care of"));
                     if(verifyElementEnabled(getButtonWithText(validateWithUSPSButtonOnCopyToMailTo))) Click(getButtonWithText(validateWithUSPSButtonOnCopyToMailTo));
-                    if(verifyElementEnabled(getButtonWithText(useThisInformationButtonOnCopyToMailTo))) Click(getButtonWithText(useThisInformationButtonOnCopyToMailTo));;
+                    if(verifyElementEnabled(getButtonWithText(useThisInformationButtonOnCopyToMailTo))) Click(getButtonWithText(useThisInformationButtonOnCopyToMailTo));;}
 					
 					Click(getButtonWithText(useThisQuickActionButtonOnCopyTOMailTo));			
 					Click(getButtonWithText(nextButton));
@@ -799,6 +799,8 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 					deleteRecordedApnFromRecordedDocument(recordedDocumentID);
 					Thread.sleep(3000);
 					addRecordedApn(recordedDocumentID, 1);
+					if(hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date")!=null) {
+					salesforceApi.update("Recorded_Document__c", recordedDocumentID, "Recording_Date__c",updateDateFormat(hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date")));}
 
 					generateRecorderJobWorkItems(recordedDocumentID);
 
@@ -1055,7 +1057,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 		/* 
 		 * Description - This method will change the date format
 		 * Param - mm/dd/yyyy
-		 * Return - YYYY/MM/DD
+		 * Return - YYYY-MM-DD
 		 */
 		
 		public String updateDateFormat(String dateValue ) throws Exception {
