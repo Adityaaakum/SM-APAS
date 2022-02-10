@@ -4218,18 +4218,21 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	}
 
 	/**
+	 * 
+	 * ---		This script is commented since Clone Mail-To feature is no longer available and cannot be tested		---
+	 * 
 	 * This method is to Validate that user is able to check the labels on the story
 	 * 	 * @param loginUsers:System Admin
 	 * @throws Exception
 	 */
 
-	@Test(description = "SMAB-T3252, SMAB-T3246, SMAB-T3259, SMAB-T3249, SMAB-T3247, SMAB-T3251, SMAB-T3289: Validate that user is able to update the status of Appraisal activity and related Work item to Return using the 'Return' option using Quick Action button", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {
+	/*@Test(description = "SMAB-T3252, SMAB-T3246, SMAB-T3259, SMAB-T3249, SMAB-T3247, SMAB-T3251, SMAB-T3289: Validate that user is able to update the status of Appraisal activity and related Work item to Return using the 'Return' option using Quick Action button", dataProvider = "loginApraisalUser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 		public void RecorderIntegration_ValidateStartdateAndEndDateFieldsOnParcelMailtorec(String loginUser)
 			throws Exception {
 
 		String execEnv = System.getProperty("region");
-		String mailToRecordFromParcel = "SELECT Parcel__c,Id FROM Mail_To__c where status__c = 'Active' Limit 1";
+		String mailToRecordFromParcel = "SELECT Parcel__c,Id FROM Mail_To__c where status__c = 'Active' AND Parcel__c != '' Limit 1";
 		HashMap<String, ArrayList<String>> hashMapRecordedApn = salesforceAPI.select(mailToRecordFromParcel);
 		String mailToID = hashMapRecordedApn.get("Id").get(0);
 		String viewAllParcel = hashMapRecordedApn.get("Parcel__c").get(0);
@@ -4240,7 +4243,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Mail_To__c/" + mailToID + "/view");
 		
 		// STEP 2: Validate labels on the Mail-To record
-		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.formattedName1LabelForParcelMailTo);
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.formattedName1LabelForParcelMailTo);
 		softAssert.assertEquals(objParcelsPage.verifyElementVisible(objCioTransfer.formattedName1LabelForParcelMailTo),
 				"true", "SMAB-T3252-Formatted name1 lable validation");
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.formattedName2LabelForParcelMailTo);
@@ -4258,11 +4261,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"is-read-only", "SMAB-T3246-Start date is not editable");
 		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"),
 				"is-read-only", "SMAB-T3246,SMAB-T3249-End date is not editable");
-		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Edit));
-		objWorkItemHomePage.Click(objCioTransfer.getButtonWithText(objCioTransfer.Edit));
+		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.editFormattedName1Button);
+		objWorkItemHomePage.Click(objCioTransfer.editFormattedName1Button);
 		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"),
 				"is-read-only", "SMAB-T3246,SMAB-T3249-End date is not editable");
-		objCioTransfer.Click(objCioTransfer.getButtonWithText("Save"));
+		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.saveButton);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+		
 		objCioTransfer.waitForElementToBeClickable(5, objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.Clone));
 		softAssert.assertContains(objPage.getAttributeValue(objCioTransfer.endDateInParcelMaito, "class"),
@@ -4294,7 +4299,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3289: Retired record cannot be cloned");
 		objWorkItemHomePage.logout();
 
-	}
+	}*/
 
 	/**
 	 * This method is to Validate start-date and end-date on Mail-to record of Active parcel
