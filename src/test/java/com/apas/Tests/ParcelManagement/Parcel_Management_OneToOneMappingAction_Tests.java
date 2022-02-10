@@ -1772,9 +1772,10 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 
 			// Submit work item for approval
+			salesforceAPI.update("Parcel__c", response.get("Id").get(0), "Lot_Size_SQFT__c", "500");
 			String querys = "Select Id from Work_Item__c where Name = '" + workItemNumber + "'";
 			salesforceAPI.update("Work_Item__c", querys, "Status__c", "Submitted for Approval");
-			salesforceAPI.update("Parcel__c", response.get("Id").get(0), "Lot_Size_SQFT__c", "500");
+			
 
 			driver.switchTo().window(parentWindow);
 			objWorkItemHomePage.logout();
@@ -1923,11 +1924,11 @@ public class Parcel_Management_OneToOneMappingAction_Tests extends TestBase impl
 			objParcelsPage.Click(objParcelsPage.allocateValue);
 			objWorkItemHomePage.waitForElementToBeClickable(30, objWorkItemHomePage.detailsTab);
 			objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-			objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.previousRelatedAction);
+			objWorkItemHomePage.waitForElementToBeVisible(30, objWorkItemHomePage.previousRelatedAction);
 
 			String previousRelatedAction = objWorkItemHomePage.previousRelatedAction.getText();
-			softAssert.assertEquals(previousRelatedAction, "Update Characteristics & Verify PUC",
-					"SMAB-T4014:Update Characteristics & Verify PUC link is present");
+			softAssert.assertEquals(previousRelatedAction, "Allocate Value",
+					"SMAB-T4014:Allocate Values link is present");
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 
 			// Navigating to child APN
