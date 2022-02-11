@@ -55,7 +55,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * DESCRIPTION: Checking Security Level For Restricted Users : Validating the unavailability of Calculate and Calculate All buttons:
 	 */
-	@Test(description = "SMAB-T174,SMAB-T175: Validate that Calculate & Calculate All buttons should not be visible to restricted users", groups = {"BPPTrend","Regression", "SecurityAndSharing"}, dataProvider = "usersRestrictedToCalculate", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T174,SMAB-T175: Validate that Calculate & Calculate All buttons should not be visible to restricted users", groups = {"Regression", "SecurityAndSharing","BPPTrend_SecurityAndSharing"}, dataProvider = "usersRestrictedToCalculate", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BppTrend_RestrictionsOnCalculateButtons_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -88,7 +88,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * DESCRIPTION: Checking Security Level For Restricted User : Validating the unavailability of ReCalculate and ReCalculate All buttons
 	 */
-	@Test(description = "SMAB-T174,SMAB-T175: Validate that ReCalculate & 'ReCalculate All' and 'Submit All Factor For Approval' buttons should not be visible to restricted users", groups = {"BPPTrend","Regression", "SecurityAndSharing"}, dataProvider = "usersRestrictedToReCalculate", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T174,SMAB-T175: Validate that ReCalculate & 'ReCalculate All' and 'Submit All Factor For Approval' buttons should not be visible to restricted users", groups = {"Regression", "SecurityAndSharing","BPPTrend_SecurityAndSharing"}, dataProvider = "usersRestrictedToReCalculate", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BppTrend_RestrictionsOnReCalculateButtons_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -122,7 +122,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * Description: Validating the unavailability of Approve & Approve All buttons for restricted users
 	 */
-	@Test(description = "SMAB-T174,SMAB-T175,SMAB-T249,SMAB-T199,SMAB-T250,SMAB-T301: Perform security verification on Approve & Approve All buttons for restricted users", groups = {"BPPTrend","Regression","Smoke", "SecurityAndSharing"}, dataProvider = "usersRestrictedToApprove", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T174,SMAB-T175,SMAB-T249,SMAB-T199,SMAB-T250,SMAB-T301: Perform security verification on Approve & Approve All buttons for restricted users", groups = {"Regression", "SecurityAndSharing", "BPPTrend_SecurityAndSharing", "Smoke"}, dataProvider = "usersRestrictedToApprove", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BppTrend_RestrictionsOnApproveButtons_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -175,7 +175,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * DESCRIPTION: Validating the unavailability of Export Composite Factors button for restricted users
 	 */
-	@Test(description = "SMAB-T450: Perform security verification on Export Composite and validation Factors button for restricted users", groups = {"BPPTrend","Regression", "SecurityAndSharing"}, dataProvider = "usersRestrictedToExportCompFactorsFile", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T450: Perform security verification on Export Composite and validation Factors button for restricted users", groups = {"Regression", "SecurityAndSharing","BPPTrend_SecurityAndSharing"}, dataProvider = "usersRestrictedToExportCompFactorsFile", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BppTrend_RestrictionsOnExportFactorsButton_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -201,7 +201,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * DESCRIPTION: Validating the unavailability of edit pencil icon to edit table status on BPP Trend Setup
 	 */
-	@Test(description = "SMAB-T171: Validating the unavailability of edit pencil icon to edit table status on BPP Trend Setup", groups = {"BPPTrend","Regression", "SecurityAndSharing"}, dataProvider = "usersRestrictedEditTableStatusOnBppTrendPage", dataProviderClass = DataProviders.class, alwaysRun = true)
+	@Test(description = "SMAB-T171: Validating the unavailability of edit pencil icon to edit table status on BPP Trend Setup", groups = {"Regression", "SecurityAndSharing","BPPTrend_SecurityAndSharing"}, dataProvider = "usersRestrictedEditTableStatusOnBppTrendPage", dataProviderClass = DataProviders.class, alwaysRun = true)
 	public void BppTrend_RestrictionsEditingTableStatus_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -247,7 +247,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	 * DESCRIPTION: Validating that (Appraiser/Auditor) are not able to create and edit inflation factors records:: TestCase/JIRA ID: SMAB-T210
 	 * Edit Restriction for business admin scenario is covered in BPPTrend_InflationFactor_Test class
 	 */
-	@Test(description = "SMAB-T210: Appraiser and Auditor users unable to create/edit CPI factor", groups = {"Regression","BPPTrend", "SecurityAndSharing"}, dataProvider = "rpApprasierAndBPPAuditor", dataProviderClass = DataProviders.class)
+	@Test(description = "SMAB-T210: Appraiser and Auditor users unable to create/edit CPI factor", groups = {"Regression", "SecurityAndSharing","BPPTrend_SecurityAndSharing"}, dataProvider = "rpApprasierAndBPPAuditor", dataProviderClass = DataProviders.class)
 	public void BppTrend_CreateEdit_InflationFactor_RestrictedUsers(String loginUser) throws Exception {
 
 		//Step1: Login to the APAS application using the given user
@@ -284,7 +284,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * DESCRIPTION: Validating the unavailability of create/edit/delete links under BPP Settings
 	 */
-	@Test(description = "SMAB-T270: Validating that restricted user is unable to create/edit BPP Settings", groups = {"Regression","BPPTrend", "SecurityAndSharing"}, dataProvider = "usersRestrictedToModifyMaxEquipIndexFactor", dataProviderClass = DataProviders.class,alwaysRun = true)
+	@Test(description = "SMAB-T270: Validating that restricted user is unable to create/edit BPP Settings", groups = {"Regression", "SecurityAndSharing","BPPTrend_SecurityAndSharing"}, dataProvider = "usersRestrictedToModifyMaxEquipIndexFactor", dataProviderClass = DataProviders.class,alwaysRun = true)
 	public void BppTrend_RestrictionsEditingBPPSettingsAfterApprove_RestrictedUsers(String loginUser) throws Exception {
 
 		//Resetting the Composite and Valuation factor tables status to Not Calculated
@@ -360,7 +360,7 @@ public class BppTrend_SecurityAndSharing_Test extends TestBase {
 	/**
 	 * DESCRIPTION: Validating the unavailability of create/edit/delete links under BPP Settings
 	 */
-	@Test(description = "SMAB-T270: Validating that restricted user is unable to create/edit BPP Settings", groups = {"Regression","BPPTrend", "SecurityAndSharing"}, dataProvider = "usersRestrictedToModifyMaxEquipIndexFactor", dataProviderClass = DataProviders.class,alwaysRun = true)
+	@Test(description = "SMAB-T270: Validating that restricted user is unable to create/edit BPP Settings", groups = {"Regression", "SecurityAndSharing","BPPTrend_SecurityAndSharing"}, dataProvider = "usersRestrictedToModifyMaxEquipIndexFactor", dataProviderClass = DataProviders.class,alwaysRun = true)
 	public void BppTrend_RestrictionsEditingBPPSettingsBeforeApprove_RestrictedUsers(String loginUser) throws Exception {
 
 		//Resetting the Composite and Valuation factor tables status to Not Calculated
