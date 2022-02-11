@@ -828,7 +828,8 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 					softAssert.assertEquals(HomeOwnerExemptionAmount,"7000",
 					        "SMAB-T4168: Validate that Net Exemption amount should be updated to on Exemption 1(HOE) on annual roll entry record");
 											
-						
+					objCIOTransferPage.logout();
+
 	}
 		
 }
