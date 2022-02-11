@@ -321,8 +321,7 @@ public class RealPropertySettingsLibraries_Test extends TestBase {
 		//Step4: Delete Roll Year's RPSL if it already exists	
 		String date = DateUtil.getCurrentDate("MM/dd/yyyy");
 		String strRollYear = ExemptionsPage.determineRollYear(date);
-		int futureRollYear = Integer.parseInt(strRollYear)+3;
-		String strRPSL = String.valueOf(futureRollYear);
+		String strRPSL = String.valueOf(strRollYear);
 		String strRPSLName = "Exemption Limits - " + strRPSL;
 		objRPSLPage.removeRealPropertySettingEntry(strRPSL);
 		
