@@ -1319,6 +1319,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryApnDetails);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
+		
+		String apnId1=responseAPNDetails.get("Id").get(0);
+		String apnId2=responseAPNDetails.get("Id").get(1);
 
 		objMappingPage.deleteOwnershipFromParcel(responseAPNDetails.get("Id").get(0));
 		objMappingPage.deleteOwnershipFromParcel(responseAPNDetails.get("Id").get(1));
@@ -1344,13 +1347,15 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		jsonParcelObject.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonParcelObject.put("District__c",districtValue);
 		jsonParcelObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
+//		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 		jsonParcelObject.put("Lot_Size_SQFT__c",parcelSize);
 
 		//updating PUC details
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObject);
-		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));	
-			
+//		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));	
+		objParcelsPage.updateTraAndSitusWithSameCity(apn1);
+		objParcelsPage.updateTraAndSitusWithSameCity(apn2);
+
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
@@ -1404,9 +1409,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.login(loginUser);
 
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform split mapping
-		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords(apn1);
-
+		objMappingPage.searchModule("APAS");
+//		objMappingPage.globalSearchRecords(apn1);
+		driver.navigate().to(
+				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId1 + "/view");
 		// Step 3: Creating Manual work item for the Parcel
 		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
