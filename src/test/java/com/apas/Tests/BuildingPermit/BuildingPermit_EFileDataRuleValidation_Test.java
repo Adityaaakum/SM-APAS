@@ -672,7 +672,6 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objPage.Click(objEfileImportPage.sourceDetails);
 		
 		String buildingPermitNumber = "T1" + currentTimestamp ;
-		System.out.println("buildingPermitNumber = "+buildingPermitNumber);
 		String buildingPermitIDQuery = "SELECT Id FROM Building_Permit__c where Name = '"+buildingPermitNumber+"'";
 		String buildingPermitId = salesforceAPI.select(buildingPermitIDQuery).get("Id").get(0);
         String execEnv = System.getProperty("region");
