@@ -553,10 +553,11 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 	}
 	/*
 	 * This test methodes validates the fields on the layout of assessed value records for CIO transfer codes like CIO-P19D,CIO-P19B,CIO-P19 Exclusion
+	 * This test method is disabled because there are lot of formuala changes in Assessed value layout ,those changes will be accounted in their corresponding stories 
 	 */
 
 	@Test(description = "SMAB-T3768,SMAB-T3782,SMAB-T3812 : Verify the fileds and calculations on those fields on the layout of different type of assesssed value records  ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = false)
 	public void OwnershipAndTransfer_Verify_assessedValueRecords(String loginUser) throws Exception {
 		
 		String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
@@ -694,6 +695,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 
 		objParcelsPage.waitForElementToBeClickable(10, objParcelsPage.EditButton);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
+		//There is a defect regression defect around this
 		objParcelsPage.enter(objParcelsPage.landFactoredBaseYearValue, "200,000");
 		objParcelsPage.waitForElementToBeVisible(10, objParcelsPage.improvementsFactoredBaseYearValue);
 		objParcelsPage.enter(objParcelsPage.improvementsFactoredBaseYearValue, "100,000");
@@ -899,11 +901,14 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		
 	}	  
 	/*
+	 *	 
 	 * @Description : Verify that new AV records are created for Prop 19 Intergenerational partial transfer and validating the values that it carries.
 	 */
 	
+	//This functionality is decripcated and new architecture has to be designed ,marking it disabled until then
+
 	@Test(description = "SMAB-T4120,SMAB-T4121 : Verify that new AV records are generated for the P19P when appraiser user appraises land and Improvement values on the appraiser screen",  groups = {
-			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = false)
 	public void OwnershipAndTransfer_IntergenerationalTransfer() throws Exception {
 
 		String excEnv = System.getProperty("region");
@@ -1171,10 +1176,9 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		  //Validating Enrollement records generated for p19		  
 		softAssert.assertEquals(hashMapRollEntryTable.get("Type").size(),2 , "SMAB-T4387, SMAB-T4320: For DOV occuring after May 31 only 1 supplemental record is generated ");
 		softAssert.assertEquals(hashMapRollEntryTable.get("Type").get(0) ,"Annual", "SMAB-T4387, SMAB-T4320: Verify that Annual record is genrated after appraisal for year 2002 ");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Type").get(1) ,"Supplemental", "SMAB-T4387, SMAB-T4320: Verify that Supplemental  record is genrated after appraisal for year 2001 ");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Type").get(1) ,"Supplemental", "SMAB-T4387, SMAB-T4320: Verify that Supplemental  record is genrated after appraisal for year 2001 ");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Roll Year - Seq#").get(0) ,"2002 - 1", "SMAB-T4387, SMAB-T4320: Verify that sequence of annual record is 1 for roll year 2002 ");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Roll Year - Seq#").get(1) ,"2001 - 2", "SMAB-T4387, SMAB-T4320: Verify that sequence of supplemental record is 1 for roll year 2001 ");
+		softAssert.assertEquals(hashMapRollEntryTable.get("Type").get(1) ,"Supplemental", "SMAB-T4387, SMAB-T4320: Verify that Supplemental  record is genrated after appraisal for year 2001 ");		
+		softAssert.assertEquals(hashMapRollEntryTable.get("Roll Year - Seq#").get(0) ,"2022 - 1", "SMAB-T4320: Verify that sequence of annual record is 1 for roll year 2002 ");
+		softAssert.assertEquals(hashMapRollEntryTable.get("Roll Year - Seq#").get(1) ,objCIOTransferPage.updateDateFormat(hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date")).split("-")[0]+" - 2", "SMAB-T4320: Verify that sequence of supplemental record is 1 for roll year 2021 ");
 		softAssert.assertTrue(!hashMapRollEntryTable.get("Land Assessed Value").get(0).equals(hashMapRollEntryTable.get("Land Assessed Value").get(1)) &&( hashMapRollEntryTable.get("Improvement Assessed Value").get(0).equals( hashMapRollEntryTable.get("Improvement Assessed Value").get(1))), "SMAB-T4387: Verify that annual enrollement record have factored forwarded values from previous supplemental records ");
 		
 		//Validate AV record Values

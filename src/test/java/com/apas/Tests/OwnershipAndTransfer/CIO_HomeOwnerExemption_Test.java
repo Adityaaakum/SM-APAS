@@ -1,11 +1,16 @@
 package com.apas.Tests.OwnershipAndTransfer;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterMethod;
@@ -17,8 +22,10 @@ import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
 import com.apas.PageObjects.ApasGenericPage;
+import com.apas.PageObjects.AppraisalActivityPage;
 import com.apas.PageObjects.CIOTransferPage;
 import com.apas.PageObjects.ExemptionsPage;
+import com.apas.PageObjects.MappingPage;
 import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.ValueAdjustmentsPage;
@@ -47,6 +54,8 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 	String unrecordedEventData;
 	ValueAdjustmentsPage ObjValueAdjustmentPage;
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
+	MappingPage objMappingPage;
+	AppraisalActivityPage objAppraisalActivity;
 	
 	
 	@BeforeMethod(alwaysRun=true)
@@ -67,6 +76,9 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 		unrecordedEventData = testdata.UNRECORDED_EVENT_DATA;
 		objApasGenericPage.updateRollYearStatus("Closed", "2021");
 		ObjValueAdjustmentPage = new ValueAdjustmentsPage(driver);
+		objMappingPage = new MappingPage(driver);
+		objAppraisalActivity= new AppraisalActivityPage(driver);
+
 	}
 	
 	/**
@@ -543,4 +555,281 @@ public class CIO_HomeOwnerExemption_Test extends TestBase {
 			objExemptionsPage.logout();
 
 		}
+		
+		/* Below test case is used to validate fields on Home owner Exemption and VA's
+		 * 
+		 */
+			@Test(description = "SMAB-T4168: Verify Net exemption amount of Active HOE record should be flow in respective roll entry records and master screen",  dataProvider = "loginExemptionSupportStaff",dataProviderClass = DataProviders.class, groups = {"Regression","HomeOwnerExemption","Exemption"})
+			public void HOE__VerifyHOEAmountOnRollEntriesAndMasterscreen(String loginUser) throws Exception {
+				
+				String excEnv = System.getProperty("region");
+				String enrollmentType="Normal Enrollment";
+				String transferCode="CIO-SALE";
+
+				String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+				Map<String, String> hashMapOwnershipAndTransferCreationData = objUtil.generateMapFromJsonFile(
+						OwnershipAndTransferCreationData, "dataToCreateMailToRecordsWithIncompleteData");
+
+				String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+				Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
+						OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithCompleteOwnership");
+
+				Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+						.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecord");
+
+				String assessedValueCreationData = testdata.ASSESSED_VALUE_CREATION_DATA;
+				Map<String, String> hashMapCreateAssessedValueRecord = objUtil
+						.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecord");
+
+				JSONObject jsonForAppraiserActivity = objCIOTransferPage.getJsonObject();
+
+				objCIOTransferPage.login(objCIOTransferPage.SYSTEM_ADMIN);
+				objCIOTransferPage.searchModule(objCIOTransferPage.EFILE_INTAKE_VIEW);
+				String recordedDocumentID = salesforceAPI.select(
+						"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c in (0,1,2,3,4)")
+						.get("Id").get(0);
+
+				objCIOTransferPage.deleteRecordedApnFromRecordedDocument(recordedDocumentID);
+				Thread.sleep(3000);
+				objCIOTransferPage.addRecordedApn(recordedDocumentID, 1);
+
+				objCIOTransferPage.generateRecorderJobWorkItems(recordedDocumentID);
+
+				// STEP 2-Query to fetch WI
+
+				String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'   And status__c='In pool' order by createdDate desc limit 1";
+				HashMap<String, ArrayList<String>> WIHashMap = salesforceAPI.select(workItemQuery);
+				String workItemNo =WIHashMap.get("Name").get(0);
+				String workItemID =WIHashMap.get("Id").get(0);
+				driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Work_Item__c/"+ workItemID +"/view");
+
+				objCIOTransferPage.waitForElementToBeInVisible(salesforceAPI, 5);
+				String apnFromWIPage = objCIOTransferPage.getGridDataInHashMap(1).get("APN").get(0);
+				String parcelId=salesforceAPI.select("Select Id from parcel__c where name ='" + apnFromWIPage + "'").get("Id").get(0);
+				salesforceAPI.update("Parcel__C",parcelId,"Primary_Situs__c", "");
+				salesforceAPI.update("Parcel__C", parcelId,"TRA__c",
+						salesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+				salesforceAPI.update("Parcel__C", parcelId,"Primary_Situs__c",salesforceAPI.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id").get(0));
+				salesforceAPI.update("Parcel__C",parcelId,"PUC_Code__c",
+						salesforceAPI.select("Select Id from PUC_Code__c where name = '52-SFR, 5 TO 40 ACRES'").get("Id").get(0));
+				
+				// Deleting existing ownership from parcel
+				objCIOTransferPage.deleteOwnershipFromParcel(salesforceAPI
+						.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
+
+				// STEP 3- adding owner after deleting for the recorded APN
+				String acesseName = objMappingPage.getOwnerForMappingAction();
+				driver.navigate()
+						.to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Parcel__c/"
+								+ salesforceAPI.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
+								+ "/related/Property_Ownerships__r/view");
+				objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
+				String ownershipId = driver.getCurrentUrl().split("/")[6];
+				objParcelsPage.deleteOldAndCreateNewAssessedValuesRecords(hashMapCreateAssessedValueRecord,
+						apnFromWIPage);
+
+				// STEP 4- updating the ownership date for current owners
+				String dateOfEvent = salesforceAPI.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '"+ ownershipId + "'").get("Ownership_Start_Date__c").get(0);
+				jsonForAppraiserActivity.put("DOR__c", dateOfEvent);
+				jsonForAppraiserActivity.put("DOV_Date__c", dateOfEvent);
+				salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForAppraiserActivity);
+
+				objCIOTransferPage.logout();
+				Thread.sleep(3000);
+				objCIOTransferPage.login(users.CIO_STAFF);
+				objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.appLauncher, 10);
+
+				driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Work_Item__c/"+ workItemID +"/view");
+				
+				String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='"+ workItemNo + "'";
+				HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);
+
+				// STEP 6-Finding the recorded apn transfer id
+
+				String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+				objCIOTransferPage.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
+				objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+				objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+				objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+				objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+				
+				// STEP 7-Clicking on related action link
+
+				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+				String parentWindow = driver.getWindowHandle();
+				objWorkItemHomePage.switchToNewWindow(parentWindow);
+				objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionButtonDropdownIcon, 10);
+				ReportLogger.INFO("Add the Transfer Code");
+				objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+				objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.transferCodeLabel);
+				objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, transferCode);
+				objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+
+				// STEP 8-Creating the new grantee
+
+				objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
+				driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/"
+						+ recordeAPNTransferID + "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+				HashMap<String, ArrayList<String>> granteeHashMap = objCIOTransferPage.getGridDataForRowString("1");
+				String granteeForMailTo = granteeHashMap.get("Grantee/Retain Owner Name").get(0);
+				
+				// STEP 9- Performing calculate ownership to perform partial transfer
+
+				driver.navigate().to("https://smcacre--" + excEnv+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+ recordeAPNTransferID + "/view");
+				objCIOTransferPage.waitForElementToBeClickable(10, objCIOTransferPage.calculateOwnershipButtonLabel);
+
+				// STEP 10-Creating copy to mail to record
+
+				objCIOTransferPage.createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferCreationData);
+				objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
+
+				// STEP 11-Navigating back to RAT screen
+
+				driver.navigate().to("https://smcacre--" + excEnv+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+ recordeAPNTransferID + "/view");
+
+				// STEP 12 - Click on submit for approval button
+				objCIOTransferPage.clickQuickActionButtonOnTransferActivity(null, objCIOTransferPage.quickActionOptionSubmitForApproval);
+
+				if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+				{
+					objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+					objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+				}
+
+				ReportLogger.INFO("CIO!! Transfer submitted for approval");
+				objCIOTransferPage.waitForElementToBeClickable(10, objCIOTransferPage.finishButton);
+				objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
+
+				objCIOTransferPage.logout();
+				Thread.sleep(3000);
+				
+				objCIOTransferPage.login(users.CIO_SUPERVISOR);
+				
+				driver.navigate().to("https://smcacre--" + excEnv+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"+ recordeAPNTransferID + "/view");
+				
+				// STEP 14 - Click on submit for approval button
+				objCIOTransferPage.clickQuickActionButtonOnTransferActivity(null, objCIOTransferPage.quickActionOptionApprove);
+
+				objCIOTransferPage.waitForElementToBeClickable(10, objCIOTransferPage.finishButton);
+				objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButton));
+
+				// Fetching appraiser WI genrated on approval of CIO WI
+				
+				String workItemIDForAppraiser = salesforceAPI.select("Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by name desc").get("Id").get(0);
+					objCIOTransferPage.logout();
+					
+					// LOGIN with RP appraiser staff user
+					objAppraisalActivity.login(users.RP_APPRAISER);
+
+					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Work_Item__c/"+ workItemIDForAppraiser +"/view");
+
+				
+					objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+					objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+					objAppraisalActivity.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
+					objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+
+					// Navigating to appraisal activity screen
+
+					objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+
+					objWorkItemHomePage.waitForElementToBeInVisible(objCIOTransferPage.ApnLabel, 5);
+					
+					String query = "SELECT  id FROM Roll_Entry__c where APN__c='" + parcelId + "' and type__c!='Annual' ";
+					HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+
+					if (!response.isEmpty()) {
+						response.get("Id").stream().forEach(Id -> {
+							salesforceAPI.delete("Roll_Entry__c", Id);
+
+						});
+					}
+					objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+				    parentWindow = driver.getWindowHandle();
+					objWorkItemHomePage.switchToNewWindow(parentWindow);
+
+					objAppraisalActivity.waitForElementToBeVisible(10, objAppraisalActivity.appraisalActivityStatus);
+
+					String appraisalScreenId = driver.getCurrentUrl().split("/")[6];
+					String dovForAppraisal = objAppraisalActivity.getFieldValueFromAPAS(objAppraisalActivity.dovLabel);
+
+					Date dovDAte = new SimpleDateFormat("MM/dd/yyyy").parse(dovForAppraisal);
+
+					Calendar calendar = new GregorianCalendar();
+					calendar.setTime(dovDAte);
+					Integer dovYear = calendar.get(Calendar.YEAR);
+
+					String queryForRollYearId = "SELECT Id FROM Roll_Year_Settings__c Where Name = '" + dovYear.toString() + "'";
+					HashMap<String, ArrayList<String>> rollYearId = salesforceAPI.select(queryForRollYearId);
+					String dovYearCPIFactor = salesforceAPI.select(
+							"SELECT CPI_Factor__c FROM CPI_Factor__c  Where Roll_Year__c ='" + rollYearId.get("Id").get(0) + "' ")
+							.get("CPI_Factor__c").get(0);
+					String expectedDOVYearCPIFactor = dovYearCPIFactor + "000";
+
+					// Updating Land and Improvement Values and saving it for appraisal
+					objAppraisalActivity
+							.Click(objAppraisalActivity.appraisalActivityEditValueButton(objAppraisalActivity.landCashValueLabel));
+					objAppraisalActivity.enter(objAppraisalActivity.landCashValueLabel, "300000");
+					objAppraisalActivity.enter(objAppraisalActivity.improvementCashValueLabel, "500000");
+					objAppraisalActivity.Click(objAppraisalActivity.getButtonWithText(objAppraisalActivity.SaveButton));
+					Thread.sleep(3000);
+					driver.switchTo().window(parentWindow);
+					
+
+					String supplementalQuery = "SELECT  count(id) FROM Roll_Entry__c where APN__c='" + parcelId
+							+ "' and type__c='Supplemental' ";
+					String countSupplementalRecords = salesforceAPI.select(supplementalQuery).get("expr0").get(0);
+
+					softAssert.assertEquals(countSupplementalRecords, 1,
+							"SMAB-T4125:verify that One supplemental roll entry record is created from AAS when land and improvement types are entered for AV type \"Assessed value\" for DOV = 31May");
+					objCIOTransferPage.logout();
+					
+					// LOGIN with exemption support staff user
+					objAppraisalActivity.login(users.EXEMPTION_SUPPORT_STAFF);
+					
+					String activeExemptionID =salesforceAPI.select("SELECT  Id, Name FROM Exemption__c where Parcel__c='" + parcelId + "' and Status__c='Active ORDER BY Name DESC'").get("Id").get(0);
+					
+					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Exemption__c/"+ activeExemptionID +"/view");
+
+					objCIOTransferPage.waitForElementToBeVisible(objExemptionsPage.exemptionName, 10);
+					objApasGenericPage.scrollToElement(objExemptionsPage.dateOfApplicationOnDetailPage);
+					objApasGenericPage.Click(objExemptionsPage.editPencilIconForDateOfApplicationOnDetailPage);
+					objApasGenericPage.enterDate(objExemptionsPage.dateOfApplicationOnDetailPage, dateOfEvent);
+					objApasGenericPage.enterDate(objExemptionsPage.dateOfOccupideProperty, dateOfEvent);
+					objExemptionsPage.Click(objExemptionsPage.saveButtonOnDetailPage);					
+										String workItemCreationData =testdata.MANUAL_WORK_ITEMS; 
+					Map<String, String> hashMapmanualWorkItemData =objUtil.generateMapFromJsonFile(workItemCreationData,"DataToCreateWorkItemOfHOEFormReceivedAndProcessing");
+					  
+					// Step 3: Creating Manual work item for the Parcel 
+				    String HOEProcessingWorkitem =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+				    workItemQuery = "SELECT Id,name FROM Work_Item__c where name='"+HOEProcessingWorkitem+"'";
+				    String HOEProcessingWorkitemID = salesforceAPI.select(workItemQuery).get("Name").get(0);
+					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Work_Item__c/"+ HOEProcessingWorkitemID +"/view");
+
+				    objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+					objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+					
+					objCIOTransferPage.logout();
+					
+					// LOGIN with exemption support staff user
+					objAppraisalActivity.login(users.RP_BUSINESS_ADMIN);
+					
+					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Work_Item__c/"+ HOEProcessingWorkitemID +"/view");
+
+					objCIOTransferPage.waitForElementToBeClickable(10, objWorkItemHomePage.completedOptionInTimeline);
+				    objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
+				    
+				     query = "SELECT  id FROM Roll_Entry__c where APN__c='" + parcelId + "' and type__c!='Annual' ";
+					String  RollEntryID = salesforceAPI.select(query).get("Id").get(0);
+					
+					driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Roll_Entry__c/"+ RollEntryID +"/view");
+					
+					String HomeOwnerExemptionAmount = objAppraisalActivity.getFieldValueFromAPAS(objExemptionsPage.ExemptionAmountOnRollEntry);
+					softAssert.assertEquals(HomeOwnerExemptionAmount,"7000",
+					        "SMAB-T4168: Validate that Net Exemption amount should be updated to on Exemption 1(HOE) on annual roll entry record");
+											
+					objCIOTransferPage.logout();
+
+	}
+		
 }

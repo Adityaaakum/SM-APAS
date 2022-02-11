@@ -55,8 +55,7 @@ public class RPValuation_Discovery_Construction_Test extends TestBase {
 		objWIHomePage = new WorkItemHomePage(driver);
 		objUtil = new Util();
 		softAssert = new SoftAssertion();
-		manualWIFilePath = testdata.MANUAL_WORK_ITEMS;
-		objApasGenericPage.updateRollYearStatus("Closed", "2020");		
+		manualWIFilePath = testdata.MANUAL_WORK_ITEMS;		
 		rpslData= objUtil.generateMapFromJsonFile(rpslFileDataPath, "DataToCreateRPSLEntryForValidation");
 		salesforceAPI = new SalesforceAPI();
 		objMappingPage= new MappingPage(driver);
@@ -74,7 +73,7 @@ public class RPValuation_Discovery_Construction_Test extends TestBase {
 			+ " list and its Type label should be NC, the Actions label should be Construction - Other", 
 			dataProvider = "loginRPAppraiser", 
 			dataProviderClass = DataProviders.class , 
-			groups = {"Regression","RPValuation","WorkItemWorkflow","Construction", "DiscoveryConstruction", "BuildingPermit"})
+			groups = {"Regression","RPValuation","WorkItemWorkflow","NewConstruction", "BuildingPermit"})
 	public void BuildingPermit_Manual_Discovery_Construction_WorkItem(String loginUser) throws Exception {
 		
 		//Fetching parcel that are Active

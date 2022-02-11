@@ -1421,10 +1421,10 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
   	  }
 
     }
-
+    
     /**
      *  This method will delete existing Roll Entry records for the Parcel
-     * @param apn-Apn whose records needs to be deleted
+     * @param apn-Apn id whose records needs to be deleted
      * @return
      * @throws Exception
      */
@@ -1437,6 +1437,27 @@ This method is used to return the Interim APN (starts with 800) from Salesforce
   	  {
   		  response.get("Id").stream().forEach(Id ->{
   			  objSalesforceAPI.delete("Roll_Entry__c", Id);
+  			  
+  		  });      	    				  
+  	  }
+
+    }
+
+    /**
+     *  This method will delete existing Assessed value records for the Parcel
+     * @param apn-Apn Id whose records needs to be deleted
+     * @return
+     * @throws Exception
+     */
+    public void deleteAssessedValuesFromParcel(String apnId)
+    {
+  	  String query ="SELECT Id FROM Assessed_BY_Values__c WHERE APN__c = '" +apnId+"'";
+  	  HashMap<String, ArrayList<String>> response = objSalesforceAPI.select(query);
+  	  
+  	  if(!response.isEmpty())
+  	  {
+  		  response.get("Id").stream().forEach(Id ->{
+  			  objSalesforceAPI.delete("Assessed_BY_Values__c", Id);
   			  
   		  });      	    				  
   	  }
