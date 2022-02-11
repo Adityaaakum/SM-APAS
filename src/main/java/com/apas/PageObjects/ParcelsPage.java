@@ -152,7 +152,6 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	
 	
-	//@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
 	@FindBy(xpath = "//p[text()='Primary Situs']|//div[class='slds-grid']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
 
