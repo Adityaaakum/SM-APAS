@@ -128,13 +128,13 @@ public class ParcelsPage extends ApasGenericPage {
 	public String mailTo = "Mail-To";
 	public String formattedName1 = "Formatted Name 1";
 	public String mailZipCopyToMailTo ="Mailing Zip";
-	public String salesPrice ="Sales Price";
-	public String purchasePrice ="Purchase Price";
+	public String salesPrice ="Sales Price of Original Property";
+	public String purchasePrice ="Purchase Price of Replacement Property";
 	public String landFactoredBaseYearValue ="Land Factored Base Year Value";
 	public String improvementsFactoredBaseYearValue ="Improvement Factored Base Year Value";
 	public String difference ="Difference";
-	public String differenceApportionedToLand ="Difference Apportioned to Land";
-	public String differenceApportionedToImprovement ="Difference Apportioned to Improvement";
+	public String differenceApportionedToLand ="Difference Allocated to Land";
+	public String differenceApportionedToImprovement ="Difference Allocated to Improvement";
 	public String improvement = "Improvement";
 	public String total = "Total";
 	public String fullCashValue = "Full Cash Value";
@@ -536,7 +536,7 @@ public class ParcelsPage extends ApasGenericPage {
 			String timeStamp = String.valueOf(System.currentTimeMillis());
 			String description = dataMap.get("Description") + "_" + timeStamp;
 			
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 			waitForElementToBeClickable(5,componentActionsButtonText);
 			Click(getButtonWithText(componentActionsButtonText));
 			waitForElementToBeClickable(selectOptionDropdown);
@@ -754,6 +754,14 @@ public class ParcelsPage extends ApasGenericPage {
 					objSalesforceAPI.delete("Assessed_BY_Values__c", Id);
 					ReportLogger.INFO("AV Records  deleted for Id ::" + Id);
 				});}
+			
+			 HashMap<String, ArrayList<String>> hashMapParcelRollEntryRecord =objSalesforceAPI.select("Select id from Roll_Entry__c where APN__c='"+apnId+"'");
+		     
+				if (!hashMapParcelRollEntryRecord.isEmpty()) {
+					hashMapParcelRollEntryRecord.get("Id").stream().forEach(Id -> {
+						objSalesforceAPI.delete("Roll_Entry__c", Id);
+						ReportLogger.INFO("Roll Entry Records  deleted for Id ::" + Id);
+					});}
 				ReportLogger.INFO("Adding AV Records for APN= "+APN  );			
 				
 				Thread.sleep(4000);
