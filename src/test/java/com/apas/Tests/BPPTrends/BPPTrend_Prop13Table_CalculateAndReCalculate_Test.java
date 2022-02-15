@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.apas.PageObjects.BppTrendSetupPage;
+
+import org.json.JSONObject;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -63,9 +66,41 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
         objBppTrendSetupPage.updateRollYearStatus("Open", "2022");
 	}
 
-	@AfterMethod
-	public void afterMethod() throws Exception {
-		//objBppTrendSetupPage.logout();
+	@AfterClass(alwaysRun = true)
+	public void afterClass() throws Exception {
+		
+		//updating the cpi factor and status for 2022 [ roll year used in this class]
+
+		String queryForCpiFactorName = "Select Name FROM CPI_Factor__c Where Roll_Year__c In (Select Id From Roll_Year_Settings__c Where Roll_Year__c = '"+ rollYear +"')";
+		String previouRollYear=Integer.toString(Integer.parseInt(rollYear)-1);
+		String queryForCpiFactorNamePreviouYear = "Select Name FROM CPI_Factor__c Where Roll_Year__c In (Select Id From Roll_Year_Settings__c Where Roll_Year__c = '"+ previouRollYear +"')";
+		
+		String cpifactorName =  new SalesforceAPI().select(queryForCpiFactorName).get("Name").get(0);
+
+		HashMap<String, ArrayList<String>> cpiFactorData = new SalesforceAPI().select("Select Id, Status__c FROM CPI_Factor__c Where Name = '"+ cpifactorName +"'");
+		String cpiFactorID = cpiFactorData.get("Id").get(0);
+		
+		JSONObject jsonForCPIUpdate= objBppTrendSetupPage.getJsonObject();	
+
+		jsonForCPIUpdate.put("Status__c", "Approved");
+		jsonForCPIUpdate.put("CPI_Factor__c", "1.0200000");
+		
+		new SalesforceAPI().update("CPI_Factor__c", cpiFactorID, jsonForCPIUpdate);
+		
+		//updating the cpi factor and status for 2021 [ 2022-1, previous roll year ]
+		 cpifactorName = new SalesforceAPI().select(queryForCpiFactorNamePreviouYear).get("Name").get(0);
+
+		 cpiFactorData = new SalesforceAPI().select("Select Id, Status__c FROM CPI_Factor__c Where Name = '"+ cpifactorName +"'");
+		 cpiFactorID = cpiFactorData.get("Id").get(0);
+		
+		 JSONObject jsonForCPIUpdatePreviousRollYear= objBppTrendSetupPage.getJsonObject();	
+
+		 jsonForCPIUpdatePreviousRollYear.put("Status__c", "Approved");
+		 jsonForCPIUpdatePreviousRollYear.put("CPI_Factor__c", "1.0103600");
+		
+		new SalesforceAPI().update("CPI_Factor__c", cpiFactorID, jsonForCPIUpdatePreviousRollYear);
+
+	
 	}
 
 	/**
@@ -396,12 +431,12 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		//Step20: Again searching the BPP Prop 13 table
 		Thread.sleep(2000);
 		objBppTrendSetupPage.searchModule(modules.BPP_TRENDS);
-		objPage.waitUntilElementIsPresent(60, objBppTrnPg.xpathRollYear);
+	/*	objPage.waitUntilElementIsPresent(60, objBppTrnPg.xpathRollYear);
 		objPage.waitForElementToBeClickable(objBppTrnPg.rollYearDropdown, 30);
 		objBppTrnPg.Click(objBppTrnPg.rollYearDropdown);
 		objBppTrnPg.clickOnGivenRollYear(rollYear);
 		objBppTrnPg.Click(objBppTrnPg.selectRollYearButton);
-
+*/
 		//Step21: table Navigating on BPP Prop 13 tables to validate CPI Factor input field is disabled
 		objBppTrnPg.clickOnTableOnBppTrendPage(tableName);
 

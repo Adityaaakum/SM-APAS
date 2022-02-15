@@ -1,12 +1,16 @@
 package com.apas.Tests.BPPTrends;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import com.apas.PageObjects.*;
 
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -17,6 +21,7 @@ import com.apas.DataProviders.DataProviders;
 import com.apas.Reports.ExtentTestManager;
 import com.apas.Reports.ReportLogger;
 import com.apas.TestBase.TestBase;
+import com.apas.Utils.SalesforceAPI;
 import com.apas.Utils.Util;
 import com.apas.config.BPPTablesData;
 import com.apas.config.modules;
@@ -28,6 +33,8 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 	BppTrendPage objBppTrendPage;
 	SoftAssertion softAssert;
 	String rollYear;
+	String rollYearToUpdate;
+
 	ApasGenericPage objApasGenericPage;
 	BppTrendSetupPage objBppTrendSetupPage;
 
@@ -42,6 +49,7 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		softAssert = new SoftAssertion();
 		// Executing all the methods for Roll year: 2019
 		rollYear = "2019";
+		rollYearToUpdate="2022";
 		objApasGenericPage = new ApasGenericPage(driver);
 		objBppTrendSetupPage = new BppTrendSetupPage(driver);
 		objBppTrendSetupPage.updateRollYearStatus("Open", "2019");
@@ -51,6 +59,42 @@ public class BPPTrend_Setup_CompositeFactorSetting_Test extends TestBase {
 		objBppTrendSetupPage.updateRollYearStatus("Closed", "2019");
 	}
 
+	@AfterClass(alwaysRun = true)
+	public void afterClass() throws Exception {
+		
+		//updating the cpi factor and status for 2022 [ roll year used in this class]
+
+		String queryForCpiFactorName = "Select Name FROM CPI_Factor__c Where Roll_Year__c In (Select Id From Roll_Year_Settings__c Where Roll_Year__c = '"+ rollYearToUpdate +"')";
+		String previouRollYear=Integer.toString(Integer.parseInt(rollYearToUpdate)-1);
+		String queryForCpiFactorNamePreviouYear = "Select Name FROM CPI_Factor__c Where Roll_Year__c In (Select Id From Roll_Year_Settings__c Where Roll_Year__c = '"+ previouRollYear +"')";
+		
+		String cpifactorName =  new SalesforceAPI().select(queryForCpiFactorName).get("Name").get(0);
+
+		HashMap<String, ArrayList<String>> cpiFactorData = new SalesforceAPI().select("Select Id, Status__c FROM CPI_Factor__c Where Name = '"+ cpifactorName +"'");
+		String cpiFactorID = cpiFactorData.get("Id").get(0);
+		
+		JSONObject jsonForCPIUpdate= objBppTrendSetupPage.getJsonObject();	
+
+		jsonForCPIUpdate.put("Status__c", "Approved");
+		jsonForCPIUpdate.put("CPI_Factor__c", "1.0200000");
+		
+		new SalesforceAPI().update("CPI_Factor__c", cpiFactorID, jsonForCPIUpdate);
+		
+		//updating the cpi factor and status for 2021 [ 2022-1, previous roll year ]
+		 cpifactorName = new SalesforceAPI().select(queryForCpiFactorNamePreviouYear).get("Name").get(0);
+
+		 cpiFactorData = new SalesforceAPI().select("Select Id, Status__c FROM CPI_Factor__c Where Name = '"+ cpifactorName +"'");
+		 cpiFactorID = cpiFactorData.get("Id").get(0);
+		
+		 JSONObject jsonForCPIUpdatePreviousRollYear= objBppTrendSetupPage.getJsonObject();	
+
+		 jsonForCPIUpdatePreviousRollYear.put("Status__c", "Approved");
+		 jsonForCPIUpdatePreviousRollYear.put("CPI_Factor__c", "1.0103600");
+		
+		new SalesforceAPI().update("CPI_Factor__c", cpiFactorID, jsonForCPIUpdatePreviousRollYear);
+
+	
+	}
 	/**
 	 * DESCRIPTION: Performing Following Validations::
 	 * 1. Validating the user is able to create 'Minimum Equip. Index Factor':: TestCase/JIRA ID: SMAB-T186
