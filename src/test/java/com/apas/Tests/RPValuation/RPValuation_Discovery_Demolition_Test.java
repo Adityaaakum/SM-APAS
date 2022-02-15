@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 import com.apas.Assertions.SoftAssertion;
 import com.apas.BrowserDriver.BrowserDriver;
 import com.apas.DataProviders.DataProviders;
+import com.apas.PageObjects.AuditTrailPage;
 import com.apas.PageObjects.DemolitionPage;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.PageObjects.WorkItemHomePage;
@@ -35,6 +36,8 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 	SoftAssertion softAssert = new SoftAssertion();
 	SalesforceAPI salesforceAPI = new SalesforceAPI();
 	DemolitionPage ObjDemolitionPage;
+	AuditTrailPage objBusinessAuditTrail;
+
 	String manualWIFilePath;
 
 	@BeforeMethod(alwaysRun = true)
@@ -45,6 +48,7 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 		objParcelsPage = new ParcelsPage(driver);
 		ObjDemolitionPage = new DemolitionPage(driver);
 		objWorkItemHomePage = new WorkItemHomePage(driver);
+		objBusinessAuditTrail = new AuditTrailPage(driver);
 		manualWIFilePath = testdata.MANUAL_WORK_ITEMS;
 
 	}
@@ -56,11 +60,11 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 	 * 
 	 * @param loginUser
 	 */
-	@Test(description = "SMAB-T4366,SMAB-T4377,SMAB-T4378,SMAB-T4379,SMAB-T4403:This method is to verify few validations based on full demolition , partial demolition event codes", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T4455,SMAB-T4366,SMAB-T4377,SMAB-T4378,SMAB-T4379,SMAB-T4403:This method is to verify few validations based on full demolition , partial demolition event codes", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "RPValuation", "Demolition", "DiscoveryDemolition", "WorkItemWorkflow", "BuildingPermit"})
-	public void BuildingPermit_Manual_Discovery_Demolition_WorkItem(String loginUser) throws Exception {
+	public void RPValuation_Manual_Demolition_WorkItem(String loginUser) throws Exception {
 
-		// Fetching Active parcel
+	// Fetching Active parcel
 		String executionEnv = System.getProperty("region");
 		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE Status__c = 'Active' Limit 1";
 		String apn = salesforceAPI.select(queryAPNValue).get("Name").get(0);
@@ -226,6 +230,21 @@ public class RPValuation_Discovery_Demolition_Test extends TestBase implements t
 
 		softAssert.assertEquals(ObjDemolitionPage.getButtonWithText(ObjDemolitionPage.approveDemoButton).getText(),
 				"Approve(Demo)", "SMAB-T4403:Approve(DEMO) button is present");
+		
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(ObjDemolitionPage.approveDemoButton));
+		
+		driver.navigate().to(
+				"https://smcacre--" + executionEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId + "/view");
+		objParcelsPage.waitForElementToBeVisible(30, objParcelsPage.componentActionsButtonText);
+		
+		objParcelsPage.waitForElementToBeVisible(20, ObjDemolitionPage.demoAuditTrail);
+		objParcelsPage.Click(ObjDemolitionPage.demoAuditTrail);
+		
+		objBusinessAuditTrail.Click(objBusinessAuditTrail.relatedBusinessRecords);
+		HashMap<String, ArrayList<String>> gridRelatedBusinessRecords = ObjDemolitionPage.getGridDataInHashMap();
+		String auditTrailSubject = gridRelatedBusinessRecords.get("Subject").get(0);
+		softAssert.assertEquals(auditTrailSubject, "Demo - Manual Entry",
+				"SMAB-T4455: verify Subject of audit trail is Demo - Manual Entry");
 
 		// Logout at the end of the test
 		ObjDemolitionPage.logout();

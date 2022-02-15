@@ -498,16 +498,16 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objBuildingPermitPage.searchAndSelectOptionFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "No Process");
 		objBuildingPermitPage.saveRecord();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
-		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400,SMAB-T403: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
-		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status","Processing Status"), "No Process","SMAB-T400,SMAB-T403: Validation of 'Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status"), "Process","SMAB-T400,SMAB-T403: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status"), "No Process","SMAB-T400,SMAB-T403: Validation of 'Processing Status' field when Processing Status is changed to 'No Process' from 'Process'");
 
 		//Step10: Update the processing status as No Process and Calculated Processing status should be updated with the same value
 		objPage.Click(objBuildingPermitPage.editButton);
 		objBuildingPermitPage.selectOptionFromDropDown(objBuildingPermitPage.processingStatusDrpDown, "Process");
 		objBuildingPermitPage.saveRecord();
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
-		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'Process' from 'No Process'");
-		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status","Processing Status"), "Process","SMAB-T400: Validation of 'Processing Status' field when Processing Status is changed to 'Process' from 'No Process'");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Calculated Processing Status"), "Process","SMAB-T400: Validation of 'Calculated Processing Status' field when Processing Status is changed to 'Process' from 'No Process'");
+		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Processing Status"), "Process","SMAB-T400: Validation of 'Processing Status' field when Processing Status is changed to 'Process' from 'No Process'");
 
 		//Logout at the end of the test
 		objBuildingPermitPage.logout();
@@ -744,10 +744,12 @@ public class BuildingPermit_ManualCreationAndProcessing_Test extends TestBase {
 		objBuildingPermitPage.login(loginUser);
 
 		//Step2: Opening the building permit module
-		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
-
-		//Step3: Open an existing E-file Building Permit record
-		objBuildingPermitPage.globalSearchRecords(buildingPermitNumber);
+		String buildingPermitIDQuery = "SELECT Id FROM Building_Permit__c where Name = '"+buildingPermitNumber+"'";
+		String buildingPermitId = salesforceAPI.select(buildingPermitIDQuery).get("Id").get(0);
+        String execEnv = System.getProperty("region");
+		
+		//Step7: Opening the building permit module
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Building_Permit__c/"+buildingPermitId+"/view");	
 		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,10);
 		objPage.Click(objBuildingPermitPage.editButton);
 		objPage.waitForElementToBeClickable(10,objBuildingPermitPage.buildingPermitNumberTxtBox);

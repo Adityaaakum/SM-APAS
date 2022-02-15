@@ -102,7 +102,7 @@ public class ValueAdjustmentsPage extends ApasGenericPage {
 	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Roll Year Settings']//parent::div/following-sibling::lightning-helptext/following-sibling::div//slot//a")
 	public WebElement vaRollYear;
 	
-	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(.,'Penalty Percentage')]/parent::div/following-sibling::div/span//slot[@slot='outputField']//slot/lightning-formatted-number")
+	@FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(.,'Penalty Percentage')]/parent::div/following-sibling::div/span//slot[@name='outputField']//slot/lightning-formatted-number")
 	public WebElement vaPenaltyPercentage;
 	
 	@FindBy(xpath = "//span[contains(.,'Net Exemption Amount')]/parent::div/following-sibling::div/span//lightning-formatted-text")
