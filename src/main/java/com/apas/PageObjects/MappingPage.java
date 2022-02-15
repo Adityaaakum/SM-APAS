@@ -507,7 +507,6 @@ public class MappingPage extends ApasGenericPage {
     		
 			String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
 			TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c where not city__c like '%UNI%' limit 1").get("Name").get(0);
-			System.out.println("TRA"+TRA);
 			String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1").get("Name").get(0);
 		    objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='"+PUC+"'").get("Id").get(0), "Legacy__c", "No");
 
