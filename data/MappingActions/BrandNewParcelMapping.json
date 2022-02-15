@@ -51,5 +51,23 @@
     "PUC": "01-SINGLE FAMILY RES",
     "Legal Descriptions": "legal Description"
   
-  }
+  },
+     "DataToPerformBrandNewParcelMappingActionWithSitusDataWithoutReasonCode": {
+    "Action": "Brand New Parcel",
+    "First non-Condo Parcel Number": "456789123",
+    "Comments": "Perform Brand New Parcel mapping",
+    "Situs City Description": "Daly City",
+    "Situs City Code": "DC",    
+    "City Name": "DALY CITY",
+    "Direction": "S",
+    "Situs Number": "60",
+    "Situs Street Name": "CLIFFSIDE",
+    "Situs Type": "CT",
+    "Situs Unit Number": "50",
+    "Parcel Size (SQFT)*": "100",
+    "TRA":"12345",
+    "PUC": "01-SINGLE FAMILY RES",
+    "Legal Descriptions": "legal Description"
+}
+
 }

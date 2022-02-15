@@ -208,8 +208,13 @@ public class MappingPage extends ApasGenericPage {
 
 	@FindBy(xpath = "//*[contains(@class,'message-font slds-align_absolute-center slds-text-color_success slds-m-bottom_medium slds-m-top_medium')]")
 	public WebElement createNewParcelSuccessMessage;
+
+	@FindBy(xpath = "//td[3]//button[@class='slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small']")
+	public WebElement editParcelSizeSqft;
 	
-	
+	@FindBy(xpath = "//input[@name='dt-inline-edit-number']")
+	public WebElement valueParcelSizeSqft;
+
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
 	 * @param dataMap: A data map which contains data to perform  mapping action
@@ -501,7 +506,8 @@ public class MappingPage extends ApasGenericPage {
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
     		
 			String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
-			TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
+			TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c where not city__c like '%UNI%' limit 1").get("Name").get(0);
+			System.out.println("TRA"+TRA);
 			String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1").get("Name").get(0);
 		    objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='"+PUC+"'").get("Id").get(0), "Legacy__c", "No");
 

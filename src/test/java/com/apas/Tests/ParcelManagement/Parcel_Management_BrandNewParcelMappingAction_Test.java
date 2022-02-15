@@ -715,7 +715,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		String situsStreetName = hashMapBrandNewParcelMappingData.get("Situs Street Name");
 		String situsType = hashMapBrandNewParcelMappingData.get("Situs Type");
 		String situsUnitNumber = hashMapBrandNewParcelMappingData.get("Situs Unit Number");
-		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+"#"+situsUnitNumber+", "+cityName;
+		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+ situsUnitNumber+", "+cityName;
 
 		// Step1: Login to the APAS application using the credentials passed through data provider (login Mapping User)
 		objMappingPage.login(loginUser);
@@ -776,7 +776,15 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		}
 		
 		softAssert.assertTrue(neighborhood,"SMAB-T4161: Verify for all the mapping actions, lookup references for the 'district and neighborhood' should include the lookup filter where the legacy district/neighborhoods are excluded.");
-
+		
+		queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL and Legacy__c ='no' limit 1";
+		responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
+		distNeigh = responseNeighborhoodDetails.get("Name").get(0);
+		objMappingPage.enter(objMappingPage.parcelDistrictNeighborhood, distNeigh);
+		objMappingPage.selectOptionFromDropDown(objMappingPage.parcelDistrictNeighborhood, distNeigh);
+		objMappingPage.scrollToBottomOfPage();
+		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.saveButton));
+		objMappingPage.waitForElementToBeVisible(40, objMappingPage.generateParcelButton);
 		
 		//Step 8 :Clicking generate parcel button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -888,9 +896,9 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 
-		String mappingActionCreationData =  testdata.Brand_New_Parcel_MAPPING_ACTION;
-		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformBrandNewParcelMappingActionWithSitusData");
+		String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
+		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(
+				mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithSitusDataWithoutReasonCode");
 		
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
@@ -966,7 +974,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),childAPN,
 				"SMAB-T2716: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
-				"SMAB-T2716: Validation that  System populates reason code in return to custom screen from the sane reason code that was entered while perfroming mapping action");
+				"SMAB-T2716: Validation that  System populates reason code in return to custom screen from the same reason code that was entered while perfroming mapping action");
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),legalDescription,
 				"SMAB-T2716: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),childAPNPUC,
@@ -1181,7 +1189,9 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		String reasonCode=gridDataHashMap.get("Reason Code*").get(0);
 		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd*").get(0);
 		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)*").get(0);
-
+		objMappingPage.editParcelSizeSqft.click();
+		objMappingPage.valueParcelSizeSqft.sendKeys("100");
+		
 		//Step 5: Click brand new parcel Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
