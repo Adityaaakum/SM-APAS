@@ -82,7 +82,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		
 		JSONObject jsonForCPIUpdate= objBppTrendSetupPage.getJsonObject();	
 
-		jsonForCPIUpdate.put("Status__c", "Approved");
+		jsonForCPIUpdate.put("Status__c", "Import Approved");
 		jsonForCPIUpdate.put("CPI_Factor__c", "1.0200000");
 		
 		new SalesforceAPI().update("CPI_Factor__c", cpiFactorID, jsonForCPIUpdate);
@@ -95,7 +95,7 @@ public class BPPTrend_Prop13Table_CalculateAndReCalculate_Test extends TestBase 
 		
 		 JSONObject jsonForCPIUpdatePreviousRollYear= objBppTrendSetupPage.getJsonObject();	
 
-		 jsonForCPIUpdatePreviousRollYear.put("Status__c", "Approved");
+		 jsonForCPIUpdatePreviousRollYear.put("Status__c", "Import Approved");
 		 jsonForCPIUpdatePreviousRollYear.put("CPI_Factor__c", "1.0103600");
 		
 		new SalesforceAPI().update("CPI_Factor__c", cpiFactorID, jsonForCPIUpdatePreviousRollYear);
