@@ -31,6 +31,7 @@
 	
 	"DataToCreateOwnershipRecord": {
 	    "Type": "Owner",
+	    "RP Account":"",
 	    "Status": "Active",
 	    "Ownership Percentage":"100",
 	    "Ownership Start Date":"7/19/1950"
