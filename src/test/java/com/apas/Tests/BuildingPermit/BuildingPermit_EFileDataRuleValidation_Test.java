@@ -670,10 +670,17 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		objPage.Click(objEfileImportPage.approveButton);
 		objPage.waitForElementToBeVisible(objEfileImportPage.efileRecordsApproveSuccessMessage, 20);
 		objPage.Click(objEfileImportPage.sourceDetails);
-
+		
+		String buildingPermitNumber = "T1" + currentTimestamp ;
+		String buildingPermitIDQuery = "SELECT Id FROM Building_Permit__c where Name = '"+buildingPermitNumber+"'";
+		String buildingPermitId = salesforceAPI.select(buildingPermitIDQuery).get("Id").get(0);
+        String execEnv = System.getProperty("region");
+		
+		//Step7: Opening the building permit module
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Building_Permit__c/"+buildingPermitId+"/view");		
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
+		
 		//Step6: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
-		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
-		objBuildingPermitPage.globalSearchRecords("T1" + currentTimestamp);
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), firstBuildingPermitFileNameWithoutExtension, "SMAB-T1564: 'Import Name' Field Validation in 'Building Permit Information' section on Building Permit Screen");
 		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
 		objEFileImportLogsPage.openImportLog("Building Permit :Atherton Building Permits :Adhoc");
@@ -703,8 +710,8 @@ public class BuildingPermit_EFileDataRuleValidation_Test extends TestBase{
 		softAssert.assertEquals(objEfileImportPage.getErrorMessageFromErrorGrid("Blank APN With Process(Permit Value Greater Than 25000 for REPAIR ROOF)"),"APN required for Process","SMAB-T1536 : Error Message validation for the scenario 'Blank APN With Process(Permit Value Greater Than 25000 for REPAIR ROOF)'");
 
 		//Step6: Validate the import file name in the newly processed file. Below building permit is processed in the file uploaded in previous steps
-		objBuildingPermitPage.searchModule(modules.BUILDING_PERMITS);
-		objBuildingPermitPage.globalSearchRecords("T1" + currentTimestamp);
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Building_Permit__c/"+buildingPermitId+"/view");
+		objPage.waitForElementToBeClickable(objBuildingPermitPage.editButton,15);
 		softAssert.assertEquals(objBuildingPermitPage.getFieldValueFromAPAS("Import Name", "Building Permit Information"), secondBuildingPermitFileNameWithoutExtension, "SMAB-T1565: 'Import Name' Field Validation in 'Building Permit Information' section for the file name update once the same record is processed in the new file");
 		objBuildingPermitPage.searchModule(modules.EFILE_IMPORT_LOGS);
 		objEFileImportLogsPage.openImportLog("Building Permit :Atherton Building Permits :Adhoc");
