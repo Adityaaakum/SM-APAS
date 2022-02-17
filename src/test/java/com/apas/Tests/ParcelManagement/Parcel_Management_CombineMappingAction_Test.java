@@ -1347,12 +1347,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		jsonParcelObject.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonParcelObject.put("District__c",districtValue);
 		jsonParcelObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-//		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 		jsonParcelObject.put("Lot_Size_SQFT__c",parcelSize);
 
 		//updating PUC details
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObject);
-//		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));	
 		objParcelsPage.updateTraAndSitusWithSameCity(apn1);
 		objParcelsPage.updateTraAndSitusWithSameCity(apn2);
 
@@ -1410,7 +1408,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform split mapping
 		objMappingPage.searchModule("APAS");
-//		objMappingPage.globalSearchRecords(apn1);
 		driver.navigate().to(
 				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId1 + "/view");
 		// Step 3: Creating Manual work item for the Parcel
@@ -1465,15 +1462,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
 				"SMAB-T2659: Validation that System populates primary situs on last screen for child parcel  with the situs value that was added in first screen");
 
-		//Step 10: Validation that primary situs of child parcel is the situs value that was added in first screen from situs modal window
-		String primarySitusValueChildParcel=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ gridDataHashMap.get("APN").get(0)+"')").get("Name").get(0);
-		softAssert.assertEquals(primarySitusValueChildParcel,childprimarySitus,
-				"SMAB-T2659: Validation that primary situs of  child parcel  has value that was entered in first screen through situs modal window");
-
 		driver.switchTo().window(parentWindow);
 		//submit WI for approval
-	    String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
-	    salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Submitted for Approval");
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+
 	    objWorkItemHomePage.logout();
 	    	    
 	    //login as supervisor 
