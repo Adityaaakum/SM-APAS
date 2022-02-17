@@ -697,10 +697,9 @@ public class ParcelsPage extends ApasGenericPage {
 			selectOptionFromDropDown(isPrimaryDropdown, "Yes");
 
 			searchAndSelectOptionFromDropDown(situsSearch,
-					objSalesforceAPI.select("Select Name from Situs__c where name != null limit 1").get("Name").get(0));
+					objSalesforceAPI.select("Select Name from Situs__c where name != null and Situs_City__c='DALY CITY' limit 1").get("Name").get(0));
+			enter("PS Created /Last Updated Date","7/1/2021");
 			Click(saveButton);
-			String dateOfEvent = objSalesforceAPI.select("Select Ownership_Start_Date__c from Property_Ownership__c").get("Ownership_Start_Date__c").get(0);
-			enterDate(getWebElementWithLabel("PS Created /Last Updated Date"), dateOfEvent);
 			waitForElementToBeClickable(successAlert, 25);
 			String messageOnAlert = getElementText(successAlert);
 			waitForElementToDisappear(successAlert, 10);
