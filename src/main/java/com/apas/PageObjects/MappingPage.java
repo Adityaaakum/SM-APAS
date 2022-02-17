@@ -325,9 +325,9 @@ public class MappingPage extends ApasGenericPage {
 		String cityName = dataMap.get("City Name");
 		String situsCityCode = dataMap.get("Situs City Code");
 		
-		if(cityName !=null)
+		if (cityName != null & TRA != null)
 		cityName = objSalesforceAPI.select("SELECT City__c FROM TRA__c where Name='"+TRA+"'").get("City__c").get(0);
-		if(situsCityCode !=null)
+	    if (situsCityCode != null & TRA != null)
 		situsCityCode = objSalesforceAPI.select("SELECT Situs_City_Code__c FROM Situs__c where Situs_City__c='"+cityName+"' and Situs_City_Code__c !=null limit 1").get("Situs_City_Code__c").get(0);
 		
 		if (cityName != null) selectOptionFromDropDown(cityNameLabel, cityName);
@@ -501,7 +501,7 @@ public class MappingPage extends ApasGenericPage {
       public void editActionInMappingSecondScreen(Map<String, String> dataMap) throws Exception {
     		
 			String PUC = objSalesforceAPI.select("SELECT Name FROM PUC_Code__c  limit 1").get("Name").get(0);
-			TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c limit 1").get("Name").get(0);
+			TRA = objSalesforceAPI.select("SELECT Name FROM TRA__c where not city__c like '%UNI%' limit 1").get("Name").get(0);
 			String distNeigh = objSalesforceAPI.select("SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1").get("Name").get(0);
 		    objSalesforceAPI.update("PUC_Code__c",objSalesforceAPI.select("Select Id from PUC_Code__c where name='"+PUC+"'").get("Id").get(0), "Legacy__c", "No");
 
