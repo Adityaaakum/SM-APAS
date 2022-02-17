@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -39,7 +40,7 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 		String newExemptionName;
 		WorkItemHomePage objWIHomePage;
 		SalesforceAPI salesforceAPI;
-		
+		JavascriptExecutor javascriptexecutor;
 		
 		@BeforeMethod(alwaysRun=true)
 		public void beforeMethod() throws Exception{
@@ -59,7 +60,7 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 			rpslFileDataPath = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;
 			rpslData= objUtil.generateMapFromJsonFile(rpslFileDataPath, "DataToCreateRPSLEntryForValidation");
 			salesforceAPI = new SalesforceAPI();
-			
+			javascriptexecutor = (JavascriptExecutor) driver;
 		}
 		
 		@Test(description = "SMAB-T2552:DV-Retro-work item:Verify that a Disabled Veteran retrofit work item is created automatically,the user can view the Approver field is populated based on the assigned 1st Level Supervisor on the related Work Pool of the work item.", 
@@ -104,16 +105,21 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 			   HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
 			   
 			    String WIName = getWIDetails.get("Name").get(0);
-			    String WIRequestType = getWIDetails.get("Request_Type__c").get(0);
+			    getWIDetails.get("Request_Type__c").get(0);
 			   
 			   //Search the Work Item Name in the Grid 1st Column
-			   String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);			   
+			    javascriptexecutor.executeScript("window.scrollBy(0,800)");
+			    objWIHomePage.Click(objWIHomePage.ageDays);
+			    objWIHomePage.waitForElementToBeClickable(WIName);
+				Thread.sleep(2000);
+				objWIHomePage.findWorkItemInProgress(WIName);
+				objWIHomePage.globalSearchRecords(WIName);
 			   
 			   String WorkItem_Id = objWIHomePage.getWorkItemIDFromExemptionOnWorkBench(newExemptionName);
 			   String WP_SupervisorName = objWIHomePage.getSupervisorDetailsFromWorkBench(WorkItem_Id);
 			   
 			   objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
-			   objPage.javascriptClick(objWIHomePage.detailsWI);
+			   objPage.javascriptClick(objWIHomePage.detailsTab);
 			   
 			   String Curr_Approver = objApasGenericPage.getFieldValueFromAPAS("Current Approver", "Approval & Supervisor Details");
 			   String Approver = objApasGenericPage.getFieldValueFromAPAS("Approver", "Approval & Supervisor Details");

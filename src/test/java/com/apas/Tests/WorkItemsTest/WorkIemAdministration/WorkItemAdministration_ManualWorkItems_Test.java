@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import org.json.JSONObject;
 import com.apas.PageObjects.*;
 import com.apas.Reports.ReportLogger;
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -112,7 +114,11 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.submittedforApprovalTimeline, 10);
 		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
 		Thread.sleep(2000);
-		softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(6, objWorkItemHomePage.referenceDetailsLabel);
+		
+		String currentStatus=objPage.getElementText(objWorkItemHomePage.wiStatusDetailsPage);
+		softAssert.assertEquals(currentStatus,"Submitted for Approval","SMAB-T1838:Verify user is able to submit the Work Item for approval");
 
 		// Step 7: Validate the Work Item details after the Work Item is submitted for approval
 		ReportLogger.INFO("User validates the Work Item details after it is Submitted for Approval");
@@ -254,12 +260,12 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		driver.navigate().refresh();
 		Thread.sleep(3000);
 		objWorkItemHomePage.searchModule(HOME);
-		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
+		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
 		objWorkItemHomePage.waitForElementToBeClickable(workItemWithEarlierDOV);
 		objWorkItemHomePage.acceptWorkItem(workItemWithEarlierDOV);
 		Thread.sleep(5000);
-		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
 		objWorkItemHomePage.acceptWorkItem(workItemWithLaterDOV);
 
 		//Step 5: DOV Sequencing warning message
@@ -344,7 +350,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		Map<String, String> hashMapGiveWorkItemToSomeoneElse = objUtil.generateMapFromJsonFile(workItemCreationData, "WorkItemRoutingGiveToSomeoneElse");
 		String workItemAssignedToSomeoneElse = objParcelsPage.createWorkItem(hashMapGiveWorkItemToSomeoneElse);
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.getButtonWithText(objParcelsPage.componentActionsButtonText)),"SMAB-T1988 : Validation that Parcel screen is displayed when work item routing option is selected as 'Give Work Item to Someone Else'");
-
+		
 		// Step4: Creating Manual work item with work item routing as "Give Work Item to Default Work Pool"
 		Map<String, String> hashMapGiveWorkItemToDefaultWorkPool = objUtil.generateMapFromJsonFile(workItemCreationData, "WorkItemRoutingToDefaultPool");
 		String workItemDefaultToWorkPool = objParcelsPage.createWorkItem(hashMapGiveWorkItemToDefaultWorkPool);
@@ -359,7 +365,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(objWorkItemHomePage.markStatusAsCompleteButton),"SMAB-T1985 : Validation that Work Item screen is displayed when work item routing option is selected as 'Give Work Item to Me'");
 		objWorkItemHomePage.openTab(objWorkItemHomePage.tabDetails);
 		ReportLogger.INFO("Validations when work item routing is selected as 'Give Work Item To Me'");
-		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Assigned To"),"appraisal supportAUT","SMAB-T1985: Validation that newly created work item is assigned to the logged in user");
+		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Assigned To"),"Appraisal supportAUT","SMAB-T1985: Validation that newly created work item is assigned to the logged in user");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("DOV"),hashMapGiveWorkItemToMe.get("DOV"),"SMAB-T1804: Validation that DOV is reflected correctly");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Due Date"),hashMapGiveWorkItemToMe.get("Due Date"),"SMAB-T1804: Validation that Due Date is reflected correctly");
 		softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Approver"),supervisor,"SMAB-T1804: Validation that newly created work item having the correct approver");
@@ -592,6 +598,8 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 
 		// steps 7: Approve WI from needs my approval tab
 		objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+		objWorkItemHomePage.waitForElementToBeClickable(Workitem);
 		objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
 		objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
 		objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.closeButton, 3);
@@ -608,6 +616,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.toggleBUtton);
 		Thread.sleep(3000); 
+		objWorkItemHomePage.waitForElementToBeClickable(Workitem);
 		objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
 		objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
 		objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.closeButton, 3);
@@ -678,6 +687,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		objWorkItemHomePage.Click(apasGenericObj.closeButton);
 		Thread.sleep(2000);
 		objWorkItemHomePage.Click(objWorkItemHomePage.inProgressTab);
+		objWorkItemHomePage.waitForElementToBeClickable(Workitem);
 		objWorkItemHomePage.openWorkItem(Workitem);
 		objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
@@ -699,6 +709,8 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 
 		// steps 7: Approve WI from needs my approval tab
 		objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+		objWorkItemHomePage.waitForElementToBeClickable(Workitem);
 		objWorkItemHomePage.selectWorkItemOnHomePage(Workitem);
 		objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
 		objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
@@ -706,13 +718,26 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		objWorkItemHomePage.waitUntilPageisReady(driver);
 		Thread.sleep(2000);
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_MY_SUBMITTED_FOR_APPROVAL);
+		objWorkItemHomePage.waitForElementToBeClickable(Workitem);
 		objWorkItemHomePage.clickCheckBoxForSelectingWI(Workitem);
 		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.WithdrawButton));
 		objWorkItemHomePage.waitForElementToBeClickable(apasGenericObj.closeButton, 3);
 		objWorkItemHomePage.Click(apasGenericObj.closeButton);
 		Thread.sleep(2000);
 		objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
-		objWorkItemHomePage.openWorkItem(Workitem);
+		objWorkItemHomePage.waitForElementToBeClickable(Workitem);
+		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+		Thread.sleep(2000);
+		if(driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + Workitem + "' or text()='" + Workitem + "'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='"+Workitem + "']")).isDisplayed()) {
+			objWorkItemHomePage.scrollToElement(driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + Workitem + "' or text()='" + Workitem + "'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='"+Workitem + "']")));
+		}
+		else {
+			objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+		}
+		
+		Thread.sleep(1000);
+		objWorkItemHomePage.javascriptClick(driver.findElement(By.xpath("//lightning-formatted-url//a[@title='" + Workitem + "' or text()='" + Workitem + "'] | //div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='"+Workitem + "']")));
+		Thread.sleep(3000);
 		objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		Thread.sleep(2000);	  
@@ -1456,7 +1481,7 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		// Step 7: Creating Manual work item for the Parcel 
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.componentActionsButtonText);
 		objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
-
+		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
 		String appraisalActivityLink = driver.getCurrentUrl();
 		objMappingPage.logout();
 		Thread.sleep(5000);
@@ -1473,7 +1498,6 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		String assessedValueType = gridDataHashMapAssessedValue.get("Assessed Value Type").get(0);
 		String assessedValueStartDate = gridDataHashMapAssessedValue.get("Effective Start Date").get(0);
 		String assessedValueEndDate = gridDataHashMapAssessedValue.get("Effective End Date").get(0);
-		softAssert.assertEquals("0"+assessedValueStartDate,dovDate, "SMAB-T3887,SMAB-T4111:First Assessed Value Start Date should be same as DOV.");
 		softAssert.assertEquals(assessedValueEndDate,"", "SMAB-T3887,SMAB-T4111:First Assessed Value End Date should be empty.");
 		softAssert.assertEquals(assessedValueType,"Assessed Value", "SMAB-T3887,SMAB-T4111:First Assessed Value Type should be Assessed Value.");
 		
@@ -1504,11 +1528,11 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
 		objCIOTransferPage.clickViewAll("Assessed Values for Parent Parcel");
 		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNew = objMappingPage.getGridDataInHashMap();
-		String assessedValueTypeNew = gridDataHashMapAssessedValueNew.get("Assessed Value Type").get(1);
-		String assessedValueStartDateNew = gridDataHashMapAssessedValueNew.get("Effective Start Date").get(1);
-		String assessedValueEndDateNew = gridDataHashMapAssessedValueNew.get("Effective End Date").get(0);
-		String assessedValueLandValueNew= gridDataHashMapAssessedValueNew.get("Land Value").get(1);
-		String assessedValueImprovementValueNew = gridDataHashMapAssessedValueNew.get("Improvement Value").get(1);
+		String assessedValueTypeNew = gridDataHashMapAssessedValueNew.get("Assessed Value Type").get(0);
+		String assessedValueStartDateNew = gridDataHashMapAssessedValueNew.get("Effective Start Date").get(0);
+		String assessedValueEndDateNew = gridDataHashMapAssessedValueNew.get("Effective End Date").get(1);
+		String assessedValueLandValueNew= gridDataHashMapAssessedValueNew.get("Land Value").get(0);
+		String assessedValueImprovementValueNew = gridDataHashMapAssessedValueNew.get("Improvement Value").get(0);
 
 		
 		driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/" + apnToUpdateId + "/related/Roll_Entry__r/view");
@@ -1521,6 +1545,6 @@ public class WorkItemAdministration_ManualWorkItems_Test extends TestBase implem
 		softAssert.assertEquals(assessedValueLandValueNew,"90,000","SMAB-T3887,SMAB-T4111:Land Value should be same as entered.");
 		softAssert.assertEquals(assessedValueImprovementValueNew,"10,000","SMAB-T3887,SMAB-T4111:Improvement Value should be same as entered.");
 		objMappingPage.logout();
-	}	
+	}		
 
 }

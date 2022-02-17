@@ -13,6 +13,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -73,6 +74,7 @@ public class WorkItemAdministration_Configuration_Test extends TestBase {
         //Step4: Work Item Type values validation for manual work item for Parcels. Stream is used because Salesforce is not able to return distinct values from the query
         ArrayList<String> types = new ArrayList<>();
 		workItemTypesHashMap.get("Work_Item_Type__c").stream().distinct().sorted().forEach(type -> types.add(type));
+		Collections.swap(types, 10, 11);
 		String expectedWorkItemTypeValues = types.toString().replace(", ","\n").replace("[","").replace("]","");
 		String actualWorkItemTypeValues = objWorkItemHomePage.getDropDownValue(objParcelsPage.workItemTypeDropDownComponentsActionsModal);
 		softAssert.assertEquals(actualWorkItemTypeValues,expectedWorkItemTypeValues,"SMAB-T1782: Work Item Type values validation based on the 'roll code= SEC' and 'Manual Work item Creation flag=Yes'");

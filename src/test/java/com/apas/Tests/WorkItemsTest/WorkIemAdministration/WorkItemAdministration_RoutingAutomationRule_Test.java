@@ -57,7 +57,7 @@ public class WorkItemAdministration_RoutingAutomationRule_Test extends TestBase 
     		dataProviderClass = DataProviders.class, 
     		groups = {"Regression","WorkItemAdministration","Neighborhood"}, 
     		alwaysRun = true)
-    public void WorkItemAdministration_RoutingRule_verifyRoutingRuleForSECCodeWithMatchedNB(String loginUser) throws Exception {
+public void WorkItemAdministration_RoutingRule_verifyRoutingRuleForSECCodeWithMatchedNB(String loginUser) throws Exception {
     	
     	String workItemConfigName;
         String workItemConfigID;
@@ -120,7 +120,7 @@ public class WorkItemAdministration_RoutingAutomationRule_Test extends TestBase 
     		dataProviderClass = DataProviders.class, 
     		groups = {"Regression","WorkItemAdministration","Neighborhood"}, 
     		alwaysRun = true)
-    public void WorkItemAdministration_RoutingRule_verifyRoutingRuleForSECCodeWithUnMatchedNB(String loginUser) throws Exception {
+public void WorkItemAdministration_RoutingRule_verifyRoutingRuleForSECCodeWithUnMatchedNB(String loginUser) throws Exception {
     	
     	String workItemConfigName;
         String workItemConfigID;
@@ -177,7 +177,8 @@ public class WorkItemAdministration_RoutingAutomationRule_Test extends TestBase 
         driver.get(parcelURL);
        
         // Step 2: Opening the PARCELS page and searching a parcel		
-		String workItemNumber =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+        String workItemNumber =objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		
 		String rpLostWorkPoolName = "RP Lost in Routing";
 		
