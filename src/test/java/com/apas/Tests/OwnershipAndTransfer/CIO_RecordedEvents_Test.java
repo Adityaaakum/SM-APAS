@@ -499,12 +499,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		 * CancelButton));
 		 */
 		//Below two validations are failed due to new functionality added ,will be fixed as a part of automation story
-		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.transferTaxLabel),
-				"$" + recorderTransferTax.substring(0, 1) + "," + recorderTransferTax.substring(1),
+		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.transferTaxLabel).replace(",", ""),
+				"$" +Math.abs( Math.round(Double.parseDouble((recorderTransferTax.substring(0, 1) + "," + recorderTransferTax.substring(1)).replace(",", "")))),
 				"SMAB-T3206:Verifying that recorder transfer tax of recorded document is transfer tax of the transfer screen");
 
 		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.valueFromDocTaxLabel),
-				"$2,375,000.00", "SMAB-T3206: Verify that DOC TAX of CIO transfer equals ( $Transfer Tax / 0.0011)");
+				"$2,375,000", "SMAB-T3206: Verify that DOC TAX of CIO transfer equals ( $Transfer Tax / 0.0011)");
 
 		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.cityOfSmTaxLabel),
 				"$" + recorderConvTax.substring(0, 2) + "," + recorderConvTax.substring(2),
@@ -674,7 +674,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(0), ownershipDovForNewGrantee,
 				"SMAB-T3691: Validating that Ownership start date of new owner is DOV of the recorded document by default.");
 		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(1),
-				hashMapCreateOwnershipRecordData.get("Ownership Start Date"),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"),
 				"SMAB-T3691: Validating that Ownership start date of old owner remains same as before the partial transfer");
 
 		// STEP 19-Navigating back to RAT screen and clicking on back quick action //
