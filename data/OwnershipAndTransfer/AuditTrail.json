@@ -9,6 +9,17 @@
 		"Description": "Unrecorded Transfer",		
 		"Updated DOE": "07/05/2021"
 	},
+	"UnrecordedEventCreationWithTransferTax": {
+    	"Record Type": "Business Event",
+    	"Group":"CIO",
+		"Type of Audit Trail Record?": "Unrecorded Event",
+		"Source": "Unrecorded document",
+		"Date of Event": "12/04/2021",
+		"Date of Recording": "12/04/2021",
+		"Description": "Unrecorded Transfer",		
+		"Updated DOE": "12/04/2021",
+		"Transfer Tax": "227.77"
+	},
 	"DataToCreateCorrespondenceEventForAutoConfirm": {
     	"Record Type": "Correspondence",
     	"Group":"CIO",

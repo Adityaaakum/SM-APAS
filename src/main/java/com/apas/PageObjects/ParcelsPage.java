@@ -82,6 +82,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String dateOfEventInputTextBox = "Date of Event";
 	public String dateOfValueInputTextBox = "Date of Value";
 	public String dateOfRecordingInputTextBox = "Date of Recording";
+	public String transferTaxInputTextBox = "Transfer Tax"; 
 	public String descriptionInputTextBox = "Description";
 	public String saveAndNextButton="Save and Next";
 	public String ownershipPercentageTextBox="Ownership Percentage";
@@ -552,6 +553,7 @@ public class ParcelsPage extends ApasGenericPage {
 			if(dataMap.get("Source")!=null) {selectOptionFromDropDown(sourceDropdown, dataMap.get("Source"));}
 			if(dataMap.get("Date of Event")!=null) {enter(dateOfEventInputTextBox, dataMap.get("Date of Event"));}
 			if(dataMap.get("Date of Value")!=null) {enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));}
+			if(dataMap.get("Transfer Tax")!=null) {enter(transferTaxInputTextBox, dataMap.get("Transfer Tax"));}
 			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
 			enter(descriptionInputTextBox, description);
 			if(dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?")!=null) {enter(auditTrailRecordDropDownComponentsActionsModal, dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?"));}

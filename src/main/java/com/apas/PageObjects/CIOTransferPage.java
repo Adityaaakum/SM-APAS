@@ -79,6 +79,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public String firstNameLabel="First Name";
 	public String nextButtonComponentsActionsModal = "Next";
 	public String transferCodeLabel = "Transfer Code";
+	public String indicatedSalesPrice = "Indicated Sales Price";
 	public String transferDescriptionLabel = "Transfer Description";
 	public String transferStatusLabel = "CIO Transfer Status";
 	public String exemptionRetainLabel = "Exemption Retain";
