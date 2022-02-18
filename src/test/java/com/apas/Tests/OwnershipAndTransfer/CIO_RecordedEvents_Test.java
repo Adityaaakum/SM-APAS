@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -3176,15 +3177,29 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3821: Verify that "
 				+ "Mailing_Country__c in CIO mail to is that of updated APN 's mail to record ");
 		
+		
+		objCioTransfer.logout();
+		
+		objCioTransfer.login(users.SYSTEM_ADMIN);
+		driver.navigate().to("https://smcacre--" + execEnv
+				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+				objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
+		
 		objCioTransfer.clickViewAll("Ownership for Parent Parcel");
 		HashMap<String, ArrayList<String>> HashMapLatestOwner = objCioTransfer.getGridDataInHashMap();
 
-		softAssert.assertTrue( responseAPNOwnershipDetails.get("Name").contains(HashMapLatestOwner.get("Ownership Id").get(0)),
+		objCioTransfer.Click(objParcelsPage.showMoreActionsDropdownIcon);
+		objCioTransfer.Click(objCioTransfer.editLinkUnderShowMore);
+		String ownershipIdUpdatedAPN=objParcelsPage.getElementText(objParcelsPage.parcelOwnershipIdEditOwnershippopUp).replace("Edit ", "");
+		
+		softAssert.assertEquals( responseAPNOwnershipDetails.get("Name").get(0),ownershipIdUpdatedAPN,
 				"SMAB-T3821: Verify that "
 				+ "current ownership records  on transfer screen is that of new APN ");
 		
 		//navigating back to transfer screen	
+		objCioTransfer.logout();
 		
+		objCioTransfer.login(users.CIO_STAFF);
 		driver.navigate().to("https://smcacre--" + execEnv
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 				objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
@@ -3249,7 +3264,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		 
 		driver.navigate().to("https://smcacre--" + execEnv
 					+ ".lightning.force.com/lightning/r/Transaction_Trail__c/" + auditTrailIdLegalDescriptionWI + "/view");
-		
+		Thread.sleep(4000);
 		objMappingPage.scrollToBottom();
 		softAssert.assertEquals(trail.getFieldValueFromAPAS(trail.relatedCorrespondenceLabel), parentAuditTrailNumber,
 				"SMAB-T3384: Verifying that business event created for  APN & Legal description WI  is child of parent Recorded correspondence event");
