@@ -17,7 +17,7 @@
     "Situs City Description": "Daly City",
     "Situs City Code": "DC",    
     "City Name": "DALY CITY",
-    "Direction": "E",
+    "Direction": "SE",
     "Situs Number": "69",
     "Situs Street Name": "CLIFFSIDE",
     "Situs Type": "BND",
@@ -28,6 +28,9 @@
 
   "DataToCreateOwnershipRecord": {
     "Type": "Owner",
-    "Status": "Active"
+    "RP Account":"",
+    "Status": "Active",
+    "Ownership Percentage":"100",
+	"Ownership Start Date":"7/19/1999"
   }
 }
