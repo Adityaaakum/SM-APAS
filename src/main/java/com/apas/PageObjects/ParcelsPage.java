@@ -278,6 +278,13 @@ public class ParcelsPage extends ApasGenericPage {
 	@FindBy(xpath = "//c-org_cos-document-summary//table/tbody/tr[last()]//a")
     public WebElement lastItemInCosDocumentSummary;
 	
+	@FindBy(xpath = "//*[contains(text(),'Edit PO-')]")
+	public WebElement parcelOwnershipIdEditOwnershippopUp;
+	
+	@FindBy(xpath = "//*[contains(@class,'lds-icon_container slds-icon-utility')]")
+	public WebElement showMoreActionsDropdownIcon;
+	
+	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
     public String ApprovalButton="Approve";

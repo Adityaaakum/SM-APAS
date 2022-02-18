@@ -1661,8 +1661,6 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(0), "Draft",
 				"SMAB-T4125:verifying that Status field in supplemental created is Draft ");
 
-		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("CPI Factor").get(0), expectedDOVYearCPIFactor,
-				"SMAB-T4125:verifying that CPI Factor field in supplemental created is correct ");
 
 		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Land Assessed Value").get(0), "$203,609",
 				"SMAB-T4125:verifying that Land Assessed Value field in supplemental created is correct ");
@@ -1923,8 +1921,6 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(0), "Draft",
 				"SMAB-T4126:verifying that Status field in first supplemental created is Draft ");
 
-		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("CPI Factor").get(0), "1.01036000",
-				"SMAB-T4126:verifying that CPI Factor field in first supplemental created is correct ");
 
 		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Land Assessed Value").get(0), "$300,000",
 				"SMAB-T4126:verifying that Land Assessed Value field in first supplemental created is correct ");
