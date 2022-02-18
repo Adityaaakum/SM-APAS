@@ -607,8 +607,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		//Clicking the  details tab for the work item newly created and clicking on Related Action Link
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
-		
-		 
+				 
 		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		String parentWindow = driver.getWindowHandle();	
 		objWorkItemHomePage.switchToNewWindow(parentWindow);	
@@ -625,13 +624,14 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.globalSearchRecords(newCreatedApn);
  		
  		//clicking on edit button in parcels page
- 		 objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
- 		  objParcelsPage.scrollToElement(objParcelsPage.getWebElementWithLabel(objParcelsPage.editApnField)); 		                   
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
+ 		
+ 		objParcelsPage.scrollToElement(objParcelsPage.getWebElementWithLabel(objParcelsPage.editApnField)); 		                   
  		 //Entering new apn value 		 
  		 objParcelsPage.enter(objParcelsPage.getWebElementWithLabel(objParcelsPage.editApnField), apn2);
  		 softAssert.assertEquals(objParcelsPage.saveRecordAndGetError().contains("You can't save this record because a duplicate"),true ,"SMAB-T2646: Verifying that new APN cannot be reupdated."); 	         
  		 objParcelsPage.cancelRecord();
-			objParcelsPage.logout();
+		 objParcelsPage.logout();
 
 		}
 
@@ -672,14 +672,19 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		
 	    // entering data in form for Brand New Parcel mapping
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
+        objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+        objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));		
 		 HashMap<String, ArrayList<String>> gridParcelData=      objMappingPage.getGridDataInHashMap();
          String newCreatedApn  =   gridParcelData.get("APN").get(0);         
          driver.switchTo().window(parentWindow);         
          objMappingPage.searchModule(PARCELS);         
- 		objMappingPage.globalSearchRecords(newCreatedApn); 		
+ 		objMappingPage.globalSearchRecords(newCreatedApn); 
+ 	 		
  		//clicking on edit button in parcels page 		
- 		 objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
+ 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
+ 		
  	     boolean status = objParcelsPage.verifyElementEnabled(objParcelsPage.getWebElementWithLabel(objParcelsPage.LongLegalDescriptionLabel));		
  	 	objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.SaveButton)); 
  		  //validating that long desc field is editable
@@ -701,6 +706,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
 
+		
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
@@ -715,7 +721,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		String situsStreetName = hashMapBrandNewParcelMappingData.get("Situs Street Name");
 		String situsType = hashMapBrandNewParcelMappingData.get("Situs Type");
 		String situsUnitNumber = hashMapBrandNewParcelMappingData.get("Situs Unit Number");
-		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+"#"+situsUnitNumber+", "+cityName;
+		String childprimarySitus=situsNumber+" "+direction+" "+situsStreetName+" "+situsType+" "+ situsUnitNumber+", "+cityName;
 
 		// Step1: Login to the APAS application using the credentials passed through data provider (login Mapping User)
 		objMappingPage.login(loginUser);
@@ -776,7 +782,11 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		}
 		
 		softAssert.assertTrue(neighborhood,"SMAB-T4161: Verify for all the mapping actions, lookup references for the 'district and neighborhood' should include the lookup filter where the legacy district/neighborhoods are excluded.");
-
+		
+		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
+        objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+        objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
+		objMappingPage.waitForElementToBeVisible(40, objMappingPage.generateParcelButton);
 		
 		//Step 8 :Clicking generate parcel button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
@@ -888,9 +898,9 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
 
-		String mappingActionCreationData =  testdata.Brand_New_Parcel_MAPPING_ACTION;
-		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
-				"DataToPerformBrandNewParcelMappingActionWithSitusData");
+		String mappingActionCreationData = testdata.Brand_New_Parcel_MAPPING_ACTION;
+		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(
+				mappingActionCreationData, "DataToPerformBrandNewParcelMappingActionWithSitusData");
 		
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
@@ -966,7 +976,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		softAssert.assertEquals(gridDataHashMap.get("APN").get(0),childAPN,
 				"SMAB-T2716: Validation that  System populates apn in return to custom screen  with the APN of child parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Reason Code*").get(0),reasonCode,
-				"SMAB-T2716: Validation that  System populates reason code in return to custom screen from the sane reason code that was entered while perfroming mapping action");
+				"SMAB-T2716: Validation that  System populates reason code in return to custom screen from the same reason code that was entered while perfroming mapping action");
 		softAssert.assertEquals(gridDataHashMap.get("Legal Description*").get(0),legalDescription,
 				"SMAB-T2716: Validation that  System populates Legal Description in return to custom screen from the parent parcel");
 		softAssert.assertEquals(gridDataHashMap.get("Use Code*").get(0),childAPNPUC,
@@ -1083,6 +1093,9 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 
 		//Step 6: filling all fields in mapping action screen
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
+        objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+        objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 		gridDataHashMap =objMappingPage.getGridDataInHashMap();
 
@@ -1145,7 +1158,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		String queryAPN = "Select name,ID  From Parcel__c where name like '0%' AND Primary_Situs__c !=NULL and Status__c = 'Active' limit 1";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
 		String apn=responseAPNDetails.get("Name").get(0);
-
+		
 		String mappingActionCreationData =  testdata.Brand_New_Parcel_MAPPING_ACTION;
 		Map<String, String> hashMapBrandNewParcelMappingData = objUtil.generateMapFromJsonFile(mappingActionCreationData,
 				"DataToPerformBrandNewParcelMappingActionWithSitusData");
@@ -1169,10 +1182,10 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		//Step 4: filling all fields in mapping action screen
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
 		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
+		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "100");
 		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
 		objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
-
-		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
+      	HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
 	
 		String childAPN=gridDataHashMap.get("APN").get(0);
 		String legalDescription=gridDataHashMap.get("Legal Description*").get(0);
@@ -1181,7 +1194,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		String reasonCode=gridDataHashMap.get("Reason Code*").get(0);
 		String districtNeighborhood=gridDataHashMap.get("Dist/Nbhd*").get(0);
 		String parcelSizeSQFT=gridDataHashMap.get("Parcel Size (SQFT)*").get(0);
-
+		
 		//Step 5: Click brand new parcel Parcel Button
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
 		objMappingPage.waitForElementToBeVisible(objMappingPage.confirmationMessageOnSecondScreen);
@@ -1368,8 +1381,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		    softAssert.assertEquals(gridDataHashMapAfterEditAction.get("Use Code*").get(0),PUC,
 					"SMAB-T2835,SMAB-T2840: Validation that System populates TRA from the parent parcel");
 		    
-		     // Step 7: Verify Linked Items on WI before Brand New Parcel Mapping Action is
-			// performed
+		     // Step 7: Verify Linked Items on WI before Brand New Parcel Mapping Action is performed
 			ReportLogger.INFO("validate that new APNs added are not linked to WI before Brand New Parcel Mapping Action is performed");
 			driver.switchTo().window(parentWindow);
 			objMappingPage.waitUntilPageisReady(driver);
@@ -1569,14 +1581,16 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
  		 objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 		 String parentWindow = driver.getWindowHandle();	
 		 objWorkItemHomePage.switchToNewWindow(parentWindow);
-
          objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
+         objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
+         objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
+         objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
  		 objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.generateParcelButton));
+ 		 
  		// Validating that Parcel has been successfully created.
- 		 softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) have been created successfully. Please review spatial information.",
+  		 softAssert.assertEquals(objMappingPage.getElementText(objMappingPage.confirmationMessageOnSecondScreen),"Parcel(s) have been created successfully. Please review spatial information.",
  				"SMAB-T2642: Validation that Parcel has been successfully created. Please Review Spatial Information");
- 		
- 		// Retriving new APN genrated
+ 		  // Retriving new APN genrated
           HashMap<String, ArrayList<String>> gridParcelData = objMappingPage.getGridDataInHashMap();
           String newCreatedApn  =   gridParcelData.get("APN").get(0);  
           jsonObject.put("PUC_Code_Lookup__c",responsePUCDetails.get("Id").get(0));
