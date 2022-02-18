@@ -78,7 +78,7 @@ public class ExemptionsPage extends ApasGenericPage {
 
     public String dateAquiredProperty = "Date Acquired Property";
 
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Acquired Property')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Acquired Property')]/following-sibling::div//slot[@name='outputField']/lightning-formatted-text")
     public WebElement dateAquiredPropertyExemptionDetails;
 
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//li[@title='Details']//a[@data-tab-value='detailTab']")
@@ -93,7 +93,7 @@ public class ExemptionsPage extends ApasGenericPage {
     @FindBy(xpath = "//button[@title='Save'] | //button[text()='Save']")
     public static WebElement saveButton;
 
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Occupied/Intend to Occupy Property')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Occupied/Intend to Occupy Property')]/following-sibling::div//slot[@name='outputField']/lightning-formatted-text")
     public WebElement dateOccupyPropertyExemptionDetails;
 
     public String dvExemptionOnPriorResidence = "DV Exemption on Prior Residence";
@@ -110,7 +110,7 @@ public class ExemptionsPage extends ApasGenericPage {
 
     public String effectiveDateOfUSDVA = "Effective Date of 100% USDVA Rating";
 
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Effective Date of 100% USDVA Rating')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Effective Date of 100% USDVA Rating')]/following-sibling::div//slot[@name='outputField']/lightning-formatted-text")
     public WebElement effectiveDateOfUSDVAExemptionDetails;
 
     @FindBy(xpath = "//a[@title='Select List View']")
@@ -123,7 +123,7 @@ public class ExemptionsPage extends ApasGenericPage {
 
     public String claimanatEmailAddress = "Claimant's Email Address";
 
-    public String claimantTelephone = "Claimant's Telephone #";
+    public String claimantTelephone = "Phone";
 
     public String qualification = "Qualification?";
 
@@ -174,7 +174,7 @@ public class ExemptionsPage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@name='Delete']")
     public WebElement deleteExemption;
 
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@title='Edit End Date of Rating']/preceding-sibling::span//slot[@slot='outputField']/lightning-formatted-text")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//button[@title='Edit End Date of Rating']/preceding-sibling::span//slot[@name='outputField']/lightning-formatted-text")
     public WebElement endDateOfRatingOnExemption;
 
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//ul//li[contains(@title,'Business Events')]")
@@ -192,7 +192,7 @@ public class ExemptionsPage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@id,'error-message')]")
     public WebElement fieldErrorMessage;
 
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(text(),'Exemption')]//following-sibling::slot/slot/lightning-formatted-text")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(text(),'Exemption')]//following-sibling::slot/lightning-formatted-text")
     public WebElement newExemptionNameAftercreation;
 
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(text(),'Status')]/parent::div/following-sibling::div//span//slot[@name='outputField']//lightning-formatted-text")

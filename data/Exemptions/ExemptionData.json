@@ -121,7 +121,7 @@
 	
 	"newExemptionMandatoryData1": {
     	"APN": "002-021-030",
-		"DateApplicationReceived": "03/17/2020",
+		"DateApplicationReceived": "02/17/2020",
 		"ClaimantName": "yogender",
 		"ClaimantSSN": "123456789",
 		"VeteranName": "SMtestdata8",
@@ -178,7 +178,7 @@
 	
 	"onlyOneVAtestData": {
 		"APN": "002-072-250",
-		"DateApplicationReceived": "1/15/2020",
+		"DateApplicationReceived": "1/15/2022",
 		"ClaimantName": "yogender",
 		"ClaimantSSN": "123456789",
 		"SpouseName": "Anjelina",
@@ -187,16 +187,16 @@
 		"DateOfDeathOfVeteran": "11/6/2019",
 		"VeteranName": "SM County",
 		"VeteranSSN": "987654321",
-		"DateAquiredProperty": "1/1/2020",
-		"DateOccupyProperty": "1/8/2020",
+		"DateAquiredProperty": "1/1/2022",
+		"DateOccupyProperty": "1/8/2022",
 		"DVExemptionOnPriorResidence": "Yes"
-		"DateMovedPriorResidence": "1/15/2020",
+		"DateMovedPriorResidence": "1/15/2022",
 		"PriorResidenceStreet": "221 baker street",
 		"PriorResidenceCity": "orlenas",
 		"PriorResidenceState": "CA",
 		"PriorResidenceCounty": "SM",
 		"EffectiveDateOfUSDVA": "1/2/2018",
-		"DateOfNotice": "1/15/2020",
+		"DateOfNotice": "1/15/2022",
 		"DvExemptionOnPriorResidence": "Yes",
 		"BasisForClaim": "Blind In Both Eyes",
 		"DeceasedVeteranQualification": "Blindess",
@@ -204,7 +204,7 @@
 		"Telephone": "0112345679",
 		"Qualification": "Qualified",
 		"EndRatingReason": "Deceased Veteran",
-		"EnddateOfRating": "1/16/2020"
+		"EnddateOfRating": "1/16/2022"
 		
 		},
 		

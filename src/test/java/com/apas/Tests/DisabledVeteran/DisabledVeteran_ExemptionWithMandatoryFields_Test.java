@@ -61,7 +61,8 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 	
 	@Test(description = "SMAB-T522, SMAB-T523, SMAB-T479, SMAB-T480, SMAB-T481: Validate Exemption Support staff and RP Business Admin is able to view, create and edit Exemption record by filling mandatory fields", groups = {"Smoke", "Regression", "DisabledVeteran"}, dataProvider = "loginRpBusinessAdminAndExemptionSupportUsers", dataProviderClass = com.apas.DataProviders.DataProviders.class)
 	public void DisabledVeteran_CreateAndEditExemptionAndMandatoryFieldErrorValidation(String loginUser) throws Exception {
-	
+	 
+		String execEnv = System.getProperty("region");
 		//Step1: Login to the APAS application using the user passed through the data provider
 		objApasGenericPage.login(loginUser);
 		
@@ -112,13 +113,8 @@ public class DisabledVeteran_ExemptionWithMandatoryFields_Test extends TestBase 
 		String exemptionName = objPage.getElementText(objPage.waitForElementToBeVisible(objExemptionsPage.exemptionName));
 		softAssert.assertTrue(exemptionName.contains("EXMPTN"),"SMAB-T480,SMAB-T522: Validate " + loginUser + " user is able to create Exemption with mandatory fields'");
 	
-		//Step6: Open the Exemption module
-		objApasGenericPage.searchModule(modules.EXEMPTION);
-
-		//Step7: Search the existing Exemption record that was created and Edit it
-		objApasGenericPage.displayRecords("All");
-		objApasGenericPage.searchRecords(exemptionName);
-		softAssert.assertTrue(objApasGenericPage.clickShowMoreButtonAndAct(exemptionName, "Edit"),"SMAB-T481: Validate user is able to edit the Exemption record : " + exemptionName);
+		objApasGenericPage.Click(objExemptionsPage.editExemption);
+		objPage.waitForElementToBeVisible(objExemptionsPage.saveButton);
 		softAssert.assertTrue(objExemptionsPage.saveButton.isDisplayed(), "SMAB-T481: Validate user is able to view the edit screen for the Exemption record : " + exemptionName);
 	
 		//Step8: Clear the values from the few mandatory fields and Save the record
