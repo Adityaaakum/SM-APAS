@@ -1319,6 +1319,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryApnDetails);
 		String apn1=responseAPNDetails.get("Name").get(0);
 		String apn2=responseAPNDetails.get("Name").get(1);
+		
+		String apnId1=responseAPNDetails.get("Id").get(0);
+		String apnId2=responseAPNDetails.get("Id").get(1);
 
 		objMappingPage.deleteOwnershipFromParcel(responseAPNDetails.get("Id").get(0));
 		objMappingPage.deleteOwnershipFromParcel(responseAPNDetails.get("Id").get(1));
@@ -1344,13 +1347,13 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		jsonParcelObject.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonParcelObject.put("District__c",districtValue);
 		jsonParcelObject.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-		jsonParcelObject.put("TRA__c",responseTRADetails.get("Id").get(0));
 		jsonParcelObject.put("Lot_Size_SQFT__c",parcelSize);
 
 		//updating PUC details
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObject);
-		salesforceAPI.update("Parcel__c", responseAPNDetails.get("Id").get(1), "TRA__c", responseTRADetails.get("Id").get(1));	
-			
+		objParcelsPage.updateTraAndSitusWithSameCity(apn1);
+		objParcelsPage.updateTraAndSitusWithSameCity(apn2);
+
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
 				"DataToCreateWorkItemOfTypeParcelManagement");
@@ -1404,9 +1407,9 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.login(loginUser);
 
 		// Step2: Opening the PARCELS page  and searching the  parcel to perform split mapping
-		objMappingPage.searchModule(PARCELS);
-		objMappingPage.globalSearchRecords(apn1);
-
+		objMappingPage.searchModule("APAS");
+		driver.navigate().to(
+				"https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + apnId1 + "/view");
 		// Step 3: Creating Manual work item for the Parcel
 		String workItemNumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 
@@ -1459,15 +1462,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		softAssert.assertEquals(gridDataHashMap.get("Situs").get(0),childprimarySitus,
 				"SMAB-T2659: Validation that System populates primary situs on last screen for child parcel  with the situs value that was added in first screen");
 
-		//Step 10: Validation that primary situs of child parcel is the situs value that was added in first screen from situs modal window
-		String primarySitusValueChildParcel=salesforceAPI.select("SELECT Name  FROM Situs__c Name where id in (SELECT Primary_Situs__c FROM Parcel__c where name='"+ gridDataHashMap.get("APN").get(0)+"')").get("Name").get(0);
-		softAssert.assertEquals(primarySitusValueChildParcel,childprimarySitus,
-				"SMAB-T2659: Validation that primary situs of  child parcel  has value that was entered in first screen through situs modal window");
-
 		driver.switchTo().window(parentWindow);
 		//submit WI for approval
-	    String   queryWI = "Select Id from Work_Item__c where Name = '"+workItemNumber+"'";
-	    salesforceAPI.update("Work_Item__c",queryWI, "Status__c", "Submitted for Approval");
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+
 	    objWorkItemHomePage.logout();
 	    	    
 	    //login as supervisor 
@@ -3067,8 +3065,7 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		JSONObject jsonParcelObjectNew = objMappingPage.getJsonObject();
 		//Fetching parcels that are Active with different Ownership record
-		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE "
-				+ " (Not Name like '134%') and Id NOT IN (SELECT APN__c FROM Work_Item__c "
+		String queryAPNValue = "SELECT Id, Name FROM Parcel__c WHERE ( Name like '1%') and (Name like '%0')  and Id NOT IN (SELECT APN__c FROM Work_Item__c "
 				+ "where type__c='CIO') and Status__c = 'Active' Limit 2";
 
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPNValue);
@@ -3090,9 +3087,6 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		String queryNeighborhoodValue = "SELECT Name,Id  FROM Neighborhood__c where Name !=NULL limit 1";
 		HashMap<String, ArrayList<String>> responseNeighborhoodDetails = salesforceAPI.select(queryNeighborhoodValue);
 
-		String queryTRAValue = "SELECT Name,Id FROM TRA__c limit 2";
-		HashMap<String, ArrayList<String>> responseTRADetails = salesforceAPI.select(queryTRAValue);
-		
 		String legalDescriptionValue="Legal PM 85/25-260";
 		String parcelSize	= "200";		
 
@@ -3100,17 +3094,12 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		jsonParcelObjectNew.put("Status__c","Active");
 		jsonParcelObjectNew.put("Short_Legal_Description__c",legalDescriptionValue);
 		jsonParcelObjectNew.put("Neighborhood_Reference__c",responseNeighborhoodDetails.get("Id").get(0));
-		jsonParcelObjectNew.put("TRA__c",responseTRADetails.get("Id").get(0));
 		jsonParcelObjectNew.put("Lot_Size_SQFT__c",parcelSize);
 
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(0),jsonParcelObjectNew);
 		salesforceAPI.update("Parcel__c",responseAPNDetails.get("Id").get(1),jsonParcelObjectNew);
-		
-		HashMap<String, ArrayList<String>> GeneratedAPN = salesforceAPI.select("SELECT Id, Name FROM Parcel__c WHERE Id NOT IN (SELECT APN__c FROM Work_Item__c where type__c='CIO') and (Name like '1%') and Status__c = 'Active' ORDER BY Name DESC Limit 1");
-		String apn=GeneratedAPN.get("Name").get(0);
-		String apnInSystem[] = apn.split("-");
-		String updateNextApn = apnInSystem[0]+apnInSystem[1]+apnInSystem[2].substring(0,2)+
-					String.valueOf(Integer.parseInt(apnInSystem[2].substring(2)) +2);
+		objParcelsPage.updateTraAndSitusWithSameCity(apn1);
+		objParcelsPage.updateTraAndSitusWithSameCity(apn2);
 		
 		String concatenateAPN = apn1+","+apn2;
 		ReportLogger.INFO("Parent APNs : " + concatenateAPN);
@@ -3146,11 +3135,8 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 
 		objMappingPage.fillMappingActionForm(hashMapCombineActionMappingData);
 		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
-		objMappingPage.editGridCellValue(objMappingPage.apn,updateNextApn );
 		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace,"100" );
-		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
-		objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
-		objMappingPage.editActionInMappingSecondScreen(hashMapCombineActionMappingData);
+		objMappingPage.clickAction(objMappingPage.legalDescriptionFieldSecondScreen);
 		objMappingPage.waitForElementToBeVisible(10,objMappingPage.generateParcelButton);
 		
 		HashMap<String, ArrayList<String>> gridDataHashMap =objMappingPage.getGridDataInHashMap();
@@ -3165,6 +3151,10 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
 		objMappingPage.waitForElementToBeVisible(10,objMappingPage.performAdditionalMappingButton);
 
 		driver.switchTo().window(parentWindow);
+		driver.navigate().refresh();
+		objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+        objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.submittedForApprovalOptionInTimeline);
+		
         objWorkItemHomePage.logout();
         Thread.sleep(3000);
         
@@ -3174,11 +3164,16 @@ public class Parcel_Management_CombineMappingAction_Test extends TestBase implem
         objMappingPage.globalSearchRecords(WorkItemNo);
         
         //Completing the workItem
-        objWorkItemHomePage.completeWorkItem(); 
-		String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
-	    softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3647: Validation WI completed successfully");
-        driver.navigate().refresh(); 
+        objWorkItemHomePage.javascriptClick(objWorkItemHomePage.dataTabCompleted);
+	    objWorkItemHomePage.javascriptClick(objWorkItemHomePage.markAsCurrentStatusButton);
+	    Thread.sleep(5000);
+	    driver.navigate().refresh();
         objMappingPage.waitForElementToBeVisible(objWorkItemHomePage.linkedItemsWI, 10);
+
+        objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+        String workItemStatus = objMappingPage.getFieldValueFromAPAS("Status", "Information");
+	    softAssert.assertEquals(workItemStatus, "Completed", "SMAB-T3647: Validation WI completed successfully");
+
         objWorkItemHomePage.Click(objWorkItemHomePage.linkedItemsWI);
         
         //navigating to business event audit trail
