@@ -340,13 +340,16 @@ public class MappingPage extends ApasGenericPage {
 		if (situsType != null) selectOptionFromDropDown(situsTypeLabel, situsType);
 		if (situsUnitNumber != null) enter(situsUnitNumberLabel, situsUnitNumber);
 		Click(getButtonWithText(saveButton));
-		}
-		finally {
-			// Making TRA to null for fresh use in every next run
-			TRA = null;
+	} catch (Exception e) {
 
-		}
+		ReportLogger.INFO("There was an exception throwen..!" + e.getMessage());
+
+	} finally {
+		// Making TRA to null for fresh use in every next run
+		TRA = null;
+
 	}
+}
 	/**
 	 * Description: This method will take the generated APN (from Mapping action) and then create the next one in that series
 	 * @param Num: Takes APN as an argument
