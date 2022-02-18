@@ -54,10 +54,10 @@ public class ExemptionsPage extends ApasGenericPage {
 
     public String dateApplicationReceived = "Date Application Received";
 
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Date Application Received')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Date Application Received']/parent::div/following-sibling::div//span//slot[@name='outputField']//lightning-formatted-text")
     public WebElement dateApplicationReceivedExemptionDetails;
 
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(.,'Grace End Date')]/following-sibling::div//slot[@slot='outputField']/lightning-formatted-text")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[text()='Grace End Date']/parent::div/following-sibling::div//span//slot[@name='outputField']//lightning-formatted-text")
     public WebElement graceEndDateExemptionDetails;
 
     public String claimantName = "Claimant 1 Name";
@@ -195,7 +195,7 @@ public class ExemptionsPage extends ApasGenericPage {
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//div[contains(text(),'Exemption')]//following-sibling::slot/slot/lightning-formatted-text")
     public WebElement newExemptionNameAftercreation;
 
-    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(text(),'Status')]/parent::div/following-sibling::div//span//slot[@slot='outputField']//lightning-formatted-text")
+    @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//span[contains(text(),'Status')]/parent::div/following-sibling::div//span//slot[@name='outputField']//lightning-formatted-text")
     public WebElement exemationStatusOnDetails;
 
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//slot[@name='sidebar']//ul[@role='tablist']//li[not(contains(@style,'visibility: hidden;'))]")
@@ -377,6 +377,9 @@ public class ExemptionsPage extends ApasGenericPage {
    
     public String yearOfFiling = "Year of filing";
     
+    @FindBy (xpath ="//div[@class='slds-form-element__control slds-input-has-icon slds-input-has-icon_right']//input[@name='Date_Occupy_Property__c']")
+    public WebElement dateOfOccupideProperty;
+    
 
     /** Locators for Institution Exemptions **/
     @FindBy(xpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//label[contains(@class,'slds-radio topdown-radio')]//span[text()='Institutional']")
@@ -395,6 +398,7 @@ public class ExemptionsPage extends ApasGenericPage {
     public String propertySqFtProrated = "Property Sq Ft Prorated %";
     public String penaltyPercentage = "Penalty Percentage";
     public String netExemptionAmount = "Net Exemption Amount";
+    public String ExemptionAmountOnRollEntry ="Exemption 1(HOE)";
     
 
     /**
@@ -469,7 +473,7 @@ public class ExemptionsPage extends ApasGenericPage {
         ReportLogger.INFO("Entering/Selecting values for New Exemption record");
         searchAndSelectOptionFromDropDown("APN", fetchActiveAPN());
         objPage.enter(dateApplicationReceived, newExemptionData.get("DateApplicationReceived"));
-        searchAndSelectOptionFromDropDown("Claimant 1 Name", fetchAssesseeName());
+        searchAndSelectOptionFromDropDown(claimantName, fetchAssesseeName());
         objPage.enter(claimantSSN, newExemptionData.get("ClaimantSSN"));
         objPage.enter(veteranName, newExemptionData.get("VeteranName").concat(java.time.LocalDateTime.now().toString()));
         objPage.enter(veteranSSN, newExemptionData.get("VeteranSSN"));

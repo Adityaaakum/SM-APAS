@@ -322,6 +322,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	
 	@FindBy(xpath="//button[@title='Edit End Date']")
 	public WebElement editEndDateButton;
+	
+	@FindBy(xpath="//button[@title='Edit Formatted Name 1']")
+	public WebElement editFormattedName1Button;
 		
 	/*
 	    * This method adds the recorded APN in Recorded-Document

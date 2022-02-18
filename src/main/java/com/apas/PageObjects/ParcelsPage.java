@@ -152,7 +152,7 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	
 	
-	@FindBy(xpath = "//p[text()='Primary Situs']/../..//force-hoverable-link")
+	@FindBy(xpath = "//p[text()='Primary Situs']|//div[class='slds-grid']/../..//force-hoverable-link")
 	public WebElement linkPrimarySitus;
 
 	@FindBy(xpath = "//li[not(contains(@style,'visibility: hidden'))]//*[@title='More Tabs']")
@@ -277,6 +277,13 @@ public class ParcelsPage extends ApasGenericPage {
 	
 	@FindBy(xpath = "//c-org_cos-document-summary//table/tbody/tr[last()]//a")
     public WebElement lastItemInCosDocumentSummary;
+	
+	@FindBy(xpath = "//*[contains(text(),'Edit PO-')]")
+	public WebElement parcelOwnershipIdEditOwnershippopUp;
+	
+	@FindBy(xpath = "//*[contains(@class,'lds-icon_container slds-icon-utility')]")
+	public WebElement showMoreActionsDropdownIcon;
+	
 	
     public String SubmittedForApprovalButton="Submit for Approval";
     public String WithdrawButton="Withdraw";
@@ -536,7 +543,7 @@ public class ParcelsPage extends ApasGenericPage {
 			String timeStamp = String.valueOf(System.currentTimeMillis());
 			String description = dataMap.get("Description") + "_" + timeStamp;
 			
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 			waitForElementToBeClickable(5,componentActionsButtonText);
 			Click(getButtonWithText(componentActionsButtonText));
 			waitForElementToBeClickable(selectOptionDropdown);
