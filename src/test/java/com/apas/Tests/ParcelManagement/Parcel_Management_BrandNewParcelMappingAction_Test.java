@@ -508,7 +508,6 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
 			parentWindow = driver.getWindowHandle();
 			objWorkItemHomePage.switchToNewWindow(parentWindow);
-			objMappingPage.zoomOutPageContent();
 			objMappingPage.enter("Remarks", "It's a Remarks");
 
 			//fetching the grid values to verify the presence of expected fields
@@ -625,7 +624,6 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		objMappingPage.globalSearchRecords(newCreatedApn);
  		
  		//clicking on edit button in parcels page
-		objParcelsPage.zoomOutPageContent();
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
  		
  		objParcelsPage.scrollToElement(objParcelsPage.getWebElementWithLabel(objParcelsPage.editApnField)); 		                   
@@ -683,8 +681,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
          driver.switchTo().window(parentWindow);         
          objMappingPage.searchModule(PARCELS);         
  		objMappingPage.globalSearchRecords(newCreatedApn); 
- 		objParcelsPage.zoomOutPageContent();
- 		
+ 	 		
  		//clicking on edit button in parcels page 		
  		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.EditButton));
  		
