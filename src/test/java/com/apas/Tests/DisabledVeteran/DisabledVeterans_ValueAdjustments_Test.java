@@ -258,8 +258,8 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 			softAssert.assertEquals(vaPageObj.VAlist.size(),vaCreatedBasedOnDates-1, "SMAB-T485,SMAB-T602,SMAB-T1281:---Verify user can terminate the exemption by entering end date of rating(Future VA deleted)");
 			ReportLogger.INFO("Verifying remaining Active and Deactivated Value Adjustment records as per end date of rating");
 			int expectedActiveVA=vaPageObj.verifyValueAdjustments(maxDate,endDateOfRating,currentRollYear);//1/14/2012 & 6/30/2018
-			softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Status","Active"), expectedActiveVA, "SMAB-T485,SMAB-T602,SMAB-T1281:---Verify user can terminate the exemption by entering end date of rating(Active VA)");
-			softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Status","Not Active"),(vaPageObj.VAlist.size()-expectedActiveVA), "SMAB-T486,SMAB-T1281:---Verify future dated Value Adjustment records are DEACTIVATED with Status Not Active when end date of rating is entered");
+			softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Status","Approved/Active"), expectedActiveVA, "SMAB-T485,SMAB-T602,SMAB-T1281:---Verify user can terminate the exemption by entering end date of rating(Active VA)");
+			softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Status","Retired/Not Active"),(vaPageObj.VAlist.size()-expectedActiveVA), "SMAB-T486,SMAB-T1281:---Verify future dated Value Adjustment records are DEACTIVATED with Status Not Active when end date of rating is entered");
 			String newCreatedVA=vaPageObj.findVANameBasedOnEndDate(endDateOfRating);
 			ReportLogger.INFO("newly created VA as per End date oF Ratintg::"+newCreatedVA);
 
@@ -267,7 +267,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 				
 	}
 	
-	
+
 	
 	/**
 	 Below test case is used to verify that only one VA is created for current roll year
@@ -301,7 +301,7 @@ public class DisabledVeterans_ValueAdjustments_Test extends TestBase implements 
 		objPage.waitForElementToBeVisible(vaPageObj.viewAllLink, 10);
 		softAssert.assertEquals(vaPageObj.VAlist.size(), 1,"SMAB-T562:Verify only one VA(basic Disabled veteran)is created for Current Roll");
 		softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Determination","Basic Disabled Veterans Exemption"), 1,"SMAB-T562:Verify only one VA(basic Disabled veteran)is created for Current Roll");
-		softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Status","Active"), 1, "SMAB-T485,SMAB-T602:---Verify user can terminate the exemption by entering end date of rating(Active VA)");
+		softAssert.assertEquals(vaPageObj.fetchVACountBasedOnParameters("Status","Approved/Active"), 1, "SMAB-T485,SMAB-T602:---Verify user can terminate the exemption by entering end date of rating(Active VA)");
 	
 		exemptionPageObj.logout();
 	}

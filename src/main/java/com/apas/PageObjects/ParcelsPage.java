@@ -704,7 +704,8 @@ public class ParcelsPage extends ApasGenericPage {
 			selectOptionFromDropDown(isPrimaryDropdown, "Yes");
 
 			searchAndSelectOptionFromDropDown(situsSearch,
-					objSalesforceAPI.select("Select Name from Situs__c where name != null limit 1").get("Name").get(0));
+					objSalesforceAPI.select("Select Name from Situs__c where name != null and Situs_City__c='DALY CITY' limit 1").get("Name").get(0));
+			enter("PS Created /Last Updated Date","7/1/2021");
 			Click(saveButton);
 			waitForElementToBeClickable(successAlert, 25);
 			String messageOnAlert = getElementText(successAlert);
@@ -933,10 +934,10 @@ public class ParcelsPage extends ApasGenericPage {
 				objSalesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
 						"Primary_Situs__c", "");
 				objSalesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'", "TRA__c",
-						objSalesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+						objSalesforceAPI.select("Select Id from TRA__c where city__c='DALY CITY'").get("Id").get(0));
 				objSalesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
 						"Primary_Situs__c", objSalesforceAPI
-								.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id").get(0));
+								.select("Select Id from Situs__c where Situs_City__c='DALY CITY'").get("Id").get(0));
 
 			}
 		}
