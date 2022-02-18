@@ -5347,10 +5347,17 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ "/view");
 		
 		// Step 2: User clicks on "COS Document Summary" button
-		objParcelsPage.waitForElementToBeClickable(objParcelsPage.cosDocumentSummaryText,25);
-		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
+		try{
+			objParcelsPage.waitForElementToBeClickable(objParcelsPage.cosDocumentSummaryText,25);
+		
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));}
+		catch (Exception e) {
+			objParcelsPage.Click(objParcelsPage.locateElement("//ul[@class='slds-button-group-list']/li[contains(@class,'slds-dropdown-trigger')]//button", 10));
+			objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
+		}
 		
 		// Step 3: User clicks on the recorded document
+		objParcelsPage.waitForElementToBeClickable(recordedDocumentName,10);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(recordedDocumentName));
 		String parentWindow = driver.getWindowHandle();
 		objParcelsPage.switchToNewWindow(parentWindow);
