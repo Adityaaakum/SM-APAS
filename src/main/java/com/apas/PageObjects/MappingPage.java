@@ -209,12 +209,6 @@ public class MappingPage extends ApasGenericPage {
 	@FindBy(xpath = "//*[contains(@class,'message-font slds-align_absolute-center slds-text-color_success slds-m-bottom_medium slds-m-top_medium')]")
 	public WebElement createNewParcelSuccessMessage;
 
-	@FindBy(xpath = "//td[3]//button[@class='slds-button slds-button_icon slds-cell-edit__button slds-m-left_x-small']")
-	public WebElement editParcelSizeSqft;
-	
-	@FindBy(xpath = "//input[@name='dt-inline-edit-number']")
-	public WebElement valueParcelSizeSqft;
-
 	/**
 	 * @Description: This method will fill  the fields in Mapping Action Page mapping action
 	 * @param dataMap: A data map which contains data to perform  mapping action

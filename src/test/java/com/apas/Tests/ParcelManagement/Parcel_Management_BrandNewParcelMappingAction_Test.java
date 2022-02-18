@@ -7,8 +7,6 @@ import java.util.Map;
 
 import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.json.JSONObject;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -549,7 +547,8 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 			objWorkItemHomePage.waitForElementToBeVisible(20, objWorkItemHomePage.previousRelatedAction);
 
 			String previousRelatedAction = objWorkItemHomePage.previousRelatedAction.getText();
-			softAssert.assertEquals(previousRelatedAction, "Update Characteristics & Verify PUC link is present", previousRelatedAction);
+			softAssert.assertEquals(previousRelatedAction, "Update Characteristics & Verify PUC",
+					"SMAB-T4167:Update Characteristics & Verify PUC link is present");
 			objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.completedOptionInTimeline);
 
 			// Navigating to child APN
@@ -1097,7 +1096,6 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 
 		//Step 6: filling all fields in mapping action screen
 		objMappingPage.fillMappingActionForm(hashMapBrandNewParcelMappingData);
-		//changed by me
 		objMappingPage.waitForElementToBeVisible(3, objMappingPage.legalDescriptionColumnSecondScreen);
         objMappingPage.Click(objMappingPage.mappingSecondScreenEditActionGridButton);
         objMappingPage.editActionInMappingSecondScreen(hashMapBrandNewParcelMappingData);
@@ -1231,7 +1229,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 		objWorkItemHomePage.switchToNewWindow(parentWindow);
 		objMappingPage.waitForElementToBeVisible(10, objMappingPage.updateParcelsButton);
 		objMappingPage.waitForElementToBeVisible(3, objMappingPage.parcelSizeColumnSecondScreenWithSpace);
-		objMappingPage.updateMultipleGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "100",1);
+		objMappingPage.editGridCellValue(objMappingPage.parcelSizeColumnSecondScreenWithSpace, "100");
 		objMappingPage.Click(objMappingPage.legalDescriptionFieldSecondScreen);
 		objMappingPage.Click(objMappingPage.getButtonWithText(objMappingPage.updateParcelButtonLabelName));
 		
