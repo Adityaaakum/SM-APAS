@@ -524,7 +524,6 @@ public class MappingPage extends ApasGenericPage {
 			selectOptionFromDropDown(parcelPUC, PUC);
 			ReportLogger.INFO("PUC:" + PUC);
 			
-			dataMap.put("TRA", TRA);
 			editSitusModalWindowFirstScreen(dataMap);
 			
 	}
