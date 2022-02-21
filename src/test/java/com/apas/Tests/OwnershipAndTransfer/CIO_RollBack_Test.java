@@ -287,9 +287,8 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		Thread.sleep(4000);
 		
 		objCioTransfer.login(users.CIO_SUPERVISOR);
-		//driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
-				//+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		driver.navigate().to("https://smcacre--e2e.lightning.force.com/lightning/r/Recorded_APN_Transfer__c/a1Kr0000003jAK5EAM/view");
+		driver.navigate().to("https://smcacre--" + System.getProperty("region").toLowerCase()
+				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		driver.navigate().refresh();
 		objCioTransfer.waitForElementToBeVisible(objCioTransfer.quickActionButtonDropdownIcon,20);
 		Thread.sleep(5000);

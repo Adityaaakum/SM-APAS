@@ -59,19 +59,29 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 		String APNIdList[] = new String[3];
 
 		for (int i = 0; i < 3; i++) {
-			APNNameList[i] = hashMapApn.get("Name").get(i);
+			APNNameList[i] = hashMapApn.get("Name").get(i).trim();
 			APNIdList[i] = hashMapApn.get("Id").get(i);
 
 		}
-		String listOfParcelsEconomicUnit = APNNameList[0] + "," + APNNameList[1] + "," + APNNameList[2];
+		String listOfParcelsEconomicUnit = APNNameList[0] + " , " + APNNameList[1] + " , " + APNNameList[2];
 		String incorrectlistOfParcelsEconomicUnit = "010234567,234567890,123456789";
+		String incorrectlistOfParcelsEconomicUnit1 = "010234567,234567890,"+APNNameList[2];
+
 
 		JSONObject jsonNObject = objParcelsPage.getJsonObject();
-
-		jsonNObject.put("of_Parcels_in_Economic_Unit__c", "");
-		jsonNObject.put("Part_of_Economic_Unit__c", "");
-		jsonNObject.put("List_of_all_Parcels_in_Economic_Unit__c", "");
-
+		jsonNObject.put("Primary_Situs__c", "");
+		salesforceAPI.update("Parcel__c", APNIdList[0], jsonNObject);
+		salesforceAPI.update("Parcel__c", APNIdList[1], jsonNObject);
+		salesforceAPI.update("Parcel__c", APNIdList[2], jsonNObject);
+		
+		JSONObject jsonNObject1 = objParcelsPage.getJsonObject();
+		jsonNObject1.put("of_Parcels_in_Economic_Unit__c", "");
+		jsonNObject1.put("Part_of_Economic_Unit__c", "");
+		jsonNObject1.put("List_of_all_Parcels_in_Economic_Unit__c", "");
+		jsonNObject1.put("TRA__c", salesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+		jsonNObject1.put("Primary_Situs__c", salesforceAPI.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id")
+				.get(0));
+		
 		// updating parcel details
 		salesforceAPI.update("Parcel__c", APNIdList[0], jsonNObject);
 		salesforceAPI.update("Parcel__c", APNIdList[1], jsonNObject);
@@ -85,8 +95,18 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/"+
 				APNIdList[0] + "/view");
-		objParcelsPage.waitForElementToBeVisible(20,
-		objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		driver.navigate().refresh();
+		
+		for(int i=0; i<=2;i++){
+			  try{
+				  objParcelsPage.waitForElementToBeClickable(20,
+							objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+										     break;
+			  }
+			  catch(Exception e){
+			     
+			  }
+			}
 		
 
 		// creating economic unit
@@ -122,9 +142,18 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/"+
 				APNIdList[1] + "/view");
-		objParcelsPage.waitForElementToBeVisible(20,
-		objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
 		
+		driver.navigate().refresh();
+
+		for (int i = 0; i <= 2; i++) {
+			try {
+				objParcelsPage.waitForElementToBeClickable(20,
+						objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+				break;
+			} catch (Exception e) {
+
+			}
+		}
 		softAssert.assertEquals(
 				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.partOfEconomicUnit,
 						"Parcel Characteristics Summary"),
@@ -144,8 +173,17 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/"+
 				APNIdList[2] + "/view");
-		objParcelsPage.waitForElementToBeVisible(20,
-		objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		driver.navigate().refresh();
+
+		for (int i = 0; i <= 2; i++) {
+			try {
+				objParcelsPage.waitForElementToBeClickable(20,
+						objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+				break;
+			} catch (Exception e) {
+
+			}
+		}
 		
 		softAssert.assertEquals(
 				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.partOfEconomicUnit,
@@ -171,20 +209,23 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 		objCioTransfer.enter(objParcelsPage.numberOfParcelsEconomicUnit, "2");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 
+		String actual=objCioTransfer.getElementText(objCioTransfer.pageError);
+		String expected="”# of Parcels” and ”List of Parcels” fields must match.";
+		
 		softAssert.assertContains(objCioTransfer.getElementText(objCioTransfer.pageError),
-				"ENTER ALL THE PARCELS FOR THIS ECONOMIC UNIT",
+				"“# of Parcels” and “List of Parcels” fields must match.",
 				"SMAB-T4153: Validate that proper message is displayed when there is mismatch in number of parcels and list of parcels in economic unit ");
 
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.CancelButton));
 		objCioTransfer.editRecordedApnField(objParcelsPage.partOfEconomicUnit);
 		objCioTransfer.waitForElementToBeVisible(6, objParcelsPage.partOfEconomicUnit);
 
-		objCioTransfer.enter(objParcelsPage.listOfParcelsEconomicUnit, incorrectlistOfParcelsEconomicUnit);
+		objCioTransfer.enter(objParcelsPage.listOfParcelsEconomicUnit, incorrectlistOfParcelsEconomicUnit1);
 
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 
 		softAssert.assertContains(objCioTransfer.getElementText(objCioTransfer.pageError),
-				"ENTER PARCEL NUMBER IN XXX-XXX-XXX FORMAT",
+				"Enter parcel number in XXX-XXX-XXX format.",
 				"SMAB-T4153: Validate that proper message is displayed when the parcel number added in list of parcels in economic unit field is in improper format ");
 
 		// verifying removal of third parcel from economic unit
@@ -214,14 +255,23 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 				"",
 				"SMAB-T4280:- list Of Parcels in EconomicUnit field should be blank  after removing parcel from economic unit");
 
-		listOfParcelsEconomicUnit = APNNameList[0] + "," + APNNameList[1];
+		listOfParcelsEconomicUnit = APNNameList[0] + " , " + APNNameList[1];
 
 		// verify that economic unit still exists for first parcel
 
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/"+
 				APNIdList[0] + "/view");
-		objParcelsPage.waitForElementToBeVisible(20,
-		objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		driver.navigate().refresh();
+
+		for (int i = 0; i <= 2; i++) {
+			try {
+				objParcelsPage.waitForElementToBeClickable(20,
+						objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+				break;
+			} catch (Exception e) {
+
+			}
+		}
 		
 		softAssert.assertEquals(
 				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.partOfEconomicUnit,
@@ -243,8 +293,16 @@ public class CIO_Economic_Units_Test extends TestBase implements testdata, modul
 
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/"+
 				APNIdList[1] + "/view");
-		objParcelsPage.waitForElementToBeVisible(20,
-		objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+		driver.navigate().refresh();
+
+		for (int i = 0; i <= 2; i++) {
+			try {
+				objParcelsPage.waitForElementToBeClickable(20,
+						objParcelsPage.getButtonWithText(objParcelsPage.componentActionsButtonText));
+				break;
+			} catch (Exception e) {
+
+			}}
 		
 		softAssert.assertEquals(
 				objParcelsPage.getFieldValueFromAPAS(objParcelsPage.partOfEconomicUnit,
