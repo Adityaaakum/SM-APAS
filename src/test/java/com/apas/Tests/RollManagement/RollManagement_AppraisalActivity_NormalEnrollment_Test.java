@@ -1339,6 +1339,8 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 
 		String landValue = datatoCreateAssesedValue.get("Land Cash Value");
 		String improvementValue = datatoCreateAssesedValue.get("Improvement Cash Value");
+		String expectedLandValue = "100000.0";
+		String expectedImprovementValue = "20000.0";
 		salesforceAPI.update("Parcel__c", parcelId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 
 		// Login to the APAS application as SysAdmin
@@ -1390,7 +1392,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		    objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
 		    objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
 		}
-		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
+		objCIOTransferPage.waitForElementToBeVisible(10,objCIOTransferPage.confirmationMessageOnTranferScreen);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
 		ReportLogger.INFO("WI Submitted  for approval successfully");
 
@@ -1443,24 +1445,24 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		driver.navigate()
 		.to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/related/Assessed_Values__r/view");
 		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.clickShowMoreActionButton, 15);
-		HashMap<String, ArrayList<String>> hashMapForAssessedValueTable = objAppraisalActivity.getGridDataInHashMap();
-		
+		String assessedValueQuery = "SELECT Name, Status__c, Assessed_Value_Type__c, Land_Value_Formula__c, Improvement_Value_Formula__c FROM Assessed_BY_Values__c WHERE APN__c = '"+parcelId+"' order by Effective_Start_Date_2__c asc limit 2";
+				
 		// Verifying the AV generated  after updating land and improvement value on appraiser screen		
-		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(0), "Retired",
+		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Status__c").get(0), "Retired",
 				"SMAB-T4262:Verify that earlier active AV record is getting retired for BMR assessement");
-		softAssert.assertEquals(hashMapForAssessedValueTable.get("Status").get(1), "Active",
+		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Status__c").get(1), "Active",
 				"SMAB-T4262:Verify that new active AV record is getting created  for BMR assessement");
-		softAssert.assertEquals(hashMapForAssessedValueTable.get("Assessed Value Type").get(1),	"Annual",
+		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Assessed_Value_Type__c").get(1),	"Annual",
 				"SMAB-T4262:Verify that new active AV record is getting created for BMR has assessed value of type Annual");
-		softAssert.assertEquals(hashMapForAssessedValueTable.get("Land Value").get(1), landValue,
+		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Land_Value_Formula__c").get(1), expectedLandValue,
 				"SMAB-T4262:Verify that Land taxable value is getting reflected at grid");
-		softAssert.assertEquals(hashMapForAssessedValueTable.get("Improvement Value").get(1), improvementValue,
+		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Improvement_Value_Formula__c").get(1), expectedImprovementValue,
 				"SMAB-T4262:Verify that Improvement taxable value is getting reflected at grid");
 
 		// Verifying AVO record for new owner 
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Assessed_Values_Ownership__c/"
 				+ salesforceAPI.select("SELECT id  FROM Assessed_Values_Ownership__c where assessed_values__r.name = '"
-				+ hashMapForAssessedValueTable.get("Assessed Values ID").get(1) + "'").get("Id").get(0)
+				+ salesforceAPI.select(assessedValueQuery).get("Name").get(1) + "'").get("Id").get(0)
 				+ "/view");
 		objAppraisalActivity.waitForElementToBeVisible(10, objParcelsPage.propertyOwner);
 		// Verifying fields on AVO records		
@@ -1472,15 +1474,15 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		
 		// Verifying Roll Entry table
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+salesforceAPI.select("Select Id from Parcel__c where name ='"+parcelAPN+"'").get("Id").get(0)+"/related/Roll_Entry__r/view");
-		objAppraisalActivity.waitForElementToBeClickable(15,objAppraisalActivity.clickShowMoreActionButton );		
-		  HashMap<String, ArrayList<String>>hashMapRollEntryTable =objAppraisalActivity.getGridDataInHashMap();
+		objAppraisalActivity.waitForElementToBeClickable(15,objAppraisalActivity.clickShowMoreActionButton );
+		String rollEntryQuery = "SELECT Type__c, Roll_Year_Sequence__c,Status__c,Improvement_Assessed_Value__c,Land_Assessed_Value__c FROM Roll_Entry__c WHERE APN__c = '"+ parcelId +"' order by Roll_Year_Sequence__c desc"; 
 		  
 		// Validating Enrollement records generated for BMR
-		softAssert.assertEquals(hashMapRollEntryTable.get("Type").get(0) ,"Annual", "SMAB-T4262: Verify that Annual record is genrated after appraisal for year 2019 ");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Roll Year - Seq#").get(0) ,"2019 - 1", "SMAB-T4262: Verify that sequence of annual record is 1 for roll year 2019 ");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Status").get(0), "Draft", "SMAB-T4262: Verify RE is created as Draft");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Land Assessed Value").get(0), "$"+landValue, "SMAB-T4262: Verify Land Assessed Value");
-		softAssert.assertEquals(hashMapRollEntryTable.get("Improvement Assessed Value").get(0), "$"+improvementValue, "SMAB-T4262: Verify Improvement Assessed Value");
+		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Type__c").get(0) ,"Annual", "SMAB-T4262: Verify that Annual record is genrated after appraisal for year 2019 ");
+		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Roll_Year_Sequence__c").get(0) ,"2019 - 1", "SMAB-T4262: Verify that sequence of annual record is 1 for roll year 2019 ");
+		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Status__c").get(0), "Draft", "SMAB-T4262: Verify RE is created as Draft");
+		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Land_Assessed_Value__c").get(0), expectedLandValue, "SMAB-T4262: Verify Land Assessed Value");
+		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Improvement_Assessed_Value__c").get(0), expectedImprovementValue, "SMAB-T4262: Verify Improvement Assessed Value");
 		
 		// Step 4 - User submits for approval
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com"+workItemRelatedAction);

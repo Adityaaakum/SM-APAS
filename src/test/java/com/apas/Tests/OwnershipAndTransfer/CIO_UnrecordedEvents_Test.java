@@ -2403,7 +2403,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		 */
 		@Test(description = "SMAB-T7789: When a CIO Staff is editing names of owner in the RAT screen , Ownership Record , Mail To record the value will get stored in Upper Case", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 				"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
-		public void CIO_RATUpperCaseNamesValidation(String loginUser) throws Exception {
+		public void UnrecordedEvent_RATUpperCaseNamesValidation(String loginUser) throws Exception {
 			
 			// ----- Data set up -----
 			String queryAPNValue = "select Id, Name from Parcel__c where Status__c='Active' limit 1";
@@ -2444,7 +2444,8 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
 			objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, CIOTransferPage.CIO_EVENT_CODE_SALE);
 			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));	
-						
+			Thread.sleep(2000);
+			
 			// Step 3: Creating the new grantee on transfer
 			objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);			
 
@@ -2481,6 +2482,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
 			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
 			ReportLogger.INFO("WI Submitted  for approval successfully");
+			Thread.sleep(2000);
 			
 			// Validating Owner record 
 			driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+ parcelId +"/related/Property_Ownerships__r/view");
@@ -2504,12 +2506,12 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		 */
 		@Test(description = "SMAB-T4325: Validation for Transfer Tax, Document Type , Indicative Sales price on RAT Screen for CIO", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
 				"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
-		public void CIO_UTTransferTaxAndDocumentTypeValidation(String loginUser) throws Exception {
+		public void UnrecordedEvent_TransferTaxAndDocumentTypeValidation(String loginUser) throws Exception {
 			// ----- Data set up -----
 			String queryAPNValue = "select Id, Name from Parcel__c where Status__c='Active' limit 1";
 			String parcelId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
 			String parcelName = salesforceAPI.select(queryAPNValue).get("Name").get(0);
-			String execEnv = System.getProperty("region");	
+			String execEnv = System.getProperty("region");
 			String expectedValue = "$228";
 			
 			Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
@@ -2553,6 +2555,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			// Step 4: Enter indicated sales price
 			objCIOTransferPage.enter(objCIOTransferPage.indicatedSalesPrice, dataToCreateUnrecordedEventWithTransferTaxMap.get("Transfer Tax"));
 			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+			Thread.sleep(2000);
 			
 			// Step 5: Validate indicated sales price and document type
 			softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objCIOTransferPage.indicatedSalesPrice),expectedValue, "SMAB-T4325: Verify the indicated sales price is populated.");
