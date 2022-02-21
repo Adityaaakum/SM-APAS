@@ -10,10 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.validation.constraints.Null;
-
 import org.json.JSONObject;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -5471,13 +5468,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 	}
 	/*
-	 * Method to verify that retained owner through calculate ownership quick action button retains only DOV of the active owner and retain mail to functionality is working for every transfer without mail to creation.
+	 * Method to verify the retained owner through calculate ownership quick action button should retain only DOV of the active owner and retain mail-to functionality is working for every transfer without mail to creation.
 	 */
 	
 	@Test(description = "SMAB-T7698 ,SMAB-T7700,SMAB-T7699: To Verify CIO Calculate Ownership on Retained ownership functionality", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
-	public void CIO_ValidateCalculateOwnershipForRetainedOwnership(String loginUser) throws Exception {
-	
+	public void CIO_ValidateCalculateOwnershipForRetainedOwnership(String loginUser) throws Exception {	
 		 
 		String excEnv = System.getProperty("region");
 		JSONObject jsonForAppraiserActivity = objCioTransfer.getJsonObject();
@@ -5506,7 +5502,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
 
-		// STEP 2-Query to fetch WI
+		//Query to fetch WI
 		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'   And status__c='In pool' order by createdDate desc limit 1";
 		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
 		objMappingPage.globalSearchRecords(workItemNo);
@@ -5533,7 +5529,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.deleteOwnershipFromParcel(salesforceAPI
 				.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
 
-		// STEP 3- adding owner after deleting for the recorded APN
+		//Adding owner after deleting for the recorded APN
 		String acesseName = objMappingPage.getOwnerForMappingAction();
 		driver.navigate()
 				.to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Parcel__c/"
@@ -5567,7 +5563,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ workItemNo + "'";
 		HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);
 
-		// STEP 6-Finding the recorded apn transfer id
+		//Finding the recorded apn transfer id
 		String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
 		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
