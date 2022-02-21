@@ -325,6 +325,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	
 	@FindBy(xpath="//button[@title='Edit Formatted Name 1']")
 	public WebElement editFormattedName1Button;
+	
+	@FindBy(xpath=commonXpath+"//input[contains(@value,'No')]")
+	public WebElement noRadioButtonRetainMailToWindow;
 		
 	/*
 	    * This method adds the recorded APN in Recorded-Document
