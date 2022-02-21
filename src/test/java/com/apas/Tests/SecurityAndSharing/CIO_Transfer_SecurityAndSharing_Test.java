@@ -8,6 +8,8 @@ import java.util.Map;
 import org.json.JSONObject;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -194,7 +196,21 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
 
 		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);	
-		softAssert.assertContains(objCIOTransferPage.saveRecordAndGetError(),
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText("Save"));
+		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.pageError,30);
+		String actualErrormessage="";
+		
+		for(int i=0; i<=2;i++){
+			  try{
+				  actualErrormessage= objCIOTransferPage.pageError.getText();
+			     break;
+			  }
+			  catch(Exception e){
+			     
+			  }
+			}
+		
+		softAssert.assertContains(actualErrormessage,
 				"insufficient access rights on cross-reference id",
 				"SMAB-T3193: Verify that after submit for approval  CIO staff user can't create a new grantee record ");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
