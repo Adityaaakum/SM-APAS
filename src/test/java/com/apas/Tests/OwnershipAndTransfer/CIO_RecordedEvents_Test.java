@@ -5477,72 +5477,55 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		 
 		String excEnv = System.getProperty("region");
 		JSONObject jsonForAppraiserActivity = objCioTransfer.getJsonObject();
-		
+
 		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		Map<String, String> hashMapOwnershipAndTransferCreationData = objUtil.generateMapFromJsonFile(
 				OwnershipAndTransferCreationData, "dataToCreateMailToRecordsWithIncompleteData");
 
-		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(
-				OwnershipAndTransferCreationData,
-				"dataToCreateGranteeWithCompleteOwnership");
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "dataToCreateGranteeWithCompleteOwnership");
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
 				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecordForP19");
 
 		objCioTransfer.login(SYSTEM_ADMIN);
 		Thread.sleep(5000);
-	    objCioTransfer.searchModule(EFILE_INTAKE_VIEW);
+		objCioTransfer.searchModule(EFILE_INTAKE_VIEW);
 		String recordedDocumentID = salesforceAPI.select(
 				"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c in (0,1,2,3,4)")
 				.get("Id").get(0);
 		objCioTransfer.deleteRecordedApnFromRecordedDocument(recordedDocumentID);
 		Thread.sleep(3000);
 		objCioTransfer.addRecordedApn(recordedDocumentID, 1);
-		if(hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date")!=null) {
-		salesforceAPI.update("Recorded_Document__c", recordedDocumentID, "Recording_Date__c",objCioTransfer.updateDateFormat(hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date")));}
+		if (hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date") != null) {
+			salesforceAPI.update("Recorded_Document__c", recordedDocumentID, "Recording_Date__c", objCioTransfer
+					.updateDateFormat(hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date")));
+		}
 
 		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
 
-		//Query to fetch WI
-		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO'   And status__c='In pool' order by createdDate desc limit 1";
+		// Query to fetch WI
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO' order by createdDate desc limit 1";
 		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
 		objMappingPage.globalSearchRecords(workItemNo);
 		objCioTransfer.waitForElementToBeInVisible(objCioTransfer.ApnLabel, 5);
 		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
-		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apnFromWIPage + "'",
-				"Primary_Situs__c", "");
-		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apnFromWIPage + "'",
-				"TRA__c",
-				salesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
-		salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apnFromWIPage + "'",
-				"Primary_Situs__c",
-				salesforceAPI.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id")
-						.get(0));		
-		salesforceAPI.update("Parcel__C",
-				salesforceAPI.select("Select Id from parcel__c where name ='" + apnFromWIPage + "'")
-						.get("Id").get(0),
-				"Neighborhood_Reference__c",
-				salesforceAPI.select("Select Id from Neighborhood__c where name like '03%'").get("Id")
-						.get(0));
-		
-		
-		// Deleting existing ownership from parcel
-		objCioTransfer.deleteOwnershipFromParcel(salesforceAPI
-				.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
 
-		//Adding owner after deleting for the recorded APN
+		// Deleting existing ownership from parcel
+		objCioTransfer.deleteOwnershipFromParcel(
+				salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
+
+		// Adding owner after deleting for the recorded APN
 		String acesseName = objMappingPage.getOwnerForMappingAction();
 		driver.navigate()
-				.to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Parcel__c/"
-						+ salesforceAPI
-								.select("Select Id from parcel__C where name='" + apnFromWIPage + "'")
-								.get("Id").get(0)
+				.to("https://smcacre--"
+						+ excEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
+								.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
 						+ "/related/Property_Ownerships__r/view");
 		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
 		String ownershipId = driver.getCurrentUrl().split("/")[6];
-		
+
 		String dateOfEvent = salesforceAPI
-				.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '"
-						+ ownershipId + "'")
+				.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
 				.get("Ownership_Start_Date__c").get(0);
 		jsonForAppraiserActivity.put("DOR__c", dateOfEvent);
 		jsonForAppraiserActivity.put("DOV_Date__c", dateOfEvent);
@@ -5559,11 +5542,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.searchModule(modules.EFILE_INTAKE);
 		objMappingPage.globalSearchRecords(workItemNo);
 		Thread.sleep(5000);
-		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='"
-				+ workItemNo + "'";
+		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + workItemNo + "'";
 		HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);
 
-		//Finding the recorded apn transfer id
+		// Finding the recorded apn transfer id
 		String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
 		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
@@ -5577,86 +5559,122 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		ReportLogger.INFO("Add the Transfer Code");
 		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
-		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel, objCioTransfer.CIO_EVENT_CODE_PART);
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel,
+				objCioTransfer.CIO_EVENT_CODE_PART);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
-		
-		//Performing Calculate Ownership		
-		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+
+		// Performing Calculate Ownership
+		objCioTransfer.waitForElementToBeClickable(10,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
 		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.nextButton);
 		objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "100");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		objCioTransfer.waitForElementToBeClickable(10,
+				objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
+		
 		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
-				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");		
+				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.newButton);
 		HashMap<String, ArrayList<String>> granteeHashMap = objCioTransfer.getGridDataForRowString("1");
-		
-		////Validating the dov,dor ,and Ownership start date of retained owner
-		softAssert.assertEquals(granteeHashMap.get("DOR").get(0), hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"), "SMAB-T7698: Verify that DOR of new retained owner is sames as DOR from recoder feed");
-		softAssert.assertEquals(granteeHashMap.get("DOV").get(0), hashMapCreateOwnershipRecordData.get("Ownership Start Date"), "SMAB-T7698: Verify that DOV of new retained owner is sames as DOV from Older owner");
-		softAssert.assertEquals(granteeHashMap.get("Ownership Start Date").get(0),hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"), "SMAB-T7698:Verify that ownership start date is not getting retained ");
-		
-		//Repeating the same process with partial retained ownership from Calculate Ownership
+
+		//// Validating the dov,dor ,and Ownership start date of retained owner
+		softAssert.assertEquals(granteeHashMap.get("DOR").get(0),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"),
+				"SMAB-T7698: Verify that DOR of new retained owner is sames as DOR from recoder feed");
+		softAssert.assertEquals(granteeHashMap.get("DOV").get(0),
+				hashMapCreateOwnershipRecordData.get("Ownership Start Date"),
+				"SMAB-T7698: Verify that DOV of new retained owner is sames as DOV from Older owner");
+		softAssert.assertEquals(granteeHashMap.get("Ownership Start Date").get(0),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"),
+				"SMAB-T7698:Verify that ownership start date is not getting retained ");
+
+		// Repeating the same process with partial retained ownership from Calculate
+		// Ownership
 		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
-		driver.navigate().to("https://smcacre--" + excEnv
-				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCioTransfer.waitForElementToBeClickable(15, objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+				+ recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeClickable(20,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
-		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.nextButton);
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.nextButton);
 		objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "50");
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
 		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
-				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");		
+				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
 		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.newButton);
-		 granteeHashMap = objCioTransfer.getGridDataForRowString("1");
-		
-		 //Validating the dov,dor ,and Ownership start date of retained owner
-		softAssert.assertEquals(granteeHashMap.get("DOR").get(0), hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"), "SMAB-T7698: Verify that DOR of new retained owner is sames as DOR from recoder feed");
-		softAssert.assertEquals(granteeHashMap.get("DOV").get(0), hashMapCreateOwnershipRecordData.get("Ownership Start Date"), "SMAB-T7698: Verify that DOV of new retained owner is sames as DOV from Older owner");
-		softAssert.assertEquals(granteeHashMap.get("Ownership Start Date").get(0), hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"), "SMAB-T7698:Verify that start date is same as DOV from recorder feed");
-		
-		//Creating grantee to make sum 100 %
+		granteeHashMap = objCioTransfer.getGridDataForRowString("1");
+
+		// Validating the dov,dor ,and Ownership start date of retained owner
+		softAssert.assertEquals(granteeHashMap.get("DOR").get(0),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"),
+				"SMAB-T7698: Verify that DOR of new retained owner is sames as DOR from recoder feed");
+		softAssert.assertEquals(granteeHashMap.get("DOV").get(0),
+				hashMapCreateOwnershipRecordData.get("Ownership Start Date"),
+				"SMAB-T7698: Verify that DOV of new retained owner is sames as DOV from Older owner");
+		softAssert.assertEquals(granteeHashMap.get("Ownership Start Date").get(0),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"),
+				"SMAB-T7698:Verify that start date is same as DOV from recorder feed");
+
+		// Creating grantee to make sum 100 %
 		hashMapOwnershipAndTransferGranteeCreationData.put("Owner Percentage", "50");
 		hashMapOwnershipAndTransferGranteeCreationData.put("Ownership Start Date", "");
 		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
-		
-		//Validating that retain mail to modal screen appears at the time of submit for approval
-		driver.navigate().to("https://smcacre--" + excEnv
-				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
-		objCioTransfer.clickQuickActionButtonOnTransferActivity(null, objCioTransfer.quickActionOptionSubmitForApproval);
+
+		// Validating that retain mail to modal screen appears at the time of submit for
+		// approval
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+				+ recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeClickable(20,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(null,
+				objCioTransfer.quickActionOptionSubmitForApproval);
 		objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow);
-		
-		softAssert.assertTrue(objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow), "SMAB-T7700:Verify that retain mail to modal window appears when no mail to record is generated or edited before submitting for apporval");
-		
-		objCioTransfer.Click(objCioTransfer.noRadioButtonRetainMailToWindow);		
-		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));			
-		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
-		objCioTransfer.createCopyToMailTo(granteeHashMap.get("Grantee/Retain Owner Name").get(0), hashMapOwnershipAndTransferCreationData);
-		driver.navigate().to("https://smcacre--" + excEnv
-				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
-		objCioTransfer.clickQuickActionButtonOnTransferActivity(null, objCioTransfer.quickActionOptionSubmitForApproval);		
-		
-		//Validating that no retain modal window appears after CIO mail to is created or edited
-		softAssert.assertTrue(!objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.yesRadioButtonRetainMailToWindow), "SMAB-T7700:Verify that no retain mail to modal window appears when  mail to record is generated or edited before submitting for apporval");		
-		objCioTransfer.waitForElementToBeClickable(10,objCioTransfer.finishButton);
-		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));		
-		objCioTransfer.logout();
-		
-		//login with cio supervisor to check on approval retain mail to modal window doesnot appear
-		objCioTransfer.login(users.CIO_SUPERVISOR);
-		
-		driver.navigate().to("https://smcacre--" + excEnv
-				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
-		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
-		objCioTransfer.clickQuickActionButtonOnTransferActivity(null, objCioTransfer.quickActionOptionApprove);
-		Thread.sleep(3000);		
-		softAssert.assertTrue(!objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow), "SMAB-T7700:Verify that no  retain mail to modal window appears when  mail to record is generated or edited before submitting for apporval/approval");	
-		objCioTransfer.waitForElementToBeClickable(10,objCioTransfer.finishButton);
+
+		softAssert.assertTrue(
+				objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow),
+				"SMAB-T7700:Verify that retain mail to modal window appears when no mail to record is generated or edited before submitting for apporval");
+
+		objCioTransfer.Click(objCioTransfer.noRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		objCioTransfer.waitForElementToBeClickable(10,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.createCopyToMailTo(granteeHashMap.get("Grantee/Retain Owner Name").get(0),
+				hashMapOwnershipAndTransferCreationData);
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+				+ recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeClickable(15,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(null,
+				objCioTransfer.quickActionOptionSubmitForApproval);
+
+		// Validating that no retain modal window appears after CIO mail to is created
+		// or edited
+		softAssert.assertTrue(
+				!objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.yesRadioButtonRetainMailToWindow),
+				"SMAB-T7700:Verify that no retain mail to modal window appears when  mail to record is generated or edited before submitting for apporval");
+		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.finishButton);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
 		objCioTransfer.logout();
-	
+
+		// login with cio supervisor to check on approval retain mail to modal window
+		// doesnot appear
+		objCioTransfer.login(users.CIO_SUPERVISOR);
+
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+				+ recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeClickable(10,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(null, objCioTransfer.quickActionOptionApprove);
+		Thread.sleep(3000);
+		softAssert.assertTrue(
+				!objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow),
+				"SMAB-T7700:Verify that no  retain mail to modal window appears when  mail to record is generated or edited before submitting for apporval/approval");
+		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.finishButton);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
+		objCioTransfer.logout();
+
 	}
 	
 	
