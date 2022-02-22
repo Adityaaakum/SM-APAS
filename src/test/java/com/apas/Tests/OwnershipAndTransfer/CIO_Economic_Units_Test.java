@@ -17,7 +17,6 @@ import com.apas.PageObjects.Page;
 import com.apas.PageObjects.ParcelsPage;
 import com.apas.TestBase.TestBase;
 import com.apas.Utils.SalesforceAPI;
-import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
