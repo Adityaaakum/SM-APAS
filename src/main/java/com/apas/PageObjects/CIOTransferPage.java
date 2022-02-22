@@ -326,6 +326,9 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	
 	@FindBy(xpath="//button[@title='Edit Formatted Name 1']")
 	public WebElement editFormattedName1Button;
+	
+	@FindBy(xpath=commonXpath+"//input[contains(@value,'No')]")
+	public WebElement noRadioButtonRetainMailToWindow;
 		
 	/*
 	    * This method adds the recorded APN in Recorded-Document
@@ -647,7 +650,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 			}
 		 
-		 public void deleteRecordedApnFromRecordedDocument(String recordedDocumentId)
+		 public void deleteRecordedApnFromRecordedDocument(String recordedDocumentId) throws InterruptedException
 		 {
 			       HashMap<String, ArrayList<String>>HashMapRecordedDocuments = salesforceApi.select("SELECT ID FROM RECORDED_APN__C WHERE Recorded_Document__c='"+recordedDocumentId+"'");
 			     
@@ -658,6 +661,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			    		   ReportLogger.INFO("Recorded APN Deleted "+Id);
 			    	 });
 			       }
+			       Thread.sleep(4000);
 			 
 			 
 			 
