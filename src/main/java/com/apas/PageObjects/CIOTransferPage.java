@@ -649,7 +649,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 
 			}
 		 
-		 public void deleteRecordedApnFromRecordedDocument(String recordedDocumentId)
+		 public void deleteRecordedApnFromRecordedDocument(String recordedDocumentId) throws InterruptedException
 		 {
 			       HashMap<String, ArrayList<String>>HashMapRecordedDocuments = salesforceApi.select("SELECT ID FROM RECORDED_APN__C WHERE Recorded_Document__c='"+recordedDocumentId+"'");
 			     
@@ -660,6 +660,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 			    		   ReportLogger.INFO("Recorded APN Deleted "+Id);
 			    	 });
 			       }
+			       Thread.sleep(4000);
 			 
 			 
 			 

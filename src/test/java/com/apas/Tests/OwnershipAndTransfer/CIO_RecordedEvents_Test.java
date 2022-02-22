@@ -37,7 +37,6 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 import com.apas.config.users;
-import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIConversion.Static;
 
 
 public class CIO_RecordedEvents_Test extends TestBase implements testdata, modules, users {
@@ -634,7 +633,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForApproval);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
-		softAssert.assertTrue(!objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow), "SMAB-T7700:Verify that no  retain mail to modal window appears when  mail to record is generated or edited before submitting for apporval/approval");		
+		softAssert.assertTrue(!objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow), "SMAB-T7700,SMAB-T7699:Verify that no  retain mail to modal window appears when  mail to record is generated or edited before submitting for apporval/approval");		
 		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
 		{
 		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
@@ -5488,13 +5487,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecordForP19");
 
 		objCioTransfer.login(SYSTEM_ADMIN);
-		Thread.sleep(5000);
+		
 		objCioTransfer.searchModule(EFILE_INTAKE_VIEW);
 		String recordedDocumentID = salesforceAPI.select(
 				"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c in (0,1,2,3,4)")
 				.get("Id").get(0);
-		objCioTransfer.deleteRecordedApnFromRecordedDocument(recordedDocumentID);
-		Thread.sleep(3000);
+		objCioTransfer.deleteRecordedApnFromRecordedDocument(recordedDocumentID);		
 		objCioTransfer.addRecordedApn(recordedDocumentID, 1);
 		if (hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date") != null) {
 			salesforceAPI.update("Recorded_Document__c", recordedDocumentID, "Recording_Date__c", objCioTransfer
@@ -5506,7 +5504,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		// Query to fetch WI
 		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO' order by createdDate desc limit 1";
 		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
-		objMappingPage.globalSearchRecords(workItemNo);
+		String query = "Select Id from Work_Item__c where Name = '"+workItemNo+"'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		driver.navigate().to("https://smcacre--"+excEnv+
+		".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
 		objCioTransfer.waitForElementToBeInVisible(objCioTransfer.ApnLabel, 5);
 		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
 
@@ -5533,15 +5534,15 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForAppraiserActivity);
 
 		objMappingPage.logout();
-
+        Thread.sleep(5000);
 		objMappingPage.login(CIO_STAFF);
 		objMappingPage.waitForElementToBeClickable(objMappingPage.appLauncher, 10);
 
 		// Selecting E-FILE intake as CIO works best with E-FILE AND APAS and there are
 		// some issues with navigation on APAS
 		objCioTransfer.searchModule(modules.EFILE_INTAKE);
-		objMappingPage.globalSearchRecords(workItemNo);
-		Thread.sleep(5000);
+		driver.navigate().to("https://smcacre--"+excEnv+
+				".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");		
 		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + workItemNo + "'";
 		HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);
 
@@ -5573,6 +5574,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.waitForElementToBeClickable(10,
 				objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
+		Thread.sleep(2000);
 		
 		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
 				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
@@ -5657,7 +5659,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.finishButton);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
 		objCioTransfer.logout();
-
+		Thread.sleep(5000);
 		// login with cio supervisor to check on approval retain mail to modal window
 		// doesnot appear
 		objCioTransfer.login(users.CIO_SUPERVISOR);
@@ -5666,13 +5668,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ recordeAPNTransferID + "/view");
 		objCioTransfer.waitForElementToBeClickable(10,
 				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
-		objCioTransfer.clickQuickActionButtonOnTransferActivity(null, objCioTransfer.quickActionOptionApprove);
-		Thread.sleep(3000);
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(null, objCioTransfer.quickActionOptionApprove);		
 		softAssert.assertTrue(
 				!objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow),
 				"SMAB-T7700:Verify that no  retain mail to modal window appears when  mail to record is generated or edited before submitting for apporval/approval");
 		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.finishButton);
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
+		Thread.sleep(2000);
 		objCioTransfer.logout();
 
 	}
