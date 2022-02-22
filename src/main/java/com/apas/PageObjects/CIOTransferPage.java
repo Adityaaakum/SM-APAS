@@ -177,6 +177,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath = "//div[contains(@class,'uiOutputRichText')] | //*[@class='slds-rich-text-editor__output']//b")
 	public WebElement confirmationMessageOnTranferScreen;
 
+
 	@FindBy(xpath = commonXpath+"//div[@class='highlights slds-clearfix slds-page-header slds-page-header_record-home']//ul[@class='slds-button-group-list']//lightning-primitive-icon")
 	public WebElement quickActionButtonDropdownIcon;
 
@@ -251,7 +252,7 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	@FindBy(xpath = commonXpath+"//*[text()='Return Reason']//ancestor:: div[contains(@class,'slds-modal__content slds-p-around--medium')]//textarea")
 	public WebElement returnReasonTextBox;
 	
-	@FindBy(xpath ="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section//force-record-layout-item//*[text()='CIO Transfer Status']/../..//slot[@slot='outputField']//lightning-formatted-text")
+	@FindBy(xpath ="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//*[text()='CIO Transfer Status']/../..//*[@slot='outputField']")
 	public WebElement CIOstatus;
 	
 	@FindBy(xpath ="//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized')]//force-record-layout-section//force-record-layout-item//*[text()='Audit Trail']/../..//slot[@slot='outputField']//a//span")

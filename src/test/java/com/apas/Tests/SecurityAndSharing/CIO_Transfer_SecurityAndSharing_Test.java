@@ -1,7 +1,5 @@
 package com.apas.Tests.SecurityAndSharing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -194,7 +192,21 @@ public class CIO_Transfer_SecurityAndSharing_Test extends TestBase implements te
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
 
 		objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);	
-		softAssert.assertContains(objCIOTransferPage.saveRecordAndGetError(),
+		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText("Save"));
+		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.pageError,30);
+		String actualErrormessage="";
+		
+		for(int i=0; i<=2;i++){
+			  try{
+				  actualErrormessage= objCIOTransferPage.pageError.getText();
+			     break;
+			  }
+			  catch(Exception e){
+			     
+			  }
+			}
+		
+		softAssert.assertContains(actualErrormessage,
 				"insufficient access rights on cross-reference id",
 				"SMAB-T3193: Verify that after submit for approval  CIO staff user can't create a new grantee record ");
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.CancelButton));
