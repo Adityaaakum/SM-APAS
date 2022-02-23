@@ -493,20 +493,20 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(HashMapLatestOwner.get("DOV").get(2), "7/19/2001",
-				"SMAB-T3510: Validating that status of new retired owner which is the grantee created from first transfer screen is retired : "
+				"SMAB-T3510: Validating that dov of new retired owner which is the grantee created from first transfer screen is updated dov : "
 						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
-		softAssert.assertEquals(HashMapLatestOwner.get("Remarks").get(2), "New Retired Record after Rolled back Retire",
-				"SMAB-T3510: Validating that remarks of new retired owner which is the grantee created from first transfer screen is correct : "
+		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(2), dorCIOScreen,
+				"SMAB-T3510: Validating that Ownership Start Date of new retired owner which is the grantee created from first transfer screen is old ownership start date only while performing roll back operation : "
 						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
-		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(2), "7/19/2001",
-				"SMAB-T3510: Validating that Ownership Start Date of new retired owner which is the grantee created from first transfer screen is updatd DOV entered wile performing roll back operation : "
-						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
-
-		String queryOwnershipDetails = "SELECT id,Vesting_Type__c,Original_Transferor__c  FROM Property_Ownership__c where DOV_Date__c =2001-07-19 and parcel__c in (Select Id from parcel__C where name='"
+		String queryOwnershipDetails = "SELECT Remarks__c ,id,Vesting_Type__c,Original_Transferor__c  FROM Property_Ownership__c where DOV_Date__c =2001-07-19 and parcel__c in (Select Id from parcel__C where name='"
 				+ apnFromWIPage + "')";
 		HashMap<String, ArrayList<String>> responseOwnershipDetails = salesforceAPI.select(queryOwnershipDetails);
+
+		softAssert.assertEquals(responseOwnershipDetails.get("Remarks__c").get(0), "New Retired Record after Rolled back Retire",
+				"SMAB-T3510: Validating that remarks of new retired owner which is the grantee created from first transfer screen is correct : "
+						+ hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase());
 
 		softAssert.assertEquals(responseOwnershipDetails.get("Vesting_Type__c").get(0), "JT",
 				"SMAB-T3510: Validating that Vesting_Type of new retired owner which is the grantee created from first transfer screen is retired : "
@@ -529,10 +529,17 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 				"SMAB-T3510: Validating that Ownership Percentage of new active owner which is the grantee created from first  transfer screen is correct: "
 						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase());
 
-		softAssert.assertEquals(HashMapLatestOwner.get("Remarks").get(3), "New Active record after Rolled back Active",
+		String ownerName=hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase();
+		
+		 queryOwnershipDetails = "SELECT Remarks__c  FROM Property_Ownership__c where Last_Name_f__c='"+ownerName+"' and parcel__c in (Select Id from parcel__C where name='"
+				+ apnFromWIPage + "')";
+		 responseOwnershipDetails = salesforceAPI.select(queryOwnershipDetails);
+
+		softAssert.assertEquals(responseOwnershipDetails.get("Remarks__c").get(0), "New Active record after Rolled back Active",
 				"SMAB-T3510: Validating that remarks of new active owner which is the grantee created from first transfer screen is correct : "
 						+ hashMapOwnershipAndTransferGranteeCreationData1.get("Last Name").toUpperCase());
 
+		
 		softAssert.assertEquals(HashMapLatestOwner.get("Owner").get(4), acesseName,
 				"SMAB-T3510:Validating  the old original parcel owner " + acesseName);
 
@@ -599,6 +606,7 @@ public class CIO_RollBack_Test extends TestBase implements testdata, modules, us
 		objCioTransfer.waitForElementToBeInVisible(objCioTransfer.xpathSpinner, 6);
 
 		objCioTransfer.waitForElementToBeVisible(20, objCioTransfer.CIOstatus);
+		Thread.sleep(4000);
 		objCioTransfer.scrollToElement(objCioTransfer.CIOstatus);
 		objCioTransfer.waitForElementTextToBe(objCioTransfer.CIOstatus,"Approved",30);
 		softAssert.assertEquals(objWorkItemHomePage.getElementText(objCioTransfer.CIOstatus), "Approved",
