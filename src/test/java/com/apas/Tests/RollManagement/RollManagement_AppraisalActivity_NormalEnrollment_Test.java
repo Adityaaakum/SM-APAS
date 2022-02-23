@@ -2099,7 +2099,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 			"Regression", "NormalEnrollment", "RollManagement" }, enabled = false)
 	public void OwnershipAndTransfer_Prop60Enrollment() throws Exception {
 
-		String excEnv = System.getProperty("region");
+		/*String excEnv = System.getProperty("region");
 
 		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
 		
@@ -2341,6 +2341,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		softAssert.assertTrue(!objParcelsPage.verifyElementVisible(objParcelsPage.combinedFactoredandHPI),
 				"SMAB-T4387, SMAB-T4320: Validation that all fields (Combined FBYV and HPI) are not visible when Assessed Type is not 'Prop 19'");
 
-		objAppraisalActivity.logout();
+		objAppraisalActivity.logout();*/
 		}
+		
 }
