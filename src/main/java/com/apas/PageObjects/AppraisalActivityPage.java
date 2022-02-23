@@ -48,9 +48,19 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	public final String commonXpath = "//div[contains(@class,'windowViewMode-normal') or contains(@class,'windowViewMode-maximized') or contains(@class,'modal-container') or contains(@class,'flowruntimeBody')]";
 	public String recordTypeLable ="Record Type";
 	public String doeLabel ="DOE";
+	public String assessedValuesLabel ="Assessed Values";
+	public String baseYearLabel ="Base Year";
+	public String effectiveStartDateLabel ="Effective Start Date";
+	public String effectiveEndDateLabel ="Effective End Date";
+	public String eventIdLabel ="Event ID";
+	public String assessedValueTYpeLabel ="Assessed Value Type";
+	public String landLabel ="Land";
+	public String ImprovementsLabel ="Improvements";
+	public String fullCashValueLabel ="Full Cash Value";
+	public String totalLabel ="Total";
+	public String SalesPriceofOriginalPropertyLabel ="Sales Price of Sold Property";
 
 
-	
 	@FindBy(xpath = "//select[@name='Rejection_Reason_PickList']")
 	public WebElement rejectionReasonList;
 	
@@ -74,6 +84,13 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 
 	@FindBy(xpath = "//a[contains(@class,'slds-button slds-button--icon-x-small slds-button--icon-border-filled')]")
 	public WebElement clickShowMoreActionButton;
+	
+	@FindBy(xpath =commonXpath+"//*[text()='APN']//parent::div//following-sibling::div//a//slot//slot//span")
+	public WebElement apnOnAppraiserActivity;
+	
+	@FindBy(xpath =commonXpath+"//*[text()='Recorded APN Transfer']//parent::div//following-sibling::div//a//slot//slot//span")
+	public WebElement recordedAPNTransferOnAppraiserActivity;
+	
 
 	/*
 	 * This method is to find the xpath of the edit pencil icon.
