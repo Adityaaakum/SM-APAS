@@ -1963,10 +1963,10 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Status").get(1), "Draft",
 				"SMAB-T4126:verifying that Status field in second supplemental created is Draft ");
 
-		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Land Assessed Value").get(1), "$300,000",
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Land Value").get(1), "$300,000",
 				"SMAB-T4126:verifying that Land Assessed Value field in second supplemental created is correct ");
 
-		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Improvement Assessed Value").get(1), "$500,000",
+		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Improvement Value").get(1), "$500,000",
 				"SMAB-T4126:verifying that Improvement Assessed Value field in second supplemental created is correct ");
 
 		softAssert.assertEquals(HashMapSupplementalRollEntryRecord.get("Total Assessed Value").get(1), "$800,000",
@@ -2096,7 +2096,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 	 */
 	
 	@Test(description = "SMAB-T7732 : RP Roll Management - Verify Enrollment of Prop60/90/110 events",  groups = {
-			"Regression", "NormalEnrollment", "RollManagement" }, enabled = true)
+			"Regression", "NormalEnrollment", "RollManagement" }, enabled = false)
 	public void OwnershipAndTransfer_Prop60Enrollment() throws Exception {
 
 		String excEnv = System.getProperty("region");
