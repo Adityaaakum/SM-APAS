@@ -71,7 +71,8 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 			  
 			   Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 			   String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
-				String currentRollYear=ExemptionsPage.determineRollYear(currentDate);	
+				String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
+				String execEnv = System.getProperty("region");
 				//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 			   ReportLogger.INFO("Step 1: Login to the Salesforce ");
 			   objApasGenericPage.login(loginUser);
@@ -105,15 +106,17 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 			   HashMap<String, ArrayList<String>> getWIDetails = objWIHomePage.getWorkItemDetails(newExemptionName, "Submitted for Approval", "Disabled Veterans", "Direct Review and Update", "Initial filing/changes");
 			   
 			    String WIName = getWIDetails.get("Name").get(0);
-			    getWIDetails.get("Request_Type__c").get(0);
-			   
+			    String WIRequestType = getWIDetails.get("Request_Type__c").get(0);
+			    String Work_Item_Details = "Select Id from Work_Item__c where Name = '"+WIName+"' ";
+			    HashMap<String, ArrayList<String>> response_3  = salesforceAPI.select(Work_Item_Details);
+			    String WIId = response_3.get("Id").get(0);
 			   //Search the Work Item Name in the Grid 1st Column
 			    javascriptexecutor.executeScript("window.scrollBy(0,800)");
 			    objWIHomePage.Click(objWIHomePage.ageDays);
 			    objWIHomePage.waitForElementToBeClickable(WIName);
 				Thread.sleep(2000);
 				objWIHomePage.findWorkItemInProgress(WIName);
-				objWIHomePage.globalSearchRecords(WIName);
+				driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Work_Item__c/" + WIId + "/view");
 			   
 			   String WorkItem_Id = objWIHomePage.getWorkItemIDFromExemptionOnWorkBench(newExemptionName);
 			   String WP_SupervisorName = objWIHomePage.getSupervisorDetailsFromWorkBench(WorkItem_Id);
