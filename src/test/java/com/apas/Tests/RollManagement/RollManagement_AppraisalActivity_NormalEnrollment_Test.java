@@ -1385,8 +1385,8 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 
 		// Submit for approval
 		objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.quickActionButtonDropdownIcon, 10);
-		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
-		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+		objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
 		if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
 		{
 		    objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
@@ -1397,10 +1397,8 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		ReportLogger.INFO("WI Submitted  for approval successfully");
 
 		// Approve transfer activity
-		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.quickActionButtonDropdownIcon);
-		objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
-		objCIOTransferPage.waitForElementToBeVisible(10, objCIOTransferPage.quickActionOptionApprove);
-		objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionApprove);
+		objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.quickActionButtonDropdownIcon);
+		objCIOTransferPage.clickQuickActionButtonOnTransferActivity(objCIOTransferPage.approveButton);
 		objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
 		objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));		
 		
@@ -1425,15 +1423,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		
 		// Step 2 - User navigates to Appraisal Activity Screen
 		ReportLogger.INFO("Navigating to Appraisal Activity Screen");
-		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Work_Item__c/"+workItemIdForAppraiser+"/view");
-		objWorkItemHomePage.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
-		objWorkItemHomePage.waitForElementToBeClickable(10, objWorkItemHomePage.relatedActionLink);
-		objWorkItemHomePage.Click(objWorkItemHomePage.relatedActionLink);
-		String parentWindow = driver.getWindowHandle();
-		objWorkItemHomePage.switchToNewWindow(parentWindow);
-		ReportLogger.INFO("Navigated to Appraisal Activity");
-		objAppraisalActivity.waitUntilPageisReady(driver);
+		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com"+workItemRelatedAction);
 		
 		// Step 3 - User enters Land and Improvement values
 		objAppraisalActivity.waitForElementToBeVisible(15, objAppraisalActivity.appraisalActivityStatus);
@@ -1446,18 +1436,14 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		.to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/related/Assessed_Values__r/view");
 		objAppraisalActivity.waitForElementToBeClickable(objAppraisalActivity.clickShowMoreActionButton, 15);
 		String assessedValueQuery = "SELECT Name, Status__c, Assessed_Value_Type__c, Land_Value_Formula__c, Improvement_Value_Formula__c FROM Assessed_BY_Values__c WHERE APN__c = '"+parcelId+"' order by Effective_Start_Date_2__c asc limit 2";
-				
+    	HashMap<String, ArrayList<String>> hashMapAssessedValues= salesforceAPI.select(assessedValueQuery);
+    	
 		// Verifying the AV generated  after updating land and improvement value on appraiser screen		
-		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Status__c").get(0), "Retired",
-				"SMAB-T4262:Verify that earlier active AV record is getting retired for BMR assessement");
-		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Status__c").get(1), "Active",
-				"SMAB-T4262:Verify that new active AV record is getting created  for BMR assessement");
-		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Assessed_Value_Type__c").get(1),	"Annual",
-				"SMAB-T4262:Verify that new active AV record is getting created for BMR has assessed value of type Annual");
-		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Land_Value_Formula__c").get(1), expectedLandValue,
-				"SMAB-T4262:Verify that Land taxable value is getting reflected at grid");
-		softAssert.assertEquals(salesforceAPI.select(assessedValueQuery).get("Improvement_Value_Formula__c").get(1), expectedImprovementValue,
-				"SMAB-T4262:Verify that Improvement taxable value is getting reflected at grid");
+		softAssert.assertEquals(hashMapAssessedValues.get("Status__c").get(0), "Retired", "SMAB-T4262:Verify that earlier active AV record is getting retired for BMR assessement");
+		softAssert.assertEquals(hashMapAssessedValues.get("Status__c").get(1), "Active", "SMAB-T4262:Verify that new active AV record is getting created  for BMR assessement");
+		softAssert.assertEquals(hashMapAssessedValues.get("Assessed_Value_Type__c").get(1),	"Annual", "SMAB-T4262:Verify that new active AV record is getting created for BMR has assessed value of type Annual");
+		softAssert.assertEquals(hashMapAssessedValues.get("Land_Value_Formula__c").get(1), expectedLandValue, "SMAB-T4262:Verify that Land taxable value is getting reflected at grid");
+		softAssert.assertEquals(hashMapAssessedValues.get("Improvement_Value_Formula__c").get(1), expectedImprovementValue,	"SMAB-T4262:Verify that Improvement taxable value is getting reflected at grid");
 
 		// Verifying AVO record for new owner 
 		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Assessed_Values_Ownership__c/"
@@ -1476,13 +1462,14 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+salesforceAPI.select("Select Id from Parcel__c where name ='"+parcelAPN+"'").get("Id").get(0)+"/related/Roll_Entry__r/view");
 		objAppraisalActivity.waitForElementToBeClickable(15,objAppraisalActivity.clickShowMoreActionButton );
 		String rollEntryQuery = "SELECT Type__c, Roll_Year_Sequence__c,Status__c,Improvement_Assessed_Value__c,Land_Assessed_Value__c FROM Roll_Entry__c WHERE APN__c = '"+ parcelId +"' order by Roll_Year_Sequence__c desc"; 
-		  
+		HashMap<String, ArrayList<String>> hashMapRollEntryRecords= salesforceAPI.select(rollEntryQuery); 
+		
 		// Validating Enrollement records generated for BMR
-		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Type__c").get(0) ,"Annual", "SMAB-T4262: Verify that Annual record is genrated after appraisal for year 2019 ");
-		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Roll_Year_Sequence__c").get(0) ,"2019 - 1", "SMAB-T4262: Verify that sequence of annual record is 1 for roll year 2019 ");
-		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Status__c").get(0), "Draft", "SMAB-T4262: Verify RE is created as Draft");
-		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Land_Assessed_Value__c").get(0), expectedLandValue, "SMAB-T4262: Verify Land Assessed Value");
-		softAssert.assertEquals(salesforceAPI.select(rollEntryQuery).get("Improvement_Assessed_Value__c").get(0), expectedImprovementValue, "SMAB-T4262: Verify Improvement Assessed Value");
+		softAssert.assertEquals(hashMapRollEntryRecords.get("Type__c").get(0) ,"Annual", "SMAB-T4262: Verify that Annual record is genrated after appraisal for year 2019 ");
+		softAssert.assertEquals(hashMapRollEntryRecords.get("Roll_Year_Sequence__c").get(0) ,"2019 - 1", "SMAB-T4262: Verify that sequence of annual record is 1 for roll year 2019 ");
+		softAssert.assertEquals(hashMapRollEntryRecords.get("Status__c").get(0), "Draft", "SMAB-T4262: Verify RE is created as Draft");
+		softAssert.assertEquals(hashMapRollEntryRecords.get("Land_Assessed_Value__c").get(0), expectedLandValue, "SMAB-T4262: Verify Land Assessed Value");
+		softAssert.assertEquals(hashMapRollEntryRecords.get("Improvement_Assessed_Value__c").get(0), expectedImprovementValue, "SMAB-T4262: Verify Improvement Assessed Value");
 		
 		// Step 4 - User submits for approval
 		driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com"+workItemRelatedAction);

@@ -2401,7 +2401,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		 * Verify When a CIO Staff is editing names of owner in the RAT screen , Ownership Record ,
 		 * Mail To record the value will get stored in Upper Case
 		 */
-		@Test(description = "SMAB-T7789: When a CIO Staff is editing names of owner in the RAT screen , Ownership Record , Mail To record the value will get stored in Upper Case", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+		@Test(description = "SMAB-T7789: When a CIO Staff is editing names of owner in the RAT screen , Ownership Record , Mail To record the value will get stored in Upper Case", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 				"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
 		public void UnrecordedEvent_RATUpperCaseNamesValidation(String loginUser) throws Exception {
 			
@@ -2415,8 +2415,6 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
 			Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithMailTo");
 		
-			HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select("SELECT id FROM PUC_Code__c where Name in ('101- Single Family Home','105 - Apartment') limit 1");
-			salesforceAPI.update("Parcel__c", parcelId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 			String firstName =  hashMapOwnershipAndTransferGranteeCreationData.get("First Name").toUpperCase();
 			String lastName = hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase();
 			String expectedNameGrantee = lastName+" "+firstName;
@@ -2468,12 +2466,11 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			String formattedName1 = mailToHashMap.get(objCIOTransferPage.formattedName1Label).get(0);
 			softAssert.assertEquals(formattedName1, expectedNameGrantee, "SMAB-T7789: Verify Formatted Name in Mail to record is stored in Upper Case");
 			softAssert.assertTrue(!mailToHashMap.containsKey("Remarks"), "SMAB-T7789: Verify remarks culumn is no longer visible in Mail To list view");
-					
+
 			// Step 5: Submit for approval
 			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 			objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.quickActionButtonDropdownIcon);
-			objCIOTransferPage.Click(objCIOTransferPage.quickActionButtonDropdownIcon);
-			objCIOTransferPage.Click(objCIOTransferPage.quickActionOptionSubmitForApproval);
+			objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
 			if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
 			{
 				objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
@@ -2482,15 +2479,26 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
 			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
 			ReportLogger.INFO("WI Submitted  for approval successfully");
-			Thread.sleep(2000);
+			objCIOTransferPage.logout();
+			Thread.sleep(5000);
 			
+			// Logging as Sys admin
+			objMappingPage.login(users.SYSTEM_ADMIN);
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+			objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.quickActionButtonDropdownIcon);
+			objCIOTransferPage.clickQuickActionButtonOnTransferActivity(objCIOTransferPage.approveButton);
+				
 			// Validating Owner record 
 			driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+ parcelId +"/related/Property_Ownerships__r/view");
 			objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.newButton);
 			HashMap<String, ArrayList<String>> ownerHashMap  = objCIOTransferPage.getGridDataForRowString("1");
 			String ownerName = ownerHashMap.get("Owner").get(0);
 			softAssert.assertEquals(ownerName, expectedNameOwner, "SMAB-T7789: Verify Owner name in Owner record is stored in Upper Case");
-			softAssert.assertTrue(!ownerHashMap.containsKey("Type"), "SMAB-T7789: Verify Type culumn is no longer visible in Owner list view");
+			String ownerQuery = "SELECT id FROM Property_Ownership__c WHERE Parcel__c = '"+parcelId+"' ORDER BY CreatedDate desc limit 1";
+			String ownerID = salesforceAPI.select(ownerQuery).get("Id").get(0);
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Property_Ownership__c/" + ownerID + "/view");
+			objCIOTransferPage.waitForElementToBeClickable(5, objCIOTransferPage.EditButton);
+			softAssert.assertTrue(!objCIOTransferPage.verifyElementExists("//span[text()=\"Type\"]"), "SMAB-T7789: Verifyverify Type field is dropped deom ownership record detail page");
 			
 			// Validating RAT tab name
 			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
@@ -2504,7 +2512,7 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 		/*
 		 * Validation for Transfer Tax, Document Type , Indicative Sales price on RAT Screen for CIO
 		 */
-		@Test(description = "SMAB-T4325: Validation for Transfer Tax, Document Type , Indicative Sales price on RAT Screen for CIO", dataProvider = "loginSystemAdmin", dataProviderClass = DataProviders.class, groups = {
+		@Test(description = "SMAB-T4325: Validation for Transfer Tax, Document Type , Indicative Sales price on RAT Screen for CIO", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 				"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
 		public void UnrecordedEvent_TransferTaxAndDocumentTypeValidation(String loginUser) throws Exception {
 			// ----- Data set up -----
@@ -2516,8 +2524,6 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 			
 			Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
 			Map<String, String> dataToCreateUnrecordedEventWithTransferTaxMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreationWithTransferTax");
-			HashMap<String, ArrayList<String>> responsePUCDetails = salesforceAPI.select("SELECT id FROM PUC_Code__c where Name in ('101- Single Family Home','105 - Apartment') limit 1");
-			salesforceAPI.update("Parcel__c", parcelId, "PUC_Code_Lookup__c", responsePUCDetails.get("Id").get(0));
 				
 			// Step 1: Login as CIO staff
 			objCIOTransferPage.login(loginUser);
