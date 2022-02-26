@@ -58,7 +58,7 @@ public class AppraisalActivityPage extends ApasGenericPage implements modules {
 	public String ImprovementsLabel ="Improvements";
 	public String fullCashValueLabel ="Full Cash Value";
 	public String totalLabel ="Total";
-	public String SalesPriceofOriginalPropertyLabel ="Sales Price of Sold Property";
+	public String SalesPriceofOriginalPropertyLabel ="Sales Price of Original Property";
 
 
 	@FindBy(xpath = "//select[@name='Rejection_Reason_PickList']")

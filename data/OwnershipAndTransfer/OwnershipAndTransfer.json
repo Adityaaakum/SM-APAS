@@ -117,6 +117,14 @@
 		"First Name":"Jhones",
 		"Ownership Start Date":"7/16/2021",
 		"Owner Percentage":"50"
-	}
+	},
+	
+	"DataToCreateOwnershipRecordForP60": {
+	    "Type": "Owner",
+	    "Status": "Active",
+	    "Ownership Percentage":"100",
+	    "Ownership Start Date":"7/19/1999"
+	},
+	
 }
 

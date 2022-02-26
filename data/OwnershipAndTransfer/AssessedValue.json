@@ -66,5 +66,16 @@
 		"Start Date" : "12/31/2017",
 		"Assessed Value Type" : "Assessed Value",
 		"Ownership Percentage" : "100"
+	},
+	
+	 "dataToCreateAssesedValueRecordForP60":{
+	
+	"DOV": "7/19/1999",
+	"Land Cash Value" : "100,000",
+	"Improvement Cash Value" : "20,000" ,
+	"Start Date" : "7/19/1999",
+	"Assessed Value Type" : "Assessed Value",
+	"Ownership Percentage" : "100",
+	"DOR": "7/19/1999" 
 	}
 }
