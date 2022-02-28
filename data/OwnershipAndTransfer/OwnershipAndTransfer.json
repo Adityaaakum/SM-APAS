@@ -31,6 +31,7 @@
 	
 	"DataToCreateOwnershipRecord": {
 	    "Type": "Owner",
+		"RP Account":"",
 	    "Status": "Active",
 	    "Ownership Percentage":"100",
 	    "Ownership Start Date":"7/19/1950"
@@ -95,6 +96,13 @@
 	    "Ownership Start Date":"7/19/1999"
 	},
 
+	"DataToCreateOwnershipRecordForP19P": {
+	    "Type": "Owner",
+	    "Status": "Active",
+	    "Ownership Percentage":"100",
+	    "Ownership Start Date":"7/19/1999"
+     },
+	 
 	"dataToCreateMailToRecord":{
 		"Address": "700 NW 111TH PL",
 		"Zip code": "33172"
