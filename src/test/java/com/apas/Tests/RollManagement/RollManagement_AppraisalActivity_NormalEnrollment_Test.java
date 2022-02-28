@@ -2354,7 +2354,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 	 */
 	
 	@Test(description = "SMAB-T4236:  Validate that When editing the Appraisal Record for CIO-P19D event in AV Object UI, the 2 derived fields ' Difference' and the Final Taxable Land and Improvement requires to use the SAVE button twice navigating the user away from the AV Object UI. This needs to be avoided and make user stays on the same UI to get to the 'New Taxable Value'", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "RollManagement" })
+			"Regression", "NormalEnrollment", "RollManagement" })
 	public void RecorderIntegration_CIO_Prop_19D_Taxable_Values(String loginUser) throws Exception {
 		String execEnv = System.getProperty("region");
 		
@@ -2406,7 +2406,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		objMappingPage.Click(objAppraisalActivity.appraisalActivityEditValueButton("Land Cash Value"));
 		objMappingPage.waitForElementToBeVisible(objApasGenericPage.getButtonWithText("Save"));
 		
-		//Step 6: Adding Land and Improvement Values
+		//Step 4: Adding Land and Improvement Values
 		objApasGenericPage.enter("Land Cash Value", "600000");
 		objApasGenericPage.enter("Improvement Cash Value","400000");
 		objApasGenericPage.enter("Sales Price of Sold Property","400000");
@@ -2417,7 +2417,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
 		Thread.sleep(2000);
 		
-		//Step 4: Clicking on Assessed Value view all icon and navigating to the new page.
+		//Step 5: Clicking on Assessed Value view all icon and navigating to the new page.
 		objCIOTransferPage.clickViewAll(assessedValueTableName);
 		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValue = objMappingPage.getGridDataInHashMap();
 		for (int i = 0; i < gridDataHashMapAssessedValue.get("Effective Start Date").size(); i++) {
@@ -2426,7 +2426,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		String assessedValueId = gridDataHashMapAssessedValue.get("Assessed Values ID").get(0);
 		String assessedValueQuery ="SELECT Id FROM Assessed_BY_Values__c WHERE Name = '"+assessedValueId+"'";
 		String assessedValueUrlId=salesforceAPI.select(assessedValueQuery).get("Id").get(0);
-		//Step 5: Navigating to Assessed Value page
+		//Step 6: Navigating to Assessed Value page
 		
 		driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Assessed_BY_Values__c/" + assessedValueUrlId + "/view");
 		objParcelsPage.waitForElementToBeVisible(10, objParcelsPage.difference);
@@ -2449,7 +2449,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 	 */
 	
 	@Test(description = "SMAB-T4237: Validate that When editing the Appraisal Record for CIO-P19B6 event in AV Object UI, the 2 derived fields ' Difference' and the Final Taxable Land and Improvement requires to use the SAVE button twice navigating the user away from the AV Object UI. This needs to be avoided and make user stays on the same UI to get to the 'New Taxable Value'", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "RollManagement" })
+			"Regression", "NormalEnrollment", "RollManagement" })
 	public void RecorderIntegration_CIO_Prop_19B6_Decimal_Taxable_Values(String loginUser) throws Exception {
 		String execEnv = System.getProperty("region");
 		
@@ -2498,7 +2498,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		objMappingPage.Click(objAppraisalActivity.appraisalActivityEditValueButton("Land Cash Value"));
 		objMappingPage.waitForElementToBeVisible(objApasGenericPage.getButtonWithText("Save"));
 		
-		//Step 6: Adding Land and Improvement Values
+		//Step 4: Adding Land and Improvement Values
 		objApasGenericPage.enter("Land Cash Value", "234567");
 		objApasGenericPage.enter("Improvement Cash Value","345678");
 		objApasGenericPage.enter("Sales Price of Sold Property","237896");
@@ -2508,7 +2508,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
 		Thread.sleep(2000);
 		
-		//Step 4: Clicking on Assessed Value view all icon and navigating to the new page.
+		//Step 5: Clicking on Assessed Value view all icon and navigating to the new page.
 		objCIOTransferPage.clickViewAll(assessedValueTableName);
 		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValue = objMappingPage.getGridDataInHashMap();
 		for (int i = 0; i < gridDataHashMapAssessedValue.get("Effective Start Date").size(); i++) {
@@ -2517,7 +2517,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 		String assessedValueId = gridDataHashMapAssessedValue.get("Assessed Values ID").get(0);
 		String assessedValueQuery ="SELECT Id FROM Assessed_BY_Values__c WHERE Name = '"+assessedValueId+"'";
 		String assessedValueUrlId=salesforceAPI.select(assessedValueQuery).get("Id").get(0);
-		//Step 5: Navigating to Assessed Value page
+		//Step 6: Navigating to Assessed Value page
 		
 		driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Assessed_BY_Values__c/" + assessedValueUrlId + "/view");
 		objParcelsPage.waitForElementToBeVisible(10, objParcelsPage.difference);
@@ -2540,7 +2540,7 @@ public class RollManagement_AppraisalActivity_NormalEnrollment_Test extends Test
 	 */
 	
 	@Test(description = "SMAB-T4269: Validate that When editing the Appraisal Record for CIO-P19E event in AV Object UI, the 2 derived fields ' Difference' and the Final Taxable Land and Improvement requires to use the SAVE button twice navigating the user away from the AV Object UI. This needs to be avoided and make user stays on the same UI to get to the 'New Taxable Value'", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
-			"Regression", "RollManagement" })
+			"Regression", "NormalEnrollment", "RollManagement"  })
 	public void RecorderIntegration_CIO_Prop_19E_Taxable_Values(String loginUser) throws Exception {
 		String execEnv = System.getProperty("region");
 		

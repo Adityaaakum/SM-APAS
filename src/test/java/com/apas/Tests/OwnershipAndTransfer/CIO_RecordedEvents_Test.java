@@ -5011,10 +5011,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
 		String apnNumber=objCioTransfer.getFieldValueFromAPAS("APN");
-		String getQuery ="SELECT Id FROM Parcel__c WHERE Name = '" +apnNumber+"'";
-	  	  HashMap<String, ArrayList<String>> getResponse = salesforceAPI.select(getQuery);
-	  	String apnId = getResponse.get("Id").get(0);
-	  	objCioTransfer.deleteRollEntryFromParcel(apnId);
 		
 		objWorkItemHomePage.getFieldValueFromAPAS("APN");
 		objWorkItemHomePage.waitForElementToBeInVisible("APN", 5);
