@@ -2412,4 +2412,177 @@ public class CIO_UnrecordedEvents_Test extends TestBase implements testdata, mod
 
 			objParcelsPage.logout();
 		}
+		
+		 /*
+		 * Verify When a CIO Staff is editing names of owner in the RAT screen , Ownership Record ,
+		 * Mail To record the value will get stored in Upper Case
+		 */
+		@Test(description = "SMAB-T7789: When a CIO Staff is editing names of owner in the RAT screen , Ownership Record , Mail To record the value will get stored in Upper Case", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+				"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
+		public void UnrecordedEvent_RATUpperCaseNamesValidation(String loginUser) throws Exception {
+			
+			// ----- Data set up -----
+			String queryAPNValue = "select Id, Name from Parcel__c where Status__c='Active' limit 1";
+			String parcelId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+			String parcelName = salesforceAPI.select(queryAPNValue).get("Name").get(0);
+			String OwnershipAndTransferGranteeCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+			String execEnv = System.getProperty("region");		
+			
+			Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
+			Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil.generateMapFromJsonFile(OwnershipAndTransferGranteeCreationData, "dataToCreateGranteeWithMailTo");
+		
+			String firstName =  hashMapOwnershipAndTransferGranteeCreationData.get("First Name").toUpperCase();
+			String lastName = hashMapOwnershipAndTransferGranteeCreationData.get("Last Name").toUpperCase();
+			String expectedNameGrantee = lastName+" "+firstName;
+			String expectedNameOwner = firstName+" "+lastName; 
+			
+			// Step 1: Login as CIO staff
+			objCIOTransferPage.login(loginUser);
+			
+			// Opening the parcel's page
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
+			objParcelsPage.waitUntilPageisReady(driver);
+			
+			// Clean parcel
+			objCIOTransferPage.deleteOwnershipFromParcel(parcelId);
+			objCIOTransferPage.deleteMailToRecordsFromParcel(parcelName);
+			
+			// Step 2: Create UT event
+			objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
+			objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
+			String recordeAPNTransferID = driver.getCurrentUrl().split("/")[6];
+			
+			// Edit the Transfer activity and update the Transfer Code
+			ReportLogger.INFO("Add the Transfer Code");
+			objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+			objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
+			objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, CIOTransferPage.CIO_EVENT_CODE_SALE);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));	
+			Thread.sleep(2000);
+			
+			// Step 3: Creating the new grantee on transfer
+			objCIOTransferPage.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);			
+
+			// Validating present grantee			 
+			driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+			HashMap<String, ArrayList<String>> granteeHashMap  = objCIOTransferPage.getGridDataForRowString("1");
+			String granteeForMailTo= granteeHashMap.get("Grantee/Retain Owner Name").get(0);
+			softAssert.assertEquals(granteeForMailTo, expectedNameGrantee, "SMAB-T7789: Verify Grantee is stored in Upper Case");
+			
+			// Step 4: Creating mail to record
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+			objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
+			objCIOTransferPage.createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferGranteeCreationData);
+			objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
+			
+			// Validating mail to record 
+			driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/"+recordeAPNTransferID+"/related/CIO_Transfer_Mail_To__r/view");
+			objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.newButton);
+			HashMap<String, ArrayList<String>> mailToHashMap  = objCIOTransferPage.getGridDataForRowString("1");
+			String formattedName1 = mailToHashMap.get(objCIOTransferPage.formattedName1Label).get(0);
+			softAssert.assertEquals(formattedName1, expectedNameGrantee, "SMAB-T7789: Verify Formatted Name in Mail to record is stored in Upper Case");
+			softAssert.assertTrue(!mailToHashMap.containsKey("Remarks"), "SMAB-T7789: Verify remarks culumn is no longer visible in Mail To list view");
+
+			// Step 5: Submit for approval
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+			objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.quickActionButtonDropdownIcon);
+			objCIOTransferPage.clickQuickActionButtonOnTransferActivity("Submit for Approval");
+			if (objCIOTransferPage.waitForElementToBeVisible(7,objCIOTransferPage.yesRadioButtonRetainMailToWindow))
+			{
+				objCIOTransferPage.Click(objCIOTransferPage.yesRadioButtonRetainMailToWindow);
+				objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.nextButton));
+			}
+			objCIOTransferPage.waitForElementToBeVisible(objCIOTransferPage.confirmationMessageOnTranferScreen);
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.finishButtonLabel));
+			ReportLogger.INFO("WI Submitted  for approval successfully");
+			objCIOTransferPage.logout();
+			Thread.sleep(5000);
+			
+			// Logging as Sys admin
+			objMappingPage.login(users.SYSTEM_ADMIN);
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+			objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.quickActionButtonDropdownIcon);
+			objCIOTransferPage.clickQuickActionButtonOnTransferActivity(objCIOTransferPage.approveButton);
+				
+			// Validating Owner record 
+			driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Parcel__c/"+ parcelId +"/related/Property_Ownerships__r/view");
+			objCIOTransferPage.waitForElementToBeClickable(objCIOTransferPage.newButton);
+			HashMap<String, ArrayList<String>> ownerHashMap  = objCIOTransferPage.getGridDataForRowString("1");
+			String ownerName = ownerHashMap.get("Owner").get(0);
+			softAssert.assertEquals(ownerName, expectedNameOwner, "SMAB-T7789: Verify Owner name in Owner record is stored in Upper Case");
+			String ownerQuery = "SELECT id FROM Property_Ownership__c WHERE Parcel__c = '"+parcelId+"' ORDER BY CreatedDate desc limit 1";
+			String ownerID = salesforceAPI.select(ownerQuery).get("Id").get(0);
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Property_Ownership__c/" + ownerID + "/view");
+			objCIOTransferPage.waitForElementToBeClickable(5, objCIOTransferPage.EditButton);
+			softAssert.assertTrue(!objCIOTransferPage.verifyElementExists("//span[text()=\"Type\"]"), "SMAB-T7789: Verifyverify Type field is dropped deom ownership record detail page");
+			
+			// Validating RAT tab name
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
+			objCIOTransferPage.waitForElementToBeClickable(7, objCIOTransferPage.copyToMailToButtonLabel);
+			String ratTabName = "RD-"+objApasGenericPage.getFieldValueFromAPAS(objCIOTransferPage.eventIDLabel);
+			softAssert.assertTrue(objApasGenericPage.verifyElementExists("//span[text()='"+ratTabName+"']"),  "SMAB-T7789: Verify RAT Tab reads as RD-EventID");
+			
+			objCIOTransferPage.logout();
+		}
+		
+		/*
+		 * Validation for Transfer Tax, Document Type , Indicative Sales price on RAT Screen for CIO
+		 */
+		@Test(description = "SMAB-T4325: Validation for Transfer Tax, Document Type , Indicative Sales price on RAT Screen for CIO", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+				"Regression", "ChangeInOwnershipManagement", "UnrecordedEvent" }, enabled = true)
+		public void UnrecordedEvent_TransferTaxAndDocumentTypeValidation(String loginUser) throws Exception {
+			// ----- Data set up -----
+			String queryAPNValue = "select Id, Name from Parcel__c where Status__c='Active' limit 1";
+			String parcelId = salesforceAPI.select(queryAPNValue).get("Id").get(0);
+			String parcelName = salesforceAPI.select(queryAPNValue).get("Name").get(0);
+			String execEnv = System.getProperty("region");
+			String expectedValue = "$228";
+			
+			Map<String, String> dataToCreateUnrecordedEventMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreation");
+			Map<String, String> dataToCreateUnrecordedEventWithTransferTaxMap = objUtil.generateMapFromJsonFile(unrecordedEventData, "UnrecordedEventCreationWithTransferTax");
+				
+			// Step 1: Login as CIO staff
+			objCIOTransferPage.login(loginUser);
+			
+			// Opening the parcel's page
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
+			objParcelsPage.waitUntilPageisReady(driver);
+				
+			// Clean parcel
+			objCIOTransferPage.deleteOwnershipFromParcel(parcelId);
+			objCIOTransferPage.deleteMailToRecordsFromParcel(parcelName);
+			
+			// Step 2: Create UT event with transfer tax
+			objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventWithTransferTaxMap);
+			objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
+			String transferTax = objApasGenericPage.getFieldValueFromAPAS(objCIOTransferPage.transferTaxLabel);
+			softAssert.assertEquals(transferTax, expectedValue, "SMAB-T4325: Verify the Transfer tax entered flows to the Transfer Tax field in the RAT Screen.");
+						
+			// Opening the parcel's page again
+			driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/Parcel__c/" + parcelId + "/view");
+			objParcelsPage.waitUntilPageisReady(driver);
+			
+			// Step 3: Create UT event without transfer tax
+			objParcelsPage.createUnrecordedEvent(dataToCreateUnrecordedEventMap);
+			objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
+			transferTax = objApasGenericPage.getFieldValueFromAPAS(objCIOTransferPage.transferTaxLabel);
+			softAssert.assertEquals(transferTax, "$0", "SMAB-T4325: Verify the Transfer Tax field is empty in the RAT Screen when this value was not populated in the Component action form.");
+			
+			// Enter transfer code
+			ReportLogger.INFO("Add the Transfer Code");
+			objCIOTransferPage.editRecordedApnField(objCIOTransferPage.transferCodeLabel);
+			objCIOTransferPage.waitForElementToBeVisible(6, objCIOTransferPage.transferCodeLabel);
+			objCIOTransferPage.searchAndSelectOptionFromDropDown(objCIOTransferPage.transferCodeLabel, CIOTransferPage.CIO_EVENT_CODE_SALE);
+			
+			// Step 4: Enter indicated sales price
+			objCIOTransferPage.enter(objCIOTransferPage.indicatedSalesPrice, dataToCreateUnrecordedEventWithTransferTaxMap.get("Transfer Tax"));
+			objCIOTransferPage.Click(objCIOTransferPage.getButtonWithText(objCIOTransferPage.saveButton));
+			Thread.sleep(2000);
+			
+			// Step 5: Validate indicated sales price and document type
+			softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objCIOTransferPage.indicatedSalesPrice),expectedValue, "SMAB-T4325: Verify the indicated sales price is populated.");
+			softAssert.assertEquals(objApasGenericPage.getFieldValueFromAPAS(objCIOTransferPage.documentTypeLabel), "UN", "SMAB-T4325: Verify the document type is UN.");
+			
+			objCIOTransferPage.logout();
+		}	
 }
