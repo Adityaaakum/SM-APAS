@@ -114,8 +114,9 @@ public class WorkItemAdministration_MassApproval_Tests extends TestBase implemen
 		//Step 7:Navigate to home and need my approval tab
 		objWorkItemHomePage.searchModule(modules.HOME);
 		objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
-
 		//Step 8:Select Work Items
+		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+		objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.getButtonWithText("Approve"));
 		objWorkItemHomePage.selectWorkItemOnHomePage(workItemNumber1);
 		objWorkItemHomePage.selectWorkItemOnHomePage(workItemNumber2);
 
@@ -139,6 +140,9 @@ public class WorkItemAdministration_MassApproval_Tests extends TestBase implemen
 		objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
 
 		//Step 13: Selecting the work Items
+		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+		objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.getButtonWithText("Approve"));
+		
 		objWorkItemHomePage.selectWorkItemOnHomePage(workItemNumber1);
 		objWorkItemHomePage.selectWorkItemOnHomePage(workItemNumber2);
 
@@ -158,7 +162,7 @@ public class WorkItemAdministration_MassApproval_Tests extends TestBase implemen
 		objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
 		driver.navigate().refresh();
 		objWorkItemHomePage.Click(objWorkItemHomePage.completedTab);
-
+		Thread.sleep(2000);
 		// Validating the approved WI's should be in completed tab
 		softAssert.assertTrue(objWorkItemHomePage.searchWIInGrid(workItemNumber1),
 				"SMAB-T2241:Validating the approved Work Item 1 :- "+ workItemNumber1 +" should be in completed tab");

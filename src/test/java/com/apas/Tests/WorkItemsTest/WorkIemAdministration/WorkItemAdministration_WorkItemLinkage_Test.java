@@ -99,7 +99,10 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
     	//Fetch Active APN
     	ArrayList<String> apns = objMappingPage.fetchActiveAPN(2);
     	String apn = apns.get(0);
-    	
+    	String execEnv = System.getProperty("region");
+    	String queryAPN = "select Id from Parcel__c where Name = '"+apn+"'";
+    	HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+		String apnId= responseAPNDetails.get("Id").get(0);
     	//Setup data to create Manual WI
 		String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
 		Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
@@ -111,8 +114,11 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 		// Step2: Opening the PARCELS page and searching the parcel to create manual WI
 		objMappingPage.searchModule(PARCELS);
 		objMappingPage.globalSearchRecords(apn);
-
+		
+		driver.navigate().to("https://smcacre--"
+				+ execEnv + ".lightning.force.com/lightning/r/Parcel__c/"+apnId+"/view");
 		// Step 3: Creating Manual work item for the Parcel
+		objMappingPage.waitForElementToBeClickable(objParcelsPage.componentActionsButtonText);
 		String WINumber = objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
 		
 		// Step 4: Creating WI Linkage
@@ -131,6 +137,8 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
     	objMappingPage.searchModule(HOME);
     	Thread.sleep(2000);
     	objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
+    	objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+    	Thread.sleep(2000);
 		WebElement WI = objWorkItemHomePage.searchWIinGrid(WINumber);
 		HashMap<String, ArrayList<String>> gridData;
 		
@@ -148,11 +156,14 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 		objWorkItemHomePage.waitForElementToDisappear(objWorkItemHomePage.successAlert, 10); 
 		
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_POOL);
+		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+    	Thread.sleep(2000);
+    	objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.getButtonWithText("Accept Work Item"));
 		boolean WIPresent = objWorkItemHomePage.searchWIInGrid(WINumber);
-		
 		if(WIPresent) {
 			gridData = objMappingPage.getGridDataInHashMap();
-			softAssert.assertContains(gridData.get("APN").get(gridData.get("Work item #").indexOf(updatedWINumber)), "Multiple", "SMAB-T2654: APN Number Validation for Work Item");
+			
+			softAssert.assertContains(gridData.get("APN").get(gridData.get("Work item #").indexOf(WINumber)), "Multiple", "SMAB-T2654: APN Number Validation for Work Item");
 	
 		}else		
 			softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(WI), "SMAB-T2654: Not able to find Work Item on Home Page: "+WINumber);
@@ -161,6 +172,8 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 		objWorkItemHomePage.acceptWorkItem(WINumber);
 		
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
+		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+    	Thread.sleep(2000);
 		objWorkItemHomePage.selectWorkItemOnHomePage(WINumber);
 		objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText(objWorkItemHomePage.PutOnHoldButton));
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert, 20);
@@ -171,7 +184,7 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 		
 		if(objWorkItemHomePage.verifyElementVisible(WI)) {
 			gridData = objMappingPage.getGridDataInHashMap();
-			softAssert.assertContains(gridData.get("APN").get(gridData.get("Work item #").indexOf(updatedWINumber)), "Multiple", "SMAB-T2654: APN Number Validation for Work Item");
+			softAssert.assertContains(gridData.get("APN").get(gridData.get("Work item #").indexOf(WINumber)), "Multiple", "SMAB-T2654: APN Number Validation for Work Item");
 	
 		}else		
 			softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(WI), "SMAB-T2654: Not able to find Work Item on Home Page: "+WINumber);
@@ -183,6 +196,8 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 		objWorkItemHomePage.waitForElementToDisappear(objWorkItemHomePage.successAlert, 10);
 		
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_IN_PROGRESS);
+		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+    	Thread.sleep(2000);
 		objWorkItemHomePage.selectWorkItemOnHomePage(WINumber);
 		objWorkItemHomePage.Click(objWorkItemHomePage.btnMarkComplete);
 		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert, 20);
@@ -193,7 +208,7 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 		
 		if(objWorkItemHomePage.verifyElementVisible(WI)) {
 			gridData = objMappingPage.getGridDataInHashMap();
-			softAssert.assertContains(gridData.get("APN").get(gridData.get("Work item #").indexOf(updatedWINumber)), "Multiple", "SMAB-T2654: APN Number Validation for Work Item");
+			softAssert.assertContains(gridData.get("APN").get(gridData.get("Work item #").indexOf(WINumber)), "Multiple", "SMAB-T2654: APN Number Validation for Work Item");
 	
 		}else		
 			softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(WI), "SMAB-T2654: Not able to find Work Item on Home Page: "+WINumber);
@@ -201,12 +216,29 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 		//Step 10: Logout & Login to the APAS application using Supervisor of Work Item
 		objWorkItemHomePage.logout();
 		Thread.sleep(15000);
-		objWorkItemHomePage.login(users.RP_BUSINESS_ADMIN);		
+		objWorkItemHomePage.login(users.MAPPING_SUPERVISOR);		
 		
 		//Step 11:Navigate to home and need my approval tab
 		objWorkItemHomePage.searchModule(modules.HOME);
 		objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+    	Thread.sleep(2000);
+		//Step 12:Select Work Item
 
+		objWorkItemHomePage.selectWorkItemOnHomePage(WINumber);
+
+		//Step 13:Approve the WI and Navigate to Completed tab to verify APN column
+		objWorkItemHomePage.Click(objWorkItemHomePage.btnApprove);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.successAlert, 20);
+		objWorkItemHomePage.waitForElementToDisappear(objWorkItemHomePage.successAlert, 10);
+		objWorkItemHomePage.logout();
+		Thread.sleep(15000);
+		objWorkItemHomePage.login(users.RP_APPRAISER);		
+		//Step 11:Navigate to home and need my approval tab
+		objWorkItemHomePage.searchModule(modules.HOME);
+		objWorkItemHomePage.Click(objWorkItemHomePage.needsMyApprovalTab);
+		objWorkItemHomePage.Click(objWorkItemHomePage.ageDays);
+    	Thread.sleep(2000);
 		//Step 12:Select Work Item
 		objWorkItemHomePage.selectWorkItemOnHomePage(WINumber);
 
@@ -216,16 +248,24 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
 		objWorkItemHomePage.waitForElementToDisappear(objWorkItemHomePage.successAlert, 10);
 		
 		objWorkItemHomePage.openTab(objWorkItemHomePage.TAB_COMPLETED);
+    	Thread.sleep(2000);
 		WI = objWorkItemHomePage.searchWIinGrid(WINumber);
-		
+		for(int i=0;i<10;i++) {
 		if(objWorkItemHomePage.verifyElementVisible(WI)) {
 			gridData = objMappingPage.getGridDataInHashMap();
-			softAssert.assertContains(gridData.get("APN").get(gridData.get("Work item #").indexOf(updatedWINumber)), "Multiple", "SMAB-T2654: APN Number Validation for Work Item");
-	
-		}else		
+			softAssert.assertContains(gridData.get("APN").get(gridData.get("Work item #").indexOf(WINumber)), "Multiple", "SMAB-T2654: APN Number Validation for Work Item");
+	break;
+		}
+		else if(objWorkItemHomePage.getButtonWithText("Next").isDisplayed()) {
+			objWorkItemHomePage.Click(objWorkItemHomePage.getButtonWithText("Next"));
+			Thread.sleep(2000);
+		}
+		else	{	
 			softAssert.assertTrue(objWorkItemHomePage.verifyElementVisible(WI), "SMAB-T2654: Not able to find Work Item on Home Page: "+WINumber);
 		
-    
+		}
+		}
+		objWorkItemHomePage.logout();
     }
     @Test(description = "SMAB-T2657,SMAB-T2620: Verify APN field when there are more than one parcel records "
     		+ "linked to WI via Linkage and all the records are deleted except one", 
@@ -369,3 +409,4 @@ public class WorkItemAdministration_WorkItemLinkage_Test extends TestBase implem
     }
 		
 }
+

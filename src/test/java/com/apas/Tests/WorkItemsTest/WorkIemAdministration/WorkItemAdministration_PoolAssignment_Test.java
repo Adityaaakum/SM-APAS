@@ -74,14 +74,14 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
 
         //Step3: Create the pool assignment
         objPoolAssignmentPage.createPoolAssignment(user,"Staff","");
-
+        String routingAssignment=objWorkItemHomePage.getFieldValueFromAPAS("Pool Assignments Name");
         //Step4: Remove the staff
         driver.navigate().refresh();
         objPoolAssignmentPage.searchModule(modules.WORK_POOL);
         objPoolAssignmentPage.globalSearchRecords(workPool);
         objPoolAssignmentPage.openTab(objWorkItemHomePage.tabPoolAssignment);
-        String routingAssignment = objPoolAssignmentPage.getGridDataForRowString(user).get("Pool Assignments Name").get(0).split("\n")[0];
-        objWorkItemHomePage.clickCheckBoxForSelectingWI(routingAssignment);
+		objWorkItemHomePage.waitForElementToBeClickable(routingAssignment);     
+		objWorkItemHomePage.clickCheckBoxForSelectingWI(routingAssignment);
         objPoolAssignmentPage.Click(objPoolAssignmentPage.getButtonWithText(objWorkPoolPage.buttonRemoveStaff));
 
         //Step5: Validation for warning message not appearing
@@ -130,7 +130,7 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
 
         //Step5: Create the pool assignment
         objPoolAssignmentPage.createPoolAssignment(user,"Staff","");
-
+        String routingAssignment=objWorkItemHomePage.getFieldValueFromAPAS("Pool Assignments Name");
         // Step6: Create the work item
         objWorkItemHomePage.searchModule(modules.PARCELS);
         objWorkItemHomePage.globalSearchRecords(apnValue);
@@ -144,7 +144,6 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
         objWorkItemHomePage.searchModule(modules.WORK_POOL);
         objPoolAssignmentPage.globalSearchRecords(workPool);
         objPoolAssignmentPage.openTab(objWorkItemHomePage.tabPoolAssignment);
-        String routingAssignment = objPoolAssignmentPage.getGridDataForRowString(user).get("Pool Assignments Name").get(0).split("\n")[0];
         objWorkItemHomePage.clickCheckBoxForSelectingWI(routingAssignment);
         objPoolAssignmentPage.Click(objPoolAssignmentPage.getButtonWithText(objWorkPoolPage.buttonRemoveStaff));
 
@@ -173,12 +172,15 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
     @Test(description = "SMAB-T2602, SMAB-T2601, SMAB-T2599: Verify Primary Appraiser in pool assignment when neighborhood is changed in Routing assignment", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression", "WorkItemAdministration"}, alwaysRun = true)
     public void WorkItemAdministration_UpdateNeighborhood_ValidatePoolAssignment(String loginUser) throws Exception {
 
+    	String execEnv = System.getProperty("region");
         String primaryAppraiser1 = salesforceAPI.getUserName(users.APPRAISAL_SUPPORT);
         String primaryAppraiser2 = salesforceAPI.getUserName(users.EXEMPTION_SUPPORT_STAFF);
         String workPool = "SMAB6150";
         String neighborhood1 = "1SMAB6150";
         String neighborhood2 = "2SMAB6150";
-
+        String workPoolIdQuery="SELECT Id FROM Work_Pool__c WHERE Name = '"+workPool+"'";
+        String workPoolId=salesforceAPI.select(workPoolIdQuery).get("Id").get(0);
+        
         // Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
         objPoolAssignmentPage.login(loginUser);
 
@@ -242,26 +244,41 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
         //Step7: Update the neighborhood in the routing assignment and pool assignment should automatically be created
         ReportLogger.INFO("Updating the Neighborhood in Routing Assignment");
         String routingAssignment = salesforceAPI.select(routingAssignmentQuery).get("Name").get(0);
+        String routingAssignmentId = salesforceAPI.select(routingAssignmentQuery).get("Id").get(0);
         objWorkItemHomePage.searchModule(modules.ROUTING_ASSIGNMENTS);
-        objPoolAssignmentPage.globalSearchRecords(routingAssignment);
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Routing_Assignment__c/" + routingAssignmentId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
         objPoolAssignmentPage.editRecord();
         objPoolAssignmentPage.searchAndSelectOptionFromDropDown(objRoutingAssignmentPage.neighborhoodDropDown,neighborhood1);
         objPoolAssignmentPage.saveRecord();
 
         objPoolAssignmentPage.searchModule(modules.WORK_POOL);
-        objPoolAssignmentPage.globalSearchRecords(workPool);
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Work_Pool__c/" + workPoolId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
+        
         objPoolAssignmentPage.openTab(objWorkItemHomePage.tabPoolAssignment);
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.getButtonWithText("New"));
         HashMap<String, ArrayList<String>> poolAssignmentData = objPoolAssignmentPage.getGridDataInHashMap();
+        String poolAssignement= poolAssignmentData.get("Pool Assignments Name").get(0);
+        String poolAssignement1 = poolAssignement.replace("Open ", "");
+        String poolAssignementName1= poolAssignement1.replace(" Preview", "");
+        String poolAssignementIdQuery="SELECT Id FROM Pool_Assignments__c WHERE Name = '"+poolAssignementName1+"'";
+        String poolAssignementId=salesforceAPI.select(poolAssignementIdQuery).get("Id").get(0);
 
         //SCENARIO1: New Pool Assignment record is created if the pool assignment doesn't exist with the primary appraiser of the neighborhood
         ReportLogger.INFO("SCENARIO1: New Pool Assignment record is created if the pool assignment doesn't exist with the primary appraiser of the neighborhood");
         softAssert.assertEquals(poolAssignmentData.get("Pool Assignments Name").size(),"1","SMAB-T2602: Pool Assignment should be created as neighborhood is selected while in the routing assignment");
-        softAssert.assertEquals(poolAssignmentData.get("User").get(0),primaryAppraiser1,"SMAB-T2602: Primary Appraiser in the created pool assignment should be same as the primary appraiser of the updated neighborhood");
         softAssert.assertEquals(poolAssignmentData.get("Role").get(0),"Primary Appraiser","SMAB-T2602: Role should be Primary Appraiser in the created pool assignment");
+        
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Pool_Assignments__c/" + poolAssignementId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("User"),"Appraisal supportAUT","SMAB-T2602: Primary Appraiser in the created pool assignment should be same as the primary appraiser of the updated neighborhood");
 
         //Step8: Update the neighborhood, role should automatically updated as per the primary appraiser of the updated neighborhood
         objWorkItemHomePage.searchModule(modules.ROUTING_ASSIGNMENTS);
-        objPoolAssignmentPage.globalSearchRecords(routingAssignment);
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Routing_Assignment__c/" + routingAssignmentId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
+        
         objPoolAssignmentPage.editRecord();
         objPoolAssignmentPage.clearSelectionFromLookup(objRoutingAssignmentPage.neighborhoodDropDown);
         objPoolAssignmentPage.searchAndSelectOptionFromDropDown(objRoutingAssignmentPage.neighborhoodDropDown,neighborhood2);
@@ -270,18 +287,34 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
         driver.navigate().refresh();
         Thread.sleep(2000);
         objPoolAssignmentPage.searchModule(modules.WORK_POOL);
-        objPoolAssignmentPage.globalSearchRecords(workPool);
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Work_Pool__c/" + workPoolId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
+        
         objPoolAssignmentPage.openTab(objWorkItemHomePage.tabPoolAssignment);
-
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.getButtonWithText("New"));
+        HashMap<String, ArrayList<String>> poolAssignmentData1 = objPoolAssignmentPage.getGridDataInHashMap();
+        String poolAssignementNew= poolAssignmentData1.get("Pool Assignments Name").get(1);
+        String poolAssignement2 = poolAssignementNew.replace("Open ", "");
+        String poolAssignementName2= poolAssignement2.replace(" Preview", "");
+        String poolAssignementIdQueryNew="SELECT Id FROM Pool_Assignments__c WHERE Name = '"+poolAssignementName2+"'";
+        String poolAssignementId2=salesforceAPI.select(poolAssignementIdQueryNew).get("Id").get(0);
         //SCENARIO2: Existing User role is updated to "Staff" where user is not equal to the primary appraiser of the neighborhood
         ReportLogger.INFO("SCENARIO2: Existing User role is updated to \"Staff\" where user is not equal to the primary appraiser of the neighborhood");
         softAssert.assertEquals(objPoolAssignmentPage.getGridDataInHashMap().get("Pool Assignments Name").size(),"2","SMAB-T2602: New Pool Assignment should be created as neighborhood is updated in the routing assignment");
-        softAssert.assertEquals(objPoolAssignmentPage.getGridDataForRowString(primaryAppraiser1).get("Role").get(0),"Staff","SMAB-T2599: Role should be changed to Staff as neighborhood record is updated");
-        softAssert.assertEquals(objPoolAssignmentPage.getGridDataForRowString(primaryAppraiser2).get("Role").get(0),"Primary Appraiser","SMAB-T2602: Role should be Primary Appraiser in the created pool assignment");
-
+        softAssert.assertEquals(objPoolAssignmentPage.getGridDataInHashMap().get("Role").get(1),"Staff","SMAB-T2599: Role should be changed to Staff as neighborhood record is updated");
+        softAssert.assertEquals(objPoolAssignmentPage.getGridDataInHashMap().get("Role").get(0),"Primary Appraiser","SMAB-T2602: Role should be Primary Appraiser in the created pool assignment");
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Pool_Assignments__c/" + poolAssignementId2 + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("User"),"Appraisal supportAUT","SMAB-T2599: User should be changed to Appraisal supportAUT as neighborhood record is updated");
+       
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Pool_Assignments__c/" + poolAssignementId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("User"),"Appraisal supportAUT","SMAB-T2602: User should be exemption supportAUT in the created pool assignment");
         //Step9: Change the neighborhood again, current primary appraiser should be converted to staff and no new record should be created
         objWorkItemHomePage.searchModule(modules.ROUTING_ASSIGNMENTS);
-        objPoolAssignmentPage.globalSearchRecords(routingAssignment);
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Routing_Assignment__c/" + routingAssignmentId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
+        
         objPoolAssignmentPage.editRecord();
         objPoolAssignmentPage.clearSelectionFromLookup(objRoutingAssignmentPage.neighborhoodDropDown);
         objPoolAssignmentPage.searchAndSelectOptionFromDropDown(objRoutingAssignmentPage.neighborhoodDropDown,neighborhood1);
@@ -290,15 +323,22 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
         driver.navigate().refresh();
         Thread.sleep(2000);
         objPoolAssignmentPage.searchModule(modules.WORK_POOL);
-        objPoolAssignmentPage.globalSearchRecords(workPool);
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Work_Pool__c/" + workPoolId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
+        
         objPoolAssignmentPage.openTab(objWorkItemHomePage.tabPoolAssignment);
 
         //SCENARIO3: Role is updated to "Primary Appraiser" where user equals to the primary appraiser of the updated neighborhood
         ReportLogger.INFO("SCENARIO3: Role is updated to \"Primary Appraiser\" where user equals to the primary appraiser of the updated neighborhood");
         softAssert.assertEquals(objPoolAssignmentPage.getGridDataInHashMap().get("Pool Assignments Name").size(),"2","SMAB-T2601: New Pool Assignment should note be created as neighborhood is updated in the routing assignment and the primary appraiser was already existing");
-        softAssert.assertEquals(objPoolAssignmentPage.getGridDataForRowString(primaryAppraiser1).get("Role").get(0),"Primary Appraiser","SMAB-T2601: Role should be changed to Primary Appraiser as per the updated neighborhood");
-        softAssert.assertEquals(objPoolAssignmentPage.getGridDataForRowString(primaryAppraiser2).get("Role").get(0),"Staff","SMAB-T2599: Role should be changed to Staff as neighborhood record is updated");
-
+        softAssert.assertEquals(objPoolAssignmentPage.getGridDataInHashMap().get("Role").get(1),"Primary Appraiser","SMAB-T2601: Role should be changed to Primary Appraiser as per the updated neighborhood");
+        softAssert.assertEquals(objPoolAssignmentPage.getGridDataInHashMap().get("Role").get(0),"Staff","SMAB-T2599: Role should be changed to Staff as neighborhood record is updated");
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Pool_Assignments__c/" + poolAssignementId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("User"),primaryAppraiser1,"SMAB-T2601: Role should be changed to Primary Appraiser as per the updated neighborhood");
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Pool_Assignments__c/" + poolAssignementId2 + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("User"),primaryAppraiser1,"SMAB-T2599: Role should be changed to Staff as neighborhood record is updated");
         //Logout of APAS Application
         objWorkItemHomePage.logout();
     }
@@ -312,11 +352,16 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
     @Test(description = "SMAB-T2603, SMAB-T2604, SMAB-T2605: Verify primary appraisers in pool assignment when Primary Appraiser is changed in Neighborood", dataProvider = "loginRPBusinessAdmin", dataProviderClass = DataProviders.class, groups = {"Regression","WorkItemAdministration"}, alwaysRun = true)
     public void WorkItemAdministration_UpdatePrimaryAppraiser_ValidatePoolAssignment(String loginUser) throws Exception {
 
+    	String execEnv = System.getProperty("region");
         String primaryAppraiser1 = salesforceAPI.getUserName(users.APPRAISAL_SUPPORT);
         String primaryAppraiser2 = salesforceAPI.getUserName(users.EXEMPTION_SUPPORT_STAFF);
         String workPool = "SMAB6150";
         String neighborhood = "3SMAB6150";
         String neighborhoodWithDistrict = "01/3SMAB6150";
+        String neighborhoodIdQuery="SELECT Id FROM Neighborhood__c WHERE Name = '"+neighborhoodWithDistrict+"'";
+        String neighborhoodId=salesforceAPI.select(neighborhoodIdQuery).get("Id").get(0);
+        String workPoolIdQuery="SELECT Id FROM Work_Pool__c WHERE Name = '"+workPool+"'";
+        String workPoolId=salesforceAPI.select(workPoolIdQuery).get("Id").get(0);
 
         // Step1: Login to the APAS application using the credentials passed through dataprovider (RP Business Admin)
         objPoolAssignmentPage.login(loginUser);
@@ -366,8 +411,8 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
 
         //Step6: Update the primary appraiser in the neighborhood and pool assignment should automatically be created
         ReportLogger.INFO("Updating the primary appraiser in the Neighborhood");
-        objWorkItemHomePage.searchModule(modules.NEIGHBORHOODS);
-        objPoolAssignmentPage.globalSearchRecords(neighborhoodWithDistrict);
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Neighborhood__c/" + neighborhoodId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
         objPoolAssignmentPage.editRecord();
         objPoolAssignmentPage.clearSelectionFromLookup(objNeighborhoodsPage.primaryAppraiserDropDown);
         objPoolAssignmentPage.searchAndSelectOptionFromDropDown(objNeighborhoodsPage.primaryAppraiserDropDown,primaryAppraiser1);
@@ -376,19 +421,29 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
         driver.navigate().refresh();
         Thread.sleep(2000);
         objPoolAssignmentPage.searchModule(modules.WORK_POOL);
-        objPoolAssignmentPage.globalSearchRecords(workPool);
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Work_Pool__c/" + workPoolId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
         objPoolAssignmentPage.openTab(objWorkItemHomePage.tabPoolAssignment);
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.getButtonWithText("New"));
         HashMap<String, ArrayList<String>> poolAssignmentData = objPoolAssignmentPage.getGridDataInHashMap();
-
+        String poolAssignement= poolAssignmentData.get("Pool Assignments Name").get(0);
+        String poolAssignement1 = poolAssignement.replace("Open ", "");
+        String poolAssignementName1= poolAssignement1.replace(" Preview", "");
+        String poolAssignementIdQuery="SELECT Id FROM Pool_Assignments__c WHERE Name = '"+poolAssignementName1+"'";
+        String poolAssignementId=salesforceAPI.select(poolAssignementIdQuery).get("Id").get(0);
+        
         //SCENARIO1: New Pool Assignment record is created if the pool assignment doesn't exist with the primary appraiser of the neighborhood
         ReportLogger.INFO("SCENARIO1: New Pool Assignment record is created if the pool assignment doesn't exist with the primary appraiser of the neighborhood");
         softAssert.assertEquals(poolAssignmentData.get("Pool Assignments Name").size(),"1","SMAB-T2602: Pool Assignment should be created as per the updated Primary Appraiser in the neighborhood");
-        softAssert.assertEquals(poolAssignmentData.get("User").get(0),primaryAppraiser1,"SMAB-T2602: Primary Appraiser in the created pool assignment should be same as the primary appraiser of the updated neighborhood");
         softAssert.assertEquals(poolAssignmentData.get("Role").get(0),"Primary Appraiser","SMAB-T2602: Role should be Primary Appraiser in the created pool assignment");
-
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Pool_Assignments__c/" + poolAssignementId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
+        String user1=objWorkItemHomePage.getFieldValueFromAPAS("User");
+        softAssert.assertEquals(user1,primaryAppraiser1,"SMAB-T2602: Primary Appraiser in the created pool assignment should be same as the primary appraiser of the updated neighborhood");
         //Step8: Update the neighborhood, role should automatically updated as per the primary appraiser of the updated neighborhood
         objWorkItemHomePage.searchModule(modules.NEIGHBORHOODS);
-        objPoolAssignmentPage.globalSearchRecords(neighborhoodWithDistrict);
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Neighborhood__c/" + neighborhoodId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
         objPoolAssignmentPage.editRecord();
         objPoolAssignmentPage.clearSelectionFromLookup(objNeighborhoodsPage.primaryAppraiserDropDown);
         objPoolAssignmentPage.searchAndSelectOptionFromDropDown(objNeighborhoodsPage.primaryAppraiserDropDown,primaryAppraiser2);
@@ -397,18 +452,21 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
         driver.navigate().refresh();
         Thread.sleep(2000);
         objPoolAssignmentPage.searchModule(modules.WORK_POOL);
-        objPoolAssignmentPage.globalSearchRecords(workPool);
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Work_Pool__c/" + workPoolId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
         objPoolAssignmentPage.openTab(objWorkItemHomePage.tabPoolAssignment);
-
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.getButtonWithText("New"));
         //SCENARIO2: Existing User role is updated to "Staff" where user is not equal to the primary appraiser of the neighborhood
         ReportLogger.INFO("SCENARIO2: Existing User role is updated to \"Staff\" where user is not equal to the primary appraiser of the neighborhood");
         softAssert.assertEquals(objPoolAssignmentPage.getGridDataInHashMap().get("Pool Assignments Name").size(),"2","SMAB-T2602: New Pool Assignment should be created as Primary Appraiser is updated in the neighborhood");
-        softAssert.assertEquals(objPoolAssignmentPage.getGridDataForRowString(primaryAppraiser1).get("Role").get(0),"Staff","SMAB-T2599: Role should be changed to Staff as neighborhood record is updated");
-        softAssert.assertEquals(objPoolAssignmentPage.getGridDataForRowString(primaryAppraiser2).get("Role").get(0),"Primary Appraiser","SMAB-T2602: Role should be Primary Appraiser in the created pool assignment");
+        softAssert.assertEquals(objPoolAssignmentPage.getGridDataInHashMap().get("Role").get(1),"Staff","SMAB-T2599: Role should be changed to Staff as neighborhood record is updated");
+        softAssert.assertEquals(objPoolAssignmentPage.getGridDataInHashMap().get("Role").get(0),"Primary Appraiser","SMAB-T2602: Role should be Primary Appraiser in the created pool assignment");
 
         //Step9: Change the neighborhood again, current primary appraiser should be converted to staff and no new record should be created
         objWorkItemHomePage.searchModule(modules.NEIGHBORHOODS);
-        objPoolAssignmentPage.globalSearchRecords(neighborhoodWithDistrict);
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Neighborhood__c/" + neighborhoodId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
+        
         objPoolAssignmentPage.editRecord();
         objPoolAssignmentPage.clearSelectionFromLookup(objNeighborhoodsPage.primaryAppraiserDropDown);
         objPoolAssignmentPage.searchAndSelectOptionFromDropDown(objNeighborhoodsPage.primaryAppraiserDropDown,primaryAppraiser1);
@@ -417,14 +475,15 @@ public class WorkItemAdministration_PoolAssignment_Test extends TestBase {
         driver.navigate().refresh();
         Thread.sleep(2000);
         objPoolAssignmentPage.searchModule(modules.WORK_POOL);
-        objPoolAssignmentPage.globalSearchRecords(workPool);
+        driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Work_Pool__c/" + workPoolId + "/view");
+        objWorkItemHomePage.waitForElementToBeClickable(objWorkItemHomePage.editBtn);
         objPoolAssignmentPage.openTab(objWorkItemHomePage.tabPoolAssignment);
 
         //SCENARIO3: Role is updated to "Primary Appraiser" where user equals to the primary appraiser of the updated neighborhood
         ReportLogger.INFO("SCENARIO3: Role is updated to \"Primary Appraiser\" where user equals to the primary appraiser of the updated neighborhood");
         softAssert.assertEquals(objPoolAssignmentPage.getGridDataInHashMap().get("Pool Assignments Name").size(),"2","SMAB-T2601: New Pool Assignment should note be created as neighborhood is updated in the routing assignment and the primary appraiser was already existing");
-        softAssert.assertEquals(objPoolAssignmentPage.getGridDataForRowString(primaryAppraiser1).get("Role").get(0),"Primary Appraiser","SMAB-T2601: Role should be changed to Primary Appraiser as per the updated neighborhood");
-        softAssert.assertEquals(objPoolAssignmentPage.getGridDataForRowString(primaryAppraiser2).get("Role").get(0),"Staff","SMAB-T2599: Role should be changed to Staff as neighborhood record is updated");
+        softAssert.assertEquals(objPoolAssignmentPage.getGridDataInHashMap().get("Role").get(1),"Primary Appraiser","SMAB-T2601: Role should be changed to Primary Appraiser as per the updated neighborhood");
+        softAssert.assertEquals(objPoolAssignmentPage.getGridDataInHashMap().get("Role").get(0),"Staff","SMAB-T2599: Role should be changed to Staff as neighborhood record is updated");
 
         //Logout of APAS Application
         objWorkItemHomePage.logout();

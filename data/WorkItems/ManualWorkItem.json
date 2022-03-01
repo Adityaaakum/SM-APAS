@@ -65,7 +65,7 @@
     "Work Item Routing": "Give Work Item to Me"
   },
   "DOVSequencing": {
-    "Work Item Type": "Building Permit",
+    "Work Item Type": "BP",
     "Actions": "Review",
     "Audit Trail": "No",
     "Description": "DOV Sequencing Validation",
@@ -76,7 +76,7 @@
     "DOV": "11/12/2020"
   },
   "WorkItemRoutingGiveToMe": {
-    "Work Item Type": "Building Permit",
+    "Work Item Type": "BP",
     "Actions": "Review",
     "Audit Trail": "No",
     "Description": "Give Work Item to Me",
@@ -87,17 +87,16 @@
     "DOV": "11/12/2020"
   },
   "WorkItemRoutingGiveToSomeoneElse": {
-    "Work Item Type": "Building Permit",
+    "Work Item Type": "BP",
     "Actions": "Review",
     "Audit Trail": "No",
     "Description": "Give Work Item to Someone Else",
     "Reference": "Give Work Item to Someone Else",
-    "Priority": "Urgent",
     "Work Item Routing": "Give Work Item to Someone Else",
     "Work Item Owner": "exemption supportAUT"
   },
   "WorkItemRoutingToDefaultPool": {
-    "Work Item Type": "Building Permit",
+    "Work Item Type": "BP",
     "Actions": "Review",
     "Audit Trail": "No",
     "Description": "Give Work Item to Default Work Pool",
@@ -116,7 +115,7 @@
     "Event Code": "Combined Performed"
   },
   "DataToCreateWorkItemOfTypeBuildingPermitBurlingameFileUpload": {
-    "Work Item Type": "Building Permit",
+    "Work Item Type": "BP",
     "Actions": "Burlingame File Upload",
     "Reference": "Test WI",
     "Description": "Creation of work item",
@@ -124,7 +123,7 @@
     "Work Item Routing": "Give Work Item to Me"
   },
   "DataToCreateWorkItemOfTypeBuildingPermitSanBrunoFileUpload": {
-    "Work Item Type": "Building Permit",
+    "Work Item Type": "BP",
     "Actions": "San Bruno File Upload",
     "Reference": "Test WI",
     "Description": "Creation of work item",
@@ -183,7 +182,7 @@
     "Reference": "Test Roll Value Change WI",
     "Description": "Creation of Roll Value Change work item",
     "Priority": "Urgent",
-    "Work Item Routing": "Give Work Item to Default Work Pool"
+    "Work Item Routing": "Give Work Item to Me"
   },
   "DataToCreateWorkItemOfTypeCIOWithActionAPNLegalDescription": {
     "Work Item Type": "CIO",
@@ -202,8 +201,7 @@
 		"Description": "Creation of work item",
 		"Priority": "Urgent",
 		"Work Item Routing": "Give Work Item to Me"
-		
-	},
+		},
 	"DataToCreateWorkItemOfTypeRPNewConstruction": {
 		"Work Item Type": "NC",
 		"Actions": "Construction - Other",

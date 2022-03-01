@@ -62,7 +62,7 @@ public class WorkItemAdministration_WorkItemRejection_Test extends TestBase impl
     		dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, 
     		groups = {"Regression", "WorkItemAdministration","WIRejection" }, 
     		alwaysRun = true)
-    public void WorkItemAdministration_VerifyWIRejection(String loginUser) throws Exception {
+	public void WorkItemAdministration_VerifyWIRejection(String loginUser) throws Exception {
     	//Fetch Active APN
     	ArrayList<String> apns = objMappingPage.fetchActiveAPN(2);
     	String apn = apns.get(0);
@@ -104,8 +104,8 @@ public class WorkItemAdministration_WorkItemRejection_Test extends TestBase impl
 		softAssert.assertContains(expectedRejectionResonErrorMsg, actualRejectionReasonErrorMsg, 
 				"SMAB-T3271: If Rejection Reason field is set to Other, Rejection Comment is required field.");
 		
-		objApasGenericPage.selectOptionFromDropDown(objWorkItemHomePage.selRejectionReason, "Mapping - Different Ownership");		
-		objApasGenericPage.enter(objWorkItemHomePage.txtRejectionComment, "This is Rejected for Reason Selected");
+				
+		
 		
 		List<Object> actualPickListOptions = new ArrayList<Object>();				
 		actualPickListOptions = objApasGenericPage.getAllOptionFromDropDown(objWorkItemHomePage.selRejectionReason);
@@ -138,9 +138,10 @@ public class WorkItemAdministration_WorkItemRejection_Test extends TestBase impl
 				break;
 			}
 		}  		
-		
-		softAssert.assertTrue(flag, "SMAB-T3694: Verify the Rejection Reasons in the Picklist : "+ actualPickListOptions);
-		
+		String expectedPickListOption = "[--None--, Mapping - Incorrect Legal Description, Mapping - Different Ownership, Mapping - Different TRA, Mapping - Incomplete Request Form, Mapping - Missing Owner’s Signature, Mapping - Property Taxes of Subject Parcels are not Fully Paid to Date, Other, CIO - Incorrect Transfer Work & Determination, DE - Non-Market Sale]";
+		softAssert.assertEquals(expectedPickListOption,actualPickListOptions,"SMAB-T3694: Verify the Rejection Reasons in the Picklist : ");
+		objApasGenericPage.selectOptionFromDropDown(objWorkItemHomePage.selRejectionReason, "Mapping - Different Ownership");
+		objApasGenericPage.enter(objWorkItemHomePage.txtRejectionComment, "This is Rejected for Reason Selected");
 		objWorkItemHomePage.Click(objWorkItemHomePage.saveButton);
 
 		Thread.sleep(3000);
@@ -149,11 +150,9 @@ public class WorkItemAdministration_WorkItemRejection_Test extends TestBase impl
         HashMap<String, ArrayList<String>> response_1 = salesforceAPI.select(sqlQuery);        
         String expectedStatus = response_1.get("Status__c").get(0);
         
-        softAssert.assertEquals(objPage.getElementText(objWorkItemHomePage.currenWIStatusonTimeline),expectedStatus,
+        softAssert.assertEquals(objWorkItemHomePage.getFieldValueFromAPAS("Status"),expectedStatus,
         		"SMAB-T3271: Verify the WI Status is Completed on Saving the Rejected WI.");                            		
 		
 	}
 
 }
-
-

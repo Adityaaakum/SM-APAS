@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -39,7 +40,7 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 		String newExemptionName;
 		WorkItemHomePage objWIHomePage;
 		SalesforceAPI salesforceAPI;
-		
+		JavascriptExecutor javascriptexecutor;
 		
 		@BeforeMethod(alwaysRun=true)
 		public void beforeMethod() throws Exception{
@@ -59,7 +60,7 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 			rpslFileDataPath = System.getProperty("user.dir") + testdata.RPSL_ENTRY_DATA;
 			rpslData= objUtil.generateMapFromJsonFile(rpslFileDataPath, "DataToCreateRPSLEntryForValidation");
 			salesforceAPI = new SalesforceAPI();
-			
+			javascriptexecutor = (JavascriptExecutor) driver;
 		}
 		
 		@Test(description = "SMAB-T2552:DV-Retro-work item:Verify that a Disabled Veteran retrofit work item is created automatically,the user can view the Approver field is populated based on the assigned 1st Level Supervisor on the related Work Pool of the work item.", 
@@ -70,7 +71,8 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 			  
 			   Map<String, String> newExemptionData = objUtil.generateMapFromJsonFile(exemptionFilePath, "NewExemptionCreation");
 			   String currentDate=DateUtil.getCurrentDate("MM/dd/yyyy");
-				String currentRollYear=ExemptionsPage.determineRollYear(currentDate);	
+				String currentRollYear=ExemptionsPage.determineRollYear(currentDate);
+				String execEnv = System.getProperty("region");
 				//Step1: Login to the APAS application using the credentials passed through data provider (Business admin or appraisal support)
 			   ReportLogger.INFO("Step 1: Login to the Salesforce ");
 			   objApasGenericPage.login(loginUser);
@@ -105,15 +107,22 @@ public class WorkItemAdministration_1stLevelApprover_Test extends TestBase  {
 			   
 			    String WIName = getWIDetails.get("Name").get(0);
 			    String WIRequestType = getWIDetails.get("Request_Type__c").get(0);
-			   
+			    String Work_Item_Details = "Select Id from Work_Item__c where Name = '"+WIName+"' ";
+			    HashMap<String, ArrayList<String>> response_3  = salesforceAPI.select(Work_Item_Details);
+			    String WIId = response_3.get("Id").get(0);
 			   //Search the Work Item Name in the Grid 1st Column
-			   String actualWIName = objWIHomePage.searchandClickWIinGrid(WIName);			   
+			    javascriptexecutor.executeScript("window.scrollBy(0,800)");
+			    objWIHomePage.Click(objWIHomePage.ageDays);
+			    objWIHomePage.waitForElementToBeClickable(WIName);
+				Thread.sleep(2000);
+				objWIHomePage.findWorkItemInProgress(WIName);
+				driver.navigate().to("https://smcacre--"+ execEnv + ".lightning.force.com/lightning/r/Work_Item__c/" + WIId + "/view");
 			   
 			   String WorkItem_Id = objWIHomePage.getWorkItemIDFromExemptionOnWorkBench(newExemptionName);
 			   String WP_SupervisorName = objWIHomePage.getSupervisorDetailsFromWorkBench(WorkItem_Id);
 			   
 			   objPage.waitForElementToBeClickable(objWIHomePage.detailsWI);
-			   objPage.javascriptClick(objWIHomePage.detailsWI);
+			   objPage.javascriptClick(objWIHomePage.detailsTab);
 			   
 			   String Curr_Approver = objApasGenericPage.getFieldValueFromAPAS("Current Approver", "Approval & Supervisor Details");
 			   String Approver = objApasGenericPage.getFieldValueFromAPAS("Approver", "Approval & Supervisor Details");
