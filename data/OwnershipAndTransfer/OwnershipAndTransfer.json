@@ -31,6 +31,7 @@
 	
 	"DataToCreateOwnershipRecord": {
 	    "Type": "Owner",
+		"RP Account":"",
 	    "Status": "Active",
 	    "Ownership Percentage":"100",
 	    "Ownership Start Date":"7/19/1950"
@@ -47,7 +48,7 @@
 		"RP Account":"",
 	    "Status": "Active",
 	    "Ownership Percentage":"100",
-	    "Ownership Start Date":"7/1/1990"
+	    "Ownership Start Date":"7/1/1999"
 	},
 	
 	"DataToCreatePenaltyRecord": {
@@ -80,8 +81,8 @@
 	},
 
 	"dataToCreateGranteeWithMailTo":{
-		"Last Name":"David",
-		"First Name":"Jhones",
+		"Last Name":"Jhones",
+		"First Name":"David",
 		"Ownership Start Date":"7/16/2021",
 		"Owner Percentage":"100",
 		"Address":"300 Ambassador College",
@@ -101,7 +102,7 @@
 	    "Ownership Percentage":"100",
 	    "Ownership Start Date":"7/19/1999"
      },
-     
+	 
 	"dataToCreateMailToRecord":{
 		"Address": "700 NW 111TH PL",
 		"Zip code": "33172"
@@ -127,4 +128,3 @@
 	},
 	
 }
-

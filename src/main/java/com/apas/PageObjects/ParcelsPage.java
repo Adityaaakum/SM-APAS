@@ -82,6 +82,7 @@ public class ParcelsPage extends ApasGenericPage {
 	public String dateOfEventInputTextBox = "Date of Event";
 	public String dateOfValueInputTextBox = "Date of Value";
 	public String dateOfRecordingInputTextBox = "Date of Recording";
+	public String transferTaxInputTextBox = "Transfer Tax"; 
 	public String descriptionInputTextBox = "Description";
 	public String saveAndNextButton="Save and Next";
 	public String ownershipPercentageTextBox="Ownership Percentage";
@@ -559,6 +560,7 @@ public class ParcelsPage extends ApasGenericPage {
 			if(dataMap.get("Source")!=null) {selectOptionFromDropDown(sourceDropdown, dataMap.get("Source"));}
 			if(dataMap.get("Date of Event")!=null) {enter(dateOfEventInputTextBox, dataMap.get("Date of Event"));}
 			if(dataMap.get("Date of Value")!=null) {enter(dateOfValueInputTextBox, dataMap.get("Date of Value"));}
+			if(dataMap.get("Transfer Tax")!=null) {enter(transferTaxInputTextBox, dataMap.get("Transfer Tax"));}
 			enter(dateOfRecordingInputTextBox, dataMap.get("Date of Recording"));
 			enter(descriptionInputTextBox, description);
 			if(dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?")!=null) {enter(auditTrailRecordDropDownComponentsActionsModal, dataMap.get("Is this Audit Trail Record linked to any Existing Audit Trail Record?"));}
@@ -704,7 +706,8 @@ public class ParcelsPage extends ApasGenericPage {
 			selectOptionFromDropDown(isPrimaryDropdown, "Yes");
 
 			searchAndSelectOptionFromDropDown(situsSearch,
-					objSalesforceAPI.select("Select Name from Situs__c where name != null limit 1").get("Name").get(0));
+					objSalesforceAPI.select("Select Name from Situs__c where name != null and Situs_City__c='DALY CITY' limit 1").get("Name").get(0));
+			enter("PS Created /Last Updated Date","7/1/2021");
 			Click(saveButton);
 			waitForElementToBeClickable(successAlert, 25);
 			String messageOnAlert = getElementText(successAlert);
@@ -933,10 +936,10 @@ public class ParcelsPage extends ApasGenericPage {
 				objSalesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
 						"Primary_Situs__c", "");
 				objSalesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'", "TRA__c",
-						objSalesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+						objSalesforceAPI.select("Select Id from TRA__c where city__c='DALY CITY'").get("Id").get(0));
 				objSalesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
 						"Primary_Situs__c", objSalesforceAPI
-								.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id").get(0));
+								.select("Select Id from Situs__c where Situs_City__c='DALY CITY'").get("Id").get(0));
 
 			}
 		}

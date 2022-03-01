@@ -18,17 +18,16 @@
   },
   "DataToPerformBrandNewParcelMappingActionWithSitusData": {
     "Action": "Brand New Parcel",
-    "Reason code": "PM 85/25-26",
     "First non-Condo Parcel Number": "456789123",
     "Comments": "Perform Brand New Parcel mapping",
     "Situs City Description": "Daly City",
     "Situs City Code": "DC",    
     "City Name": "DALY CITY",
-    "Direction": "S",
-    "Situs Number": "60",
+    "Direction": "E",
+    "Situs Number": "602",
     "Situs Street Name": "CLIFFSIDE",
-    "Situs Type": "CT",
-    "Situs Unit Number": "50",
+    "Situs Type": "BND",
+    "Situs Unit Number": "502",
     "TRA":"12345",
     "PUC": "01-SINGLE FAMILY RES",
     "Legal Descriptions": "legal Description"
@@ -40,16 +39,17 @@
     "First non-Condo Parcel Number": "456789123",
     "Comments": "Perform Brand New Parcel mapping",
     "Situs City Description": "",
-    "Situs City Code": "AT",    
-    "City Name": "ATHERTON",
-    "Direction": "",
+    "Situs City Code": "DC",    
+    "City Name": "DALY CITY",
+    "Direction": "E",
     "Situs Number": "111",
     "Situs Street Name": "ST",
-    "Situs Type": "DR",
+    "Situs Type": "BND",
     "Situs Unit Number": "102",
     "TRA":"12345",
     "PUC": "01-SINGLE FAMILY RES",
     "Legal Descriptions": "legal Description"
   
   }
+
 }

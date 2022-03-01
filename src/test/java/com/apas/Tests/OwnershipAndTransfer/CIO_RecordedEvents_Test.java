@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
-import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -61,7 +61,8 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	ApasGenericPage apasGenericObj;
 	AppraisalActivityPage objAppraisalActivity;
 	public String assessedValueTableName = "Assessed Values for Parent Parcel";
-
+	JavascriptExecutor javascriptexecutor;
+	
 	@BeforeMethod(alwaysRun = true)
 	public void beforeMethod() throws Exception {
 		driver = null;
@@ -80,7 +81,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		driver.manage().timeouts().pageLoadTimeout(15, TimeUnit.SECONDS);
 		apasGenericObj = new ApasGenericPage(driver);
 		objAppraisalActivity= new AppraisalActivityPage(driver);
-
+		javascriptexecutor = (JavascriptExecutor) driver;
 
 	}
 	/*
@@ -295,7 +296,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * transfer on CIO transfer screen
 	 */
 
-	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308,SMAB-T3691,SMAB-T3162,SMAB-T3164,SMAB-T3165,SMAB-T3166,SMAB-T3207,SMAB-T3567,SMAB-T4319:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3427,SMAB-T3306,SMAB-T3446,SMAB-T3307,SMAB-T3308,SMAB-T3691,SMAB-T3162,SMAB-T3164,SMAB-T3165,SMAB-T3166,SMAB-T3207,SMAB-T3567,SMAB-T4319,SMAB-T7699,SMAB-T7700:Verify that User is able to perform partial transfer and able to create mail to records ", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration", "Smoke" }, enabled = true)
 	public void OwnershipAndTransfer_VerifyPartialOwnershipTransfer(String loginUser) throws Exception {
 
@@ -321,6 +322,10 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String recordedDocumentID = salesforceAPI
 				.select("SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c=1")
 				.get("Id").get(0);
+		
+		if(hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date")!=null) {
+			salesforceAPI.update("Recorded_Document__c", recordedDocumentID, "Recording_Date__c",objCioTransfer.updateDateFormat(hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date")));}
+
 
 		HashMap<String, ArrayList<String>> hashMapRecordedDocumentData = salesforceAPI.select(
 				"Select Name,PCOR_Exits__c,xAPN_Count__c,Recording_Date__c,Recorder_Doc_Type__c  from recorded_document__c where id='"
@@ -441,10 +446,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				"SMAB-T3306:Validating that user navigates to CIo transfer screenafter clicking on related action hyperlink");
 
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon, 10);
-
-		// STEP 8 - Verifying fields on Left side of transfer screen
-
-		  
+		// STEP 8 - Verifying fields on Left side of transfer screen		  
 		
 		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.ApnLabel), apnFromWIPage,
 				"SMAB-T3164: Verify that APN field has same apn value from Work Item page");
@@ -499,12 +501,12 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		 * CancelButton));
 		 */
 		//Below two validations are failed due to new functionality added ,will be fixed as a part of automation story
-		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.transferTaxLabel),
-				"$" + recorderTransferTax.substring(0, 1) + "," + recorderTransferTax.substring(1),
+		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.transferTaxLabel).replace(",", ""),
+				"$" +Math.abs( Math.round(Double.parseDouble((recorderTransferTax.substring(0, 1) + "," + recorderTransferTax.substring(1)).replace(",", "")))),
 				"SMAB-T3206:Verifying that recorder transfer tax of recorded document is transfer tax of the transfer screen");
 
 		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.valueFromDocTaxLabel),
-				"$2,375,000.00", "SMAB-T3206: Verify that DOC TAX of CIO transfer equals ( $Transfer Tax / 0.0011)");
+				"$2,375,000", "SMAB-T3206: Verify that DOC TAX of CIO transfer equals ( $Transfer Tax / 0.0011)");
 
 		softAssert.assertEquals(objCioTransfer.getFieldValueFromAPAS(objCioTransfer.cityOfSmTaxLabel),
 				"$" + recorderConvTax.substring(0, 2) + "," + recorderConvTax.substring(2),
@@ -633,6 +635,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForApproval);
 		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
+		softAssert.assertTrue(!objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow), "SMAB-T7700,SMAB-T7699:Verify that no  retain mail to modal window appears when  mail to record is generated or edited before submitting for apporval/approval");		
 		if (objCioTransfer.waitForElementToBeVisible(7,objCioTransfer.yesRadioButtonRetainMailToWindow))
 		{
 		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);
@@ -674,7 +677,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(0), ownershipDovForNewGrantee,
 				"SMAB-T3691: Validating that Ownership start date of new owner is DOV of the recorded document by default.");
 		softAssert.assertEquals(HashMapLatestOwner.get("Ownership Start Date").get(1),
-				hashMapCreateOwnershipRecordData.get("Ownership Start Date"),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"),
 				"SMAB-T3691: Validating that Ownership start date of old owner remains same as before the partial transfer");
 
 		// STEP 19-Navigating back to RAT screen and clicking on back quick action //
@@ -1580,7 +1583,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * validate all status
 	 */
 
-	@Test(description = "SMAB-T3525, SMAB-T3341, SMAB-T3881, SMAB-T3764, SMAB-T3631, SMAB-T3760:Verify that User is able to perform CIO transfer for recorded APN, validate all status and values in Audit Trail record and COS Document Summary detail", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3525, SMAB-T3341, SMAB-T3881, SMAB-T3764, SMAB-T3631, SMAB-T3760,SMAB-T7699:Verify that User is able to perform CIO transfer for recorded APN, validate all status and values in Audit Trail record and COS Document Summary detail", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void OwnershipAndTransfer_VerifyTransferActivityStatus_ReturnedAndCompleted(String loginUser) throws Exception {
 		
@@ -1681,42 +1684,30 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
 
 		// STEP 8-Creating the new grantee
-		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
+		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);		
 
-		// STEP 9-Validating present grantee
-		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
-				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
-		Thread.sleep(2000);// Allow the screen to appear completely
-		HashMap<String, ArrayList<String>> granteeHashMap = objCioTransfer.getGridDataForRowString("1");
-		String granteeForMailTo = granteeHashMap.get("Grantee/Retain Owner Name").get(0);
-
-		// STEP 10-Creating copy to mail to record
-		objCioTransfer.createCopyToMailTo(granteeForMailTo, hashMapOwnershipAndTransferCreationData);
-		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.copyToMailToButtonLabel);
-
-		// STEP 11-Validating mail to record created from copy to mail to
-		driver.navigate().to("https://smcacre--" + execEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
-				+ "" + "/related/CIO_Transfer_Mail_To__r/view");
-		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.newButton);
-
-		// STEP 12-Navigating back to RAT screen
+		// STEP 9-Navigating back to RAT screen
 		driver.navigate().to("https://smcacre--" + execEnv
 				+ ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/" + recordeAPNTransferID + "/view");
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon);		
 		objCioTransfer.Click(objCioTransfer.quickActionButtonDropdownIcon);
 		
-		// STEP 13-Clicking on submit for approval quick action button
+		// STEP 10-Clicking on submit for approval quick action button		
 		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionOptionSubmitForApproval);
-		objCioTransfer.Click(objCioTransfer.quickActionOptionSubmitForApproval);
-		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.finishButtonPopUp);
-		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(null,objCioTransfer.quickActionOptionSubmitForApproval);
 		
+		//Validating that retain mail to modal window does  appear when no mail to is generated
+		softAssert.assertTrue(objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow), "SMAB-T7700:Verify that   retain mail to modal window appears when  mail to record is not generated or edited before submitting for apporval/approval");
+		
+		//Clicking on yes radio button		
+		objCioTransfer.Click(objCioTransfer.yesRadioButtonRetainMailToWindow);		
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));		
 		String newBusinessEventATRecordId = salesforceAPI.select("SELECT Id, Name FROM Transaction_Trail__c order by Name desc limit 1").get("Id").get(0);
 		Thread.sleep(2000); // Allow the screen to appear completely
 		ReportLogger.INFO("CIO!! Transfer submitted for approval");
 		objCioTransfer.scrollToElement(objCioTransfer.CIOstatus);
 		softAssert.assertEquals(objWorkItemHomePage.getElementText(objCioTransfer.CIOstatus), "Submitted for Approval",
-				"SMAB-T3525: Validating CIO Transfer activity status on transfer activity screen after submit for approval.");
+				"SMAB-T3525,SMAB-T7699: Validating CIO Transfer activity status on transfer activity screen after submit for approval.");
 
 		// STEP 14- Get audit trail Value from transfer screen and validate the status
 		String auditTrailName = objWorkItemHomePage.getElementText(objCioTransfer.CIOAuditTrail);
@@ -4992,7 +4983,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 	 * Users: RP Appraiser, RP Supervisor 
 	 */
 	
-	@Test(description = "SMAB-T3932, SMAB-T4271, SMAB-T4196, SMAB-T7535, SMAB-T7536, SMAB-T7929,SMAB-T7630: Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile. Also When the appraisal supervisor returns an Appraisal WI, the staff will rework on the feedback provided and the new records created should overwrite the previous records in AV and Roll Entry objects", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
+	@Test(description = "SMAB-T3932, SMAB-T4271, SMAB-T4196, SMAB-T7535, SMAB-T7536, SMAB-T7629,SMAB-T7630, SMAB-T7634: Validate that System should have the ability to calculate a composite value based on the assessed values associated to a parcel and the ownership profile. Also When the appraisal supervisor returns an Appraisal WI, the staff will rework on the feedback provided and the new records created should overwrite the previous records in AV and Roll Entry objects", dataProvider = "loginRPAppraiser", dataProviderClass = DataProviders.class, groups = {
 			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
 	public void RecorderIntegration_Composite_Value_Calculation(String loginUser) throws Exception {
 		String execEnv = System.getProperty("region");
@@ -5004,30 +4995,23 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
 				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateRpOwnership");
 
-		Map<String, String> hashMapMailToData = objUtil.generateMapFromJsonFile(MailtoData, "createMailToData");
+		Map<String, String> hashMapMailToData = objUtil.generateMapFromJsonFile(MailtoData, "createMailToDataForAppraisalData");
 
 		Map<String, String> hashMapCreateAssessedValueRecord = objUtil
 				.generateMapFromJsonFile(assessedValueCreationData, "dataToCreateAssesedValueRecordCioPart");
 		// STEP 1 : Create Appraiser activity
-		objCioTransfer.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", objCioTransfer.CIO_EVENT_CODE_PART,
+		String[] arrayForWorkItemAfterCIOSupervisorApproval=	objCioTransfer.createAppraisalActivityWorkItemForRecordedCIOTransfer("Normal Enrollment", objCioTransfer.CIO_EVENT_CODE_SALE,
 						hashMapMailToData, hashMapOwnershipAndTransferGranteeCreationData,
 						hashMapCreateOwnershipRecordData, hashMapCreateAssessedValueRecord);
 		
 		// Step2: Login to the APAS application using the credentials passed through dataprovider (RP Appraiser)
 		objWorkItemHomePage.login(loginUser);
-
-		String workItemNoForAppraiser = salesforceAPI.select(
-				"Select Id ,Name from Work_Item__c where type__c='Appraiser' and sub_type__c='Appraisal Activity' order by createdDate desc")
-				.get("Name").get(0);						
+		String workItemNoForAppraiser=arrayForWorkItemAfterCIOSupervisorApproval[0];
 		objCioTransfer.globalSearchRecords(workItemNoForAppraiser);
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.detailsTab);
 		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
 		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
 		String apnNumber=objCioTransfer.getFieldValueFromAPAS("APN");
-		String getQuery ="SELECT Id FROM Parcel__c WHERE Name = '" +apnNumber+"'";
-	  	  HashMap<String, ArrayList<String>> getResponse = salesforceAPI.select(getQuery);
-	  	String apnId = getResponse.get("Id").get(0);
-	  	objCioTransfer.deleteRollEntryFromParcel(apnId);
 		
 		objWorkItemHomePage.getFieldValueFromAPAS("APN");
 		objWorkItemHomePage.waitForElementToBeInVisible("APN", 5);
@@ -5047,7 +5031,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
 		String apnOnAAS=(apasGenericObj.getFieldValueFromAPAS("APN"));
-		String DOV=(apasGenericObj.getFieldValueFromAPAS("DOV"));
 		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
 		Thread.sleep(2000);
 		
@@ -5055,52 +5038,48 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objCioTransfer.clickViewAll(assessedValueTableName);
 		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValue = objMappingPage.getGridDataInHashMap();
 		String assessedValueType = gridDataHashMapAssessedValue.get("Assessed Value Type").get(0);
-		String assessedValueEndDate = gridDataHashMapAssessedValue.get("Effective End Date").get(0);
 		String assessedValueLandValue = gridDataHashMapAssessedValue.get("Land Value").get(0);
 		String assessedValueImprovementValue = gridDataHashMapAssessedValue.get("Improvement Value").get(0);
 		
 		//Step 5: Navigating to Appraisal Activity Screen page
 		driver.navigate().to(appraisalActivityUrl);
 		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
+		String dov=apasGenericObj.getFieldValueFromAPAS("DOV");
 		objMappingPage.Click(objAppraisalActivity.appraisalActivityEditValueButton("Land Cash Value"));
 		objMappingPage.waitForElementToBeVisible(apasGenericObj.getButtonWithText("Save"));
 		
 		//Step 6: Adding Land and Improvement Values
 		apasGenericObj.enter("Land Cash Value", "200000");
 		apasGenericObj.enter("Improvement Cash Value","200000");
-		apasGenericObj.enter("DOR","7/1/1999");
 		String assessedValueStartDate= "7/1/1999";
-		apasGenericObj.enter("DOV","7/1/1999");
 		
 		apasGenericObj.Click(apasGenericObj.getButtonWithText("Save"));
-		Thread.sleep(2000);
-		//Step 7: Going to Assessed Value view all page and verifying the chages
+	Thread.sleep(2000);
+		//Step 7: Going to Assessed Value view all page and verifying the changes
 		objAppraisalActivity.Click(objAppraisalActivity.assessedValueTableView);
 		Thread.sleep(2000);
 		objCioTransfer.clickViewAll("Assessed Values for Parent Parcel");
 		HashMap<String, ArrayList<String>> gridDataHashMapAssessedValueNew = objMappingPage.getGridDataInHashMap();
-		String assessedValueTypeFirst = gridDataHashMapAssessedValueNew.get("Assessed Value Type").get(0);
-		String assessedValueStartDateFirst = gridDataHashMapAssessedValueNew.get("Effective Start Date").get(0);
-		
-		String assessedValueLandValueFirst= gridDataHashMapAssessedValueNew.get("Land Value").get(0);
-		String assessedValueImprovementValueFirst = gridDataHashMapAssessedValueNew.get("Improvement Value").get(0);
-		String assessedValueTypeSecond = gridDataHashMapAssessedValueNew.get("Assessed Value Type").get(1);
-		String assessedValueStartDateSecond = gridDataHashMapAssessedValueNew.get("Effective Start Date").get(1);
-		String assessedValueLandValueSecond= gridDataHashMapAssessedValueNew.get("Land Value").get(1);
-		String assessedValueImprovementValueSecond = gridDataHashMapAssessedValueNew.get("Improvement Value").get(1);
-		String assessedValueEndDateFirst = gridDataHashMapAssessedValue.get("Effective End Date").get(0);
-		String assessedValueEndDateSecond = gridDataHashMapAssessedValueNew.get("Effective End Date").get(1);
-		softAssert.assertEquals(assessedValueTypeFirst,assessedValueType, "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
-		softAssert.assertEquals(assessedValueStartDateFirst,assessedValueStartDate, "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
-		softAssert.assertEquals(assessedValueLandValueFirst,assessedValueLandValue, "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
-		softAssert.assertEquals(assessedValueImprovementValueFirst,assessedValueImprovementValue, "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
-		softAssert.assertEquals(assessedValueEndDate,assessedValueEndDateFirst, "SMAB-T3932, SMAB-T4271:Verify That Both End Date Should Be empty.");
-	
-		softAssert.assertEquals(assessedValueTypeSecond,assessedValueType, "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
-		softAssert.assertEquals(assessedValueStartDateSecond,assessedValueStartDate, "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
-		softAssert.assertEquals(assessedValueLandValueSecond,"200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
-		softAssert.assertEquals(assessedValueImprovementValueSecond,"200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
-		softAssert.assertEquals(assessedValueEndDateSecond,assessedValueEndDateFirst, "SMAB-T3932, SMAB-T4271:Verify That Both End Date Should Be Empty.");
+		// Getting the row index for validation
+				for (int i = 0; i < gridDataHashMapAssessedValueNew.get("Effective Start Date").size(); i++) {
+					String startDate=gridDataHashMapAssessedValueNew.get("Effective Start Date").get(i);
+					if(startDate.equals(dov)) {
+						softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Assessed Value Type").get(i),assessedValueType, "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
+						softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Effective Start Date").get(i),dov, "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
+						softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Land Value").get(i),"200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+						softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Improvement Value").get(i),"200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+						
+						
+					}
+					else {
+						softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Assessed Value Type").get(i),assessedValueType, "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
+						softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Effective Start Date").get(i),assessedValueStartDate, "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
+						softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Land Value").get(i),assessedValueLandValue, "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
+						softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Improvement Value").get(i),assessedValueImprovementValue, "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
+						softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Status").get(i),"Retired", "SMAB-T3932, SMAB-T4271:Verify That Status Should Be Retired.");
+						softAssert.assertEquals(gridDataHashMapAssessedValueNew.get("Effective End Date").get(i),dov, "SMAB-T3932, SMAB-T4271:Verify That End Date Should Be equal to the start date of another AV record.");
+					}
+				}
 	
 		String queryAPN = "select Id from Parcel__c where Name='"+apnOnAAS+"'";
 		HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -5111,90 +5090,92 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String rollEntryUrl = driver.getCurrentUrl();
 		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.parcelsLink);
 		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryNew = objMappingPage.getGridDataInHashMap();
-		
-		
-		String rollValueTypeFirst = gridDataHashMapRollEntryNew.get("Type").get(0);
-		String rollValueYearFirst = gridDataHashMapRollEntryNew.get("Roll Year - Seq#").get(0);
-		String rollValueLandValueFirst= gridDataHashMapRollEntryNew.get("Land Assessed Value").get(0);
-		String rollValueImprovementValueFirst = gridDataHashMapRollEntryNew.get("Improvement Assessed Value").get(0);
-		String rollValueTypeSecond = gridDataHashMapRollEntryNew.get("Type").get(1);
-		String rollValueYearSecond = gridDataHashMapRollEntryNew.get("Roll Year - Seq#").get(1);
-		String rollValueLandValueSecond= gridDataHashMapRollEntryNew.get("Land Assessed Value").get(1);
-		String rollValueImprovementValueSecond = gridDataHashMapRollEntryNew.get("Improvement Assessed Value").get(1);
-		
-
-		softAssert.assertEquals(rollValueTypeFirst,"Annual", "SMAB-T3932, SMAB-T4271:Verify That Both Roll Value Type Should Be Same.");
-		softAssert.assertEquals(rollValueYearFirst,"2000 - 1", "SMAB-T3932, SMAB-T4271:Verify That year Should Be Same.");
-		softAssert.assertEquals(rollValueLandValueFirst,"$200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
-		softAssert.assertEquals(rollValueImprovementValueFirst,"$200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
-	
-		softAssert.assertEquals(rollValueTypeSecond,"Supplemental", "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
-		softAssert.assertEquals(rollValueYearSecond,"1999 - 2", "SMAB-T3932, SMAB-T4271:Verify That Both Start Date Should Be Same.");
-		softAssert.assertEquals(rollValueLandValueSecond,"$200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
-		softAssert.assertEquals(rollValueImprovementValueSecond,"$200,000", "SMAB-T3932, SMAB-T4271:Verify That Both Improvement Value Should Be Same.");
-
-		String annualRollEntryRecordName;
-		for (int i = 1; i < gridDataHashMapRollEntryNew.get("Type").size(); i++) {
-			if(gridDataHashMapRollEntryNew.get("Type").get(i).equalsIgnoreCase("Annual")) {
-				annualRollEntryRecordName=gridDataHashMapRollEntryNew.get("Roll Entry Name").get(i);
-			 String query = "SELECT Id FROM Roll_Entry__c where Name='"+annualRollEntryRecordName+"'";
-				HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
-				String rollName = response.get("Id").get(0);
-				driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Roll_Entry__c/"+rollName+"/view");
-				objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
-				break;
-			}	
+		for (int i = 0; i < gridDataHashMapRollEntryNew.get("Type").size(); i++) {
+			String type=gridDataHashMapRollEntryNew.get("Type").get(i);
+			String startDateDov= gridDataHashMapRollEntryNew.get("DOV").get(i);
+			String[] parts = startDateDov.split("/");
+			String monthDov = parts[0];
+			int numberMonth = Integer.parseInt(monthDov);
+			if(type.equals("Annual")) {
+				if(numberMonth<6) {
+		softAssert.assertEquals(gridDataHashMapRollEntryNew.get("Type").get(i),"Annual", "SMAB-T3932, SMAB-T4271:Verify That Both Roll Value Type Should Be Same.");
+		softAssert.assertEquals(gridDataHashMapRollEntryNew.get("Land Value").get(i),"$204,000", "SMAB-T3932, SMAB-T4271, SMAB-T7634:Verify That Both Land Value Should Be Same.");
+		softAssert.assertEquals(gridDataHashMapRollEntryNew.get("Improvement Value").get(i),"$204,000", "SMAB-T3932, SMAB-T4271, SMAB-T7634:Verify That Both Improvement Value Should Be Same.");	
+			}
+			else  {
+				softAssert.assertEquals(gridDataHashMapRollEntryNew.get("Type").get(i),"Annual", "SMAB-T3932, SMAB-T4271:Verify That Both Roll Value Type Should Be Same.");
+				softAssert.assertEquals(gridDataHashMapRollEntryNew.get("Land Value").get(i),"$200,000", "SMAB-T3932, SMAB-T4271, SMAB-T7634:Verify That Both Land Value Should Be Same.");
+				softAssert.assertEquals(gridDataHashMapRollEntryNew.get("Improvement Value").get(i),"$200,000", "SMAB-T3932, SMAB-T4271, SMAB-T7634:Verify That Both Improvement Value Should Be Same.");	
+			}
+			}
+			else {
+		softAssert.assertEquals(gridDataHashMapRollEntryNew.get("Type").get(i),"Supplemental", "SMAB-T3932, SMAB-T4271:Verify That Both Assessed Value Type Should Be Same.");
+		softAssert.assertEquals(gridDataHashMapRollEntryNew.get("Land Value").get(i),"$200,000", "SMAB-T3932, SMAB-T4271, SMAB-T7634:Verify That Both Land Value Should Be Same.");
+		softAssert.assertEquals(gridDataHashMapRollEntryNew.get("Improvement Value").get(i),"$200,000", "SMAB-T3932, SMAB-T4271, SMAB-T7634:Verify That Both Improvement Value Should Be Same.");
+			}
 		}
-
-		String baseYear= objCioTransfer.getFieldValueFromAPAS("Base Years");
-		String appraiserActivity = objCioTransfer.getFieldValueFromAPAS("Appraiser Activity");
-		String assessmentValue = objCioTransfer.getFieldValueFromAPAS("Assessment Year");
+		for (int a = 0; a < gridDataHashMapRollEntryNew.get("Type").size(); a++) {
+			String type=gridDataHashMapRollEntryNew.get("Type").get(a);
+			if(type.equals("Annual")) {
+				String annualRollEntryRecordName=gridDataHashMapRollEntryNew.get("Roll Entry Name").get(a);
+				 String queryForRollEntry = "SELECT Id FROM Roll_Entry__c where Name='"+annualRollEntryRecordName+"'";
+					HashMap<String, ArrayList<String>> responseForRollEntry = salesforceAPI.select(queryForRollEntry);
+					String rollEntryName = responseForRollEntry.get("Id").get(0);
+					driver.navigate().to("https://smcacre--"+execEnv+".lightning.force.com/lightning/r/Roll_Entry__c/"+rollEntryName+"/view");
+					Thread.sleep(2000);
+						
+			}
+		}
+		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText(objCioTransfer.Edit));
+		
+		
 		String apnValue = objCioTransfer.getFieldValueFromAPAS("APN");
 		String businessArea = objCioTransfer.getFieldValueFromAPAS("Business Area");
 		String rollYearSettings = objCioTransfer.getFieldValueFromAPAS("Roll Year Settings");
 		String assessementYear = objCioTransfer.getFieldValueFromAPAS("Assessment Year");
+		String baseYear= objCioTransfer.getFieldValueFromAPAS("Base Years");
+		javascriptexecutor.executeScript("window.scrollBy(0,800)");
 		String pucValue = objCioTransfer.getFieldValueFromAPAS("Property Use Code");
 		String dovValue = objCioTransfer.getFieldValueFromAPAS("DOV");
 		String dorValue=objCioTransfer.getFieldValueFromAPAS("DOR");
-		String eventId = objCioTransfer.getFieldValueFromAPAS("Event ID");
+		String event = objCioTransfer.getFieldValueFromAPAS("Event");
 		String lastTransection = objCioTransfer.getFieldValueFromAPAS("Last Transaction");
 		String rollType = objCioTransfer.getFieldValueFromAPAS("Roll Type");
 		String cpiFactor = objCioTransfer.getFieldValueFromAPAS("CPI Factor");
 		String ownerName = objCioTransfer.getFieldValueFromAPAS("Owner Name 1");
-		String situsStreetName = objCioTransfer.getFieldValueFromAPAS("Situs Street Name");
+		String situsAddress = objCioTransfer.getFieldValueFromAPAS("Situs Address");
+		String legalDescription = objCioTransfer.getFieldValueFromAPAS("Legal Description(Short)");
 		
+		softAssert.assertTrue(!legalDescription.isEmpty(),
+	   			"SMAB-T7629,SMAB-T7630: Validate that Legal Description(Short) field is not empty");
 		softAssert.assertTrue(!baseYear.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that Base Year field is not empty");
-		softAssert.assertTrue(!appraiserActivity.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that Appraiser Activity field is not empty");
-		softAssert.assertTrue(!assessmentValue.isEmpty(),
-	   			"SMAB-T7929, SMAB-T7630: Validate that Assessment Year field is not empty");
+	   			"SMAB-T7629,SMAB-T7630: Validate that Base Year field is not empty");
 		softAssert.assertTrue(!apnValue.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that APN field is not empty");
+	   			"SMAB-T7629,SMAB-T7630: Validate that APN field is not empty");
 		softAssert.assertTrue(!businessArea.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that Bussiness Area field is not empty");
+	   			"SMAB-T7629,SMAB-T7630: Validate that Bussiness Area field is not empty");
 		softAssert.assertTrue(!rollYearSettings.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that Roll Year Settings field is not empty");
+	   			"SMAB-T7629,SMAB-T7630: Validate that Roll Year Settings field is not empty");
 		softAssert.assertTrue(!assessementYear.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that Assessement Year field is not empty");
+	   			"SMAB-T7629,SMAB-T7630: Validate that Assessement Year field is not empty");
 		softAssert.assertTrue(!pucValue.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that PUC field is not empty");
+	   			"SMAB-T7629,SMAB-T7630: Validate that PUC field is not empty");
 		softAssert.assertTrue(!dovValue.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that DOV field is not empty");
-		softAssert.assertTrue(!eventId.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that Event ID field is not empty");
+	   			"SMAB-T7629,SMAB-T7630: Validate that DOV field is not empty");
+		softAssert.assertTrue(!event.isEmpty(),
+	   			"SMAB-T7629,SMAB-T7630: Validate that Event ID field is not empty");
 		softAssert.assertTrue(!dorValue.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that DOR field is not empty");
+	   			"SMAB-T7629,SMAB-T7630: Validate that DOR field is not empty");
 		softAssert.assertTrue(!lastTransection.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that Last Transection field is not empty");
+	   			"SMAB-T7629,SMAB-T7630: Validate that Last Transection field is not empty");
 		softAssert.assertTrue(!cpiFactor.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that CPI Factor field is not empty");
+	   			"SMAB-T7629,SMAB-T7630: Validate that CPI Factor field is not empty");
 		softAssert.assertTrue(!ownerName.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that Owner Name field is not empty");
-		softAssert.assertTrue(!situsStreetName.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that Situs Street Name field is not empty");
+	   			"SMAB-T7629,SMAB-T7630: Validate that Owner Name field is not empty");
+		softAssert.assertTrue(!situsAddress.isEmpty(),
+	   			"SMAB-T7629,SMAB-T7630: Validate that Situs Street Name field is not empty");
 		softAssert.assertTrue(!rollType.isEmpty(),
-	   			"SMAB-T7929,SMAB-T7630: Validate that Roll Type field is not empty");
+	   			"SMAB-T7629,SMAB-T7630: Validate that Roll Type field is not empty");
 
 		//Step 9: Navigating to Appraisal Activity screen and submitting for approval to supervisor
 		driver.navigate().to(appraisalActivityUrl);
@@ -5230,9 +5211,9 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.parcelsLink);
 		HashMap<String, ArrayList<String>> gridDataHashMapRollEntryfinal = objMappingPage.getGridDataInHashMap();		
 		String rollEntryRecordName;
-		for (int i = 1; i < gridDataHashMapRollEntryfinal.get("Type").size(); i++) {
-			if(gridDataHashMapRollEntryfinal.get("Type").get(i).equalsIgnoreCase("Supplemental")) {
-			 rollEntryRecordName=gridDataHashMapRollEntryfinal.get("Roll Entry Name").get(i);
+		for (int j = 0; j < gridDataHashMapRollEntryfinal.get("Type").size(); j++) {
+			if(gridDataHashMapRollEntryfinal.get("Type").get(j).equalsIgnoreCase("Supplemental")) {
+			 rollEntryRecordName=gridDataHashMapRollEntryfinal.get("Roll Entry Name").get(j);
 			 String query = "SELECT Id FROM Roll_Entry__c where Name='"+rollEntryRecordName+"'";
 				HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
 				String rollName = response.get("Id").get(0);
@@ -5244,7 +5225,6 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 
 		String supplementalUrl = driver.getCurrentUrl();
 
-		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
 		objMappingPage.Click(objAppraisalActivity.getButtonWithText("Edit"));
 		objParcelsPage.waitForElementToBeClickable(objParcelsPage.SaveButton);
 	
@@ -5253,7 +5233,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		String dovDate=objParcelsPage.getFieldValueFromAPAS("DOV");
 		objParcelsPage.enter(objAppraisalActivity.rollEntryNoticeDate, dovDate);
 		objMappingPage.Click(objAppraisalActivity.getButtonWithText("Save"));
-		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
+		Thread.sleep(2000);
 		String statusValue = objParcelsPage.getFieldValueFromAPAS("Status");
 		softAssert.assertEquals(statusValue,"On Hold/Wait", "SMAB-T3932, SMAB-T4271:Verify That Both Land Value Should Be Same.");
 		driver.navigate().to(appraisalActivityUrl);
@@ -5292,44 +5272,13 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		
 		//Step 16; Navigating to supplemental record to check the status
 		driver.navigate().to(supplementalUrl);
-		driver.navigate().refresh();
 		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
 		String statusValueReleased = objParcelsPage.getFieldValueFromAPAS("Status");
 		softAssert.assertEquals(statusValueReleased,"Released to Controller", "SMAB-T4196, SMAB-T7535, SMAB-T7536:Verify That status Should Be Ready for Early Release.");
 		ReportLogger.INFO("After Batch Run status got changed to Released to Controller.");
-		//Step 17: Navigating to appraisal activity screen to submit record for approval
-		driver.navigate().to(appraisalActivityUrl);
-		objMappingPage.waitForElementToBeClickable(apasGenericObj.getFieldValueFromAPAS("APN"));
-
-		objCioTransfer.clickQuickActionButtonOnTransferActivity(null, objCioTransfer.quickActionOptionSubmitForApproval);
-
-		ReportLogger.INFO("CIO!! Transfer submitted for approval");
-		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.finishButton);
-		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
-
-		objCioTransfer.logout();
-		Thread.sleep(5000);
-
-		// Step 18: Login from RP Supervisor to approve the WI
-		objWorkItemHomePage.login(RP_PRINCIPAL);
-		driver.navigate().to(appraisalActivityUrl);
-
-		objCioTransfer.waitForElementToBeClickable(objAppraisalActivity.quickActionOptionApprove);
-		objCioTransfer.Click(objAppraisalActivity.quickActionOptionApprove);
-		objCioTransfer.waitForElementToBeVisible(6, objCioTransfer.finishButtonPopUp);
-		objCioTransfer.Click(objCioTransfer.finishButtonPopUp);
-
-		Thread.sleep(2000);
-		// Allow the screen to appear completely
-		ReportLogger.INFO("Appraisal Activity!!  Approved");
 		
-		driver.navigate().to(supplementalUrl);
-		objMappingPage.waitForElementToBeClickable(objAppraisalActivity.getButtonWithText("Edit"));
-		String statusValueApproved = objParcelsPage.getFieldValueFromAPAS("Status");
-		softAssert.assertEquals(statusValueApproved,"Approved", "SMAB-T4196, SMAB-T7535, SMAB-T7536:Verify That status Should Be Ready for Early Release.");
-
 		objCioTransfer.logout();
-	}
+	}	
 	
 	/*
 	 * Verify the Recorded Document column in COS Doc Summary has a linked URL , navigating to the recorded document record
@@ -5368,10 +5317,17 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				+ "/view");
 		
 		// Step 2: User clicks on "COS Document Summary" button
-		objParcelsPage.waitForElementToBeClickable(objParcelsPage.cosDocumentSummaryText,25);
-		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
+		try{
+			objParcelsPage.waitForElementToBeClickable(objParcelsPage.cosDocumentSummaryText,25);
+		
+		objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));}
+		catch (Exception e) {
+			objParcelsPage.Click(objParcelsPage.locateElement("//ul[@class='slds-button-group-list']/li[contains(@class,'slds-dropdown-trigger')]//button", 10));
+			objParcelsPage.Click(objParcelsPage.getButtonWithText(objParcelsPage.cosDocumentSummaryText));
+		}
 		
 		// Step 3: User clicks on the recorded document
+		objParcelsPage.waitForElementToBeClickable(recordedDocumentName,10);
 		objParcelsPage.Click(objParcelsPage.getButtonWithText(recordedDocumentName));
 		String parentWindow = driver.getWindowHandle();
 		objParcelsPage.switchToNewWindow(parentWindow);
@@ -5471,5 +5427,216 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 		objWorkItemHomePage.logout();		
 		
 	}
+	/*
+	 * Method to verify the retained owner through calculate ownership quick action button should retain only DOV of the active owner and retain mail-to functionality is working for every transfer without mail to creation.
+	 */
 	
+	@Test(description = "SMAB-T7698 ,SMAB-T7700,SMAB-T7699: To Verify CIO Calculate Ownership on Retained ownership functionality", dataProvider = "loginCIOStaff", dataProviderClass = DataProviders.class, groups = {
+			"Regression", "ChangeInOwnershipManagement", "RecorderIntegration" })
+	public void CIO_ValidateCalculateOwnershipForRetainedOwnership(String loginUser) throws Exception {	
+		 
+		String excEnv = System.getProperty("region");
+		JSONObject jsonForAppraiserActivity = objCioTransfer.getJsonObject();
+
+		String OwnershipAndTransferCreationData = testdata.OWNERSHIP_AND_TRANSFER_CREATION_DATA;
+		Map<String, String> hashMapOwnershipAndTransferCreationData = objUtil.generateMapFromJsonFile(
+				OwnershipAndTransferCreationData, "dataToCreateMailToRecordsWithIncompleteData");
+
+		Map<String, String> hashMapOwnershipAndTransferGranteeCreationData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "dataToCreateGranteeWithCompleteOwnership");
+		Map<String, String> hashMapCreateOwnershipRecordData = objUtil
+				.generateMapFromJsonFile(OwnershipAndTransferCreationData, "DataToCreateOwnershipRecordForP19");
+
+		objCioTransfer.login(SYSTEM_ADMIN);
+		
+		objCioTransfer.searchModule(EFILE_INTAKE_VIEW);
+		String recordedDocumentID = salesforceAPI.select(
+				"SELECT id from recorded_document__c where recorder_doc_type__c='DE' and xAPN_count__c in (0,1,2,3,4)")
+				.get("Id").get(0);
+		objCioTransfer.deleteRecordedApnFromRecordedDocument(recordedDocumentID);		
+		objCioTransfer.addRecordedApn(recordedDocumentID, 1);
+		if (hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date") != null) {
+			salesforceAPI.update("Recorded_Document__c", recordedDocumentID, "Recording_Date__c", objCioTransfer
+					.updateDateFormat(hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date")));
+		}
+
+		objCioTransfer.generateRecorderJobWorkItems(recordedDocumentID);
+
+		// Query to fetch WI
+		String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO' order by createdDate desc limit 1";
+		String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
+		String query = "Select Id from Work_Item__c where Name = '"+workItemNo+"'";
+		HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);
+		driver.navigate().to("https://smcacre--"+excEnv+
+		".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");
+		objCioTransfer.waitForElementToBeInVisible(objCioTransfer.ApnLabel, 5);
+		String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+
+		// Deleting existing ownership from parcel
+		objCioTransfer.deleteOwnershipFromParcel(
+				salesforceAPI.select("Select Id from parcel__c where name='" + apnFromWIPage + "'").get("Id").get(0));
+
+		// Adding owner after deleting for the recorded APN
+		String acesseName = objMappingPage.getOwnerForMappingAction();
+		driver.navigate()
+				.to("https://smcacre--"
+						+ excEnv + ".lightning.force.com/lightning/r/Parcel__c/" + salesforceAPI
+								.select("Select Id from parcel__C where name='" + apnFromWIPage + "'").get("Id").get(0)
+						+ "/related/Property_Ownerships__r/view");
+		objParcelsPage.createOwnershipRecord(acesseName, hashMapCreateOwnershipRecordData);
+		String ownershipId = driver.getCurrentUrl().split("/")[6];
+
+		String dateOfEvent = salesforceAPI
+				.select("Select Ownership_Start_Date__c from Property_Ownership__c where id = '" + ownershipId + "'")
+				.get("Ownership_Start_Date__c").get(0);
+		jsonForAppraiserActivity.put("DOR__c", dateOfEvent);
+		jsonForAppraiserActivity.put("DOV_Date__c", dateOfEvent);
+
+		salesforceAPI.update("Property_Ownership__c", ownershipId, jsonForAppraiserActivity);
+
+		objMappingPage.logout();
+        Thread.sleep(5000);
+		objMappingPage.login(CIO_STAFF);
+		objMappingPage.waitForElementToBeClickable(objMappingPage.appLauncher, 10);
+
+		// Selecting E-FILE intake as CIO works best with E-FILE AND APAS and there are
+		// some issues with navigation on APAS
+		objCioTransfer.searchModule(modules.EFILE_INTAKE);
+		driver.navigate().to("https://smcacre--"+excEnv+
+				".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");		
+		String queryRecordedAPNTransfer = "SELECT Navigation_Url__c FROM Work_Item__c where name='" + workItemNo + "'";
+		HashMap<String, ArrayList<String>> navigationUrL = salesforceAPI.select(queryRecordedAPNTransfer);
+
+		// Finding the recorded apn transfer id
+		String recordeAPNTransferID = navigationUrL.get("Navigation_Url__c").get(0).split("/")[3];
+		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
+		objCioTransfer.waitForElementToBeClickable(10, objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.clickOnTimelineAndMarkComplete(objWorkItemHomePage.inProgressOptionInTimeline);
+		objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+		objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel, 10);
+		objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+		String parentWindow = driver.getWindowHandle();
+		objWorkItemHomePage.switchToNewWindow(parentWindow);
+		objCioTransfer.waitForElementToBeClickable(objCioTransfer.quickActionButtonDropdownIcon, 10);
+		ReportLogger.INFO("Add the Transfer Code");
+		objCioTransfer.editRecordedApnField(objCioTransfer.transferCodeLabel);
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.transferCodeLabel);
+		objCioTransfer.searchAndSelectOptionFromDropDown(objCioTransfer.transferCodeLabel,
+				objCioTransfer.CIO_EVENT_CODE_PART);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.saveButton));
+
+		// Performing Calculate Ownership
+		objCioTransfer.waitForElementToBeClickable(10,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(5, objCioTransfer.nextButton);
+		objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "100");
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		objCioTransfer.waitForElementToBeClickable(10,
+				objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
+		Thread.sleep(2000);
+		
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
+				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.newButton);
+		HashMap<String, ArrayList<String>> granteeHashMap = objCioTransfer.getGridDataForRowString("1");
+
+		//// Validating the dov,dor ,and Ownership start date of retained owner
+		softAssert.assertEquals(granteeHashMap.get("DOR").get(0),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"),
+				"SMAB-T7698: Verify that DOR of new retained owner is sames as DOR from recoder feed");
+		softAssert.assertEquals(granteeHashMap.get("DOV").get(0),
+				hashMapCreateOwnershipRecordData.get("Ownership Start Date"),
+				"SMAB-T7698: Verify that DOV of new retained owner is sames as DOV from Older owner");
+		softAssert.assertEquals(granteeHashMap.get("Ownership Start Date").get(0),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"),
+				"SMAB-T7698:Verify that ownership start date is not getting retained ");
+
+		// Repeating the same process with partial retained ownership from Calculate
+		// Ownership
+		objCioTransfer.deleteRecordedAPNTransferGranteesRecords(recordeAPNTransferID);
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+				+ recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeClickable(20,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.nextButton);
+		objCioTransfer.enter(objCioTransfer.calculateOwnershipRetainedFeld, "50");
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/" + recordeAPNTransferID
+				+ "/related/CIO_Transfer_Grantee_New_Ownership__r/view");
+		objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.newButton);
+		granteeHashMap = objCioTransfer.getGridDataForRowString("1");
+
+		// Validating the dov,dor ,and Ownership start date of retained owner
+		softAssert.assertEquals(granteeHashMap.get("DOR").get(0),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"),
+				"SMAB-T7698: Verify that DOR of new retained owner is sames as DOR from recoder feed");
+		softAssert.assertEquals(granteeHashMap.get("DOV").get(0),
+				hashMapCreateOwnershipRecordData.get("Ownership Start Date"),
+				"SMAB-T7698: Verify that DOV of new retained owner is sames as DOV from Older owner");
+		softAssert.assertEquals(granteeHashMap.get("Ownership Start Date").get(0),
+				hashMapOwnershipAndTransferGranteeCreationData.get("Ownership Start Date"),
+				"SMAB-T7698:Verify that start date is same as DOV from recorder feed");
+
+		// Creating grantee to make sum 100 %
+		hashMapOwnershipAndTransferGranteeCreationData.put("Owner Percentage", "50");
+		hashMapOwnershipAndTransferGranteeCreationData.put("Ownership Start Date", "");
+		objCioTransfer.createNewGranteeRecords(recordeAPNTransferID, hashMapOwnershipAndTransferGranteeCreationData);
+
+		// Validating that retain mail to modal screen appears at the time of submit for
+		// approval
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+				+ recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeClickable(20,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(null,
+				objCioTransfer.quickActionOptionSubmitForApproval);
+		objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow);
+
+		softAssert.assertTrue(
+				objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow),
+				"SMAB-T7700:Verify that retain mail to modal window appears when no mail to record is generated or edited before submitting for apporval");
+
+		objCioTransfer.Click(objCioTransfer.noRadioButtonRetainMailToWindow);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.nextButton));
+		objCioTransfer.waitForElementToBeClickable(10,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.createCopyToMailTo(granteeHashMap.get("Grantee/Retain Owner Name").get(0),
+				hashMapOwnershipAndTransferCreationData);
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+				+ recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeClickable(15,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(null,
+				objCioTransfer.quickActionOptionSubmitForApproval);
+
+		// Validating that no retain modal window appears after CIO mail to is created
+		// or edited
+		softAssert.assertTrue(
+				!objCioTransfer.waitForElementToBeVisible(10, objCioTransfer.yesRadioButtonRetainMailToWindow),
+				"SMAB-T7700:Verify that no retain mail to modal window appears when  mail to record is generated or edited before submitting for apporval");
+		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.finishButton);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
+		objCioTransfer.logout();
+		Thread.sleep(5000);
+		// login with cio supervisor to check on approval retain mail to modal window
+		// doesnot appear
+		objCioTransfer.login(users.CIO_SUPERVISOR);
+
+		driver.navigate().to("https://smcacre--" + excEnv + ".lightning.force.com/lightning/r/Recorded_APN_Transfer__c/"
+				+ recordeAPNTransferID + "/view");
+		objCioTransfer.waitForElementToBeClickable(10,
+				objCioTransfer.getButtonWithText(objCioTransfer.calculateOwnershipButtonLabel));
+		objCioTransfer.clickQuickActionButtonOnTransferActivity(null, objCioTransfer.quickActionOptionApprove);		
+		softAssert.assertTrue(
+				!objCioTransfer.waitForElementToBeVisible(7, objCioTransfer.yesRadioButtonRetainMailToWindow),
+				"SMAB-T7700:Verify that no  retain mail to modal window appears when  mail to record is generated or edited before submitting for apporval/approval");
+		objCioTransfer.waitForElementToBeClickable(10, objCioTransfer.finishButton);
+		objCioTransfer.Click(objCioTransfer.getButtonWithText(objCioTransfer.finishButton));
+		Thread.sleep(2000);
+		objCioTransfer.logout();
+
+	}
 }
