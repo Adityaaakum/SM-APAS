@@ -1,4 +1,4 @@
-package com.apas.Tests.WorkItemsTest.WorkItemWorkFlow;
+package com.apas.Tests.BPPTrends;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import com.apas.Utils.Util;
 import com.apas.config.modules;
 import com.apas.config.testdata;
 
-public class WorkItemWorkflow_BPPTrends_Test extends TestBase {
+public class BPPTrends_WorkItemWorkflow_Test extends TestBase {
 
     RemoteWebDriver driver;
     Page objPage;
