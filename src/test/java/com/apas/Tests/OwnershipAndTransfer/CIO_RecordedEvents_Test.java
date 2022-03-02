@@ -1299,6 +1299,7 @@ public class CIO_RecordedEvents_Test extends TestBase implements testdata, modul
 				.getElementText(objWorkItemHomePage.firstRelatedBuisnessEvent);
 		
 		objMappingPage.Click(objWorkItemHomePage.firstRelatedBuisnessEvent);
+		objWorkItemHomePage.scrollToBottom();
 		String eventId=objMappingPage.getFieldValueFromAPAS(trail.eventIdLabel);
 		String requestOrigin=objMappingPage.getFieldValueFromAPAS(trail.requestOriginLabel);
 		

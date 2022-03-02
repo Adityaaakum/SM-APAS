@@ -115,6 +115,11 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 	public static final String CIO_EVENT_REASSESSMENT="CIO-P19";
 	public static final String CIO_EVENT_INTERGENERATIONAL_TRANSFER="CIO-P19P";
 	public static final String APPRAISAL_SP_ANNUAL="SP-ANNUAL";
+	public static final String CIO_EVENT_Prop60="CIO-P60";
+	public static final String CIO_EVENT_Prop90="CIO-P90";
+	public static final String CIO_EVENT_Prop110="CIO-P110";
+
+	
 
 	
 	public String eventIDLabel = "EventID";
