@@ -2884,4 +2884,72 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 		objWorkItemHomePage.logout();
 
 	}
+	//Method is created so that SMAB-12637 which not yet developed can be accomodated in this Test method
+			/*
+			 * This Test Method verifies that no validation is thrown at Mapping page for Existing CIO ,if no WI is present except CIO-Ownership and management
+			 * 
+			 */
+			@Test(description = "SMAB-T7525:Verify that User is able to perform a Split mapping action for a Parcel (Active) of When there is only CIO Rcorded WI are are available on that parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+					"Regression", "ParcelManagement", "BrandNewAction" }, enabled = true)
+			public void ParcelManagement_VerifyValidationOnEnrollementForCIOAndParcelSplit(String loginUser)
+					throws Exception {
+
+				String queryAPN = "Select name,ID  From Parcel__c where (Not Name like '1%') and (Not Name like '8%')AND Primary_Situs__c !=NULL  and TRA__c!=NULL limit 1";
+				HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
+				String apn = responseAPNDetails.get("Name").get(0);
+				objMappingPage.deleteCharacteristicInstanceFromParcel(apn);
+				String workItemCreationData = testdata.MANUAL_WORK_ITEMS;
+				Map<String, String> hashMapmanualWorkItemData = objUtil.generateMapFromJsonFile(workItemCreationData,
+						"DataToCreateWorkItemOfTypeParcelManagement");
+
+				if (salesforceAPI.select("Select TRA__c from parcel__c where name='" + apn + "'")
+						.get("TRA__c") == null) {
+					salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
+							"Primary_Situs__c", "");
+					salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'", "TRA__c",
+							salesforceAPI.select("Select Id from TRA__c where city__c='SAN MATEO'").get("Id").get(0));
+					salesforceAPI.update("Parcel__C", "Select Id from parcel__c where name ='" + apn + "'",
+							"Primary_Situs__c",
+							salesforceAPI.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id")
+									.get(0));
+				}
+
+				// Step1: Login to the APAS application using the credentials passed through
+				// data provider (login Mapping User)
+				objMappingPage.login(loginUser);
+				objtransfer.generateRecorderJobWorkItems(objtransfer.DOC_DEED, 1);
+				String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO' order by name desc limit 1";
+				String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
+				objMappingPage.globalSearchRecords(workItemNo);
+				objtransfer.waitForElementToBeInVisible(objtransfer.ApnLabel, 5);
+				String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
+
+				// Step2: Opening the PARCELS page and searching the parcel to perform brand new
+				// parcel mapping
+				objMappingPage.searchModule(PARCELS);
+				objMappingPage.globalSearchRecords(apnFromWIPage);
+				try {
+					salesforceAPI
+							.select("SELECT ID FROM WORK_ITEM__C WHERE APN__R.NAME='" + apnFromWIPage
+									+ "' AND Sub_Type__c NOT IN ('Process Transfer & Ownership')")
+							.get("Id").stream().forEach(salesforceAPI::delete);
+				} catch (Exception e) {
+
+				}
+				objParcelsPage.createWorkItem(hashMapmanualWorkItemData);
+
+				// Step 4:Clicking the details tab for the work item newly created and clicking
+				// on Related Action Link
+				objWorkItemHomePage.Click(objWorkItemHomePage.detailsTab);
+				objWorkItemHomePage.waitForElementToBeVisible(objWorkItemHomePage.referenceDetailsLabel);
+				objWorkItemHomePage.Click(objWorkItemHomePage.reviewLink);
+				String parentWindow = driver.getWindowHandle();
+				objWorkItemHomePage.switchToNewWindow(parentWindow);
+				objMappingPage.waitForElementToBeVisible(60, objMappingPage.actionDropDownLabel);
+				objMappingPage.selectOptionFromDropDown(objMappingPage.actionDropDownLabel, "Perform Parcel Split");
+				// Validating no error messsage is thrown
+				softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.errorMessageFirstScreen),
+						"SMAB-T7525: When user tries to do split  mapping action No Validation message is thrown when only CIO Process WI is available on Parcel ");
+
+		}
 }
