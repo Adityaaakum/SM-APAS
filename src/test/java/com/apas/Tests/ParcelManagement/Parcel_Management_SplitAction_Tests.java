@@ -2889,7 +2889,7 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 			 * This Test Method verifies that no validation is thrown at Mapping page for Existing CIO ,if no WI is present except CIO-Ownership and management
 			 * 
 			 */
-			@Test(description = "SMAB-T7525:Verify that User is able to perform a Split mapping action for a Parcel (Active) of When there is only CIO Rcorded WI are are available on that parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
+			@Test(description = "SMAB-T7525:Verify that User is able to perform a Split mapping action for a Parcel (Active) of When there is only CIO Rcorded WI are  available on that parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
 					"Regression", "ParcelManagement", "BrandNewAction" }, enabled = true)
 			public void ParcelManagement_VerifyValidationOnEnrollementForCIOAndParcelSplit(String loginUser)
 					throws Exception {
