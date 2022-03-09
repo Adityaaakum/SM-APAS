@@ -2890,9 +2890,10 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 			 * 
 			 */
 			@Test(description = "SMAB-T7525:Verify that User is able to perform a Split mapping action for a Parcel (Active) of When there is only CIO Rcorded WI are  available on that parcel", dataProvider = "loginMappingUser", dataProviderClass = DataProviders.class, groups = {
-					"Regression", "ParcelManagement", "BrandNewAction" }, enabled = true)
+					"Regression", "ParcelManagement", "SplitAction" }, enabled = true)
 			public void ParcelManagement_VerifyValidationOnEnrollementForCIOAndParcelSplit(String loginUser)
 					throws Exception {
+				String excEnv = System.getProperty("region");
 
 				String queryAPN = "Select name,ID  From Parcel__c where (Not Name like '1%') and (Not Name like '8%')AND Primary_Situs__c !=NULL  and TRA__c!=NULL limit 1";
 				HashMap<String, ArrayList<String>> responseAPNDetails = salesforceAPI.select(queryAPN);
@@ -2920,14 +2921,20 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				objtransfer.generateRecorderJobWorkItems(objtransfer.DOC_DEED, 1);
 				String workItemQuery = "SELECT Id,name FROM Work_Item__c where Type__c='CIO' order by name desc limit 1";
 				String workItemNo = salesforceAPI.select(workItemQuery).get("Name").get(0);
-				objMappingPage.globalSearchRecords(workItemNo);
+				String   query = "Select Id from Work_Item__c  where Name = '"+workItemNo+"'";
+				HashMap<String, ArrayList<String>> response = salesforceAPI.select(query);	
+				driver.navigate().to("https://smcacre--"+excEnv.toLowerCase()+
+						 ".lightning.force.com/lightning/r/Work_Item__c/"+response.get("Id").get(0)+"/view");				
 				objtransfer.waitForElementToBeInVisible(objtransfer.ApnLabel, 5);
 				String apnFromWIPage = objMappingPage.getGridDataInHashMap(1).get("APN").get(0);
 
 				// Step2: Opening the PARCELS page and searching the parcel to perform brand new
 				// parcel mapping
 				objMappingPage.searchModule(PARCELS);
-				objMappingPage.globalSearchRecords(apnFromWIPage);
+				String   queryApn = "Select Id from Parcel__c  where Name = '"+apnFromWIPage+"'";
+				HashMap<String, ArrayList<String>> responseAPN = salesforceAPI.select(query);	
+				driver.navigate().to("https://smcacre--"+excEnv.toLowerCase()+
+						 ".lightning.force.com/lightning/r/Parcel__c/"+responseAPN.get("Id").get(0)+"/view");
 				try {
 					salesforceAPI
 							.select("SELECT ID FROM WORK_ITEM__C WHERE APN__R.NAME='" + apnFromWIPage
@@ -2951,5 +2958,6 @@ public class Parcel_Management_SplitAction_Tests extends TestBase implements tes
 				softAssert.assertTrue(!objMappingPage.verifyElementVisible(objMappingPage.errorMessageFirstScreen),
 						"SMAB-T7525: When user tries to do split  mapping action No Validation message is thrown when only CIO Process WI is available on Parcel ");
 
+				objMappingPage.logout();
 		}
 }
