@@ -836,6 +836,10 @@ public class CIOTransferPage extends ApasGenericPage  implements modules,users{
 							"Primary_Situs__c",
 							salesforceApi.select("Select Id from Situs__c where Situs_City__c='SAN MATEO'").get("Id")
 									.get(0));
+					salesforceApi.update("Parcel__C", "Select Id from parcel__c where name ='" + apnFromWIPage + "'",
+							"PUC_Code_Lookup__c",
+							salesforceApi.select("Select Id from PUC_Code__c where Name ='105- Apartment (Migrated)'").get("Id")
+									.get(0));
 
 					// Updating neighborhood code of parcel so Normal enrollement WI is generated
 					if (enrollmentType.equalsIgnoreCase(APPRAISAL_NORMAL_ENROLLMENT)) {
