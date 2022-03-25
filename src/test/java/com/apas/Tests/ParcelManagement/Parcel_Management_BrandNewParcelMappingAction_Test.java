@@ -41,6 +41,7 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	String apnPrefix=new String();
 	AuditTrailPage trail;
 	CIOTransferPage objtransfer;
+	
 
 	
 	@BeforeMethod(alwaysRun = true)
@@ -1636,6 +1637,6 @@ public class Parcel_Management_BrandNewParcelMappingAction_Test extends TestBase
 	     objMappingPage.logout();
 
 		}
-
-	}
+		
+}
 	
